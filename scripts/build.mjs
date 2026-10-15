@@ -1,0 +1,15 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+await build({entryPoints:['src/code-editor.js'],outfile:'dist/code-editor.js',bundle:true,format:'esm',minify:true,sourcemap:false,target:['chrome100','firefox100','safari16']});
+await writeFile('dist/code-editor.js',(await readFile('dist/code-editor.js','utf8')).replace(/[ \t]+$/gm,''));
+console.log('Code editor built.');
+
+await build({entryPoints:['src/uno-runtime.js'],outfile:'dist/uno-runtime.js',bundle:true,format:'esm',minify:true,sourcemap:false,target:['chrome100','firefox100','safari16']});
+console.log('AVR runtime built.');
+await build({entryPoints:['src/esp-compiler.js'],outfile:'dist/esp-compiler.js',bundle:true,format:'esm',minify:true,sourcemap:false,target:['chrome100','firefox100','safari16']});
+console.log('ESP Clang WASI adapter built.');
+await build({entryPoints:['src/stm32-compiler.js'],outfile:'dist/stm32-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
+await import('./generate-stm32-art.mjs');
+await import('./generate-esp-profile-art.mjs');
+await import('./generate-esp-notices.mjs');
+await import('./generate-app-cache.mjs');

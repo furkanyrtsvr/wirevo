@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="122" height="100" viewBox="0 0 122 100">
+<defs><linearGradient id="shield" x2=".8" y2="1"><stop stop-color="#ecf0f3"/><stop offset=".5" stop-color="#a7b6c0"/><stop offset="1" stop-color="#d6e0e6"/></linearGradient></defs>
+<rect x="1" y="1" width="120" height="98" rx="4" fill="#204a87" stroke="#7195be"/>
+<circle cx="7" cy="7" r="3" fill="#122f53" stroke="#d3b966"/><circle cx="115" cy="7" r="3" fill="#122f53" stroke="#d3b966"/>
+<rect x="13" y="8" width="95" height="65" rx="2" fill="#28694b" stroke="#75987a"/>
+<path d="M19 13h19v5H23v5h15v5H23v5h15v5H19v9" fill="none" stroke="#e5c667" stroke-width="2.4"/>
+<path d="M43 14v49m-21-7h20m61-39v43" fill="none" stroke="#79a58c" stroke-width=".7"/>
+<rect x="48" y="13" width="54" height="43" rx="2" fill="url(#shield)" stroke="#788c99"/>
+<path d="M51 17h47v35H51z" fill="none" stroke="#f3f6f7" stroke-width=".6"/>
+<text x="75" y="30" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="bold" fill="#3b5262">HC-05</text>
+<text x="75" y="42" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="#566d7d">UART · 2.4 GHz</text>
+<g fill="#d9bb68"><path d="M48 58h5v4h-5zm9 0h5v4h-5zm9 0h5v4h-5zm9 0h5v4h-5zm9 0h5v4h-5zm9 0h5v4h-5z"/></g>
+<rect x="7" y="64" width="10" height="10" rx="1" fill="#252d37" stroke="#a2a8a9"/><circle cx="12" cy="69" r="3" fill="#abb3ba"/>
+<rect x="23" y="65" width="5" height="3" fill="#a72536" stroke="#f2a0a4"/>
+<g fill="#cec6a6" stroke="#353f43" stroke-width=".5"><rect x="32" y="64" width="4" height="6"/><rect x="40" y="65" width="5" height="3"/><rect x="88" y="66" width="7" height="3"/></g>
+<text x="61" y="80" text-anchor="middle" font-family="sans-serif" font-size="5.7" fill="#c2d4ea">HC-05 görünüm · SANAL UART</text>
+<rect x="7" y="87" width="107" height="12" rx="2" fill="#18232e"/>
+<g fill="#e3c47a" stroke="#786238"><rect x="11" y="91" width="6" height="7"/><rect x="34" y="91" width="6" height="7"/><rect x="57" y="91" width="6" height="7"/><rect x="80" y="91" width="6" height="7"/><rect x="103" y="91" width="6" height="7"/></g>
+<g fill="#eef4ff" font-family="sans-serif" font-size="5.4" text-anchor="middle"><text x="14" y="86">VCC</text><text x="37" y="86">GND</text><text x="60" y="86">TX</text><text x="83" y="86">RX</text><text x="106" y="86">STATE</text></g>
+</svg>

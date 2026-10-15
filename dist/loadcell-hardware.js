@@ -1,0 +1,7 @@
+// Original CircuitForge CC0-1.0 generic hardware illustrations and explicit connector metadata.
+// Source pin spacing 9.6 × world scale 1.35 matches breadboard 2.54 mm spacing.
+export const LOADCELL_MODULES={
+  loadcell:{"name":"Yük hücresi / strain köprü","width":170,"height":65,"asset":"loadcell-strain-bridge.svg","pins":[{"id":"E+","name":"E+","x":70.6,"y":56,"side":"bottom"},{"id":"E-","name":"E-","x":80.2,"y":56,"side":"bottom"},{"id":"A+","name":"A+","x":89.8,"y":56,"side":"bottom"},{"id":"A-","name":"A-","x":99.4,"y":56,"side":"bottom"}],"body":[3,3,164,42],"specs":{"interface":"Resistive Wheatstone bridge","arms":4},"orientation":"Genel dört telli tam strain köprüsü · E+ / E- uyarma, A+ / A- diferansiyel sinyal · kablo renkleri evrensel değildir · kapasite ve mV/V kalibrasyonu kullanıcı model parametreleridir","limitations":["Generic mechanical illustration; no manufacturer dimensions or wire-color claim","Weight changes bridge resistor arms; no built-in ADC or scalar digital output"]}
+};
+export const LOADCELL_BODIES=Object.fromEntries(Object.entries(LOADCELL_MODULES).map(([id,d])=>[id,d.body]));
+export const LOADCELL_CATALOG=Object.fromEntries(Object.entries(LOADCELL_MODULES).map(([id,d])=>[id,{name:d.name,category:"Girişler",detail:d.specs.interface,width:d.width*1.35,height:d.height*1.35,pinDefs:d.pins.map(p=>({...p,x:p.x*1.35,y:p.y*1.35})),pins:d.pins.map(p=>p.id),asset:d.asset,scale:1.35}]));

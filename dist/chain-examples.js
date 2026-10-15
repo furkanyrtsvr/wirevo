@@ -1,0 +1,7 @@
+export const CHAIN_EXAMPLES=[{id:'max-chain',name:'Uno · MAX7219 ekran zinciri',tag:'3 ekran · DOUT / NO-OP'}];
+export const CHAIN_SOURCES={'max-chain':`#include <SPI.h>
+void chain(uint8_t a,uint8_t farValue,uint8_t midValue,uint8_t nearValue){digitalWrite(10,LOW);SPI.transfer(a);SPI.transfer(farValue);SPI.transfer(a);SPI.transfer(midValue);SPI.transfer(a);SPI.transfer(nearValue);digitalWrite(10,HIGH);}
+void setup(){Serial.begin(115200);pinMode(10,OUTPUT);digitalWrite(10,HIGH);SPI.begin();SPI.beginTransaction(SPISettings(1000000,MSBFIRST,SPI_MODE0));chain(15,0,0,0);chain(9,0,0,0);chain(10,8,5,2);chain(11,7,7,7);chain(12,1,1,1);}
+void loop(){for(uint8_t row=1;row<=8;row++)chain(row,0x81,0x18,1<<(row-1));Serial.println("MAX CHAIN 3 / DOUT");delay(300);}
+`};
+export function makeChainProject(base,id){if(id!=='max-chain')return null;const p=structuredClone(base);p.model=id;p.name=CHAIN_EXAMPLES[0].name;p.code=CHAIN_SOURCES[id];delete p.firmware;const wire=(from,to,color='#14b8a6')=>p.wires.push({id:'chain'+p.wires.length,from,to,color,points:[]});for(let i=1;i<=3;i++){p.components.push({id:'matrix'+i,type:'matrix8',x:520+(i-1)*220,y:460,rotation:0,params:{}});wire('uno:5V','matrix'+i+':VCC','#ef4444');wire('uno:GND.1','matrix'+i+':GND','#64748b');wire('uno:D13','matrix'+i+':CLK');wire('uno:D10','matrix'+i+':CS','#8b5cf6');wire(i===1?'uno:D11':'matrix'+(i-1)+':DOUT','matrix'+i+':DIN','#3b82f6');}p.settings.probe='D13';p.settings.tracePins=['D11','D10'];return p;}

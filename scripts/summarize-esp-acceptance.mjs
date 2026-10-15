@@ -1,0 +1,24 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {ESP_BOARDS} from '../dist/esp-boards.js';
+import {createUnifiedProject,unifiedExamples,unifiedExampleProject} from '../dist/unified-project.js';
+import {sourceKey} from '../dist/source-files.js';
+import {createHash} from 'node:crypto';
+const reports=await Promise.all(['a','b','c'].map(g=>readFile('docs/esp32-acceptance/'+g+'.json','utf8').then(JSON.parse)));
+const cases=reports.flatMap(r=>r.cases),workers=JSON.parse(await readFile('docs/esp32-worker-acceptance.json')),integrity=JSON.parse(await readFile('docs/esp32-integrity-acceptance.json'));
+assert.equal(cases.length,321);assert.equal(workers.length,42);assert.equal(integrity.length,14);assert.ok(reports.every(r=>r.failures.length===0));assert.ok([...cases,...workers,...integrity].every(r=>r.status==='passed'));
+const keys=new Set(cases.map(r=>r.board+':'+r.language+':'+r.example));assert.equal(keys.size,cases.length);
+const boards=Object.keys(ESP_BOARDS).map(board=>{
+ const counts={};for(const language of ['arduino','c','micropython']){
+  const examples=unifiedExamples(createUnifiedProject({board,language}));counts[language]=examples.length;
+  for(const e of examples){const r=cases.find(r=>r.board===board&&r.language===language&&r.example===e.id);assert.ok(r);const p=unifiedExampleProject(board,language,e.id);assert.equal(r.sourceSha256,createHash('sha256').update(sourceKey(p)).digest('hex'));}
+  assert.ok(workers.some(w=>w.board===board&&w.language===language&&w.status==='passed'));
+ }
+ return{id:board,name:ESP_BOARDS[board].title||ESP_BOARDS[board].name+' '+ESP_BOARDS[board].board,status:'passed',counts,total:Object.values(counts).reduce((a,b)=>a+b,0)};
+});
+const summary={release:'0.40',date:'2026-10-12',scope:'Published 14 ESP board profiles and their offered examples',approved:true,examples:321,native:293,micropython:28,workerCases:42,integrityBoards:14,pythonSPIChecks:14,compilerSha256:reports[0].compilerSha256,emulatorSha256:reports[0].emulatorSha256,boards,
+ excluded:['full Arduino-ESP32 / ESP-IDF SDK','Wi-Fi / BLE / RF','internal ADC / LEDC / hardware I2C/SPI','PSRAM / camera / Ethernet / USB','Classic ESP32 / S2 / C2 / C61 / S31','all P4 silicon revisions']};
+await writeFile('dist/esp32-acceptance.json',JSON.stringify(summary,null,2));
+const rows=boards.map(b=>`| ${b.name} | ${b.counts.arduino} | ${b.counts.c} | ${b.counts.micropython} | Geçti |`).join('\n');
+await writeFile('dist/notices/ESP32-ACCEPTANCE.md',`# CircuitForge 0.40 — ESP32 kabul raporu\n\n12 Ekim 2026. Yayımlanan 14 ESP kartı için kapsam onaylandı. **321/321 katalog kombinasyonu**, **42/42 worker yaşam döngüsü**, **14/14 bütünlük ve GPIO sınır kontrolü** geçti.\n\n| Fiziksel kart | Arduino C++ | C17 | MicroPython | Sonuç |\n|---|---:|---:|---:|---|\n${rows}\n\n293 native örnek gerçek Clang ile yeniden derlendi, ESP-EMU CPU'da GPIO/devre bağlanarak çalıştırıldı; UART ve sensör/ekran/kontak çıktıları doğrulandı. 28 Python katalog programının asıl kaynakları resmî yorumlayıcıda çalıştırıldı; yalnız testin await sınırında sonlandırıldı. Kaynak yorumlama ile sonuç üretilmedi. Tüm örneklerde kaynak/firmware ZIP eşleşmesi kontrol edildi. 14 kartta ek Python SoftSPI canlı pot512→768 ve montaj netleri doğrulandı.\n\nWorker: 14 kart×3 dil; load/run/pause/terminate. Native step/reset; sonsuz senkron Python döngüsü worker termination. Python pause/resume kullanıcı arayüzünde VM'yi yeniden başlatır; CPU adımı yoktur. UART0 native register/terminal byte akışıdır; tüm UART TX/RX pin çerçeveleri iddia edilmez.\n\nGPIO 5V aşımı, geçersiz/ayrılmış pin, bozuk checksum, farklı chip BIN ve düz kablo ZIP/net koruması her kartta denetlendi. **MCU reset EEPROM verisini silmez**; STOP ile kabul edilen sürmekte olan yazmanın kalan süresi yeni MCU sayacına taşınır. Güçsüz EEPROM'un önceki verisi de korunur. Yeni simülasyon oturumu/Stop ayrı yaşam döngüsüdür; JSON içine EEPROM belleği otomatik kaydedilmiş sayılmaz.\n\n## Destek dışı kalan kapsam\n\nTam Arduino-ESP32/ESP-IDF SDK, RF/Wi-Fi/BLE, dahili ADC/LEDC, donanım I²C/SPI, USB/PSRAM/kamera/Ethernet; Classic/S2/C2/C61/S31; bütün P4 silikon revizyonlarının eşdeğerliği. Bunlar tamamlandı/onaylandı olarak sunulmaz. Yerleşik core0.2 ve C17 HAL, GPIO yazılım bus ve 3.3V DC kapsamı onaylandı. Pinout/revizyon kaynakları ESP32-BOARD-PROFILES.md ve C17-SENSORS.md içindedir.\n\n## Sonraki aşama: STM32\n\nSTM32F103C8 Blue Pill, gerçek Cortex-M3 CPU/SoC doğrulaması ile başlayacak. ARM derleme/link,64KiB Flash/20KiB RAM/Thumb vektör ve taşma reddi kapısı geçti. Simülasyon motoru, GPIO/UART/NVIC/RCC ve ortak alan entegrasyonu henüz doğrulanmadı. STM32 bu sürümün çalışan kart kataloğunda yer almaz.\n`);
+console.log('APPROVED',summary.examples,'examples',summary.workerCases,'worker cases');

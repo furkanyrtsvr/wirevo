@@ -1,0 +1,6 @@
+import {readFile,writeFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';
+import {buildProjectFirmware} from '../dist/gcc-project.js';import {makeProject} from '../dist/templates.js';
+globalThis.window={};const nativeFetch=globalThis.fetch;globalThis.fetch=async(u,o)=>String(u).startsWith('file:')?new Response(await readFile(fileURLToPath(u)),{headers:{'Content-Type':String(u).endsWith('.wasm')?'application/wasm':'application/octet-stream'}}):nativeFetch(u,o);
+const assetsBase=new URL('../research/compiler/node_modules/@horang-corp/avr-gcc-wasm/',import.meta.url).href,fixtures={},path=new URL('../dist/template-firmware.json',import.meta.url),cache=JSON.parse(await readFile(path));
+for(const id of ['adc-acquisition-low','adc-acquisition-high']){const project=makeProject(id),result=await buildProjectFirmware([{name:'sketch.ino',content:project.code}],{assetsBase});if(!result.fitsTarget||!result.fitsRam)throw Error(id+' capacity');fixtures[id]={project,result};cache[id]={source:project.code,hex:result.hex,flashBytes:result.flashBytes,staticRamBytes:result.staticRamBytes};console.log(JSON.stringify({id,flash:result.flashBytes,ram:result.staticRamBytes}));}
+await writeFile(path,JSON.stringify(cache));await writeFile(new URL('../tests/fixtures/adc-acquisition.json',import.meta.url),JSON.stringify(fixtures,null,2));

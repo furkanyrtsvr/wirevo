@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 3,
+  "name": "STM32 F103 · CAN loopback / IRQ",
+  "model": "custom",
+  "code": "#include <cf_hal.h>\n#include <stdio.h>\n/* F103 bxCAN internal loopback, 500 kbit/s at APB1 36 MHz.\n   No external CAN transceiver/bus is represented by this example. */\n#define R(a) (*(volatile unsigned*)(a))\n#define CAN 0x40006400u\nvolatile unsigned received,transmitted;\nvoid USB_HP_CAN1_TX_IRQHandler(void){unsigned t=R(CAN+8);for(unsigned i=0;i<3;i++)if(t&(1u<<(8*i))){if(t&(2u<<(8*i)))transmitted++;R(CAN+8)=1u<<(8*i);}}\nvoid USB_LP_CAN1_RX0_IRQHandler(void){while(R(CAN+12)&3){unsigned id=R(CAN+0x1b0),dlc=R(CAN+0x1b4)&15,data=R(CAN+0x1b8);printf(\"CAN RX id=%X dlc=%u data=%X\\n\",id>>21,dlc,data);received++;R(CAN+12)=32;}}\nint main(void){cf_uart_begin(115200);R(0x4002101c)|=1u<<25;\n R(CAN)=1;while(!(R(CAN+4)&1)){}R(CAN+28)=0x40000000u|(12u<<16)|(1u<<20)|3u;\n R(CAN+0x200)=1;R(CAN+0x20c)=1;R(CAN+0x240)=0x321u<<21;R(CAN+0x244)=0xffe00006u;R(CAN+0x21c)=1;R(CAN+0x200)=0;\n R(CAN+20)=3;R(0xe000e100)=(1u<<19)|(1u<<20);R(CAN)=0;while(R(CAN+4)&1){}\n puts(\"CAN LOOPBACK READY\");for(unsigned n=0;n<3;n++){unsigned a=CAN+0x180+16*n;R(a+4)=4;R(a+8)=0x12345670u+n;R(a+12)=0;R(a)=(0x321u<<21)|1u;}\n while(received<3||transmitted<3)__asm volatile(\"wfi\");printf(\"CAN OK RX=%u TX=%u\\n\",received,transmitted);for(;;)__asm volatile(\"wfi\");}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 35,
+      "y": 65,
+      "rotation": 0,
+      "params": {
+        "model": "stm32f103c6"
+      }
+    }
+  ],
+  "wires": [],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "PA0",
+    "tracePins": []
+  },
+  "language": "c",
+  "firmware": {
+    "format": "stm32-bin",
+    "payload": "Q0ZTVE0wMQBzdG0zMmYxMDNjNgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIgGAACTj7QkAAAAAAAAAAAAKAAgDQUACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILwYACIkBAAjNAQAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACC0GAAgtBgAILQYACBC1RvIITMTyAAzc+AAQQPIADgAiASPC8gAOAL8D+gLwCEIK0CH6AvSkBwTV3vgAQAE0zvgAQMz4AAAIMhgqCL8QvevnLenwQUbysFVP9lxmxPIABc/2/3aoWYAHCL+96PCBQPJFaEDyBAfA9gAIwvIAByAkKGhpaKtoAfAPAkENQEYA8An4OGgBMDhgrFGoWYAH79G96PCBg7At6fBDirAERhGoAq1M9s1JDsARqG4ezPbMSQGQAL8geCUoBtAAKADwrYABNADwU/n152B4BPECCGMoGt10KCTcZChB0HMoQPCdgAGYREYBHQGRAWgAKeLQCHhERgAo3tBMHMCyAPA3+RT4AQsAKPjRaeAlKGTQWCgL0GMoQPCCgAGYAR0BkQB4W+B1KDzQeCh40QGYACQBHQGRAGgAvwDwDwEB8TcCCik4vwHxMAIqVQAJBPEBBPLRAL8wXQE8APAK+QAs+dE+4AGYAR0BkQRotPH/PzndACcAv6T7CRIgRtQIBOuEAaDrQQFB8DAB6VUJKAfxAQfw2AC/8F0BPwDw6vgAL/nRHuABmAAkAR0BkQBoAUag+wkC0AgA64ACoetCAkLwMAIqVQkpBPEBBPDYAL8wXQE8APDO+AAs+dEC4CUgAPDI+ERGaectIADww/hgQgAkAL8BRqD7CQLQCADrgAKh60ICQvAwAipVCSkE8QEE8NgAvzBdATwA8Kz4ACz50eDnCrC96PBDA7BwR0byAERP9OEwxPIABADwgvhB8hwAxPICAAFoQfAAcQFgASAgYGBowAf80AElAyDG8iBFxPIcAOBhASBpHsT4AALE+AwCxPhAEgYhz/bgccT4RBLE+BwCACADIcT4AAJhYU7yABHO8gABT/TAEgpgIGBgaMAH/NFA8jJnQyABJsD2AAcAv8CyAPBf+LhdATYTLvjRDSAA8Fj4CiAA8FX4RfJwYcHyNCEEIAAiSxzE+IQBxPiIEcT4jCHE+IBRxPiUAcT4mDHE+JwhxPiQUcT4pAGIHMT4qAHE+KwhQPIEAEDyAALC8gAAwvIAAsT4oFEAvwFoAykC0xFoAikB2DC/9+cBaBJoQPJiYMD2AAD/97D+ML/957ixQfIYAcTyAgEKaEL0gEIKYEpoSmBK8gAhwPJKQbH78PBD9ggBxPIBAQhgQvIMAEhgcEdD9gABxPIBAQpoEgb81UhgcEfU1EDyAABA8gABwvIAAMLyAAGBQg3SQPKIYUDyAALA9gABwvIAAlH4BDtC+AQ7gkL500DyCABA8gABwvIAAMLyAAGBQgXSACIAv0H4BCuBQvvTQfIAAMTyAgCBaU/wAHJB8AEBgWEEIcTyAQEKYELyAAHE8gIBEiIKYAFoQfSAMQFgAWiJA/zVQPIAQcDyHQFBYAFoQfCAcQFgAWiJAfzVQWhB8AIBQWAAv0FoAfAMAQgp+tFO9vxQzvIAAAFoQPJ2ZEHwgHEBYEHyAADO8gAAAWhA8nZiwPYABMD2AAKiQkHwAQEBYAnSQPJ2ZcD2AAUAv1X4BAuAR6VC+tNA8gAAwPIAAAixAPAA+P/3zP5A8gAAwPIAABCxAPAA+AC//ufU1P7n//f9v0NBTiBMT09QQkFDSyBSRUFEWQBDQU4gUlggaWQ9JVggZGxjPSV1IGRhdGE9JVgKAENBTiBPSyBSWD0ldSBUWD0ldQoAAAAQ+/9/AQAAALL//38BAAAA",
+    "board": "stm32f103c6",
+    "source": "#include <cf_hal.h>\n#include <stdio.h>\n/* F103 bxCAN internal loopback, 500 kbit/s at APB1 36 MHz.\n   No external CAN transceiver/bus is represented by this example. */\n#define R(a) (*(volatile unsigned*)(a))\n#define CAN 0x40006400u\nvolatile unsigned received,transmitted;\nvoid USB_HP_CAN1_TX_IRQHandler(void){unsigned t=R(CAN+8);for(unsigned i=0;i<3;i++)if(t&(1u<<(8*i))){if(t&(2u<<(8*i)))transmitted++;R(CAN+8)=1u<<(8*i);}}\nvoid USB_LP_CAN1_RX0_IRQHandler(void){while(R(CAN+12)&3){unsigned id=R(CAN+0x1b0),dlc=R(CAN+0x1b4)&15,data=R(CAN+0x1b8);printf(\"CAN RX id=%X dlc=%u data=%X\\n\",id>>21,dlc,data);received++;R(CAN+12)=32;}}\nint main(void){cf_uart_begin(115200);R(0x4002101c)|=1u<<25;\n R(CAN)=1;while(!(R(CAN+4)&1)){}R(CAN+28)=0x40000000u|(12u<<16)|(1u<<20)|3u;\n R(CAN+0x200)=1;R(CAN+0x20c)=1;R(CAN+0x240)=0x321u<<21;R(CAN+0x244)=0xffe00006u;R(CAN+0x21c)=1;R(CAN+0x200)=0;\n R(CAN+20)=3;R(0xe000e100)=(1u<<19)|(1u<<20);R(CAN)=0;while(R(CAN+4)&1){}\n puts(\"CAN LOOPBACK READY\");for(unsigned n=0;n<3;n++){unsigned a=CAN+0x180+16*n;R(a+4)=4;R(a+8)=0x12345670u+n;R(a+12)=0;R(a)=(0x321u<<21)|1u;}\n while(received<3||transmitted<3)__asm volatile(\"wfi\");printf(\"CAN OK RX=%u TX=%u\\n\",received,transmitted);for(;;)__asm volatile(\"wfi\");}\n",
+    "sourceKey": "{\"board\":\"stm32f103c6\",\"language\":\"c\",\"core\":\"cf-stm32-0.15\",\"files\":[{\"name\":\"main.c\",\"content\":\"#include <cf_hal.h>\\n#include <stdio.h>\\n/* F103 bxCAN internal loopback, 500 kbit/s at APB1 36 MHz.\\n   No external CAN transceiver/bus is represented by this example. */\\n#define R(a) (*(volatile unsigned*)(a))\\n#define CAN 0x40006400u\\nvolatile unsigned received,transmitted;\\nvoid USB_HP_CAN1_TX_IRQHandler(void){unsigned t=R(CAN+8);for(unsigned i=0;i<3;i++)if(t&(1u<<(8*i))){if(t&(2u<<(8*i)))transmitted++;R(CAN+8)=1u<<(8*i);}}\\nvoid USB_LP_CAN1_RX0_IRQHandler(void){while(R(CAN+12)&3){unsigned id=R(CAN+0x1b0),dlc=R(CAN+0x1b4)&15,data=R(CAN+0x1b8);printf(\\\"CAN RX id=%X dlc=%u data=%X\\\\n\\\",id>>21,dlc,data);received++;R(CAN+12)=32;}}\\nint main(void){cf_uart_begin(115200);R(0x4002101c)|=1u<<25;\\n R(CAN)=1;while(!(R(CAN+4)&1)){}R(CAN+28)=0x40000000u|(12u<<16)|(1u<<20)|3u;\\n R(CAN+0x200)=1;R(CAN+0x20c)=1;R(CAN+0x240)=0x321u<<21;R(CAN+0x244)=0xffe00006u;R(CAN+0x21c)=1;R(CAN+0x200)=0;\\n R(CAN+20)=3;R(0xe000e100)=(1u<<19)|(1u<<20);R(CAN)=0;while(R(CAN+4)&1){}\\n puts(\\\"CAN LOOPBACK READY\\\");for(unsigned n=0;n<3;n++){unsigned a=CAN+0x180+16*n;R(a+4)=4;R(a+8)=0x12345670u+n;R(a+12)=0;R(a)=(0x321u<<21)|1u;}\\n while(received<3||transmitted<3)__asm volatile(\\\"wfi\\\");printf(\\\"CAN OK RX=%u TX=%u\\\\n\\\",received,transmitted);for(;;)__asm volatile(\\\"wfi\\\");}\\n\"}]}",
+    "imported": false,
+    "staticRamBytes": 8
+  }
+}

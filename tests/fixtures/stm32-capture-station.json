@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 3,
+  "name": "STM32 · PWM ölçüm / ADC + capture",
+  "model": "custom",
+  "code": "#include \"cf_board_config.h\"\n#include <stdio.h>\n#define R(a) (*(volatile unsigned*)(a))\nvolatile unsigned width,have_rise,measured;\nvoid TIM2_IRQHandler(void){\n  if(R(0x40000010)&2u){\n    unsigned value=R(0x40000034);\n    if(cf_gpio_read(PA0))have_rise=1;\n    else if(have_rise){width=value;measured++;}\n  }\n}\nint main(void){\n  // PA1 PWM and PA0 input capture share TIM2; main sets their timebase.\n  cf_pwm_begin(PA1,1000,50);\n  R(0x40000018)=(R(0x40000018)&~255u)|1u;\n  R(0x40000020)=(R(0x40000020)&~15u)|11u;\n  R(0x4000000c)=2u;\n  R(0xe000e100)=1u<<28;\n  puts(\"CAPTURE STATION READY\");\n  for(;;){\n    int adc=cf_adc_read(PB1);\n    unsigned requested=(adc*100u+2047u)/4095u;\n    cf_pwm_duty(PA1,requested);\n    while(!measured)__asm volatile(\"wfi\");\n    unsigned period=R(0x4000002c)+1u,scale=R(0x40000028)+1u;\n    unsigned pulse=width,pct=(pulse*100u+period/2u)/period;\n    printf(\"REQ=%u MEAS=%u WIDTH=%u us PERIOD=%u us ADC=%d\\r\\n\",\n      requested,pct,pulse*scale/(CF_CPU_HZ/1000000u),period*scale/(CF_CPU_HZ/1000000u),adc);\n    cf_delay_ms(20);\n  }\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 35,
+      "y": 65,
+      "rotation": 0,
+      "params": {
+        "model": "weact-f411ce"
+      }
+    },
+    {
+      "id": "pot1",
+      "type": "pot",
+      "x": 590,
+      "y": 310,
+      "rotation": 0,
+      "params": {
+        "ohms": 10000,
+        "value": 50
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "capture-0",
+      "from": "mcu:3V3",
+      "to": "pot1:VCC",
+      "color": "#ef4444",
+      "points": [
+        {
+          "x": 23,
+          "y": 321.77000000000004
+        },
+        {
+          "x": 23,
+          "y": 344.3
+        },
+        {
+          "x": 578,
+          "y": 344.3
+        },
+        {
+          "x": 578,
+          "y": 424.0472440944882
+        },
+        {
+          "x": 655.1061422,
+          "y": 424.0472440944882
+        }
+      ]
+    },
+    {
+      "id": "capture-1",
+      "from": "mcu:GND",
+      "to": "pot1:GND",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 17,
+          "y": 308.81
+        },
+        {
+          "x": 17,
+          "y": 350.3
+        },
+        {
+          "x": 572,
+          "y": 350.3
+        },
+        {
+          "x": 572,
+          "y": 430.0472440944882
+        },
+        {
+          "x": 629.1861422,
+          "y": 430.0472440944882
+        }
+      ]
+    },
+    {
+      "id": "capture-2",
+      "from": "pot1:OUT",
+      "to": "mcu:PB1",
+      "color": "#14b8a6",
+      "points": [
+        {
+          "x": 642.1461422,
+          "y": 436.0472440944882
+        },
+        {
+          "x": 165.029,
+          "y": 436.0472440944882
+        },
+        {
+          "x": 165.029,
+          "y": 140.32999999999998
+        }
+      ]
+    },
+    {
+      "id": "capture-3",
+      "from": "mcu:PA1",
+      "to": "mcu:PA0",
+      "color": "#f59e0b",
+      "points": [
+        {
+          "x": 171.029,
+          "y": 244.01
+        },
+        {
+          "x": 171.029,
+          "y": 256.97
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "PA0",
+    "tracePins": [
+      "PA1",
+      "PB6",
+      "PB7"
+    ],
+    "stm32Pins": {
+      "version": 1,
+      "pins": {
+        "PA0": {
+          "function": "hw_TIM2_IC1",
+          "label": "",
+          "initial": 0,
+          "captureHz": 1000000,
+          "captureEdge": 2,
+          "captureDivider": 1
+        },
+        "PB1": {
+          "function": "hw_ADC1_IN9",
+          "label": "",
+          "initial": 0
+        }
+      },
+      "uart": {
+        "enabled": true,
+        "baud": 115200
+      },
+      "i2cHz": 10000,
+      "spiHz": 20000,
+      "usart1Baud": 9600,
+      "usart1Bits": 8,
+      "usart1Parity": 0,
+      "usart1Stops": 1,
+      "usart2Baud": 9600,
+      "usart2Bits": 8,
+      "usart2Parity": 0,
+      "usart2Stops": 1,
+      "hwSpi1Hz": 500000,
+      "hwSpi1Mode": 0,
+      "hwSpi1Bits": 8,
+      "hwSpi1Lsb": false,
+      "hwI2c1Hz": 100000,
+      "adcMode": "prepare",
+      "adcBits": 12,
+      "adcEach": false,
+      "adcLeft": false,
+      "adcOrder": []
+    }
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "cf_board_config.h",
+      "content": "// CircuitForge pin configuration v1\n#pragma once\n#include <cf_hal.h>\nvoid cf_board_init(void);\n"
+    },
+    {
+      "name": "cf_board_config.c",
+      "content": "// CircuitForge pin configuration v1\n#include \"cf_board_config.h\"\n\n/* Runs after clocks/data/bss, before main. main may reconfigure GPIO. */\nvoid cf_board_init(void){\n    cf_tim2_capture_begin(PA0,2,1,1000000);\n    cf_adc_config(PB1);\n    cf_uart_begin(115200);\n}\n"
+    }
+  ]
+}

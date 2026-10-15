@@ -1,0 +1,56 @@
+{
+  "release": "CircuitForge 0.41",
+  "emulator": {
+    "version": "0.48.0",
+    "source": "https://github.com/espressif/esp-emulator",
+    "archive": "https://github.com/espressif/esp-emulator/releases/download/v0.48.0/esp-emu-0.48.0-wasm.tar.gz",
+    "archiveSha256": "01faf50e66d740c1e5804c48a9ac13475a0a4fbeb23b3f398108bb6281a124ab",
+    "license": "Apache-2.0"
+  },
+  "compiler": {
+    "documentation": "https://mokxi.com/docs/compile",
+    "binarySource": "https://mokxi.com/toolchain/clang-v3/clang.wasm",
+    "uncompressedBytes": 80735841,
+    "uncompressedSha256": "7546c54c07c392e231ea450f8e3aaa6680346ffeb08e13d97d970b26d88666e5",
+    "upstream": "https://github.com/espressif/llvm-project",
+    "reportedBuild": "esp-22.1.4_20260825",
+    "license": "Apache-2.0 WITH LLVM-exception",
+    "scope": "Only the LLVM compiler binary. No Mokxi simulator, runtime, core or bundle."
+  },
+  "wasi": {
+    "package": "@bjorn3/browser_wasi_shim",
+    "version": "0.4.2",
+    "source": "https://github.com/bjorn3/browser_wasi_shim",
+    "license": "MIT OR Apache-2.0"
+  },
+  "boardArtwork": {
+    "license": "CC0-1.0",
+    "author": "CircuitForge original drawings"
+  },
+  "assets": {
+    "pkg/esp_emu.js": {
+      "bytes": 23755,
+      "sha256": "1d867ff960a408e757ddc8322b62a579315bf9bd8d03adab46d33b51ae137aab"
+    },
+    "pkg/esp_emu_bg.wasm": {
+      "bytes": 4712310,
+      "sha256": "b8fac579176f5ef18a931810e4dbd9757c333ec0cafe27b75a489f566f2cf3ea"
+    },
+    "compiler/clang.wasm.gz": {
+      "bytes": 22573195,
+      "sha256": "11c49e7a4bf2c425c3ebdd9b81b7526c7e074f0daf868b27988f5129ee529c73"
+    },
+    "examples.json": {
+      "bytes": 210838,
+      "sha256": "caf4018d75f5dfc2c7f7853ab1a3463c458936299b9fda4418dc14818f820cc1"
+    },
+    "core/Wire.h": {
+      "bytes": 2338,
+      "sha256": "39caeb0d9e4bc24c224e4635c63022afb6ad557eea0fd0c7361178a9bd781247"
+    },
+    "core/SPI.h": {
+      "bytes": 1267,
+      "sha256": "aadeab702a600f9083c848fca69a1a6cb916ac00088216b6e69a635b3a220c30"
+    }
+  }
+}

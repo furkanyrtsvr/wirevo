@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51">
+<title>OPAMP DIP-8, top view</title>
+<metadata>Original CC0 drawing. Pin functions: Pinout reference: Texas Instruments LM358 SLOS068AB; generic illustration. Lead pitch 2.54 mm; row spacing 7.62 mm.</metadata>
+<defs><linearGradient id="case" x2="1" y2="1"><stop stop-color="#4a4d52"/><stop offset=".5" stop-color="#25292d"/><stop offset="1" stop-color="#12171c"/></linearGradient><linearGradient id="lead" x2="0" y2="1"><stop stop-color="#f1f4f6"/><stop offset=".45" stop-color="#939da6"/><stop offset="1" stop-color="#d5dde3"/></linearGradient></defs>
+<g fill="url(#lead)" stroke="#7d8892" stroke-width=".45"><rect x="5.3" y="7.8" width="8" height="4.4" rx=".6"/><rect x="5.3" y="17.4" width="8" height="4.4" rx=".6"/><rect x="5.3" y="27" width="8" height="4.4" rx=".6"/><rect x="5.3" y="36.6" width="8" height="4.4" rx=".6"/><rect x="31.5" y="7.8" width="8" height="4.4" rx=".6"/><rect x="31.5" y="17.4" width="8" height="4.4" rx=".6"/><rect x="31.5" y="27" width="8" height="4.4" rx=".6"/><rect x="31.5" y="36.6" width="8" height="4.4" rx=".6"/></g>
+<rect x="12" y="4" width="20.8" height="42" rx="2.2" fill="url(#case)" stroke="#555d65" stroke-width=".6"/><path d="M18.4 4a4 4 0 0 0 8 0" fill="#101318" stroke="#565b61" stroke-width=".4"/><circle cx="16" cy="11.5" r="1.35" fill="#12171c" stroke="#555c63" stroke-width=".3"/>
+<g fill="#ced5da" font-family="monospace" text-anchor="middle"><text x="22.4" y="28" font-size="4.8" transform="rotate(-90 22.4 28)">OPAMP</text><text x="28.5" y="29" font-size="2.8" transform="rotate(-90 28.5 29)">DIP-8</text></g>
+<g fill="#929da7" font-family="monospace" font-size="2.7" text-anchor="middle"><text x="10.8" y="8">1</text><text x="10.8" y="43.4">4</text><text x="34" y="8">8</text><text x="34" y="43.4">5</text></g>
+</svg>

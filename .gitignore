@@ -1,0 +1,18 @@
+.sites-runtime/
+.sites-checkout/
+node_modules/
+*.tar.gz
+*.tar
+*.log
+research/
+
+src/stm32/target/
+src/stm32/vendor/zmu_cortex_m/target/
+
+# Local automation and machine state
+.openai/*
+!.openai/hosting.json
+.sites-runtime/
+.codex/
+.agents/
+*.log

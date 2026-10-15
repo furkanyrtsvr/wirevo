@@ -1,0 +1,21 @@
+// SHT31-D: command protocol, cycle conversions, CRC and single-shot stretching.
+const HZ=16000000;
+export function shtCRC(bytes){let c=255;for(const b of bytes){c^=b;for(let i=0;i<8;i++)c=(c&128)?((c<<1)^49)&255:(c<<1)&255;}return c;}
+const frame=n=>[n>>8,n&255,shtCRC([n>>8,n&255])];
+const SINGLE=new Map([[0x2400,15],[0x240b,6],[0x2416,4],[0x2c06,15],[0x2c0d,6],[0x2c10,4]]);
+const PERIODIC=new Map([[0x2032,[.5,15]],[0x2024,[.5,6]],[0x202f,[.5,4]],[0x2130,[1,15]],[0x2126,[1,6]],[0x212d,[1,4]],[0x2236,[2,15]],[0x2220,[2,6]],[0x222b,[2,4]],[0x2334,[4,15]],[0x2322,[4,6]],[0x2329,[4,4]],[0x2737,[10,15]],[0x2721,[10,6]],[0x272a,[10,4]]]);
+export class SHT31{
+ constructor(){this.environment={temperature:25,humidity:50};this.reset();}
+ reset(){this.status=0x8010;this.bootUntil=0;this.heater=false;this.stretching=false;this.period=0;this.pending=null;this.sample=null;this.response=[];this.pointer=0;this.command=[];this.revision=0;this.supported=true;this.lastTemperature=undefined;this.lastHumidity=undefined;}
+ setEnvironment(p){this.environment={temperature:p?.temperature??25,humidity:p?.humidity??50};}
+ setSupply(voltage){this.lowSupply=voltage<2.4;}
+ start(cycle,ms,now=cycle){ms+=this.lowSupply?.5:0;this.pending={start:cycle,until:cycle+Math.ceil(ms*HZ/1000),environment:cycle<=now?{...this.environment}:null};this.duration=ms;}
+ tick(cycle){if(this.pending&&!this.pending.environment&&cycle>=this.pending.start)this.pending.environment={...this.environment};if(this.pending&&cycle>=this.pending.until){const {temperature,humidity}=this.pending.environment;this.lastTemperature=temperature;this.lastHumidity=humidity;this.sample=[...frame(Math.round((temperature+45)/175*65535)),...frame(Math.round(humidity/100*65535))];const completed=this.pending.until;this.pending=null;this.revision++;if(this.period){const skipped=Math.floor((cycle-completed)/this.period);this.start(completed+(skipped+1)*this.period-Math.ceil(this.duration*HZ/1000),this.duration-(this.lowSupply?.5:0),cycle);if(this.pending.until<=cycle)this.pending.until=cycle+this.period;}}}
+ ready(cycle,write=true){this.tick(cycle);return cycle>=this.bootUntil&&(write||!!this.sample||this.response.length>0||this.stretching&&!!this.pending);}
+ stretchUntil(cycle){this.tick(cycle);return this.stretching&&this.pending?this.pending.until:null;}
+ nextEvent(){return this.pending?(this.pending.environment?this.pending.until:this.pending.start):null;}
+ begin(write,cycle){this.tick(cycle);this.writing=write;this.command=[];this.pointer=0;if(!write&&this.response.length===0)this.response=this.sample?.slice()||[];}
+ write(b,cycle){this.command.push(b);if(this.command.length!==2)return this.command.length<2;const c=(this.command[0]<<8)|b;this.response=[];this.responseKind='measurement';this.supported=true;this.status&=~2;if(SINGLE.has(c)){this.stretching=(c>>8)===0x2c;this.period=0;this.start(cycle,SINGLE.get(c));this.sample=null;}else if(PERIODIC.has(c)){this.stretching=false;const [rate,ms]=PERIODIC.get(c);this.period=Math.round(HZ/rate);this.start(cycle,ms);}else if(c===0xe000){this.tick(cycle);if(!this.sample)return false;this.response=this.sample.slice();this.sample=null;}else if(c===0xf32d){this.response=frame(this.status|(this.heater?8192:0));this.responseKind='status';}else if(c===0x3041)this.status&=~0x8c10;else if(c===0x30a2){this.reset();this.bootUntil=cycle+24000;}else if(c===0x306d)this.heater=true;else if(c===0x3066)this.heater=false;else if(c===0x3093){this.stretching=false;this.period=0;this.pending=null;}else{this.status|=2;this.supported=false;return false;}return true;}
+ read(cycle){this.tick(cycle);if(!this.response.length&&this.sample)this.response=this.sample.slice();const v=this.response[this.pointer++]??255;if(this.pointer>=this.response.length){this.response=[];this.pointer=0;if(this.responseKind!=='status')this.sample=null;}return v;}
+ state(cycle){this.tick(cycle);return{temperature:this.lastTemperature??this.environment.temperature,humidity:this.lastHumidity??this.environment.humidity,measuring:!!this.pending&&cycle>=this.pending.start,heater:this.heater,status:this.status|(this.heater?8192:0),periodic:!!this.period,stretching:!!this.stretching,alertSupported:false,revision:this.revision,supported:this.supported};}
+}

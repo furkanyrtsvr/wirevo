@@ -1,0 +1,9 @@
+# CircuitForge 0.59 devam / kart geçişi
+
+F401/F411 USB OTG FS device alt kümesi eklendi: ayrı 0x50000000 register/FIFO, IRQ67, gerçek ARM C/C++ EP0 ve bulk echo; beş F4 profilinde native kabul. F411 artık USB uyumlu 96 MHz / PLLQ8; F401 84 MHz / PLLQ7. F103 USB/bxCAN, dokuz kartın sensör/devre/Python modu korunur. Önce RELEASE_0.59.md, QA_0.59.md ve dist/notices/STM32-OTG-FS.md okunur.
+
+Kullanıcı STM32 üzerinde sürekli küçük sürümler yerine diğer geliştirme kartlarına geçmek istiyor. Dokuz kartın doğrulanmış uygulama kapsamını temel al; sonraki ana mimari için RP2040/Pico adayını değerlendir. Sadece katalog resmi/pin ekleyip çalışan kart diye sunma. Önce resmi Pico pinout/datasheet, Cortex-M0+ motoru, Flash/XIP/boot/derleyici, tek çekirdek GPIO/UART/ADC/PWM/I²C/SPI ve elektriksel sensör devresi kabulü; ardından multicore/PIO/USB. Yeni mimari aynı çalışma alanı, proje seçimi, breadboard, net label, aynalama ve auto-route kullanmalı. Kaynak/lisans ve motor uygunluğu doğrulanmadan destek iddiası yapılmaz. Bu sürüm RP2040 eklemez.
+
+STM32'nin tamamı bitmiş değildir. Eksikler dist/stm32-scope.js ve notices/STM32-AUDIT.md içinde korunur: OTG host/iso/DMA/sınıf yığınları/PC erişimi; harici CAN bus/transceiver/arbitration; yerel ARM MicroPython/tam Cube HAL; diğer TIM/filter/remap/TRGO/dead-time; ADC dahili kanallar/acquisition/kalibrasyon; DMA FIFO/burst/DBM/PFLOW/I²C; ileri USART/SPI/I²C/RTC/Flash/MPU ve dinamik clock-power. Bunları yeni kart ailesine geçiş için sonsuz ön koşul haline getirme; ayrı ileri emülasyon kapsamı olarak izlemeye devam et. Desteklenmeyen işlemleri çalışıyor gibi sayma.
+
+Otomatik devam zamanlayıcısı kullanıcı isteğiyle silindi; yeniden kurulmaz. Sites proje kimliği ve public audience korunur. Source helper aç → test/build/CUA → exact pushed SHA arşivi → saved version/deploy → ZIP + SHA + güncel devir.

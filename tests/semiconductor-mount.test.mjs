@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {CATALOG,buildNets,validateProject} from '../dist/core.js';import {makeProject} from '../dist/templates.js';import {placementCandidate,attachPlacement,placeOnBreadboard,mountErrors,syncMountedParts} from '../dist/mounting.js';import {localPoint,pinPoint} from '../dist/geometry.js';
+function fixture(type,rotation=0){const p=makeProject();p.components=p.components.filter(c=>c.type==='breadboard');p.wires=[];const b=p.components[0];b.rotation=rotation;const q={id:'q',type,x:0,y:0,rotation,params:{}};p.components.push(q);return{p,b,q};}
+for(const type of ['npn','mosfet'])for(const rotation of [0,90,180,270])test(`${type} three leads fit distinct strips on breadboard rotation ${rotation}`,()=>{
+ const {p,b,q}=fixture(type,rotation);assert.ok(placeOnBreadboard(p,q));assert.equal(Object.keys(q.mount.pins).length,3);assert.ok(!('D.TAB' in q.mount.pins));assert.deepEqual(mountErrors(p),[]);
+ const nets=buildNets(p);const pins=CATALOG[type].pinDefs.filter(d=>d.mountable!==false);assert.equal(nets.same('q:'+pins[0].id,'q:'+pins[1].id),false);for(const pin of pins)assert.equal(nets.same('q:'+pin.id,'bb:'+q.mount.pins[pin.id]),true);
+ if(type==='mosfet')assert.equal(nets.same('q:D','q:D.TAB'),true);b.x+=75;b.y-=35;syncMountedParts(p);assert.deepEqual(mountErrors(p),[]);assert.ok(validateProject(p));
+});
+test('Quarter-turn transistor on an unrotated board refuses three leads shorted on one strip',()=>{
+ const {p,q}=fixture('npn');q.rotation=90;const def=CATALOG.npn.pinDefs[0],l=localPoint(q,def.x,def.y),t=pinPoint(p,'bb:b8');q.x=t.x-l.x;q.y=t.y-l.y;const rejected=placementCandidate(p,q,{radius:.1});assert.equal(rejected.ok,false);assert.match(rejected.reason,/aynı şeritte/);
+});
+test('Automatic placement avoids an existing mounted device and occupied leads',()=>{const {p,q}=fixture('mosfet');assert.ok(placeOnBreadboard(p,q));const other={id:'q2',type:'npn',x:0,y:0,rotation:0,params:{}};p.components.push(other);assert.ok(placeOnBreadboard(p,other));assert.deepEqual(mountErrors(p),[]);const used=new Set(Object.values(q.mount.pins));assert.ok(Object.values(other.mount.pins).every(h=>!used.has(h)));});

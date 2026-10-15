@@ -1,0 +1,14 @@
+<!-- Original CircuitForge CC0-1.0 artwork. Generic digital resistance meter. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="180" viewBox="0 0 150 180" aria-label="Generic digital ohmmeter">
+<defs><linearGradient id="case" x2="0" y2="1"><stop stop-color="#87714a"/><stop offset=".5" stop-color="#5d4e33"/><stop offset="1" stop-color="#3b3527"/></linearGradient><linearGradient id="dial"><stop stop-color="#7d775f"/><stop offset=".6" stop-color="#514d3c"/><stop offset="1" stop-color="#242923"/></linearGradient></defs>
+<rect x="3" y="3" width="144" height="174" rx="13" fill="#252c26" stroke="#aa9b78" stroke-width="1.2"/><path d="M17 5H133Q145 5 145 20V156Q145 168 133 168H17Q5 168 5 156V20Q5 5 17 5" fill="url(#case)"/>
+<rect x="9" y="9" width="132" height="150" rx="9" fill="#514a35" stroke="#8f8566" stroke-width=".7"/>
+<text x="75" y="22" text-anchor="middle" fill="#eee7cc" font-size="7" font-family="monospace" letter-spacing=".5">RESISTANCE METER</text>
+<rect x="9" y="27" width="132" height="54" rx="5" fill="#232e25" stroke="#969b7e"/><rect x="13" y="31" width="124" height="46" rx="2" fill="#13231f"/>
+<g fill="#625d47" stroke="#a9a07d" stroke-width=".6"><rect x="24" y="87" width="27" height="12" rx="3"/><rect x="99" y="87" width="27" height="12" rx="3"/></g><g fill="#e4dcc1" font-size="5" font-family="monospace" text-anchor="middle"><text x="37.5" y="95">ZERO</text><text x="112.5" y="95">RANGE</text></g>
+<g fill="#eee7cb" font-family="monospace" text-anchor="middle"><text x="75" y="105" font-size="10">Ω</text><text x="42" y="122" font-size="6">kΩ</text><text x="110" y="122" font-size="6">MΩ</text></g>
+<circle cx="75" cy="126" r="23" fill="#252c23" stroke="#a6a285" stroke-width="1.1"/><circle cx="75" cy="126" r="19" fill="url(#dial)" stroke="#747b64"/>
+<rect x="71" y="111" width="8" height="28" rx="3" fill="#808069" stroke="#a0a78b"/><path d="M75 109V116" stroke="#e9efcf" stroke-width="2" stroke-linecap="round"/>
+<g fill="#e0dcbf" font-size="5.5" font-family="monospace" text-anchor="middle"><text x="43" y="153">P (+)</text><text x="107" y="153">N (−)</text></g>
+<circle cx="43" cy="166" r="10" fill="#a93943" stroke="#e2959b"/><circle cx="43" cy="166" r="5.2" fill="#232b24" stroke="#71313c" stroke-width="1.5"/><circle cx="107" cy="166" r="10" fill="#212821" stroke="#9a9e83"/><circle cx="107" cy="166" r="5.2" fill="#0e1813" stroke="#57634e" stroke-width="1.5"/>
+</svg>

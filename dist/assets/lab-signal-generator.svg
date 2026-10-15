@@ -1,0 +1,15 @@
+<!-- Original CircuitForge CC0-1.0 artwork. Generic laboratory signal generator. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="145" viewBox="0 0 220 145" aria-label="Generic laboratory signal generator">
+<defs><linearGradient id="case" x2="0" y2="1"><stop stop-color="#566675"/><stop offset=".45" stop-color="#354452"/><stop offset="1" stop-color="#1d2934"/></linearGradient><linearGradient id="knob"><stop stop-color="#758592"/><stop offset=".45" stop-color="#3b4b59"/><stop offset="1" stop-color="#12202a"/></linearGradient><radialGradient id="socket"><stop stop-color="#111921"/><stop offset=".42" stop-color="#10171e"/><stop offset=".5" stop-color="#a3b0b7"/><stop offset=".73" stop-color="#dde5e8"/><stop offset="1" stop-color="#596972"/></radialGradient></defs>
+<rect x="3" y="3" width="214" height="136" rx="9" fill="url(#case)" stroke="#8c9ba6" stroke-width="1.2"/>
+<rect x="9" y="8" width="202" height="122" rx="5" fill="#2d3b47" stroke="#1a252e"/>
+<path d="M9 21H211" stroke="#50606b"/><text x="15" y="18" fill="#e8f0f5" font-size="8" font-family="monospace" letter-spacing=".6">FUNCTION GENERATOR</text><circle cx="200" cy="15" r="2.2" fill="#63dfb3"/>
+<rect x="10" y="29" width="200" height="55" rx="4" fill="#14222c" stroke="#687c8a"/><rect x="14" y="34" width="192" height="46" rx="2" fill="#071821"/>
+<g fill="#253745" stroke="#637682" stroke-width=".7"><rect x="17" y="92" width="28" height="16" rx="3"/><rect x="51" y="92" width="28" height="16" rx="3"/><rect x="85" y="92" width="28" height="16" rx="3"/></g>
+<g fill="none" stroke="#c8dfe9" stroke-width="1.2"><path d="M23 100Q27 92 31 100T39 100"/><path d="M57 104V96H63V104H69V96H73"/><path d="M91 104L95 96L99 104L103 96L107 104"/></g>
+<circle cx="154" cy="107" r="20" fill="#15232c" stroke="#84949e"/><circle cx="154" cy="107" r="16" fill="url(#knob)" stroke="#475f6d"/><path d="M154 94V100" stroke="#e4edf1" stroke-width="2.2" stroke-linecap="round"/>
+<g fill="#a5bac7" font-size="5" font-family="monospace"><text x="177" y="105">50 Ω</text><text x="177" y="115">OUT</text></g>
+<g><circle cx="55" cy="126" r="9" fill="url(#socket)"/><circle cx="55" cy="126" r="3.6" fill="#1f303a" stroke="#a8c0cb"/><circle cx="95" cy="126" r="8.3" fill="#111a23" stroke="#6e8390" stroke-width="1.2"/><circle cx="95" cy="126" r="3.5" fill="#061017" stroke="#435965"/></g>
+<g fill="#d0dee6" font-size="5.5" font-family="monospace" text-anchor="middle"><text x="55" y="115">OUT</text><text x="95" y="115">GND</text></g>
+<path d="M20 136H47M173 136H200" stroke="#131d25" stroke-width="5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,15 @@
+const TIMES=[84,148,276,532,532,532,532,532,532,1060,2130,4260,8510,17020,34050,68100],signed=v=>v&32768?v-65536:v;
+export class INA219 {
+ constructor(){this.input={valid:false,shunt:0,bus:0};this.reset();}
+ reset(cycle=0){this.reg=new Uint16Array([0x399f,0,0,0,0,0]);this.pointer=0;this.byte=0;this.first=true;this.cnvr=false;this.samples=0;this.revision=0;this.pending=null;this.started=false;this.inputValid=false;}
+ setAnalog(plus,minus,ground=0){this.input={valid:[plus,minus,ground].every(Number.isFinite)&&plus-ground>=0&&plus-ground<=26&&minus-ground>=0&&minus-ground<=26,shunt:plus-minus,bus:minus-ground};}
+ duration(){const c=this.reg[0],mode=c&7;return ((mode&1)?TIMES[(c>>3)&15]:0)+((mode&2)?TIMES[(c>>7)&15]:0);}
+ start(cycle){const mode=this.reg[0]&7;this.pending=mode!==0&&mode!==4?{until:cycle+this.duration()*16,input:{...this.input},mode}:null;this.started=true;}
+ tick(cycle){if(!this.started)this.start(cycle);if(this.pending&&cycle>=this.pending.until){const p=this.pending,c=this.reg[0],range=[.04,.08,.16,.32][c>>11&3],busRange=c&0x2000?32:16;this.inputValid=p.input.valid;let overflow=!p.input.valid;if(p.mode&1){const v=Math.max(-range,Math.min(range,p.input.shunt));this.reg[1]=Math.trunc(v/1e-5)&65535;overflow ||=Math.abs(p.input.shunt)>range;}if(p.mode&2){this.reg[2]=(Math.trunc(Math.max(0,Math.min(busRange,p.input.bus))/.004)<<3)&65528;overflow ||=p.input.bus>busRange;}
+ const current=Math.trunc(signed(this.reg[1])*this.reg[5]/4096),power=Math.trunc(Math.max(0,current)*(this.reg[2]>>3)/5000);overflow ||=current<-32768||current>32767||power>65535;this.reg[4]=current&65535;this.reg[3]=power&65535;this.reg[2]=(this.reg[2]&65528)|(overflow?1:0);this.cnvr=true;this.samples++;this.revision++;this.pending=null;if(p.mode>=5)this.start(cycle);}}
+ nextEvent(){return this.pending?.until??null;}
+ begin(write,cycle=0){this.tick(cycle);this.first=write;this.byte=0;this.data=[];this.readWord=null;}
+ write(value,cycle=0){this.tick(cycle);if(this.first){this.pointer=value;this.first=false;return true;}this.data.push(value);if(this.data.length===2){const word=(this.data[0]<<8)|this.data[1];this.data=[];if(this.pointer===0){if(word&32768)this.reset(cycle);else{this.reg[0]=word&0x3fff;if(![0,4].includes(word&7))this.cnvr=false;this.start(cycle);}}else if(this.pointer===5)this.reg[5]=word&65534;this.pointer=(this.pointer+1)%6;}return true;}
+ read(cycle=0){this.tick(cycle);if(this.byte===0)this.readWord=(this.reg[this.pointer]??0)|(this.pointer===2&&this.cnvr?2:0);const value=this.byte===0?this.readWord>>8:this.readWord&255;if(++this.byte===2){if(this.pointer===2)this.cnvr=false;this.byte=0;this.pointer=(this.pointer+1)%6;}return value;}
+ state(cycle=0){this.tick(cycle);return{shuntVoltage:signed(this.reg[1])*1e-5,busVoltage:(this.reg[2]>>3)*.004,currentCode:signed(this.reg[4]),powerCode:this.reg[3],calibration:this.reg[5],ready:this.cnvr,overflow:!!(this.reg[2]&1),inputValid:this.inputValid,mode:this.reg[0]&7,samples:this.samples,revision:this.revision};}
+}

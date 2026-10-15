@@ -1,0 +1,10 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const root=new URL('../research/compiler/node_modules/@horang-corp/avr-gcc-wasm/',import.meta.url),manifest=JSON.parse(await readFile(new URL('assets/manifest.json',root),'utf8'));
+const put=(fs,path,data)=>{let at='';for(const s of path.split('/').slice(0,-1).filter(Boolean)){at+='/'+s;try{fs.mkdir(at);}catch{}}fs.writeFile(path,data);};
+const cc=await import(new URL('tools/cc1plus.mjs',root).href),as=await import(new URL('tools/avr-as.mjs',root).href);
+const m=await cc.default({noInitialRun:true,wasmBinary:new Uint8Array(await readFile(new URL('tools/cc1plus.wasm',root))),locateFile:p=>new URL('tools/cc1plus.wasm',root).href,print(){},printErr:console.error});
+for(const h of manifest.headerFiles)put(m.FS,h,new Uint8Array(await readFile(new URL('assets/fs'+h,root))));
+put(m.FS,'/WInterrupts.cpp',await readFile(new URL('../dist/notices/arduino-WInterrupts.cpp',import.meta.url)));
+m.callMain(['-quiet','-D__AVR_ATmega328P__','-DF_CPU=16000000L','-DARDUINO=10819','-DARDUINO_AVR_UNO','-DARDUINO_ARCH_AVR','-isystem','/sysroot/gcc/include','-isystem','/sysroot/avr/include','-I','/arduino/core','-I','/arduino/variant','/WInterrupts.cpp','-mmcu=avr5','-Os','-ffunction-sections','-fdata-sections','-o','/WInterrupts.s']);
+const a=await as.default({noInitialRun:true,wasmBinary:new Uint8Array(await readFile(new URL('tools/avr-as.wasm',root))),locateFile:p=>new URL('tools/avr-as.wasm',root).href,print(){},printErr:console.error});put(a.FS,'/WInterrupts.s',m.FS.readFile('/WInterrupts.s'));a.callMain(['-mmcu=atmega328p','-o','/WInterrupts.o','/WInterrupts.s']);
+await writeFile(new URL('../dist/notices/arduino-WInterrupts.o',import.meta.url),a.FS.readFile('/WInterrupts.o'));console.log('Arduino AVR 1.8.7 external-interrupt object built.');

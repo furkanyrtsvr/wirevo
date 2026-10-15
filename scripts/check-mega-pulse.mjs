@@ -1,0 +1,4 @@
+import{readFile,writeFile}from'node:fs/promises';import{fileURLToPath}from'node:url';import{buildProjectFirmware}from'../dist/gcc-project.js';
+globalThis.window={};const nf=fetch;globalThis.fetch=async(u,o)=>String(u).startsWith('file:')?new Response(await readFile(fileURLToPath(u)),{headers:{'Content-Type':String(u).endsWith('.wasm')?'application/wasm':'application/octet-stream'}}):nf(u,o);
+const code='void setup(){Serial.begin(115200);analogWrite(2,128);pinMode(22,INPUT);}\nvoid loop(){Serial.print("PULSE=");Serial.println(pulseIn(22,HIGH,20000));delay(10);}';
+const result=await buildProjectFirmware([{name:'sketch.ino',content:code}],{board:'mega',assetsBase:new URL('../research/compiler/node_modules/@horang-corp/avr-gcc-wasm/',import.meta.url).href});await writeFile(new URL('../tests/fixtures/mega-pulse.json',import.meta.url),JSON.stringify({code,result},null,2));console.log(JSON.stringify({flash:result.flashBytes,ram:result.staticRamBytes}));

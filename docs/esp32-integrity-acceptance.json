@@ -1,0 +1,128 @@
+[
+  {
+    "board": "esp32c3",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32c6",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32s3",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32h2",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32c5",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32p4",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "xiao-esp32c3",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "xiao-esp32c6",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "xiao-esp32s3",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "nano-esp32",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32c3-devkitc02",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32c6-devkitm1",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32s3-devkitm1",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  },
+  {
+    "board": "esp32c3-rust",
+    "status": "passed",
+    "gpioOvervoltageRejected": true,
+    "invalidAndReservedPadsRejected": true,
+    "checksumRejected": true,
+    "crossChipImageRejected": true,
+    "directWireZipNetPreserved": true
+  }
+]

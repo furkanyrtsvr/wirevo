@@ -1,0 +1,14 @@
+<!-- Original CircuitForge SSD1306 module illustration, CC0-1.0.
+     Pin layout/physical dimensions follow a common 27.7 x 22.6 mm four-pin PCB.
+     This is independent artwork; no Wokwi board.svg paths are reproduced. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="104.692913" height="85.417323" viewBox="0 0 27.7 22.6">
+ <defs><linearGradient id="pcb" x2="0" y2="1"><stop stop-color="#144764"/><stop offset="1" stop-color="#0d2b42"/></linearGradient><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#1c232a"/><stop offset=".5" stop-color="#070e16"/><stop offset="1" stop-color="#111e27"/></linearGradient></defs>
+ <rect x=".2" y=".2" width="27.3" height="22.2" rx=".8" fill="url(#pcb)" stroke="#497488" stroke-width=".2"/>
+ <g fill="#06131b" stroke="#b4a876" stroke-width=".4"><circle cx="2.05" cy="1.95" r="1.25"/><circle cx="25.55" cy="1.95" r="1.25"/><circle cx="2.05" cy="20.6" r="1.25"/><circle cx="25.55" cy="20.6" r="1.25"/></g>
+ <rect x="8.55" y=".25" width="10.75" height="2.9" rx=".2" fill="#0b1118"/>
+ <g fill="#dacd83" stroke="#8b7c42" stroke-width=".15"><rect x="9.5" y="1.11" width="1.2" height="1.2"/><rect x="12" y="1.11" width="1.2" height="1.2"/><rect x="14.5" y="1.11" width="1.2" height="1.2"/><rect x="17.1" y="1.11" width="1.2" height="1.2"/></g>
+ <g fill="#e0e9ec" font-family="monospace" font-size="1" text-anchor="middle"><text x="10.1" y="4">GND</text><text x="12.6" y="4">VCC</text><text x="15.1" y="4">SCL</text><text x="17.7" y="4">SDA</text></g>
+ <rect x=".65" y="4.5" width="26.4" height="14.1" rx=".4" fill="#02070c" stroke="#172830" stroke-width=".2"/>
+ <rect x="1.46" y="5.27" width="24.8" height="12.4" fill="url(#glass)"/>
+ <g fill="#aec9d5" font-family="monospace" font-size=".85" text-anchor="middle"><text x="13.85" y="20.1">0.96 OLED · 128×64</text><text x="13.85" y="21.55" font-size=".7" fill="#6097b1">SSD1306 / I²C</text></g>
+</svg>

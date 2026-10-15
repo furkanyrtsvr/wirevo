@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-11",
+  "scope": "ESP32-C3 Arduino 3.3.8 / IDF 5.5.4 narrow ROM UART GPIO boot acceptance",
+  "artifacts": {
+    "mixed.elf": {
+      "bytes": 6548536,
+      "sha256": "5646b177579d57427d153b17853f636f81a6cc6511e6d14f99a78ae03b16bab7"
+    },
+    "full-clang.elf": {
+      "bytes": 5921976,
+      "sha256": "2304549ccea28602958944ef39774d5bf687ad2985364ad04cb83eae182ed222"
+    },
+    "lld.elf": {
+      "bytes": 4165232,
+      "sha256": "7119935a0337ac033cd33325a3ddb495293222411683f3ac534ca3ed3db43cd6"
+    },
+    "full-clang-merged.bin": {
+      "bytes": 379680,
+      "sha256": "0f498a7ede66a28e161bd91b41583d50b2d3aabd657ceec1934c33cc2298fca8"
+    },
+    "lld-merged.bin": {
+      "bytes": 456848,
+      "sha256": "1ecd1c372556812aaaf943388acf05d4359456b0ca2b13bd883c818cb7db16f7"
+    },
+    "full-clang-boot.log": {
+      "bytes": 286,
+      "sha256": "45d0b47480701adf8fdb8258af18f228a9b86ca61d4facb31fc2faeec6fc0450"
+    },
+    "lld-boot.log": {
+      "bytes": 286,
+      "sha256": "45d0b47480701adf8fdb8258af18f228a9b86ca61d4facb31fc2faeec6fc0450"
+    }
+  },
+  "serial": "ESP-ROM:esp32c3-api1-20210207\nBuild:Feb  7 2021\nrst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)\nSPIWP:0xee\nmode:DIO, clock div:1\nload:0x3fcd5820,len:0x1010\nload:0x403cbf10,len:0x9f4\nload:0x403ce710,len:0x2e94\nentry 0x403cbf10\nCLANG SDK C3 42\nCLANG GPIO HIGH\nCLANG GPIO LOW\n"
+}

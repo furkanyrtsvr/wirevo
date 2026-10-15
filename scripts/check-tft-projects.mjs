@@ -1,0 +1,7 @@
+import {readFile,writeFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';
+import {buildProjectFirmware} from '../dist/gcc-project.js';import {makeProject} from '../dist/templates.js';import {TFT_EXAMPLES} from '../dist/tft-examples.js';
+globalThis.window={};const nativeFetch=globalThis.fetch;globalThis.fetch=async(u,o)=>String(u).startsWith('file:')?new Response(await readFile(fileURLToPath(u)),{headers:{'Content-Type':String(u).endsWith('.wasm')?'application/wasm':'application/octet-stream'}}):nativeFetch(u,o);
+const assetsBase=new URL('../research/compiler/node_modules/@horang-corp/avr-gcc-wasm/',import.meta.url).href,fixtures={};
+for(const {id} of TFT_EXAMPLES){const project=makeProject(id),result=await buildProjectFirmware([{name:'sketch.ino',content:project.code}],{assetsBase});if(!result.fitsTarget||!result.fitsRam)throw Error(id+' target capacity');fixtures[id]={project,result};console.log(JSON.stringify({id,flash:result.flashBytes,ram:result.staticRamBytes}));}
+await writeFile(new URL('../tests/fixtures/tft-projects.json',import.meta.url),JSON.stringify(fixtures,null,2));
+const cacheFile=new URL('../dist/template-firmware.json',import.meta.url),cache=JSON.parse(await readFile(cacheFile,'utf8'));for(const[id,f]of Object.entries(fixtures))cache[id]={source:f.project.code,hex:f.result.hex,flashBytes:f.result.flashBytes,staticRamBytes:f.result.staticRamBytes};await writeFile(cacheFile,JSON.stringify(cache));

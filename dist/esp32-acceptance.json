@@ -1,0 +1,178 @@
+{
+  "release": "0.40",
+  "date": "2026-10-12",
+  "scope": "Published 14 ESP board profiles and their offered examples",
+  "approved": true,
+  "examples": 321,
+  "native": 293,
+  "micropython": 28,
+  "workerCases": 42,
+  "integrityBoards": 14,
+  "pythonSPIChecks": 14,
+  "compilerSha256": "7546c54c07c392e231ea450f8e3aaa6680346ffeb08e13d97d970b26d88666e5",
+  "emulatorSha256": "b8fac579176f5ef18a931810e4dbd9757c333ec0cafe27b75a489f566f2cf3ea",
+  "boards": [
+    {
+      "id": "esp32c3",
+      "name": "ESP32-C3 DevKitM-1",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32c6",
+      "name": "ESP32-C6 DevKitC-1 · v1.2",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32s3",
+      "name": "ESP32-S3 DevKitC-1 · v1.0",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32h2",
+      "name": "ESP32-H2 DevKitM-1 · v1.3 N4",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32c5",
+      "name": "ESP32-C5 DevKitC-1 · v1.2 N8R8",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32p4",
+      "name": "ESP32-P4 Function-EV · v1.5.2 J1",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "xiao-esp32c3",
+      "name": "Seeed XIAO ESP32-C3",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "xiao-esp32c6",
+      "name": "Seeed XIAO ESP32-C6",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "xiao-esp32s3",
+      "name": "Seeed XIAO ESP32-S3",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "nano-esp32",
+      "name": "Arduino Nano ESP32 · NORA-W106",
+      "status": "passed",
+      "counts": {
+        "arduino": 17,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 22
+    },
+    {
+      "id": "esp32c3-devkitc02",
+      "name": "ESP32-C3 DevKitC-02",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32c6-devkitm1",
+      "name": "ESP32-C6 DevKitM-1",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32s3-devkitm1",
+      "name": "ESP32-S3 DevKitM-1",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    },
+    {
+      "id": "esp32c3-rust",
+      "name": "ESP32-C3 DevKit-RUST-1",
+      "status": "passed",
+      "counts": {
+        "arduino": 18,
+        "c": 3,
+        "micropython": 2
+      },
+      "total": 23
+    }
+  ],
+  "excluded": [
+    "full Arduino-ESP32 / ESP-IDF SDK",
+    "Wi-Fi / BLE / RF",
+    "internal ADC / LEDC / hardware I2C/SPI",
+    "PSRAM / camera / Ethernet / USB",
+    "Classic ESP32 / S2 / C2 / C61 / S31",
+    "all P4 silicon revisions"
+  ]
+}

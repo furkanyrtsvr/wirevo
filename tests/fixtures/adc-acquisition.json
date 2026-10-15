@@ -1,0 +1,804 @@
+{
+  "adc-acquisition-low": {
+    "project": {
+      "schemaVersion": 3,
+      "name": "Uno · ADC düşük empedans",
+      "model": "adc-acquisition-low",
+      "code": "#include <SPI.h>\nunsigned int readADC(byte channel,unsigned long hz){SPI.beginTransaction(SPISettings(hz,MSBFIRST,SPI_MODE0));digitalWrite(10,LOW);SPI.transfer(1);byte h=SPI.transfer(0x80|(channel<<4));byte l=SPI.transfer(0);digitalWrite(10,HIGH);SPI.endTransaction();return ((h&3)<<8)|l;}\nvoid setup(){Serial.begin(115200);pinMode(10,OUTPUT);digitalWrite(10,HIGH);SPI.begin();}\nvoid loop(){for(byte i=0;i<3;i++){unsigned long hz=i==0?1000000:i==1?125000:4000000;readADC(1,hz);unsigned int value=readADC(0,hz);Serial.print(\"HZ=\");Serial.print(hz);Serial.print(\" CH0=\");Serial.println(value);}delay(250);}",
+      "components": [
+        {
+          "id": "uno",
+          "type": "board",
+          "x": 100,
+          "y": 205,
+          "rotation": 0,
+          "params": {}
+        },
+        {
+          "id": "bb",
+          "type": "breadboard",
+          "x": 550,
+          "y": 160,
+          "rotation": 0,
+          "params": {}
+        },
+        {
+          "id": "adc",
+          "type": "mcp3008",
+          "x": 607.51,
+          "y": 275.83,
+          "rotation": 90,
+          "params": {},
+          "mount": {
+            "boardId": "bb",
+            "pins": {
+              "CH0": "d11",
+              "CH1": "d10",
+              "CH2": "d9",
+              "CH3": "d8",
+              "CH4": "d7",
+              "CH5": "d6",
+              "CH6": "d5",
+              "CH7": "d4",
+              "DGND": "f4",
+              "CS": "f5",
+              "DIN": "f6",
+              "DOUT": "f7",
+              "CLK": "f8",
+              "AGND": "f9",
+              "VREF": "f10",
+              "VDD": "f11"
+            }
+          }
+        },
+        {
+          "id": "pot1",
+          "type": "pot",
+          "x": 850,
+          "y": 470,
+          "rotation": 0,
+          "params": {
+            "value": 50
+          }
+        },
+        {
+          "id": "source-r",
+          "type": "resistor",
+          "x": 940,
+          "y": 510,
+          "rotation": 0,
+          "params": {
+            "ohms": 1000
+          }
+        }
+      ],
+      "wires": [
+        {
+          "id": "ext0",
+          "from": "uno:5V",
+          "to": "adc:VDD",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 315.6309289000001,
+              "y": 620
+            },
+            {
+              "x": 714.7,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext1",
+          "from": "uno:GND.1",
+          "to": "adc:DGND",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 328.5909289,
+              "y": 633
+            },
+            {
+              "x": 623.98,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "ext2",
+          "from": "adc:AGND",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 688.78,
+              "y": 646
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 646
+            }
+          ]
+        },
+        {
+          "id": "ext3",
+          "from": "adc:VREF",
+          "to": "uno:5V",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 701.74,
+              "y": 659
+            },
+            {
+              "x": 315.6309289000001,
+              "y": 659
+            }
+          ]
+        },
+        {
+          "id": "ext4",
+          "from": "uno:D11",
+          "to": "adc:DIN",
+          "color": "#3b82f6",
+          "points": [
+            {
+              "x": 294.8949289,
+              "y": 672
+            },
+            {
+              "x": 649.9,
+              "y": 672
+            }
+          ]
+        },
+        {
+          "id": "ext5",
+          "from": "uno:D12",
+          "to": "adc:DOUT",
+          "color": "#8b5cf6",
+          "points": [
+            {
+              "x": 281.93492890000005,
+              "y": 685
+            },
+            {
+              "x": 662.86,
+              "y": 685
+            }
+          ]
+        },
+        {
+          "id": "ext6",
+          "from": "uno:D13",
+          "to": "adc:CLK",
+          "color": "#f59e0b",
+          "points": [
+            {
+              "x": 268.9749289,
+              "y": 698
+            },
+            {
+              "x": 675.8199999999999,
+              "y": 698
+            }
+          ]
+        },
+        {
+          "id": "ext7",
+          "from": "uno:D10",
+          "to": "adc:CS",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 307.8549289,
+              "y": 711
+            },
+            {
+              "x": 636.9399999999999,
+              "y": 711
+            }
+          ]
+        },
+        {
+          "id": "ext8",
+          "from": "uno:5V",
+          "to": "pot1:VCC",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 315.6309289000001,
+              "y": 620
+            },
+            {
+              "x": 915.1061422,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext9",
+          "from": "uno:GND.1",
+          "to": "pot1:GND",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 328.5909289,
+              "y": 633
+            },
+            {
+              "x": 889.1861422,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "ext11",
+          "from": "adc:CH1",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 701.74,
+              "y": 659
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 659
+            }
+          ]
+        },
+        {
+          "id": "ext12",
+          "from": "adc:CH2",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 688.78,
+              "y": 672
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 672
+            }
+          ]
+        },
+        {
+          "id": "ext13",
+          "from": "adc:CH3",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 675.8199999999999,
+              "y": 685
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 685
+            }
+          ]
+        },
+        {
+          "id": "ext14",
+          "from": "adc:CH4",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 662.86,
+              "y": 698
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 698
+            }
+          ]
+        },
+        {
+          "id": "ext15",
+          "from": "adc:CH5",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 649.9,
+              "y": 711
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 711
+            }
+          ]
+        },
+        {
+          "id": "ext16",
+          "from": "adc:CH6",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 636.94,
+              "y": 620
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext17",
+          "from": "adc:CH7",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 623.98,
+              "y": 633
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "acquire-0",
+          "from": "pot1:OUT",
+          "to": "source-r:1",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 902.1461422,
+              "y": 755
+            },
+            {
+              "x": 940,
+              "y": 755
+            }
+          ]
+        },
+        {
+          "id": "acquire-1",
+          "from": "source-r:2",
+          "to": "adc:CH0",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 1019.3825515,
+              "y": 768
+            },
+            {
+              "x": 714.7,
+              "y": 768
+            }
+          ]
+        }
+      ],
+      "settings": {
+        "moisture": 45,
+        "threshold": 35,
+        "pot": 60,
+        "pressed": false,
+        "probe": "D13"
+      }
+    },
+    "result": {
+      "hex": ":100000000C945D000C9485000C9485000C94850084\r\n:100010000C9485000C9485000C9485000C9485004C\r\n:100020000C9485000C9485000C9485000C9485003C\r\n:100030000C9485000C9485000C9485000C9485002C\r\n:100040000C94F0030C9485000C9498020C94CA0252\r\n:100050000C9485000C9485000C9485000C9485000C\r\n:100060000C9485000C94850000000008000201003B\r\n:100070000003040700000000000000000102040863\r\n:100080001020408001020408102001020408102002\r\n:10009000040404040404040402020202020203032E\r\n:1000A0000303030300000000250028002B000000CC\r\n:1000B0000000240027002A00FA0211241FBECFEFFF\r\n:1000C000D8E0DEBFCDBF11E0A0E0B1E0E4E9FBE0A5\r\n:1000D00002C005900D92A032B107D9F721E0A0E24D\r\n:1000E000B1E001C01D92AA3CB207E1F710E0CDE5F6\r\n:1000F000D0E004C02197FE010E94C205CC35D10793\r\n:10010000C9F70E94E1030C949D050C9400008EBD7C\r\n:1001100000000DB407FEFDCF8EB508950F931F9319\r\n:10012000CF93C82F00E012E12AE730E090E04017BB\r\n:1001300051076207730740F4369527951795079581\r\n:100140009F5F9630A1F797E0892F806A86959095FA\r\n:1001500091702091C801222381F03FB7F89420913B\r\n:10016000C8012130E1F52DB32093C6014DB3209194\r\n:10017000C701209524232DBB3FBF8CBD9DBD60E0F2\r\n:100180008AE00E94380581E00E94870020E1C29F3A\r\n:10019000C001112480680E948700C82F80E00E945F\r\n:1001A0008700182F61E08AE00E9438058091C8011D\r\n:1001B000882351F09FB7F8942091C8018091C6011F\r\n:1001C000213081F48DBB9FBF8C2F90E0982F882722\r\n:1001D00088279370812BCF911F910F9108953093B1\r\n:1001E000C601CBCF8FBFF0CF26E040E052EC61E0FC\r\n:1001F00070E080E291E00E94360261E08AE00E94B5\r\n:10020000FC0461E08AE00E9438050C946605CF92F8\r\n:10021000DF92EF92FF920F931F93CF93C0E020E401\r\n:10022000C22E22E4D22E2FE0E22EF12CB701A6013D\r\n:1002300081E00E948E00B701A60180E00E948E003E\r\n:100240008C0160E071E080E291E00E9463032AE0AB\r\n:1002500030E0B701A60180E291E00E94BB0364E0B8\r\n:1002600071E080E291E00E9463034AE050E0B8014F\r\n:1002700080E291E00E94CE03CF5FC33069F46AEF61\r\n:1002800070E080E090E0CF911F910F91FF90EF9090\r\n:10029000DF90CF900C945F04C12C99E0D92E9DE3A0\r\n:1002A000E92EF12CC13011F688E4C82E88EED82E44\r\n:1002B000EE24E394F12CBACFFC01918D228D892F8D\r\n:1002C00090E0805C9F4F821B91098F73992708955E\r\n:1002D000FC01918D828D981731F0828DE80FF11D10\r\n:1002E000858D90E008958FEF9FEF0895FC01918D2B\r\n:1002F000828D981761F0A28DAE0FBF2FB11D5D9654\r\n:100300008C91928D9F5F9F73928F90E008958FEFF5\r\n:100310009FEF0895FC01538D448D252F30E0842FED\r\n:1003200090E0821B930B541710F0CF96089501971D\r\n:10033000089580EF92E0892B49F080E090E0892BCE\r\n:1003400029F00E94F00281110C9400000895FC0134\r\n:10035000A48DA80FB92FB11DA35ABF4F2C91848D26\r\n:1003600090E001968F739927848FA689B7892C9383\r\n:10037000A089B1898C91837080648C93938D848DD6\r\n:10038000981306C00288F389E02D80818F7D8083D9\r\n:100390000895CF93DF93EC01888D8823B9F0AA8963\r\n:1003A000BB89E889F9898C9185FD03C0808186FD30\r\n:1003B0000DC00FB607FCF7CF8C9185FFF2CF80817F\r\n:1003C00085FFEDCFCE010E94A701E9CFDF91CF914C\r\n:1003D0000895EF92FF920F931F93CF93DF93EC0159\r\n:1003E00081E0888F9B8D8C8D98131AC0E889F989DC\r\n:1003F000808185FF15C09FB7F894EE89FF896083DF\r\n:10040000E889F98980818370806480839FBF81E05F\r\n:1004100090E0DF91CF911F910F91FF90EF900895A1\r\n:10042000F62E0B8D10E00F5F1F4F0F731127E02E7C\r\n:100430008C8D8E110CC00FB607FCFACFE889F989B4\r\n:10044000808185FFF5CFCE010E94A701F1CFEB8D12\r\n:10045000EC0FFD2FF11DE35AFF4FF0829FB7F89488\r\n:100460000B8FEA89FB8980818062CFCFCF92DF92A8\r\n:10047000EF92FF921F93CF93DF93EC016A017B0110\r\n:10048000122FE889F98982E08083C11481EED806B1\r\n:10049000E104F104A1F060E079E08DE390E0A701D0\r\n:1004A00096010E94A0052150310941095109569534\r\n:1004B000479537952795211580E1380798F0E88909\r\n:1004C000F989108260E874E88EE190E0A701960156\r\n:1004D0000E94A005215031094109510956954795BF\r\n:1004E00037952795EC85FD853083EE85FF85208344\r\n:1004F000188EEC89FD891083EA89FB8980818061EF\r\n:100500008083EA89FB89808188608083EA89FB890E\r\n:10051000808180688083EA89FB8980818F7D8083E8\r\n:10052000DF91CF911F91FF90EF90DF90CF900895D2\r\n:100530001F920F920FB60F9211242F938F939F93B8\r\n:10054000EF93FF93E0913001F09131018081E091D0\r\n:100550003601F091370182FD1BC0908180913901F5\r\n:100560008F5F8F7320913A01821741F0E09139013A\r\n:10057000F0E0E05EFE4F958F80933901FF91EF919F\r\n:100580009F918F912F910F900FBE0F901F901895F4\r\n:100590008081F4CF1F920F920FB60F9211242F93E8\r\n:1005A0003F934F935F936F937F938F939F93AF93FB\r\n:1005B000BF93EF93FF9380E291E00E94A701FF9128\r\n:1005C000EF91BF91AF919F918F917F916F915F91CB\r\n:1005D0004F913F912F910F900FBE0F901F90189544\r\n:1005E00080E291E00E945C0121E0892B09F420E087\r\n:1005F000822F0895E0E2F1E01382128288EE93E008\r\n:10060000A0E0B0E084839583A683B78381E191E085\r\n:100610009183808385EC90E09587848784EC90E0DB\r\n:100620009787868780EC90E0918B808B81EC90E0BF\r\n:10063000938B828B82EC90E0958B848B86EC90E0A0\r\n:10064000978B868B118E128E138E148E0895AF9217\r\n:10065000BF92CF92DF92EF92FF920F931F93CF93AF\r\n:10066000DF936C017B018B01040F151FEB015E0111\r\n:10067000AE18BF08C017D10759F06991D601ED91A6\r\n:10068000FC910190F081E02DC6010995892B79F745\r\n:10069000C501DF91CF911F910F91FF90EF90DF90F7\r\n:1006A000CF90BF90AF900895FB0101900020E9F733\r\n:1006B0003197AF01461B570BDC01ED91FC91028095\r\n:1006C000F381E02D09946115710511F00C94540328\r\n:1006D00090E080E008956AE071E00C9454038F92FA\r\n:1006E0009F92AF92BF92EF92FF920F931F93CF937F\r\n:1006F000DF93CDB7DEB7A1970FB6F894DEBF0FBE7C\r\n:10070000CDBF7C01FA01CB0119A2223008F42AE006\r\n:100710008E010F5D1F4F822E912CB12CA12CBF0199\r\n:10072000A50194010E94A005F901CA016A300CF5E7\r\n:10073000605DD8016E938D01232B242B252B79F737\r\n:1007400090E080E0109721F0BD01C7010E945403A2\r\n:10075000A1960FB6F894DEBF0FBECDBFDF91CF914B\r\n:100760001F910F91FF90EF90BF90AF909F908F904F\r\n:100770000895695CDECF2115310541F4DC01ED916E\r\n:10078000FC910190F081E02D642F09940C946F038B\r\n:100790009A01AB0170E060E00C94BB030F931F93D0\r\n:1007A000CF93DF93EC010E94C8038C01CE010E941D\r\n:1007B0006B03800F911FDF91CF911F910F910895CF\r\n:1007C00008950E9498040E94E0030E94F400C9E981\r\n:1007D000D1E00E9407012097E1F30E949901F9CF2F\r\n:1007E0001F920F920FB60F9211242F933F938F9366\r\n:1007F0009F93AF93BF938091BE019091BF01A09151\r\n:10080000C001B091C1013091BD0123E0230F2D370C\r\n:1008100058F50196A11DB11D2093BD018093BE0125\r\n:100820009093BF01A093C001B093C1018091C20118\r\n:100830009091C301A091C401B091C5010196A11D81\r\n:10084000B11D8093C2019093C301A093C401B093E2\r\n:10085000C501BF91AF919F918F913F912F910F90C3\r\n:100860000FBE0F901F90189526E8230F0296A11D2A\r\n:10087000B11DD2CF3FB7F8948091C2019091C301CE\r\n:10088000A091C401B091C50126B5A89B05C02F3F1A\r\n:1008900019F00196A11DB11D3FBFBA2FA92F982FA6\r\n:1008A0008827BC01CD01620F711D811D911D42E0A1\r\n:1008B000660F771F881F991F4A95D1F708958F9269\r\n:1008C0009F92AF92BF92CF92DF92EF92FF926B0115\r\n:1008D0007C010E943A044B015C01C114D104E10483\r\n:1008E000F104E9F00E949C050E943A046819790914\r\n:1008F0008A099B09683E73408105910570F321E0E8\r\n:10090000C21AD108E108F10888EE880E83E0981E2B\r\n:10091000A11CB11CC114D104E104F10429F7FF901A\r\n:10092000EF90DF90CF90BF90AF909F908F90089501\r\n:10093000789484B5826084BD84B5816084BD85B5BA\r\n:10094000826085BD85B5816085BDEEE6F0E0808181\r\n:1009500081608083E1E8F0E01082808182608083A2\r\n:10096000808181608083E0E8F0E080818160808325\r\n:10097000E1EBF0E0808184608083E0EBF0E0808157\r\n:1009800081608083EAE7F0E08081846080838081F9\r\n:1009900082608083808181608083808180688083A1\r\n:1009A0001092C1000895833081F028F4813099F0CD\r\n:1009B0008230A9F008958730A9F08830C9F08430DA\r\n:1009C000B1F4809180008F7D03C0809180008F778B\r\n:1009D00080938000089584B58F7784BD089584B591\r\n:1009E0008F7DFBCF8091B0008F778093B00008950A\r\n:1009F0008091B0008F7DF9CFCF93DF9390E0FC0121\r\n:100A0000E458FF4F249180579F4FFC018491882325\r\n:100A1000C9F090E0880F991FFC01E255FF4FA591A6\r\n:100A2000B491FC01EC55FF4FC591D49161110DC0FB\r\n:100A30009FB7F8948C91209582238C9388812823EA\r\n:100A400028839FBFDF91CF910895623051F49FB703\r\n:100A5000F8943C91822F809583238C93E8812E2BF0\r\n:100A6000EFCF8FB7F894EC912E2B2C938FBFEACF5A\r\n:100A70001F93CF93DF93282F30E0F901E859FF4F00\r\n:100A80008491F901E458FF4FD491F901E057FF4FE9\r\n:100A9000C491CC23A9F0162F81110E94D304EC2F0E\r\n:100AA000F0E0EE0FFF1FEC55FF4FA591B4918FB70B\r\n:100AB000F894EC91111108C0D095DE23DC938FBF20\r\n:100AC000DF91CF911F910895DE2BF8CFCF93CFB751\r\n:100AD000F8948091C901811127C0EAE9F0E084917E\r\n:100AE000E6E8F0E09491E82FF0E0EE0FFF1FE2550A\r\n:100AF000FF4FA591B491EC91E92321F461E08AE0E4\r\n:100B00000E94380561E08AE00E94FC048CB5806197\r\n:100B10008CBD8CB580648CBD61E08DE00E94FC04CE\r\n:100B200061E08BE00E94FC048091C9018F5F80939B\r\n:100B3000C901CFBFCF9108950895F8940C94C805CA\r\n:100B4000A1E21A2EAA1BBB1BFD010DC0AA1FBB1FD1\r\n:100B5000EE1FFF1FA217B307E407F50720F0A21B43\r\n:100B6000B30BE40BF50B661F771F881F991F1A94B0\r\n:100B700069F760957095809590959B01AC01BD01DA\r\n:100B8000CF010895EE0FFF1F0590F491E02D099419\r\n:040B9000F894FFCF07\r\n:100B9400485A3D00204348303D000D0A0000000043\r\n:100BA40000E90127038A01C9015C0176016801009B\r\n:00000001FF\r\n",
+      "flashBytes": 2996,
+      "fitsTarget": true,
+      "fitsRam": true,
+      "stderr": [],
+      "sourceObjectCount": 1,
+      "libraryArchiveObjects": 31,
+      "sourceUnits": [
+        "sketch.ino"
+      ],
+      "staticRamBytes": 170
+    }
+  },
+  "adc-acquisition-high": {
+    "project": {
+      "schemaVersion": 3,
+      "name": "Uno · ADC yüksek empedans",
+      "model": "adc-acquisition-high",
+      "code": "#include <SPI.h>\nunsigned int readADC(byte channel,unsigned long hz){SPI.beginTransaction(SPISettings(hz,MSBFIRST,SPI_MODE0));digitalWrite(10,LOW);SPI.transfer(1);byte h=SPI.transfer(0x80|(channel<<4));byte l=SPI.transfer(0);digitalWrite(10,HIGH);SPI.endTransaction();return ((h&3)<<8)|l;}\nvoid setup(){Serial.begin(115200);pinMode(10,OUTPUT);digitalWrite(10,HIGH);SPI.begin();}\nvoid loop(){for(byte i=0;i<3;i++){unsigned long hz=i==0?1000000:i==1?125000:4000000;readADC(1,hz);unsigned int value=readADC(0,hz);Serial.print(\"HZ=\");Serial.print(hz);Serial.print(\" CH0=\");Serial.println(value);}delay(250);}",
+      "components": [
+        {
+          "id": "uno",
+          "type": "board",
+          "x": 100,
+          "y": 205,
+          "rotation": 0,
+          "params": {}
+        },
+        {
+          "id": "bb",
+          "type": "breadboard",
+          "x": 550,
+          "y": 160,
+          "rotation": 0,
+          "params": {}
+        },
+        {
+          "id": "adc",
+          "type": "mcp3008",
+          "x": 607.51,
+          "y": 275.83,
+          "rotation": 90,
+          "params": {},
+          "mount": {
+            "boardId": "bb",
+            "pins": {
+              "CH0": "d11",
+              "CH1": "d10",
+              "CH2": "d9",
+              "CH3": "d8",
+              "CH4": "d7",
+              "CH5": "d6",
+              "CH6": "d5",
+              "CH7": "d4",
+              "DGND": "f4",
+              "CS": "f5",
+              "DIN": "f6",
+              "DOUT": "f7",
+              "CLK": "f8",
+              "AGND": "f9",
+              "VREF": "f10",
+              "VDD": "f11"
+            }
+          }
+        },
+        {
+          "id": "pot1",
+          "type": "pot",
+          "x": 850,
+          "y": 470,
+          "rotation": 0,
+          "params": {
+            "value": 50
+          }
+        },
+        {
+          "id": "source-r",
+          "type": "resistor",
+          "x": 940,
+          "y": 510,
+          "rotation": 0,
+          "params": {
+            "ohms": 100000
+          }
+        }
+      ],
+      "wires": [
+        {
+          "id": "ext0",
+          "from": "uno:5V",
+          "to": "adc:VDD",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 315.6309289000001,
+              "y": 620
+            },
+            {
+              "x": 714.7,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext1",
+          "from": "uno:GND.1",
+          "to": "adc:DGND",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 328.5909289,
+              "y": 633
+            },
+            {
+              "x": 623.98,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "ext2",
+          "from": "adc:AGND",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 688.78,
+              "y": 646
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 646
+            }
+          ]
+        },
+        {
+          "id": "ext3",
+          "from": "adc:VREF",
+          "to": "uno:5V",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 701.74,
+              "y": 659
+            },
+            {
+              "x": 315.6309289000001,
+              "y": 659
+            }
+          ]
+        },
+        {
+          "id": "ext4",
+          "from": "uno:D11",
+          "to": "adc:DIN",
+          "color": "#3b82f6",
+          "points": [
+            {
+              "x": 294.8949289,
+              "y": 672
+            },
+            {
+              "x": 649.9,
+              "y": 672
+            }
+          ]
+        },
+        {
+          "id": "ext5",
+          "from": "uno:D12",
+          "to": "adc:DOUT",
+          "color": "#8b5cf6",
+          "points": [
+            {
+              "x": 281.93492890000005,
+              "y": 685
+            },
+            {
+              "x": 662.86,
+              "y": 685
+            }
+          ]
+        },
+        {
+          "id": "ext6",
+          "from": "uno:D13",
+          "to": "adc:CLK",
+          "color": "#f59e0b",
+          "points": [
+            {
+              "x": 268.9749289,
+              "y": 698
+            },
+            {
+              "x": 675.8199999999999,
+              "y": 698
+            }
+          ]
+        },
+        {
+          "id": "ext7",
+          "from": "uno:D10",
+          "to": "adc:CS",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 307.8549289,
+              "y": 711
+            },
+            {
+              "x": 636.9399999999999,
+              "y": 711
+            }
+          ]
+        },
+        {
+          "id": "ext8",
+          "from": "uno:5V",
+          "to": "pot1:VCC",
+          "color": "#ef4444",
+          "points": [
+            {
+              "x": 315.6309289000001,
+              "y": 620
+            },
+            {
+              "x": 915.1061422,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext9",
+          "from": "uno:GND.1",
+          "to": "pot1:GND",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 328.5909289,
+              "y": 633
+            },
+            {
+              "x": 889.1861422,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "ext11",
+          "from": "adc:CH1",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 701.74,
+              "y": 659
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 659
+            }
+          ]
+        },
+        {
+          "id": "ext12",
+          "from": "adc:CH2",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 688.78,
+              "y": 672
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 672
+            }
+          ]
+        },
+        {
+          "id": "ext13",
+          "from": "adc:CH3",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 675.8199999999999,
+              "y": 685
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 685
+            }
+          ]
+        },
+        {
+          "id": "ext14",
+          "from": "adc:CH4",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 662.86,
+              "y": 698
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 698
+            }
+          ]
+        },
+        {
+          "id": "ext15",
+          "from": "adc:CH5",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 649.9,
+              "y": 711
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 711
+            }
+          ]
+        },
+        {
+          "id": "ext16",
+          "from": "adc:CH6",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 636.94,
+              "y": 620
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 620
+            }
+          ]
+        },
+        {
+          "id": "ext17",
+          "from": "adc:CH7",
+          "to": "uno:GND.2",
+          "color": "#64748b",
+          "points": [
+            {
+              "x": 623.98,
+              "y": 633
+            },
+            {
+              "x": 341.55092890000003,
+              "y": 633
+            }
+          ]
+        },
+        {
+          "id": "acquire-0",
+          "from": "pot1:OUT",
+          "to": "source-r:1",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 902.1461422,
+              "y": 755
+            },
+            {
+              "x": 940,
+              "y": 755
+            }
+          ]
+        },
+        {
+          "id": "acquire-1",
+          "from": "source-r:2",
+          "to": "adc:CH0",
+          "color": "#14b8a6",
+          "points": [
+            {
+              "x": 1019.3825515,
+              "y": 768
+            },
+            {
+              "x": 714.7,
+              "y": 768
+            }
+          ]
+        }
+      ],
+      "settings": {
+        "moisture": 45,
+        "threshold": 35,
+        "pot": 60,
+        "pressed": false,
+        "probe": "D13"
+      }
+    },
+    "result": {
+      "hex": ":100000000C945D000C9485000C9485000C94850084\r\n:100010000C9485000C9485000C9485000C9485004C\r\n:100020000C9485000C9485000C9485000C9485003C\r\n:100030000C9485000C9485000C9485000C9485002C\r\n:100040000C94F0030C9485000C9498020C94CA0252\r\n:100050000C9485000C9485000C9485000C9485000C\r\n:100060000C9485000C94850000000008000201003B\r\n:100070000003040700000000000000000102040863\r\n:100080001020408001020408102001020408102002\r\n:10009000040404040404040402020202020203032E\r\n:1000A0000303030300000000250028002B000000CC\r\n:1000B0000000240027002A00FA0211241FBECFEFFF\r\n:1000C000D8E0DEBFCDBF11E0A0E0B1E0E4E9FBE0A5\r\n:1000D00002C005900D92A032B107D9F721E0A0E24D\r\n:1000E000B1E001C01D92AA3CB207E1F710E0CDE5F6\r\n:1000F000D0E004C02197FE010E94C205CC35D10793\r\n:10010000C9F70E94E1030C949D050C9400008EBD7C\r\n:1001100000000DB407FEFDCF8EB508950F931F9319\r\n:10012000CF93C82F00E012E12AE730E090E04017BB\r\n:1001300051076207730740F4369527951795079581\r\n:100140009F5F9630A1F797E0892F806A86959095FA\r\n:1001500091702091C801222381F03FB7F89420913B\r\n:10016000C8012130E1F52DB32093C6014DB3209194\r\n:10017000C701209524232DBB3FBF8CBD9DBD60E0F2\r\n:100180008AE00E94380581E00E94870020E1C29F3A\r\n:10019000C001112480680E948700C82F80E00E945F\r\n:1001A0008700182F61E08AE00E9438058091C8011D\r\n:1001B000882351F09FB7F8942091C8018091C6011F\r\n:1001C000213081F48DBB9FBF8C2F90E0982F882722\r\n:1001D00088279370812BCF911F910F9108953093B1\r\n:1001E000C601CBCF8FBFF0CF26E040E052EC61E0FC\r\n:1001F00070E080E291E00E94360261E08AE00E94B5\r\n:10020000FC0461E08AE00E9438050C946605CF92F8\r\n:10021000DF92EF92FF920F931F93CF93C0E020E401\r\n:10022000C22E22E4D22E2FE0E22EF12CB701A6013D\r\n:1002300081E00E948E00B701A60180E00E948E003E\r\n:100240008C0160E071E080E291E00E9463032AE0AB\r\n:1002500030E0B701A60180E291E00E94BB0364E0B8\r\n:1002600071E080E291E00E9463034AE050E0B8014F\r\n:1002700080E291E00E94CE03CF5FC33069F46AEF61\r\n:1002800070E080E090E0CF911F910F91FF90EF9090\r\n:10029000DF90CF900C945F04C12C99E0D92E9DE3A0\r\n:1002A000E92EF12CC13011F688E4C82E88EED82E44\r\n:1002B000EE24E394F12CBACFFC01918D228D892F8D\r\n:1002C00090E0805C9F4F821B91098F73992708955E\r\n:1002D000FC01918D828D981731F0828DE80FF11D10\r\n:1002E000858D90E008958FEF9FEF0895FC01918D2B\r\n:1002F000828D981761F0A28DAE0FBF2FB11D5D9654\r\n:100300008C91928D9F5F9F73928F90E008958FEFF5\r\n:100310009FEF0895FC01538D448D252F30E0842FED\r\n:1003200090E0821B930B541710F0CF96089501971D\r\n:10033000089580EF92E0892B49F080E090E0892BCE\r\n:1003400029F00E94F00281110C9400000895FC0134\r\n:10035000A48DA80FB92FB11DA35ABF4F2C91848D26\r\n:1003600090E001968F739927848FA689B7892C9383\r\n:10037000A089B1898C91837080648C93938D848DD6\r\n:10038000981306C00288F389E02D80818F7D8083D9\r\n:100390000895CF93DF93EC01888D8823B9F0AA8963\r\n:1003A000BB89E889F9898C9185FD03C0808186FD30\r\n:1003B0000DC00FB607FCF7CF8C9185FFF2CF80817F\r\n:1003C00085FFEDCFCE010E94A701E9CFDF91CF914C\r\n:1003D0000895EF92FF920F931F93CF93DF93EC0159\r\n:1003E00081E0888F9B8D8C8D98131AC0E889F989DC\r\n:1003F000808185FF15C09FB7F894EE89FF896083DF\r\n:10040000E889F98980818370806480839FBF81E05F\r\n:1004100090E0DF91CF911F910F91FF90EF900895A1\r\n:10042000F62E0B8D10E00F5F1F4F0F731127E02E7C\r\n:100430008C8D8E110CC00FB607FCFACFE889F989B4\r\n:10044000808185FFF5CFCE010E94A701F1CFEB8D12\r\n:10045000EC0FFD2FF11DE35AFF4FF0829FB7F89488\r\n:100460000B8FEA89FB8980818062CFCFCF92DF92A8\r\n:10047000EF92FF921F93CF93DF93EC016A017B0110\r\n:10048000122FE889F98982E08083C11481EED806B1\r\n:10049000E104F104A1F060E079E08DE390E0A701D0\r\n:1004A00096010E94A0052150310941095109569534\r\n:1004B000479537952795211580E1380798F0E88909\r\n:1004C000F989108260E874E88EE190E0A701960156\r\n:1004D0000E94A005215031094109510956954795BF\r\n:1004E00037952795EC85FD853083EE85FF85208344\r\n:1004F000188EEC89FD891083EA89FB8980818061EF\r\n:100500008083EA89FB89808188608083EA89FB890E\r\n:10051000808180688083EA89FB8980818F7D8083E8\r\n:10052000DF91CF911F91FF90EF90DF90CF900895D2\r\n:100530001F920F920FB60F9211242F938F939F93B8\r\n:10054000EF93FF93E0913001F09131018081E091D0\r\n:100550003601F091370182FD1BC0908180913901F5\r\n:100560008F5F8F7320913A01821741F0E09139013A\r\n:10057000F0E0E05EFE4F958F80933901FF91EF919F\r\n:100580009F918F912F910F900FBE0F901F901895F4\r\n:100590008081F4CF1F920F920FB60F9211242F93E8\r\n:1005A0003F934F935F936F937F938F939F93AF93FB\r\n:1005B000BF93EF93FF9380E291E00E94A701FF9128\r\n:1005C000EF91BF91AF919F918F917F916F915F91CB\r\n:1005D0004F913F912F910F900FBE0F901F90189544\r\n:1005E00080E291E00E945C0121E0892B09F420E087\r\n:1005F000822F0895E0E2F1E01382128288EE93E008\r\n:10060000A0E0B0E084839583A683B78381E191E085\r\n:100610009183808385EC90E09587848784EC90E0DB\r\n:100620009787868780EC90E0918B808B81EC90E0BF\r\n:10063000938B828B82EC90E0958B848B86EC90E0A0\r\n:10064000978B868B118E128E138E148E0895AF9217\r\n:10065000BF92CF92DF92EF92FF920F931F93CF93AF\r\n:10066000DF936C017B018B01040F151FEB015E0111\r\n:10067000AE18BF08C017D10759F06991D601ED91A6\r\n:10068000FC910190F081E02DC6010995892B79F745\r\n:10069000C501DF91CF911F910F91FF90EF90DF90F7\r\n:1006A000CF90BF90AF900895FB0101900020E9F733\r\n:1006B0003197AF01461B570BDC01ED91FC91028095\r\n:1006C000F381E02D09946115710511F00C94540328\r\n:1006D00090E080E008956AE071E00C9454038F92FA\r\n:1006E0009F92AF92BF92EF92FF920F931F93CF937F\r\n:1006F000DF93CDB7DEB7A1970FB6F894DEBF0FBE7C\r\n:10070000CDBF7C01FA01CB0119A2223008F42AE006\r\n:100710008E010F5D1F4F822E912CB12CA12CBF0199\r\n:10072000A50194010E94A005F901CA016A300CF5E7\r\n:10073000605DD8016E938D01232B242B252B79F737\r\n:1007400090E080E0109721F0BD01C7010E945403A2\r\n:10075000A1960FB6F894DEBF0FBECDBFDF91CF914B\r\n:100760001F910F91FF90EF90BF90AF909F908F904F\r\n:100770000895695CDECF2115310541F4DC01ED916E\r\n:10078000FC910190F081E02D642F09940C946F038B\r\n:100790009A01AB0170E060E00C94BB030F931F93D0\r\n:1007A000CF93DF93EC010E94C8038C01CE010E941D\r\n:1007B0006B03800F911FDF91CF911F910F910895CF\r\n:1007C00008950E9498040E94E0030E94F400C9E981\r\n:1007D000D1E00E9407012097E1F30E949901F9CF2F\r\n:1007E0001F920F920FB60F9211242F933F938F9366\r\n:1007F0009F93AF93BF938091BE019091BF01A09151\r\n:10080000C001B091C1013091BD0123E0230F2D370C\r\n:1008100058F50196A11DB11D2093BD018093BE0125\r\n:100820009093BF01A093C001B093C1018091C20118\r\n:100830009091C301A091C401B091C5010196A11D81\r\n:10084000B11D8093C2019093C301A093C401B093E2\r\n:10085000C501BF91AF919F918F913F912F910F90C3\r\n:100860000FBE0F901F90189526E8230F0296A11D2A\r\n:10087000B11DD2CF3FB7F8948091C2019091C301CE\r\n:10088000A091C401B091C50126B5A89B05C02F3F1A\r\n:1008900019F00196A11DB11D3FBFBA2FA92F982FA6\r\n:1008A0008827BC01CD01620F711D811D911D42E0A1\r\n:1008B000660F771F881F991F4A95D1F708958F9269\r\n:1008C0009F92AF92BF92CF92DF92EF92FF926B0115\r\n:1008D0007C010E943A044B015C01C114D104E10483\r\n:1008E000F104E9F00E949C050E943A046819790914\r\n:1008F0008A099B09683E73408105910570F321E0E8\r\n:10090000C21AD108E108F10888EE880E83E0981E2B\r\n:10091000A11CB11CC114D104E104F10429F7FF901A\r\n:10092000EF90DF90CF90BF90AF909F908F90089501\r\n:10093000789484B5826084BD84B5816084BD85B5BA\r\n:10094000826085BD85B5816085BDEEE6F0E0808181\r\n:1009500081608083E1E8F0E01082808182608083A2\r\n:10096000808181608083E0E8F0E080818160808325\r\n:10097000E1EBF0E0808184608083E0EBF0E0808157\r\n:1009800081608083EAE7F0E08081846080838081F9\r\n:1009900082608083808181608083808180688083A1\r\n:1009A0001092C1000895833081F028F4813099F0CD\r\n:1009B0008230A9F008958730A9F08830C9F08430DA\r\n:1009C000B1F4809180008F7D03C0809180008F778B\r\n:1009D00080938000089584B58F7784BD089584B591\r\n:1009E0008F7DFBCF8091B0008F778093B00008950A\r\n:1009F0008091B0008F7DF9CFCF93DF9390E0FC0121\r\n:100A0000E458FF4F249180579F4FFC018491882325\r\n:100A1000C9F090E0880F991FFC01E255FF4FA591A6\r\n:100A2000B491FC01EC55FF4FC591D49161110DC0FB\r\n:100A30009FB7F8948C91209582238C9388812823EA\r\n:100A400028839FBFDF91CF910895623051F49FB703\r\n:100A5000F8943C91822F809583238C93E8812E2BF0\r\n:100A6000EFCF8FB7F894EC912E2B2C938FBFEACF5A\r\n:100A70001F93CF93DF93282F30E0F901E859FF4F00\r\n:100A80008491F901E458FF4FD491F901E057FF4FE9\r\n:100A9000C491CC23A9F0162F81110E94D304EC2F0E\r\n:100AA000F0E0EE0FFF1FEC55FF4FA591B4918FB70B\r\n:100AB000F894EC91111108C0D095DE23DC938FBF20\r\n:100AC000DF91CF911F910895DE2BF8CFCF93CFB751\r\n:100AD000F8948091C901811127C0EAE9F0E084917E\r\n:100AE000E6E8F0E09491E82FF0E0EE0FFF1FE2550A\r\n:100AF000FF4FA591B491EC91E92321F461E08AE0E4\r\n:100B00000E94380561E08AE00E94FC048CB5806197\r\n:100B10008CBD8CB580648CBD61E08DE00E94FC04CE\r\n:100B200061E08BE00E94FC048091C9018F5F80939B\r\n:100B3000C901CFBFCF9108950895F8940C94C805CA\r\n:100B4000A1E21A2EAA1BBB1BFD010DC0AA1FBB1FD1\r\n:100B5000EE1FFF1FA217B307E407F50720F0A21B43\r\n:100B6000B30BE40BF50B661F771F881F991F1A94B0\r\n:100B700069F760957095809590959B01AC01BD01DA\r\n:100B8000CF010895EE0FFF1F0590F491E02D099419\r\n:040B9000F894FFCF07\r\n:100B9400485A3D00204348303D000D0A0000000043\r\n:100BA40000E90127038A01C9015C0176016801009B\r\n:00000001FF\r\n",
+      "flashBytes": 2996,
+      "fitsTarget": true,
+      "fitsRam": true,
+      "stderr": [],
+      "sourceObjectCount": 1,
+      "libraryArchiveObjects": 31,
+      "sourceUnits": [
+        "sketch.ino"
+      ],
+      "staticRamBytes": 170
+    }
+  }
+}

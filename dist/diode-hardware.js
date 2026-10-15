@@ -1,0 +1,2 @@
+const item=(name,asset)=>({name,category:'Temel',detail:'DO-35 · bounded DC',width:64.8,height:16.2,scale:1.35,asset,pins:['A','K'],pinDefs:[{id:'A',name:'A · Anot',x:6.48,y:8.1},{id:'K',name:'K · Katot / bant',x:58.32,y:8.1}]});
+export const DIODE_CATALOG={diode:item('Diyot','1n4148-do35.svg'),zener:item('Zener diyot','bzx55c5v1-do35.svg')};export const DIODE_BODIES={diode:[14,2,20,8],zener:[14,2,20,8]};

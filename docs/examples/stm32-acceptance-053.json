@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 3,
+  "name": "STM32 · ADC DMA / EXTI / Watchdog / CRC",
+  "model": "custom",
+  "code": "#include <cf_hal.h>\n#include <stdio.h>\nvolatile unsigned short samples[2];\nvolatile unsigned button_count;\nvoid EXTI15_10_IRQHandler(void){\n if(cf_exti_pending(PC13)){cf_exti_clear(PC13);button_count++;cf_gpio_write(PA5,button_count&1);}\n}\nint main(void){\n cf_uart_begin(115200);unsigned flags=cf_reset_flags();cf_reset_flags_clear();\n printf(\"BOOT: %s\\n\",flags&(1u<<29)?\"IWDG RESET\":\"POWER / MCU RESET\");\n cf_gpio_mode(PA5,CF_OUTPUT);cf_gpio_write(PA5,0);\n cf_exti_begin(PC13,1,1);\n const unsigned channels[2]={PA0,PB0};\n if(cf_adc_dma_begin(channels,2,samples,2,1,1))puts(\"DMA CONFIG ERROR\");\n cf_crc_begin();cf_crc_word(0x12345678);printf(\"CRC=%u\\n\",cf_crc_value());\n puts(\"A=ADC samples, B=button count, R=watchdog reset. Press board B1 to toggle LED.\");\n cf_iwdg_begin(0,31);unsigned feeding=1,last=0;\n for(;;){if(feeding)cf_iwdg_refresh();int c=cf_uart_read();\n  if(c=='A')printf(\"ADC DMA: %u / %u\\n\",samples[0],samples[1]);\n  if(c=='B')printf(\"EXTI B1: %u\\n\",button_count);\n  if(c=='R'){feeding=0;puts(\"WATCHDOG REFRESH STOPPED\");}\n  if(last!=button_count){last=button_count;printf(\"B1 IRQ=%u LED=%u\\n\",last,last&1);}\n  cf_delay_us(200);\n }\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 250,
+      "y": 80,
+      "rotation": 0,
+      "params": {
+        "model": "nucleo-f401re"
+      }
+    },
+    {
+      "id": "pot1",
+      "type": "pot",
+      "x": 800,
+      "y": 140,
+      "rotation": 0,
+      "params": {
+        "value": 25
+      }
+    },
+    {
+      "id": "pot2",
+      "type": "pot",
+      "x": 800,
+      "y": 340,
+      "rotation": 0,
+      "params": {
+        "value": 75
+      }
+    },
+    {
+      "id": "label1",
+      "type": "netLabel",
+      "x": 60,
+      "y": 323.47,
+      "rotation": 0,
+      "params": {
+        "name": "3V3",
+        "side": "right"
+      }
+    },
+    {
+      "id": "label2",
+      "type": "netLabel",
+      "x": 980,
+      "y": 260,
+      "rotation": 0,
+      "params": {
+        "name": "3V3",
+        "side": "left"
+      }
+    },
+    {
+      "id": "label3",
+      "type": "netLabel",
+      "x": 626.96,
+      "y": 349.39,
+      "rotation": 0,
+      "params": {
+        "name": "GND",
+        "side": "left"
+      }
+    },
+    {
+      "id": "label4",
+      "type": "netLabel",
+      "x": 640,
+      "y": 260,
+      "rotation": 0,
+      "params": {
+        "name": "GND",
+        "side": "right"
+      }
+    },
+    {
+      "id": "label5",
+      "type": "netLabel",
+      "x": 60,
+      "y": 401.23,
+      "rotation": 0,
+      "params": {
+        "name": "ADC_A",
+        "side": "right"
+      }
+    },
+    {
+      "id": "label6",
+      "type": "netLabel",
+      "x": 800,
+      "y": 310,
+      "rotation": 0,
+      "params": {
+        "name": "ADC_A",
+        "side": "top"
+      }
+    },
+    {
+      "id": "label8",
+      "type": "netLabel",
+      "x": 980,
+      "y": 460,
+      "rotation": 0,
+      "params": {
+        "name": "3V3",
+        "side": "left"
+      }
+    },
+    {
+      "id": "label10",
+      "type": "netLabel",
+      "x": 640,
+      "y": 460,
+      "rotation": 0,
+      "params": {
+        "name": "GND",
+        "side": "right"
+      }
+    },
+    {
+      "id": "label11",
+      "type": "netLabel",
+      "x": 60,
+      "y": 440.11000000000007,
+      "rotation": 0,
+      "params": {
+        "name": "ADC_B",
+        "side": "right"
+      }
+    },
+    {
+      "id": "label12",
+      "type": "netLabel",
+      "x": 800,
+      "y": 510,
+      "rotation": 0,
+      "params": {
+        "name": "ADC_B",
+        "side": "top"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "labelwire1",
+      "from": "mcu:CN7-16",
+      "to": "label1:NET",
+      "color": "#ef4444",
+      "points": []
+    },
+    {
+      "id": "labelwire2",
+      "from": "pot1:VCC",
+      "to": "label2:NET",
+      "color": "#ef4444",
+      "points": [
+        {
+          "x": 865.1061422,
+          "y": 276
+        }
+      ]
+    },
+    {
+      "id": "labelwire3",
+      "from": "mcu:CN10-20",
+      "to": "label3:NET",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "labelwire4",
+      "from": "pot1:GND",
+      "to": "label4:NET",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 839.1861422,
+          "y": 276
+        }
+      ]
+    },
+    {
+      "id": "labelwire5",
+      "from": "mcu:CN7-28",
+      "to": "label5:NET",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "labelwire6",
+      "from": "pot1:OUT",
+      "to": "label6:NET",
+      "color": "#14b8a6",
+      "points": [
+        {
+          "x": 852.1461422,
+          "y": 310
+        }
+      ]
+    },
+    {
+      "id": "labelwire8",
+      "from": "pot2:VCC",
+      "to": "label8:NET",
+      "color": "#ef4444",
+      "points": [
+        {
+          "x": 865.1061422,
+          "y": 476
+        }
+      ]
+    },
+    {
+      "id": "labelwire10",
+      "from": "pot2:GND",
+      "to": "label10:NET",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 839.1861422,
+          "y": 476
+        }
+      ]
+    },
+    {
+      "id": "labelwire11",
+      "from": "mcu:CN7-34",
+      "to": "label11:NET",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "labelwire12",
+      "from": "pot2:OUT",
+      "to": "label12:NET",
+      "color": "#14b8a6",
+      "points": [
+        {
+          "x": 852.1461422,
+          "y": 510
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "PA0",
+    "tracePins": [
+      "PA1",
+      "PB6",
+      "PB7"
+    ]
+  },
+  "language": "c"
+}

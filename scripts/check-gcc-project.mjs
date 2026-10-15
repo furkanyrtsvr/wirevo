@@ -1,0 +1,16 @@
+import {readFile,writeFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';
+import {buildProjectFirmware} from '../dist/gcc-project.js';import {UnoRuntime} from '../dist/uno-runtime.js';
+// Uses the unmodified pinned upstream toolchain installed for development.
+// Browser QA also exercises the actual worker and CDN. No source is uploaded.
+globalThis.window={};const nativeFetch=globalThis.fetch;
+globalThis.fetch=async(u,o)=>String(u).startsWith('file:')?new Response(await readFile(fileURLToPath(u)),{headers:{'Content-Type':String(u).endsWith('.wasm')?'application/wasm':'application/octet-stream'}}):nativeFetch(u,o);
+const assetsBase=new URL('../research/compiler/node_modules/@horang-corp/avr-gcc-wasm/',import.meta.url).href;
+const files=[{name:'sketch.ino',content:'#include "drivers/led.h"\nstatic int marker=1;\nvoid setup(){pinMode(13,OUTPUT);Serial.begin(115200);}\nvoid loop(){setLed(true);Serial.print(marker);Serial.print(":");Serial.println(otherValue());delay(500);setLed(false);delay(500);}\n'},{name:'drivers/led.h',content:'#pragma once\nint otherValue();\nvoid setLed(bool on);\n'},{name:'drivers/led.cpp',content:'#include <Arduino.h>\n#include "led.h"\nstatic int marker=2;\nint otherValue(){return marker;}\nvoid setLed(bool on){digitalWrite(13,on?HIGH:LOW);}\n'}];
+const good=await buildProjectFirmware(files,{assetsBase});assert.deepEqual(good.sourceUnits,['sketch.ino','drivers/led.cpp']);assert.equal(good.fitsRam,true);let serial='';const r=new UnoRuntime(good.hex,{onSerial:c=>serial+=c});r.stepCycles(160000);assert.equal(r.readPin('D13').high,true);assert.equal(serial,'1:2\r\n');for(let i=0;i<51;i++)r.stepCycles(160000);assert.equal(r.readPin('D13').high,false);
+const malformed=structuredClone(files);malformed[2].content='#include "led.h"\nint otherValue(){return does_not_exist;}\n';await assert.rejects(()=>buildProjectFirmware(malformed,{assetsBase}),/drivers\/led.cpp:2/);
+const missing=files.filter(f=>!f.name.endsWith('.h'));await assert.rejects(()=>buildProjectFirmware(missing,{assetsBase}),/drivers\/led.h: No such file/);
+const link=structuredClone(files);link[2].content='#include <Arduino.h>\n#include "led.h"\nvoid setLed(bool on){}';await assert.rejects(()=>buildProjectFirmware(link,{assetsBase}),/undefined reference to.*otherValue/);
+const duplicate=structuredClone(files);duplicate[0].content+='\nint globalDuplicate=1;';duplicate[2].content+='\nint globalDuplicate=2;';duplicate[0].content=duplicate[0].content.replace('pinMode(13,OUTPUT);','extern int globalDuplicate;pinMode(13,OUTPUT);Serial.println(globalDuplicate);');await assert.rejects(()=>buildProjectFirmware(duplicate,{assetsBase}),/multiple definition.*globalDuplicate/);
+const big=[{name:'sketch.ino',content:'volatile char huge[2100];void setup(){}void loop(){huge[0]=1;}'}];const oversized=await buildProjectFirmware(big,{assetsBase});assert.equal(oversized.fitsRam,false);assert.ok(oversized.staticRamBytes>2048);
+await writeFile(new URL('../tests/fixtures/multifile.json',import.meta.url),JSON.stringify({files,result:good},null,2));
+console.log(JSON.stringify({checks:6,flash:good.flashBytes,staticRam:good.staticRamBytes,serial,units:good.sourceUnits,overflowRam:oversized.staticRamBytes}));

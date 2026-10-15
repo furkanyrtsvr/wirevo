@@ -1,0 +1,15 @@
+// GPIO EXTI0..15: F1 AFIO EXTICR, F4 SYSCFG EXTICR; real DC edge detection.
+export class STMEXTI {
+ constructor(r){this.r=r;this.f4=r.board.cpu==='cortex-m4f';this.base=this.f4?0x40013c00:0x40010400;this.mux=this.f4?0x40013808:0x40010008;this.regs=new Map();this.ports=[0,0,0,0];this.levels=Array(16).fill(null);this.event=false;}
+ irqMask(){const pending=(this.regs.get(20)||0)&(this.regs.get(0)||0);let mask=0;for(let n=0;n<5;n++)if(pending&(1<<n))mask|=1<<(n+7);if(pending&0x3e0)mask|=1<<12;if(pending&0xfc00)mask|=1<<13;return mask;}
+ internalEdge(n,rising){if((this.regs.get(rising?8:12)||0)&(1<<n))this.edge(n,rising);}
+ takeEvent(){const v=this.event;this.event=false;return v;}
+ edge(n,rising){if(n===11||n===15)this.r.adc?.externalTrigger('exti'+n,rising);const bit=1<<n;this.regs.set(20,(this.regs.get(20)||0)|bit);if((this.regs.get(4)||0)&bit)this.event=true;}
+ observe(){const mask=((this.regs.get(8)||0)|(this.regs.get(12)||0))&65535;if(!mask){if(this.activeMask)this.levels.fill(null);this.activeMask=0;return;}this.activeMask=mask;for(let n=0;n<16;n++){if(!(mask&(1<<n))){this.levels[n]=null;continue;}const port=(this.ports[n>>>2]>>>((n%4)*4))&15,pin='P'+String.fromCharCode(65+port)+n,v=this.r.inputVoltages?.[pin],level=!this.r.board.gpio.includes(pin)?null:this.r.circuit?Number.isFinite(v)&&v<=.99?false:Number.isFinite(v)&&v>=2.31?true:null:!!this.r.inputs[pin],before=this.levels[n];this.levels[n]=level;if(level!==null&&before!==null&&level!==before&&((this.regs.get(level?8:12)||0)&(1<<n)))this.edge(n,level);}}
+ read(a,n){const aligned=a&~3;let v;if(aligned>=this.base&&aligned<=this.base+20)v=this.regs.get(aligned-this.base)||0;else if(aligned>=this.mux&&aligned<=this.mux+12)v=this.ports[(aligned-this.mux)/4];else return undefined;return n===4?v>>>0:(v>>>((a&3)*8))&(n===1?255:65535);}
+ write(a,v,n){const aligned=a&~3;if(aligned>=this.mux&&aligned<=this.mux+12){if(n!==4||a!==aligned)throw Error('EXTICR yazımı hizalı32bit olmalı.');if(!(this.r.regs.get(this.f4?0x40023844:0x40021018)&(1<<(this.f4?14:0))))return true;const i=(aligned-this.mux)/4;if(v&0xffff0000)throw Error('EXTICR ayrılmış bitler.');for(let k=0;k<4;k++)if(((v>>>k*4)&15)>3)throw Error('EXTI portu mevcut kart modelinde yok.');const old=this.ports[i];this.ports[i]=v;for(let k=0;k<4;k++)if(((old^v)>>>k*4)&15)this.levels[i*4+k]=null;this.observe();return true;}
+  if(aligned<this.base||aligned>this.base+20)return false;if(n!==4||a!==aligned)throw Error('EXTI yazımı hizalı32bit olmalı.');const off=aligned-this.base;if(v&~(0xffff|(1<<17)|(this.f4?1<<22:0)))throw Error('EXTI dahili periferik hatları henüz desteklenmiyor.');
+  if(off===20){this.regs.set(20,(this.regs.get(20)||0)&~v);this.regs.set(16,(this.regs.get(16)||0)&~v);}else if(off===16){const old=this.regs.get(16)||0;this.regs.set(16,v);const triggered=v&~old;this.regs.set(20,(this.regs.get(20)||0)|(triggered&(this.regs.get(0)||0)));if(triggered&(this.regs.get(4)||0))this.event=true;}else this.regs.set(off,v);this.observe();return true;
+ }
+ resetMux(){this.ports=[0,0,0,0];this.levels.fill(null);}
+}

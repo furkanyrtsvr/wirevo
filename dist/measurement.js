@@ -1,0 +1,38 @@
+import {boardDefinition} from './board-hardware.js';
+export const MEASUREMENT_HZ=16000000;
+export function currentOptions(project){const options=[{value:'@led',label:'Σ LED'}];for(const c of project.components){const fields={ws2812:[['power','VCC LED akımı']],stepper28byj:Array.from({length:4},(_,i)=>['coil'+(i+1),'Sargı '+(i+1)]),l298n:Array.from({length:4},(_,i)=>['OUT'+(i+1),'OUT'+(i+1)]),loadcell:[['ap-upper','E+→A+'],['ap-lower','A+→E−'],['am-upper','E+→A−'],['am-lower','A−→E−']],multimeter:[['ammeter','A→COM']],signalgen:[['generator','OUT']],switch:[['contact','1→2']],rheostat:[['i','1→2']],coilRelay:[['coil','Bobin A1→A2'],['contact','COM→NC/NO']],resistor:[['i','1→2']],ldr:[['i','1→2']],capacitor:[['i','1→2']],inductor:[['i','1→2']],mcp23017:Array.from({length:16},(_,i)=>['GP'+(i<8?'A':'B')+(i&7),'GP'+(i<8?'A':'B')+(i&7)]),opamp:[['out1','OUT1'],['out2','OUT2']],spdt:[['contact','2→1/3']],relay:[['contact','COM→NC/NO']],diode:[['i','A→K']],zener:[['i','A→K']],led:[['i','A→K']],pot:[['upper','VCC→OUT'],['lower','OUT→GND']],npn:[['ic','IC'],['ib','IB'],['ie','IE']],mosfet:[['id','ID'],['body','S→D']]}[c.type];for(const[key,label]of fields||[])options.push({value:c.id+':'+key,label:c.id+' · '+label});}return options;}
+export function measurementConfig(project){const board=project.components.find(c=>c.type==='board');return project.settings.measurement||{positive:board?board.id+':'+(boardDefinition(board).pins.find(p=>p.connectable!==false&&(p.net||p.id)===project.settings.probe)?.id||project.settings.probe):null,negative:board?board.id+':GND':null,current:'@led'};}
+export function validMeasurement(project,config,pinExists){return config&&[config.positive,config.negative].every(e=>e===null||typeof e==='string'&&pinExists(project,e))&&currentOptions(project).some(o=>o.value===config.current);}
+export function normalizeMeasurement(project,pinExists){if(!project.settings.measurement)return;const c=project.settings.measurement;for(const key of['positive','negative'])if(c[key]!==null&&!pinExists(project,c[key]))c[key]=null;if(!currentOptions(project).some(o=>o.value===c.current))c.current='@led';}
+export function readMeasurement(solution,config){
+ if(!solution?.valid)return{voltage:null,current:null};
+ const positive=config.positive&&solution.netlist.net(config.positive),negative=config.negative&&solution.netlist.net(config.negative),vp=solution.voltages.get(positive),vn=solution.voltages.get(negative);
+ const voltage=positive&&negative&&positive===negative?0:Number.isFinite(vp)&&Number.isFinite(vn)?vp-vn:null;
+ let current=null;if(config.current==='@led')current=[...solution.ledResults.values()].reduce((sum,l)=>sum+Math.max(0,l.current||0),0);
+ else{const[id,field]=config.current.split(':'),device=solution.deviceResults?.get(id);if(field==='out1'||field==='out2')current=solution.opampResults?.get(id+':'+field.slice(-1))?.current;else if(device)current=field==='body'?device.bodyCurrent:device[field];else if(/^OUT[1-4]$/.test(field))current=solution.currents.get('$sensor:'+id+':'+field);else if(field==='power')current=-solution.currents.get('$driver:'+id+':VCC');else if(field==='generator')current=solution.currents.get('$driver:'+id+':OUT');else if(field==='i')current=solution.currents.has(id)?solution.currents.get(id):solution.ledResults.get(id)?.current;else if(/^GP[AB][0-7]$/.test(field))current=solution.currents.get('$driver:'+id+':'+field);else current=solution.currents.get(id+':'+field);}
+ return{voltage:Number.isFinite(voltage)?voltage:null,current:Number.isFinite(current)?current:null};
+}
+export function attachMeasurementRuntime(runtime,engine,config,id,{capacity=8192}={}){
+ let events=[],head=0,dropped=0,values=readMeasurement(engine.solution,config),levels={...values},baselineCycle=runtime.cpu.cycles,lastCycle=runtime.cpu.cycles,windowStart=runtime.cpu.cycles,charge=0,unknownCycles=0;
+ const integrate=()=>{const delta=runtime.cpu.cycles-lastCycle;if(delta>0){if(values.current===null)unknownCycles+=delta;else charge+=values.current*delta;}lastCycle=runtime.cpu.cycles;};
+ const update=()=>{integrate();const next=readMeasurement(engine.solution,config);if(next.voltage!==values.voltage||next.current!==values.current){if(events.length-head>=capacity){const lost=events[head++];levels={voltage:lost.voltage,current:lost.current};baselineCycle=lost.cycle;dropped++;}if(head>=capacity){events=events.slice(head);head=0;}events.push({cycle:runtime.cpu.cycles,...next});values=next;}};
+ const unsubscribe=engine.subscribe(update);
+ return{
+  reconfigure(next,nextId){config=next;id=nextId;events=[];head=0;dropped=0;values=readMeasurement(engine.solution,config);levels={...values};baselineCycle=runtime.cpu.cycles;this.resetIntegral();},
+  resetIntegral(){lastCycle=runtime.cpu.cycles;windowStart=lastCycle;charge=0;unknownCycles=0;},
+  drain(){integrate();const span=runtime.cpu.cycles-windowStart,result={id,config,events:events.slice(head),levels,baselineCycle,dropped,...values,averageCurrent:unknownCycles?null:span?charge/span:values.current,windowCycles:span,cycle:runtime.cpu.cycles};events=[];head=0;dropped=0;levels={...values};baselineCycle=runtime.cpu.cycles;this.resetIntegral();return result;},
+  dispose:unsubscribe,
+ };
+}
+export class AnalogHistory{
+ constructor({capacity=16000}={}){this.capacity=capacity;this.clear();}
+ clear(){this.points=[];this.end=0;this.dropped=0;}
+ append(packet,end){if(end<this.end)this.clear();const add=p=>{const last=this.points.at(-1);if(last?.cycle===p.cycle)this.points[this.points.length-1]=p;else this.points.push(p);};if(!this.points.length)add({cycle:packet.baselineCycle,...packet.levels,baseline:true});if(packet.dropped){add({cycle:this.end,voltage:null,current:null,gap:true});add({cycle:packet.baselineCycle,...packet.levels,baseline:true});this.dropped+=packet.dropped;}for(const p of packet.events)add(p);this.end=end;const cutoff=end-5*MEASUREMENT_HZ;let remove=0;while(remove+1<this.points.length&&this.points[remove+1].cycle<=cutoff)remove++;if(remove)this.points.splice(0,remove);if(this.points.length>this.capacity){this.dropped+=this.points.length-this.capacity;this.points.splice(0,this.points.length-this.capacity);}}
+ view(seconds=5){const span=Math.round(seconds*MEASUREMENT_HZ),start=this.end-span,availableFrom=this.points[0]?.cycle??this.end;return{points:this.points,start,end:this.end,span,availableFrom};}
+ sampleAt(cycle){if(cycle<(this.points[0]?.cycle??Infinity)||cycle>this.end)return null;let point=null;for(const p of this.points){if(p.cycle>cycle)break;point=p;}return point;}
+}
+export function analogPath(frame,key,lane=0){
+ const previous=frame.points.filter(p=>p.cycle<frame.start).at(-1),values=frame.points.filter(p=>p.cycle<=frame.end&&p.cycle>=frame.start||p===previous).map(p=>p[key]).filter(Number.isFinite),floor=key==='voltage'?5:.001;
+ const min=Math.min(0,...values),max=Math.max(floor,...values),range=max-min,low=lane?81:38,high=lane?49:6,x=c=>30+(c-frame.start)/frame.span*224,y=v=>low-(v-min)/range*(low-high);
+ let path='',last=null,open=false;for(const p of frame.points){if(p.cycle<=frame.start){last=p;continue;}if(p.cycle>frame.end)break;if(!open&&last&&Number.isFinite(last[key])){path+='M'+x(Math.max(frame.start,last.cycle)).toFixed(2)+','+y(last[key]).toFixed(2);open=true;}if(open)path+=' H'+x(p.cycle).toFixed(2);if(Number.isFinite(p[key])){path+=(open?' V':' M'+x(p.cycle).toFixed(2)+',')+y(p[key]).toFixed(2);open=true;}else open=false;last=p;}if(!open&&last&&Number.isFinite(last[key])){path+=' M'+x(Math.max(frame.start,last.cycle)).toFixed(2)+','+y(last[key]).toFixed(2);open=true;}if(open)path+=' H'+x(frame.end).toFixed(2);return{path,min,max};
+}

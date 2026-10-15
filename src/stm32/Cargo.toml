@@ -1,0 +1,21 @@
+[package]
+name = "circuitforge_stm32"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+zmu_cortex_m = { path = "vendor/zmu_cortex_m", default-features = false, features = [] }
+
+[features]
+default = ["m3"]
+m3 = ["zmu_cortex_m/armv7m"]
+m4f = ["zmu_cortex_m/armv7em", "zmu_cortex_m/fpv4-sp-d16"]
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"
+

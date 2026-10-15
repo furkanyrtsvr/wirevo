@@ -1,0 +1,18 @@
+export function crc8(bytes){let crc=0;for(let byte of bytes)for(let b=0;b<8;b++){const mix=(crc^byte)&1;crc>>=1;if(mix)crc^=0x8c;byte>>=1;}return crc;}
+export function sensorROM(id){let hash=2166136261;for(const c of id)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const rom=[0x28,hash&255,hash>>>8&255,hash>>>16&255,hash>>>24,0x43,0x46];return Uint8Array.from([...rom,crc8(rom)]);}
+export class DS18B20 {
+ constructor(id){this.rom=sensorROM(id);this.eeprom=[75,70,0x7f];this.temperature=25;this.reset();}
+ reset(){this.scratch=Uint8Array.from([0x50,0x05,...this.eeprom,0xff,0x0c,0x10,0]);this.convertUntil=0;this.conversions=0;this.resetBus();this.checksum();}
+ checksum(){this.scratch[8]=crc8(this.scratch.slice(0,8));}
+ resetBus(){this.phase='rom';this.bit=0;this.byte=0;this.bytes=[];this.tx=[];this.searchBit=0;this.searchStep=0;this.selected=true;}
+ tick(cycle){if(this.convertUntil&&cycle>=this.convertUntil){const resolution=(this.scratch[4]>>5)&3,mask=[7,3,1,0][resolution],raw=Math.round(this.temperature*16)&~mask;this.scratch[0]=raw&255;this.scratch[1]=raw>>8&255;this.checksum();this.convertUntil=0;this.conversions++;}}
+ output(cycle){this.tick(cycle);if(!this.selected)return null;if(this.phase==='tx')return this.tx.length?this.tx.shift():1;if(this.phase==='search'){const bit=(this.rom[this.searchBit>>3]>>(this.searchBit&7))&1;if(this.searchStep<2){const out=this.searchStep===0?bit:1-bit;this.searchStep++;return out;}return null;}if(this.phase==='converting')return this.convertUntil?0:1;return null;}
+ send(bytes){this.tx=bytes.flatMap(v=>Array.from({length:8},(_,i)=>(v>>i)&1));this.phase='tx';}
+ input(high,cycle){if(!this.selected)return;if(this.phase==='search'&&this.searchStep===2){const expected=(this.rom[this.searchBit>>3]>>(this.searchBit&7))&1;if(Number(high)!==expected){this.selected=false;return;}this.searchStep=0;if(++this.searchBit===64)this.phase='function';return;}if(!['rom','match','function','write'].includes(this.phase))return;this.byte|=(high?1:0)<<this.bit;if(++this.bit<8)return;const value=this.byte;this.byte=0;this.bit=0;
+ if(this.phase==='rom'){if(value===0xcc)this.phase='function';else if(value===0x55){this.phase='match';this.bytes=[];}else if(value===0x33)this.send([...this.rom]);else if(value===0xf0||value===0xec){this.phase='search';this.searchBit=0;this.searchStep=0;if(value===0xec&&!this.alarm)this.selected=false;}else this.selected=false;}
+ else if(this.phase==='match'){this.bytes.push(value);if(this.bytes.length===8){this.selected=this.bytes.every((b,i)=>b===this.rom[i]);this.phase='function';}}
+ else if(this.phase==='write'){this.bytes.push(value);if(this.bytes.length===3){this.scratch.set([this.bytes[0],this.bytes[1],(this.bytes[2]&0x60)|0x1f],2);this.checksum();this.phase='function';}}
+ else if(value===0x44){this.convertUntil=cycle+[93.75,187.5,375,750][(this.scratch[4]>>5)&3]*16000;this.phase='converting';}else if(value===0xbe){this.tick(cycle);this.send([...this.scratch]);}else if(value===0x4e){this.phase='write';this.bytes=[];}else if(value===0xb4){this.tx=[1];this.phase='tx';}else if(value===0x48){this.eeprom=Array.from(this.scratch.slice(2,5));}else if(value===0xb8){this.scratch.set(this.eeprom,2);this.checksum();}}
+ get alarm(){const temp=((this.scratch[1]<<8)|this.scratch[0])<<16>>16;return(temp/16)>=((this.scratch[2]<<24)>>24)||(temp/16)<=((this.scratch[3]<<24)>>24);}
+ state(cycle=0){this.tick(cycle);return{temperature:this.temperature,lastTemperature:(((this.scratch[1]<<8)|this.scratch[0])<<16>>16)/16,resolution:9+((this.scratch[4]>>5)&3),converting:!!this.convertUntil,conversions:this.conversions,rom:Array.from(this.rom),scratch:Array.from(this.scratch),phase:this.phase};}
+}

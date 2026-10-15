@@ -1,0 +1,4 @@
+export const SEMICONDUCTOR_ASSETS={
+ npn:{name:'Transistör (NPN)',asset:'p2n2222a-to92.svg',width:36,height:58,package:'TO-92',source:'https://www.onsemi.com/pdf/datasheet/p2n2222a-d.pdf',pins:[{id:'C',name:'Collector',number:1,x:8.4,y:51,net:'C'},{id:'B',name:'Base',number:2,x:18,y:51,net:'B'},{id:'E',name:'Emitter',number:3,x:27.6,y:51,net:'E'}],orientation:'Ön yüz · soldan sağa C / B / E',model:'DC: β=100 · VBE=0.7V · VCEsat=0.2V'},
+ mosfet:{name:'MOSFET (N kanal)',asset:'irlz44n-to220.svg',width:48,height:84,package:'TO-220',source:'https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlz44n-datasheet-en.pdf',pins:[{id:'G',name:'Gate',number:1,x:14.4,y:77,net:'G'},{id:'D',name:'Drain',number:2,x:24,y:77,net:'D'},{id:'S',name:'Source',number:3,x:33.6,y:77,net:'S'},{id:'D.TAB',name:'Drain tab',number:4,x:36,y:12,net:'D',mountable:false}],orientation:'Ön yüz · G / D / S · tab = D',model:'DC anahtar: VGS≥4V · RDS=35mΩ · S→D diyot 0.7V'},
+};

@@ -1,0 +1,29 @@
+{
+  "scope": "compiler/linker only; runtime unverified",
+  "compilerSha256": "7546c54c07c392e231ea450f8e3aaa6680346ffeb08e13d97d970b26d88666e5",
+  "objects": [
+    {
+      "cpu": "cortex-m3",
+      "machine": 40,
+      "bytes": 968,
+      "sha256": "9dc7acb2f44bfd229c4bb334b8912e1f6c96aa42ce166d8ef45020dcc2018f13"
+    },
+    {
+      "cpu": "cortex-m4",
+      "machine": 40,
+      "bytes": 976,
+      "sha256": "1c826cc1874c0a16d31c7de76104c23aab52f4796f91a2da4688f3fe85e33f90"
+    }
+  ],
+  "f103c8": {
+    "flashBytes": 65536,
+    "ramBytes": 20480,
+    "machine": 40,
+    "entry": 134217737,
+    "initialSP": 536891392,
+    "resetVector": 134217737,
+    "elfSha256": "d70ea6dac4e1cb6cb016c9a9fc73c10f15f7a0bdfa65a8666d99fdb4debf092d",
+    "ramOverflowRejected": true,
+    "flashOverflowRejected": true
+  }
+}

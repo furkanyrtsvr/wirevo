@@ -1,0 +1,47 @@
+{
+  "esp32c3": {
+    "clockOutput": "WRAP_US=9987\r\nWRAP_MS=4\r\n",
+    "flashBytes": 1024,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true
+  },
+  "esp32c6": {
+    "clockOutput": "WRAP_US=9987\r\nWRAP_MS=4\r\n",
+    "flashBytes": 1024,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true
+  },
+  "esp32h2": {
+    "clockOutput": "WRAP_US=9990\r\nWRAP_MS=4\r\n",
+    "flashBytes": 1040,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true
+  },
+  "esp32c5": {
+    "clockOutput": "WRAP_US=9986\r\nWRAP_MS=4\r\n",
+    "flashBytes": 9232,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true
+  },
+  "esp32p4": {
+    "clockOutput": "WRAP_US=9985\r\nWRAP_MS=4\r\n",
+    "flashBytes": 9184,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true
+  },
+  "esp32s3": {
+    "clockOutput": "WRAP_US=9986\r\nWRAP_MS=4\r\n",
+    "flashBytes": 1392,
+    "ramOverflowRejected": true,
+    "unsupportedADCRejected": true,
+    "unsupportedWiFiRejected": true,
+    "iramAliasOverlapPrevented": true,
+    "gpio42High": true,
+    "gpio46Output": true
+  }
+}

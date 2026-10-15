@@ -1,0 +1,227 @@
+{
+  "esp32c3:blink": {
+    "source": "const int LED = 2;\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  Serial.begin(115200);\n  Serial.println(\"CircuitForge ESP · Blink\");\n}\nvoid loop() {\n  digitalWrite(LED, HIGH);\n  Serial.println(\"LED ON\");\n  delay(20);\n  digitalWrite(LED, LOW);\n  Serial.println(\"LED OFF\");\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"const int LED = 2;\\nvoid setup() {\\n  pinMode(LED, OUTPUT);\\n  Serial.begin(115200);\\n  Serial.println(\\\"CircuitForge ESP · Blink\\\");\\n}\\nvoid loop() {\\n  digitalWrite(LED, HIGH);\\n  Serial.println(\\\"LED ON\\\");\\n  delay(20);\\n  digitalWrite(LED, LOW);\\n  Serial.println(\\\"LED OFF\\\");\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QECAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QFQDAAA34c0/EwEBcaEsAaAlRbeVAGA3RgBgkwYAKCYFyMUjLtZUDFI3BQBgkwawFZPlRQAM0jcHOEATBwczkwUwBFTJEwYXAJMGpwEMwYNFBgAFBuMc1v43BQBgtUUMwalFDMGCgEERIsYmxDdIAGARRrcGOECThqY0kwXABDcFAGAjJMgAE4YWAJ0GDMGDRQYABQbjHNb+twUAYLVGqUdRRpMIACcTBxAntwTJP5OEBACUwbfWzMycwbdVYhCTg9bME4M13ZMCgD7zJgDA8yUAwJWNoYFj6bgAAQDzJQDAlY2hgePr5f5zLgDAA68EAZxAg65EAIOvhADURLMH/kCztXcC+pcT1HUAk/UF+BMVVAAulYmPM7V3ApNVdQATdQX4LpSWBS6Vop6ilomPnMgztWYCGYGqnzMFVQKJjn0WI6DEASOi1AEjpPQB1MQ1/hFFNwc4QBMHhzKTBcAEIyaoADcGAGCTBhcAIQcMwoPFBgCFBuOc5v43BQBgNUYpR9FFEwgAJ5MGECcQwTfWzMwYwTdVYhATA9bMkwI13ZMIgD5zJgDAcyUAwBGNIYFjaagAAQBzJQDAEY0hgeNr1f7zIwDAA64EAYBAg65EAAOvhADIRDOEg0AzNmQCIp6TV3YAE3YG+BOUVwAiljMGzkAzNGYCE1d0ABN0BPi6lxYHIpe+nj6VGY6QyDM2VQIZgjKfMwYWAxGN/RUjoHQAI6LUASOk5AHIxK39MkSiREEBgoARyiqWqoYThxYAI4C2ALqG4xvH/oKACc4qlqqGA8cFAIUFk4cWACOA5gC+huOYx/6CgAERBs4izCbKSshOxlLEtwXJP5OFRQE3Bck/EwUFAGN4tQCJjSMABQD9FQUF5f03BMk/EwQEALcEyT+ThAQAY/eEAIhAApWRBOPthP6FMzcEyT8TBAQAN9XMzLdVYhATCtXME4k13ZMJgD5zKADADEgQQFRAGERcRDMGyECzNEYDspUT1XQAk/QE+BMWVQAmlpGNM7ZFA5NUdgATdgb4JpWWBCaWqpY+lZGNDMizNSUDmYEul7OFNQMNjSMgBAFUwBjESMQ9O1W3TEVEIE9GRgBDaXJjdWl0Rm9yZ2UgRVNQIMK3IEJsaW5rAExFRCBPTgAAAAAAAAAAAAAAAAAAAKs=",
+    "staticRamBytes": 20,
+    "flashBytes": 896,
+    "output": "CircuitForge ESP · Blink\r\nLED ON\r\nLED OFF\r\nLED ON\r\nLED OFF\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  },
+  "esp32c3:button": {
+    "source": "void setup() {\n  pinMode(2, OUTPUT);\n  pinMode(3, INPUT_PULLUP);\n  Serial.begin(115200);\n}\nvoid loop() {\n  int pressed = digitalRead(3) == LOW;\n  digitalWrite(2, pressed);\n  Serial.print(\"BUTTON=\");\n  Serial.println(pressed);\n  delay(10);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  pinMode(2, OUTPUT);\\n  pinMode(3, INPUT_PULLUP);\\n  Serial.begin(115200);\\n}\\nvoid loop() {\\n  int pressed = digitalRead(3) == LOW;\\n  digitalWrite(2, pressed);\\n  Serial.print(\\\"BUTTON=\\\");\\n  Serial.println(pressed);\\n  delay(10);\\n}\\n\"}]}",
+    "bin": "6QECAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QBgDAAA34c0/EwEBcYEkAaAlRbeVAGA3RgBgkwYAKCYFyMUjLtZUGFITBQUQE2dHABjSiMkjINZWCFK3BQBgkwawFV2ZCNLUyYKAN0YAYEhecgV9gRnBMQYRoCEGQREGxiLEkUY3BzhAEwcHMZMFIAQUwjcGAGCTBhcAIQcMwoPFBgCFBuOc5v6TRRUANwXJPxMFBQApRilE2SA3BQBgtUYTCAAnkwUQJ7cPyT+Tj08AN9fMzBTBt1diEADBEwPXzJOCN92TCIA+cyUAwPMnAMCJj6GDY2n4AAEA8ycAwImPoYPj67f+8yMAwIOuDwEDpw8AA65PAAOvjwCDps8AM4fjQLM3ZwJ2lxPWdwCT9wf4ExVWAD6VCY8zNWcCk1d1ABN1Bfg+lpYHPpUynjaWCY8jqO8AMzVWAhmBKp8zBRUDCY59FCOgfwAjos8BI6TvASOmzwA1+LJAIkRBAYKAY9MFBqlGYxDWBgERNwYAYJMG0AKzBbBAEwXx/xTCN9bMzBMG1swlSC6Hs7fFApPVNwCT94cPk5YVALMH90CVj5PmBwOjANUABQXjb+j8kwXx/zcGAGCDRgUAfRUUwuMctf4FYYKACaATBfb+xVZjZtUEARGTBvH/KUguh7PVxQIzhcUCMwWnQGNlBQETBXUDGaATBQUDk4cWAKOApgC+huN9x/wTBfH/twUAYAPGBwD9F5DB45yn/gVhgoARyiqWqoYThxYAI4C2ALqG4xvH/oKACc4qlqqGA8cFAIUFk4cWACOA5gC+huOYx/6CgAERBs4izCbKSshOxlLEtwXJP5OFhQE3Bck/EwUFAGN4tQCJjSMABQD9FQUF5f03BMk/EwQEALcEyT+ThAQAY/eEAIhAApWRBOPthP6lOzcEyT8TBEQAN9XMzLdVYhATCtXME4k13ZMJgD5zKADADEgQQFRAGERcRDMGyECzNEYDspUT1XQAk/QE+BMWVQAmlpGNM7ZFA5NUdgATdgb4JpWWBCaWqpY+lZGNDMizNSUDmYEul7OFNQMNjSMgBAFUwBjESMQtO1W3QlVUVE9OPQAAAAAAAAAAhg==",
+    "staticRamBytes": 24,
+    "flashBytes": 832,
+    "output": "BUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\n",
+    "sawHigh": true,
+    "sawLow": false
+  },
+  "esp32c3:echo": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.println(\"ESP UART READY\");\n}\nvoid loop() {\n  while (Serial.available()) {\n    int c = Serial.read();\n    Serial.write(c);\n  }\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.println(\\\"ESP UART READY\\\");\\n}\\nvoid loop() {\\n  while (Serial.available()) {\\n    int c = Serial.read();\\n    Serial.write(c);\\n  }\\n}\\n\"}]}",
+    "bin": "6QECAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QHQBAAA34c0/EwEBcUkoAaA3BQBgEwawFbcGOECThiYWkwVQBFDJE4YWAL0GDMGDRQYABQbjHNb+NwUAYLVFDMGpRQzBgoA3BQBgTE2T9fU/ic1MTZP19T+JxQxBk/X1DxmgkwXwDwzBzbeCgBHKKpaqhhOHFgAjgLYAuobjG8f+goAJziqWqoYDxwUAhQWThxYAI4DmAL6G45jH/oKAAREGziLMJspKyE7GUsS3Bck/k4VFATcFyT8TBQUAY3i1AImNIwAFAP0VBQXl/TcEyT8TBAQAtwTJP5OEBABj94QAiEAClZEE4+2E/h03NwTJPxMEBAA31czMt1ViEBMK1cwTiTXdkwmAPnMoAMAMSBBAVEAYRFxEMwbIQLM0RgOylRPVdACT9AT4ExZVACaWkY0ztkUDk1R2ABN2BvgmlZYEJpaqlj6VkY0MyLM1JQOZgS6Xs4U1Aw2NIyAEAVTAGMRIxNU1VbdFU1AgVUFSVCBSRUFEWQAAAAAAAAAAAAAAAAAAAEM=",
+    "staticRamBytes": 20,
+    "flashBytes": 416,
+    "output": "ESP UART READY\r\nESP_UART_ACCEPT\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c3:counter": {
+    "source": "struct Counter {\n  unsigned value;\n  Counter() : value(37) {}\n};\nCounter count;\nvolatile byte memory[2048];\nvoid setup() {\n  Serial.begin(115200);\n  memory[0] = 37;\n  memory[2047] = 77;\n}\nvoid loop() {\n  Serial.print(\"COUNT=\");\n  Serial.print(count.value++);\n  Serial.print(\" RAM=\");\n  Serial.print((unsigned)memory[0]);\n  Serial.print(\"/\");\n  Serial.print((unsigned)memory[2047]);\n  Serial.print(\" ms=\");\n  Serial.println(millis());\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"struct Counter {\\n  unsigned value;\\n  Counter() : value(37) {}\\n};\\nCounter count;\\nvolatile byte memory[2048];\\nvoid setup() {\\n  Serial.begin(115200);\\n  memory[0] = 37;\\n  memory[2047] = 77;\\n}\\nvoid loop() {\\n  Serial.print(\\\"COUNT=\\\");\\n  Serial.print(count.value++);\\n  Serial.print(\\\" RAM=\\\");\\n  Serial.print((unsigned)memory[0]);\\n  Serial.print(\\\"/\\\");\\n  Serial.print((unsigned)memory[2047]);\\n  Serial.print(\\\" ms=\\\");\\n  Serial.println(millis());\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QICAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QCQEAAA34c0/EwEBcZEmAaA3BQBgkwWwFUzJNwXJPxMFRQCTBVACIwC1AJMF0ASjD7V+goB5cSLWtwY4QJOGRkGTBTAENwUAYBOGFgCdBgzBg0UGAAUG4xzW/jcGyT8DJQYAkwWxAJMGFQAjINYAN9bMzBMG1swlSCqHszfFAhPVNwCT94cPkxYVALMH90CVj5PmBwOjgNUAhQXjb+j8EwWxADcGAGCDxgUA/RUUwuOcpf43BzhAEwe3QRMGAAK3BQBgkwYXABkHkMEDxgYAhQbjnOb+twXJP4PGRQC31czMk4XVzCVINoezt7YCk9Y3AJP3hw8TlhYAswf3QJGPE+YHA6MAxQAFBeNv6PwTBrEAtwUAYINGBQB9FZTB4xzF/jcFAGCTBfACDME3Fck/g0Y1gDfVzMwTBdXMJUg2h7O3pgKT1jcAk/eHD5OVFgCzB/dAjY+T5QcDowC2AAUG42/o/JMFsQA3BQBgg0YGAH0WFMHjHLb+NwYAYBMIAAKTCNAGkwcwB5MG0AO3Hsk/k45OgDfXzMwjIAYBIyAWARzCFMJzKADAEw7XzAOjDgGDpw4Ag6JOAIOojgCDo84Aswf4QDO3xwM+k5NXdwATdwf4k5ZXALqWMwPTQDM3wwOTVncAE3cH+LaXlga6lr6SnpezBtNAN1diECOo3gATA4A+Ewc33TO35wKTVmcAtpizhmYClY8joA4BI6JeACOkHgEjpv4ApUbGhzO3yAOTWDcAE3eHDxOWGAAzh+dAEY8TZgcDo4DFAIUF4+/2/BMGsQC3BgBgA8cFAP0VmMLjnMX+NwYAYDVHqUfRRRMIACeTBhAnGMI318zMHMI3VmIQEwPXzJMCNt2TCIA+cyYAwPMnAMCRj6GDY2n4AAEA8ycAwJGPoYPj69f+8yMAwAOvDgEDpw4AA65OAIOvjgADpM4AM4fjQLM3ZwJ6lxPVdwCT9wf4ExZVAD6WEY8zNmcCk1d2ABN2Bvg+lZYHPpYqniKVEY8jqO4AMzZVAhmCsp8zBhYDEY39FSOgfgAjos4BI6T+ASOmrgC1+TJURWGCgBHKKpaqhhOHFgAjgLYAuobjG8f+goAJziqWqoYDxwUAhQWThxYAI4DmAL6G45jH/oKAAREGziLMJspKyE7GUsS3Fck/k4WFgTcFyT8TBUUAY3i1AImNIwAFAP0VBQXl/TcEyT8TBEQAtwTJP5OERABj94QAiEAClZEE4+2E/pU5NxTJPxMERIA31czMt1ViEBMK1cwTiTXdkwmAPnMoAMAMSBBAVEAYRFxEMwbIQLM0RgOylRPVdACT9AT4ExZVACaWkY0ztkUDk1R2ABN2BvgmlZYEJpaqlj6VkY0MyLM1JQOZgS6Xs4U1Aw2NIyAEAVTAGMRIxAUxVbdDT1VOVD0AIFJBTT0AAAAAAADJPwQAAAAlAAAAAAAAAAAAAAAAAAAAAAAAgQ==",
+    "staticRamBytes": 2072,
+    "flashBytes": 1120,
+    "output": "COUNT=37 RAM=37/77 ms=0\r\nCOUNT=38 RAM=37/77 ms=20\r\nCOUNT=39 RAM=37/77 ms=40\r\nCOUNT=40 RAM=37/77 ms=60\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c3:format": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.print(F(\"HEX=\"));\n  Serial.println(0xDEADBEEFUL, HEX);\n  Serial.print(\"BIN=\");\n  Serial.println(42, BIN);\n  Serial.print(\"SIGNED=\");\n  Serial.println(-2147483647L - 1);\n  Serial.print(\"CHAR=\");\n  Serial.println('A');\n  const byte bytes[] = {79, 75, 13, 10};\n  Serial.write(bytes, sizeof(bytes));\n}\nvoid loop() {}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.print(F(\\\"HEX=\\\"));\\n  Serial.println(0xDEADBEEFUL, HEX);\\n  Serial.print(\\\"BIN=\\\");\\n  Serial.println(42, BIN);\\n  Serial.print(\\\"SIGNED=\\\");\\n  Serial.println(-2147483647L - 1);\\n  Serial.print(\\\"CHAR=\\\");\\n  Serial.println('A');\\n  const byte bytes[] = {79, 75, 13, 10};\\n  Serial.write(bytes, sizeof(bytes));\\n}\\nvoid loop() {}\\n\"}]}",
+    "bin": "6QECAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QLgCAAA34c0/EwEBceEqAaABETcGAGATBbAVkwWABJMGUARIyhMHgAUMwpMH0AMUwgqFGMIsABzCN8at3hMG9u6pRhN39gBjZdcAEwd3AxmgEwcHAyMA5QAFBRGC4xO1/pMFcQATBfH/NwYAYIPGBQD9FRTC45yl/rcFAGA1RqlGEwcgBJDBEwaQBJTBkwbgBJjBEwfQA5DBkwcAA5TBkwYQA5jBEwZRACMA8QCjANEAIwHxAKMB0QAjAvEAowLRAINGBgB9FpTB4xym/rcFAGA1RqlGNwc4QBMH5yqQwRMGMAWUwZMGFwAhB5DBA8YGAIUG45zm/rcFAGATCNACkwaAAxMHQAOTAmADEwYwA5MIcAMjoAUBkwcQAyMA0QCjAOEAIwFRAKMBwQATBpEAIwLRAKMC4QAjAxEBowPhAJMGIAMjBPEAowTRAINGBgB9FpTB4xym/jcFAGC1RSlGtwY4QJOGhioMwZMFMAQQwROGFgCZBgzBg0UGAAUG4xzW/jcFAGCTBRAENUYMwalFEME3Vg0KDMGKhRMG9rQywFAAg8YFAIUFFMHjnMX+BWGCgIKAEcoqlqqGE4cWACOAtgC6huMbx/6CgAnOKpaqhgPHBQCFBZOHFgAjgOYAvobjmMf+goABEQbOIswmykrITsZSxLcFyT+ThUUBNwXJPxMFBQBjeLUAiY0jAAUA/RUFBeX9NwTJPxMEBAC3BMk/k4QEAGP3hACIQAKVkQTj7YT+xTM3BMk/EwQEADfVzMy3VWIQEwrVzBOJNd2TCYA+cygAwAxIEEBUQBhEXEQzBshAszRGA7KVE9V0AJP0BPgTFlUAJpaRjTO2RQOTVHYAE3YG+CaVlgQmlqqWPpWRjQzIszUlA5mBLpezhTUDDY0jIAQBVMAYxEjEITdVt0NIQVI9AFNJR05FRD0AAAAAAAAAAAAACw==",
+    "staticRamBytes": 20,
+    "flashBytes": 736,
+    "output": "HEX=DEADBEEF\r\nBIN=101010\r\nSIGNED=-2147483648\r\nCHAR=A\r\nOK\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c3:multifile": {
+    "source": "#include \"lib/blinker.hpp\"\nBlinker led(2);\nvoid setup() { Serial.begin(115200); led.begin(); }\nvoid loop() { led.tick(); delay(20); }\n",
+    "files": [
+      {
+        "name": "lib/blinker.hpp",
+        "content": "#pragma once\n#include \"Arduino.h\"\nclass Blinker {\n  byte pin;\n  bool high = false;\npublic:\n  Blinker(byte p) : pin(p) {}\n  void begin();\n  void tick();\n};\n"
+      },
+      {
+        "name": "lib/blinker.cpp",
+        "content": "#include \"blinker.hpp\"\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\nvoid Blinker::tick() {\n  high = !high;\n  digitalWrite(pin, high);\n  Serial.println(high ? \"MULTI HIGH\" : \"MULTI LOW\");\n}\n"
+      }
+    ],
+    "sourceKey": "{\"chip\":\"esp32c3\",\"files\":[{\"name\":\"lib/blinker.cpp\",\"content\":\"#include \\\"blinker.hpp\\\"\\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\\nvoid Blinker::tick() {\\n  high = !high;\\n  digitalWrite(pin, high);\\n  Serial.println(high ? \\\"MULTI HIGH\\\" : \\\"MULTI LOW\\\");\\n}\\n\"},{\"name\":\"lib/blinker.hpp\",\"content\":\"#pragma once\\n#include \\\"Arduino.h\\\"\\nclass Blinker {\\n  byte pin;\\n  bool high = false;\\npublic:\\n  Blinker(byte p) : pin(p) {}\\n  void begin();\\n  void tick();\\n};\\n\"},{\"name\":\"sketch.ino\",\"content\":\"#include \\\"lib/blinker.hpp\\\"\\nBlinker led(2);\\nvoid setup() { Serial.begin(115200); led.begin(); }\\nvoid loop() { led.tick(); delay(20); }\\n\"}]}",
+    "bin": "6QICAAAAOEAAAAAABQAAAAAAAAAAAAAAAAA4QLACAAA34c0/EwEBcRkqAaC3BQBgEwawFTcFyT8TBQUA0MnhokERBsYixDcFyT8TBQUA/SpRRRMIACcTBhAntw/JP5OPTwC31czMt1diEBOD1cyTgjfdkwiAPvMlAMDzJwDAjY+hg2Np+AABAPMnAMCNj6GD4+vH/vMjAMCDrg8BA6cPAAOuTwADr48AA6TPADOH40CzNWcCdpeT13UAk/UF+JOWVwC2lQ2PszVnApPWdQCT9QX4tpeWBraVPp6ilw2PI6jvALO1VwKZgS6fs4UVA42PfRUjoH8AI6LPASOk7wEjpv8ANfmyQCJEQQGCgBHKKpaqhhOHFgAjgLYAuobjG8f+goAJziqWqoYDxwUAhQWThxYAI4DmAL6G45jH/oKAAREGziLMJspKyE7GUsS3Bck/k4WFATcFyT8TBUUAY3i1AImNIwAFAP0VBQXl/TcEyT8TBCQAtwTJP5OEJABj94QAiEAClZEE4+2E/k01NwTJPxMERAA31czMt1ViEBMK1cwTiTXdkwmAPnMoAMAMSBBAVEAYRFxEMwbIQLM0RgOylRPVdACT9AT4ExZVACaWkY0ztkUDk1R2ABN2BvgmlZYEJpaqlj6VkY0MyLM1JQOZgS6Xs4U1Aw2NIyAEAVTAGMRIxD09VbcDRQUArUVjaLUAkwXl/g1GY3O2AIKAkxUlADeWAGClRi6WpgZUwjdGAGCTBgYCtpWTBgAoI6rVUgxShUYzlaYATY0I0oKAg0UVAANGBQCTxhUALUejANUAY23mABMF5v6NRmP4pgCN4bcFOECThaUpBaAFRTMVxQA3RgBgmeEhBhGgMQYIwu3RtwU4QJOFVSoDxQUACcmFBTcGAGAIwgPFBQCFBWX9NwUAYLVFDMGpRQzBgoBNVUxUSSBISUdIAE1VTFRJIExPVwAAAADJPwQAAAACAAAAAAAACw==",
+    "staticRamBytes": 24,
+    "flashBytes": 736,
+    "output": "MULTI HIGH\r\nMULTI LOW\r\nMULTI HIGH\r\nMULTI LOW\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  },
+  "esp32c6:blink": {
+    "source": "const int LED = 2;\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  Serial.begin(115200);\n  Serial.println(\"CircuitForge ESP · Blink\");\n}\nvoid loop() {\n  digitalWrite(LED, HIGH);\n  Serial.println(\"LED ON\");\n  delay(20);\n  digitalWrite(LED, LOW);\n  Serial.println(\"LED OFF\");\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"const int LED = 2;\\nvoid setup() {\\n  pinMode(LED, OUTPUT);\\n  Serial.begin(115200);\\n  Serial.println(\\\"CircuitForge ESP · Blink\\\");\\n}\\nvoid loop() {\\n  digitalWrite(LED, HIGH);\\n  Serial.println(\\\"LED ON\\\");\\n  delay(20);\\n  digitalWrite(LED, LOW);\\n  Serial.println(\\\"LED OFF\\\");\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QECAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQFADAAA38YdAoSwBoCVFtwUJYDcWCWCTBgAoJgXIxSMu1lQMUjcFAGCTBrAVk+VFAAzSNweAQBMHxzKTBTAEVMkTBhcAkwanAQzBg0UGAAUG4xzW/jcFAGC1RQzBqUUMwYKAQREixibENxgJYBFGtwaAQJOGZjSTBcAENwUAYCMkyAAThhYAnQYMwYNFBgAFBuMc1v63BQBgtUapR1FGkwgAJxMHECe3BIFAk4QEAJTBt9bMzJzBt1ViEJOD1swTgzXdkwKAPvMmAMDzJQDAlY2hgWPpuAABAPMlAMCVjaGB4+vl/nMuAMADrwQBnECDrkQAg6+EANREswf+QLO1dwL6lxPUdQCT9QX4ExVUAC6ViY8ztXcCk1V1ABN1BfgulJYFLpWinqKWiY+cyDO1ZgIZgaqfMwVVAomOfRYjoMQBI6LUASOk9AHUxDX+EUU3B4BAEwdHMpMFwAQjJqgANwYAYJMGFwAhBwzCg8UGAIUG45zm/jcFAGA1RilH0UUTCAAnkwYQJxDBN9bMzBjBN1ViEBMD1syTAjXdkwiAPnMmAMBzJQDAEY0hgWNpqAABAHMlAMARjSGB42vV/vMjAMADrgQBgECDrkQAA6+EAMhEM4SDQDM2ZAIinpNXdgATdgb4E5RXACKWMwbOQDM0ZgITV3QAE3QE+LqXFgcil76ePpUZjpDIMzZVAhmCMp8zBhYDEY39FSOgdAAjotQBI6TkAcjErf0yRKJEQQGCgBHKKpaqhhOHFgAjgLYAuobjG8f+goAJziqWqoYDxwUAhQWThxYAI4DmAL6G45jH/oKAAREGziLMJspKyE7GUsS3BYFAk4VFATcFgUATBQUAY3i1AImNIwAFAP0VBQXl/TcEgUATBAQAtwSBQJOEBABj94QAiEAClZEE4+2E/oUzNwSBQBMEBAA31czMt1ViEBMK1cwTiTXdkwmAPnMoAMAMSBBAVEAYRFxEMwbIQLM0RgOylRPVdACT9AT4ExZVACaWkY0ztkUDk1R2ABN2BvgmlZYEJpaqlj6VkY0MyLM1JQOZgS6Xs4U1Aw2NIyAEAVTAGMRIxD07VbdMRUQgT0ZGAENpcmN1aXRGb3JnZSBFU1AgwrcgQmxpbmsATEVEIE9OAAAAAAAAAAAAAAAAAAAAAAAAAAw=",
+    "staticRamBytes": 20,
+    "flashBytes": 896,
+    "output": "CircuitForge ESP · Blink\r\nLED ON\r\nLED OFF\r\nLED ON\r\nLED OFF\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  },
+  "esp32c6:button": {
+    "source": "void setup() {\n  pinMode(2, OUTPUT);\n  pinMode(3, INPUT_PULLUP);\n  Serial.begin(115200);\n}\nvoid loop() {\n  int pressed = digitalRead(3) == LOW;\n  digitalWrite(2, pressed);\n  Serial.print(\"BUTTON=\");\n  Serial.println(pressed);\n  delay(10);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  pinMode(2, OUTPUT);\\n  pinMode(3, INPUT_PULLUP);\\n  Serial.begin(115200);\\n}\\nvoid loop() {\\n  int pressed = digitalRead(3) == LOW;\\n  digitalWrite(2, pressed);\\n  Serial.print(\\\"BUTTON=\\\");\\n  Serial.println(pressed);\\n  delay(10);\\n}\\n\"}]}",
+    "bin": "6QECAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQBQDAAA38YdAgSQBoCVFtwUJYDcWCWCTBgAoJgXIxSMu1lQYUhMFBRATZ0cAGNKIySMg1lYIUrcFAGCTBrAVXZkI0tTJgoA3FglgSF5yBX2BGcExBhGgIQZBEQbGIsSRRjcHgEATB8cwkwUgBBTCNwYAYJMGFwAhBwzCg8UGAIUG45zm/pNFFQA3BYFAEwUFAClGKUTZIDcFAGC1RhMIACeTBRAntw+BQJOPTwA318zMFMG3V2IQAMETA9fMk4I33ZMIgD5zJQDA8ycAwImPoYNjafgAAQDzJwDAiY+hg+Prt/7zIwDAg64PAQOnDwADrk8AA6+PAIOmzwAzh+NAszdnAnaXE9Z3AJP3B/gTFVYAPpUJjzM1ZwKTV3UAE3UF+D6Wlgc+lTKeNpYJjyOo7wAzNVYCGYEqnzMFFQMJjn0UI6B/ACOizwEjpO8BI6bPADX4skAiREEBgoBj0wUGqUZjENYGARE3BgBgkwbQArMFsEATBfH/FMI31szMEwbWzCVILoezt8UCk9U3AJP3hw+TlhUAswf3QJWPk+YHA6MA1QAFBeNv6PyTBfH/NwYAYINGBQB9FRTC4xy1/gVhgoAJoBMF9v7FVmNm1QQBEZMG8f8pSC6Hs9XFAjOFxQIzBadAY2UFARMFdQMZoBMFBQOThxYAo4CmAL6G433H/BMF8f+3BQBgA8YHAP0XkMHjnKf+BWGCgBHKKpaqhhOHFgAjgLYAuobjG8f+goAJziqWqoYDxwUAhQWThxYAI4DmAL6G45jH/oKAAREGziLMJspKyE7GUsS3BYFAk4WFATcFgUATBQUAY3i1AImNIwAFAP0VBQXl/TcEgUATBAQAtwSBQJOEBABj94QAiEAClZEE4+2E/qU7NwSBQBMERAA31czMt1ViEBMK1cwTiTXdkwmAPnMoAMAMSBBAVEAYRFxEMwbIQLM0RgOylRPVdACT9AT4ExZVACaWkY0ztkUDk1R2ABN2BvgmlZYEJpaqlj6VkY0MyLM1JQOZgS6Xs4U1Aw2NIyAEAVTAGMRIxC07VbdCVVRUT049AAAAAAAAAAAAAAAAFg==",
+    "staticRamBytes": 24,
+    "flashBytes": 832,
+    "output": "BUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\n",
+    "sawHigh": true,
+    "sawLow": false
+  },
+  "esp32c6:echo": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.println(\"ESP UART READY\");\n}\nvoid loop() {\n  while (Serial.available()) {\n    int c = Serial.read();\n    Serial.write(c);\n  }\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.println(\\\"ESP UART READY\\\");\\n}\\nvoid loop() {\\n  while (Serial.available()) {\\n    int c = Serial.read();\\n    Serial.write(c);\\n  }\\n}\\n\"}]}",
+    "bin": "6QECAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQHABAAA38YdASSgBoDcFAGATBrAVtwaAQJOG5hWTBVAEUMkThhYAvQYMwYNFBgAFBuMc1v43BQBgtUUMwalFDMGCgDcFAGBMTZP19T+JzUxNk/X1P4nFDEGT9fUPGaCTBfAPDMHNt4KAEcoqlqqGE4cWACOAtgC6huMbx/6CgAnOKpaqhgPHBQCFBZOHFgAjgOYAvobjmMf+goABEQbOIswmykrITsZSxLcFgUCThUUBNwWBQBMFBQBjeLUAiY0jAAUA/RUFBeX9NwSBQBMEBAC3BIFAk4QEAGP3hACIQAKVkQTj7YT+HTc3BIFAEwQEADfVzMy3VWIQEwrVzBOJNd2TCYA+cygAwAxIEEBUQBhEXEQzBshAszRGA7KVE9V0AJP0BPgTFlUAJpaRjTO2RQOTVHYAE3YG+CaVlgQmlqqWPpWRjQzIszUlA5mBLpezhTUDDY0jIAQBVMAYxEjE1TVVt0VTUCBVQVJUIFJFQURZAAAAAAAAAAAAAAAAAAAAAAAAAEg=",
+    "staticRamBytes": 20,
+    "flashBytes": 416,
+    "output": "ESP UART READY\r\nESP_UART_ACCEPT\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c6:counter": {
+    "source": "struct Counter {\n  unsigned value;\n  Counter() : value(37) {}\n};\nCounter count;\nvolatile byte memory[2048];\nvoid setup() {\n  Serial.begin(115200);\n  memory[0] = 37;\n  memory[2047] = 77;\n}\nvoid loop() {\n  Serial.print(\"COUNT=\");\n  Serial.print(count.value++);\n  Serial.print(\" RAM=\");\n  Serial.print((unsigned)memory[0]);\n  Serial.print(\"/\");\n  Serial.print((unsigned)memory[2047]);\n  Serial.print(\" ms=\");\n  Serial.println(millis());\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"struct Counter {\\n  unsigned value;\\n  Counter() : value(37) {}\\n};\\nCounter count;\\nvolatile byte memory[2048];\\nvoid setup() {\\n  Serial.begin(115200);\\n  memory[0] = 37;\\n  memory[2047] = 77;\\n}\\nvoid loop() {\\n  Serial.print(\\\"COUNT=\\\");\\n  Serial.print(count.value++);\\n  Serial.print(\\\" RAM=\\\");\\n  Serial.print((unsigned)memory[0]);\\n  Serial.print(\\\"/\\\");\\n  Serial.print((unsigned)memory[2047]);\\n  Serial.print(\\\" ms=\\\");\\n  Serial.println(millis());\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QICAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQCAEAAA38YdAkSYBoDcFAGCTBbAVTMk3BYFAEwVFAJMFUAIjALUAkwXQBKMPtX6CgHlxIta3BoBAk4YGQZMFMAQ3BQBgE4YWAJ0GDMGDRQYABQbjHNb+NwaBQAMlBgCTBbEAkwYVACMg1gA31szMEwbWzCVIKoezN8UCE9U3AJP3hw+TFhUAswf3QJWPk+YHA6OA1QCFBeNv6PwTBbEANwYAYIPGBQD9FRTC45yl/jcHgEATB3dBEwYAArcFAGCTBhcAGQeQwQPGBgCFBuOc5v63BYFAg8ZFALfVzMyThdXMJUg2h7O3tgKT1jcAk/eHDxOWFgCzB/dAkY8T5gcDowDFAAUF42/o/BMGsQC3BQBgg0YFAH0VlMHjHMX+NwUAYJMF8AIMwTcVgUCDRjWAN9XMzBMF1cwlSDaHs7emApPWNwCT94cPk5UWALMH90CNj5PlBwOjALYABQbjb+j8kwWxADcFAGCDRgYAfRYUweMctv43BgBgEwgAApMI0AaTBzAHkwbQA7cegUCTjk6AN9fMzCMgBgEjIBYBHMIUwnMoAMATDtfMA6MOAYOnDgCDok4Ag6iOAIOjzgCzB/hAM7fHAz6Tk1d3ABN3B/iTllcAupYzA9NAMzfDA5NWdwATdwf4tpeWBrqWvpKel7MG00A3V2IQI6jeABMDgD4TBzfdM7fnApNWZwC2mLOGZgKVjyOgDgEjol4AI6QeASOm/gClRsaHM7fIA5NYNwATd4cPE5YYADOH50ARjxNmBwOjgMUAhQXj7/b8EwaxALcGAGADxwUA/RWYwuOcxf43BgBgNUepR9FFEwgAJ5MGECcYwjfXzMwcwjdWYhATA9fMkwI23ZMIgD5zJgDA8ycAwJGPoYNjafgAAQDzJwDAkY+hg+Pr1/7zIwDAA68OAQOnDgADrk4Ag6+OAAOkzgAzh+NAszdnAnqXE9V3AJP3B/gTFlUAPpYRjzM2ZwKTV3YAE3YG+D6Vlgc+liqeIpURjyOo7gAzNlUCGYKynzMGFgMRjf0VI6B+ACOizgEjpP4BI6auALX5MlRFYYKAEcoqlqqGE4cWACOAtgC6huMbx/6CgAnOKpaqhgPHBQCFBZOHFgAjgOYAvobjmMf+goABEQbOIswmykrITsZSxLcVgUCThYWBNwWBQBMFRQBjeLUAiY0jAAUA/RUFBeX9NwSBQBMERAC3BIFAk4REAGP3hACIQAKVkQTj7YT+lTk3FIFAEwREgDfVzMy3VWIQEwrVzBOJNd2TCYA+cygAwAxIEEBUQBhEXEQzBshAszRGA7KVE9V0AJP0BPgTFlUAJpaRjTO2RQOTVHYAE3YG+CaVlgQmlqqWPpWRjQzIszUlA5mBLpezhTUDDY0jIAQBVMAYxEjEBTFVt0NPVU5UPQAgUkFNPQAAAAAAAIFABAAAACUAAAAAAABG",
+    "staticRamBytes": 2072,
+    "flashBytes": 1104,
+    "output": "COUNT=37 RAM=37/77 ms=0\r\nCOUNT=38 RAM=37/77 ms=20\r\nCOUNT=39 RAM=37/77 ms=40\r\nCOUNT=40 RAM=37/77 ms=60\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c6:format": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.print(F(\"HEX=\"));\n  Serial.println(0xDEADBEEFUL, HEX);\n  Serial.print(\"BIN=\");\n  Serial.println(42, BIN);\n  Serial.print(\"SIGNED=\");\n  Serial.println(-2147483647L - 1);\n  Serial.print(\"CHAR=\");\n  Serial.println('A');\n  const byte bytes[] = {79, 75, 13, 10};\n  Serial.write(bytes, sizeof(bytes));\n}\nvoid loop() {}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.print(F(\\\"HEX=\\\"));\\n  Serial.println(0xDEADBEEFUL, HEX);\\n  Serial.print(\\\"BIN=\\\");\\n  Serial.println(42, BIN);\\n  Serial.print(\\\"SIGNED=\\\");\\n  Serial.println(-2147483647L - 1);\\n  Serial.print(\\\"CHAR=\\\");\\n  Serial.println('A');\\n  const byte bytes[] = {79, 75, 13, 10};\\n  Serial.write(bytes, sizeof(bytes));\\n}\\nvoid loop() {}\\n\"}]}",
+    "bin": "6QECAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQLQCAAA38YdA4SoBoAERNwYAYBMFsBWTBYAEkwZQBEjKEweABQzCkwfQAxTCCoUYwiwAHMI3xq3eEwb27qlGE3f2AGNl1wATB3cDGaATBwcDIwDlAAUFEYLjE7X+kwVxABMF8f83BgBgg8YFAP0VFMLjnKX+twUAYDVGqUYTByAEkMETBpAElMGTBuAEmMETB9ADkMGTBwADlMGTBhADmMETBlEAIwDxAKMA0QAjAfEAowHRACMC8QCjAtEAg0YGAH0WlMHjHKb+twUAYDVGqUY3B4BAEwenKpDBEwYwBZTBkwYXACEHkMEDxgYAhQbjnOb+twUAYBMI0AKTBoADEwdAA5MCYAMTBjADkwhwAyOgBQGTBxADIwDRAKMA4QAjAVEAowHBABMGkQAjAtEAowLhACMDEQGjA+EAkwYgAyME8QCjBNEAg0YGAH0WlMHjHKb+NwUAYLVFKUa3BoBAk4ZGKgzBkwUwBBDBE4YWAJkGDMGDRQYABQbjHNb+NwUAYJMFEAQ1RgzBqUUQwTdWDQoMwYqFEwb2tDLAUACDxgUAhQUUweOcxf4FYYKAgoARyiqWqoYThxYAI4C2ALqG4xvH/oKACc4qlqqGA8cFAIUFk4cWACOA5gC+huOYx/6CgAERBs4izCbKSshOxlLEtwWBQJOFRQE3BYFAEwUFAGN4tQCJjSMABQD9FQUF5f03BIFAEwQEALcEgUCThAQAY/eEAIhAApWRBOPthP7FMzcEgUATBAQAN9XMzLdVYhATCtXME4k13ZMJgD5zKADADEgQQFRAGERcRDMGyECzNEYDspUT1XQAk/QE+BMWVQAmlpGNM7ZFA5NUdgATdgb4JpWWBCaWqpY+lZGNDMizNSUDmYEul7OFNQMNjSMgBAFUwBjESMQhN1W3Q0hBUj0AU0lHTkVEPQAAAAAAAAAAAAAAAAAA+w==",
+    "staticRamBytes": 20,
+    "flashBytes": 736,
+    "output": "HEX=DEADBEEF\r\nBIN=101010\r\nSIGNED=-2147483648\r\nCHAR=A\r\nOK\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32c6:multifile": {
+    "source": "#include \"lib/blinker.hpp\"\nBlinker led(2);\nvoid setup() { Serial.begin(115200); led.begin(); }\nvoid loop() { led.tick(); delay(20); }\n",
+    "files": [
+      {
+        "name": "lib/blinker.hpp",
+        "content": "#pragma once\n#include \"Arduino.h\"\nclass Blinker {\n  byte pin;\n  bool high = false;\npublic:\n  Blinker(byte p) : pin(p) {}\n  void begin();\n  void tick();\n};\n"
+      },
+      {
+        "name": "lib/blinker.cpp",
+        "content": "#include \"blinker.hpp\"\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\nvoid Blinker::tick() {\n  high = !high;\n  digitalWrite(pin, high);\n  Serial.println(high ? \"MULTI HIGH\" : \"MULTI LOW\");\n}\n"
+      }
+    ],
+    "sourceKey": "{\"chip\":\"esp32c6\",\"files\":[{\"name\":\"lib/blinker.cpp\",\"content\":\"#include \\\"blinker.hpp\\\"\\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\\nvoid Blinker::tick() {\\n  high = !high;\\n  digitalWrite(pin, high);\\n  Serial.println(high ? \\\"MULTI HIGH\\\" : \\\"MULTI LOW\\\");\\n}\\n\"},{\"name\":\"lib/blinker.hpp\",\"content\":\"#pragma once\\n#include \\\"Arduino.h\\\"\\nclass Blinker {\\n  byte pin;\\n  bool high = false;\\npublic:\\n  Blinker(byte p) : pin(p) {}\\n  void begin();\\n  void tick();\\n};\\n\"},{\"name\":\"sketch.ino\",\"content\":\"#include \\\"lib/blinker.hpp\\\"\\nBlinker led(2);\\nvoid setup() { Serial.begin(115200); led.begin(); }\\nvoid loop() { led.tick(); delay(20); }\\n\"}]}",
+    "bin": "6QICAAAAgEAAAAAADQAAAAAAAAAAAAAAAACAQKwCAAA38YdAGSoBoLcFAGATBrAVNwWBQBMFBQDQyeGiQREGxiLENwWBQBMFBQD9KlFFEwgAJxMGECe3D4FAk49PALfVzMy3V2IQE4PVzJOCN92TCIA+8yUAwPMnAMCNj6GDY2n4AAEA8ycAwI2PoYPj68f+8yMAwIOuDwEDpw8AA65PAAOvjwADpM8AM4fjQLM1ZwJ2l5PXdQCT9QX4k5ZXALaVDY+zNWcCk9Z1AJP1Bfi2l5YGtpU+nqKXDY8jqO8As7VXApmBLp+zhRUDjY99FSOgfwAjos8BI6TvASOm/wA1+bJAIkRBAYKAEcoqlqqGE4cWACOAtgC6huMbx/6CgAnOKpaqhgPHBQCFBZOHFgAjgOYAvobjmMf+goABEQbOIswmykrITsZSxLcFgUCThYUBNwWBQBMFRQBjeLUAiY0jAAUA/RUFBeX9NwSBQBMEJAC3BIFAk4QkAGP3hACIQAKVkQTj7YT+TTU3BIFAEwREADfVzMy3VWIQEwrVzBOJNd2TCYA+cygAwAxIEEBUQBhEXEQzBshAszRGA7KVE9V0AJP0BPgTFlUAJpaRjTO2RQOTVHYAE3YG+CaVlgQmlqqWPpWRjQzIszUlA5mBLpezhTUDDY0jIAQBVMAYxEjEPT1VtwNFBQC5RWNotQCTBRX/IUZjc7YAgoCTFSUANwYJYKVGLpamBlTCNxYJYJMGBgK2lZMGACgjqtVSDFKFRjOVpgBNjQjSgoCDRRUAA0YFAJPGFQA5R6MA1QBjbeYAEwUW/6FGY/imAI3htwWAQJOFZSkFoAVFMxXFADcWCWCZ4SEGEaAxBgjC7dG3BYBAk4UVKgPFBQAJyYUFNwYAYAjCA8UFAIUFZf03BQBgtUUMwalFDMGCgE1VTFRJIEhJR0gATVVMVEkgTE9XAAAAAIFABAAAAAIAAAAAAAAAAAAAVQ==",
+    "staticRamBytes": 24,
+    "flashBytes": 736,
+    "output": "MULTI HIGH\r\nMULTI LOW\r\nMULTI HIGH\r\nMULTI LOW\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  },
+  "esp32s3:blink": {
+    "source": "const int LED = 2;\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  Serial.begin(115200);\n  Serial.println(\"CircuitForge ESP · Blink\");\n}\nvoid loop() {\n  digitalWrite(LED, HIGH);\n  Serial.println(\"LED ON\");\n  delay(20);\n  digitalWrite(LED, LOW);\n  Serial.println(\"LED OFF\");\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"const int LED = 2;\\nvoid setup() {\\n  pinMode(LED, OUTPUT);\\n  Serial.begin(115200);\\n  Serial.println(\\\"CircuitForge ESP · Blink\\\");\\n}\\nvoid loop() {\\n  digitalWrite(LED, HIGH);\\n  Serial.println(\\\"LED ON\\\");\\n  delay(20);\\n  digitalWrite(LED, LOW);\\n  Serial.println(\\\"LED OFF\\\");\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QECAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QMgEAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgBlJQAG//8GBwAADJAAYAASAABcRQBgIEAAYBQAAGAAAABgpAQ4QDZBAH0Bgff/kfj/wCAAmQiB9/+SpQDAIACZCIH1/8AgAJgIDEqgmSDAIACZCIHx/5KhW8AgAJkITDwMGJKg/6Hv/xyrkMwQ0ez/wCAAyQ2KysIMABuIt5jqgef/DNnAIACZCAypwCAAmQgd8AYKAAAIQABgAAAAYL4EOEB/qQMAgKkDAACAyT+JiIiI001iEAxAAGCcBDhANkEAfQGB9P8MTMAgAMkITMoMGLKg/5Hy/7CqENHw/8AgAKkNiqmiCgAbiGZ46oHr/wzdwCAA2QgMrsAgAOkIHE+B6v+SoPCio+hg6gNQ6gNgVcBB5P9XNA7wIABQ6gNgVcBB4f9HNfBg6gNYCGkIUGbAUd//UEaiQEdBkDSCMGbAOEg6ZlBWolBXQZA1gjBmwGlISmVYGFpWWRhYOGplUdX/UFaiUFZBSChKRUkooFWCUGbAaTgL/1bv+PHP/8AgAMkPTMYMHPHN/7BmEFHD/8AgAGkFym9iBgAbzGaM6rG//8AgANkLwCAA6QscS8DqA9DqA8DdwOG7/9c+DvAgANDqA8DdwOG4/+c98MDqA9gIyQjQzMDRtv/Q7KLg50GQ/oLwzMD4SPrM0Nyi0NdBkP2C8MzAyUjqzdgY2tzZGNg4ys3RrP/Q3KLQ1kHoKOrt6Sig3YLQzMDJOAu7Vuv4HfAAAAA2QQB9ARa0AI0CMkgAG4gLRFZU/x3wPfA2QQB9ARYEAY0CkgMAkkgAG4gbMwtEVgT/HfAABgkAABSAyT8AgMk/AIDJPwCAyT+MAThAAIDJP4mIiIjTTWIQGAI4QDZBAH0BkfX/gfb/l7gOgJnADAqiSAALmRuIVln/YfH/UfL/Z7UJiAXgCABLVWc19YHv/+AIAGHu/1Kg8EKj6DHv/4DqA5gGiQaQiMCR6v+QqKKgp0FQuoKwiMC4RrqIkJiikJdBULmCsIjAiUaqiZgWmpiZFpg2iomR3/+QmKKQlkGoJqqpqSZAmYKQiMCJNuADAMbq/wAATEVEIE9GRgBDaXJjdWl0Rm9yZ2UgRVNQIMK3IEJsaW5rAExFRCBPTgAAAAAAAAAAAAAAnA==",
+    "staticRamBytes": 20,
+    "flashBytes": 1264,
+    "output": "CircuitForge ESP · Blink\r\nLED ON\r\nLED OFF\r\nLED ON\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  },
+  "esp32s3:button": {
+    "source": "void setup() {\n  pinMode(2, OUTPUT);\n  pinMode(3, INPUT_PULLUP);\n  Serial.begin(115200);\n}\nvoid loop() {\n  int pressed = digitalRead(3) == LOW;\n  digitalWrite(2, pressed);\n  Serial.print(\"BUTTON=\");\n  Serial.println(pressed);\n  delay(10);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  pinMode(2, OUTPUT);\\n  pinMode(3, INPUT_PULLUP);\\n  Serial.begin(115200);\\n}\\nvoid loop() {\\n  int pressed = digitalRead(3) == LOW;\\n  digitalWrite(2, pressed);\\n  Serial.print(\\\"BUTTON=\\\");\\n  Serial.println(pressed);\\n  delay(10);\\n}\\n\"}]}",
+    "bin": "6QECAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QPQEAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgAlHQAG//8GCAAADJAAYAASAABcRQBgIEAAYBCQAGAAEwAAYEUAYBQAAGA2QQB9AYH2/5H3/8AgAJkIgfb/kqUAwCAAmQiB9P/AIACoCAxLsKogwCAAqQih8P+x8f/AIAC5CqHw/8AgAJkKwCAAmAh8eqCZEMAgAJkIgev/kqFbwCAAmQgd8AYMAAA8QABgDEAAYAhAAGAAAABg7AQ4QACAyT8YBDhAf6kDAICpAwAEgMk/iYiIiNNNYhA2QQB9AYHy/8AgAIgIgINBDBmQiBAMCqcYBaHu/4YAAKHu/wxLwCAAuQpMLKKg/7Hs/6DMENHp/8AgAMkNmsvCDAAbmWaJ6gwZkLgwoeb/DKaB5f/NBuAIAIHg/wzZwCAAmQjAIABpCIHj/5Kg8KKj6LDqA8DqA7DMwNHc/8c9DvAgAMDqA7DMwNHZ/9c88LDqA8gIuQjAu8DB1//A26LQ10GQ7YLgu8DoSOq7wMuiwMdBkOyC4LvAuUjavMgYysvJGMg4urzBzf/Ay6LAxkHYKNrc2SigzILAu8C5OAtmVub4HfA2QQB9ARa0AI0CMkgAG4gLRFZU/x3wPfA2QQB9ARYEAY0CkgMAkkgAG4gbMwtEVgT/HfAABgkAABiAyT8AgMk/AIDJPwCAyT+MAThABIDJP4mIiIjTTWIQDAI4QDZBAH0BkfX/gfb/l7gOgJnADAqiSAALmRuIVln/YfH/UfL/Z7UJiAXgCABLVWc19YHv/+AIAGHu/1Kg8EKj6DHv/4DqA5gGiQaQiMCR6v+QqKKgp0FQuoKwiMC4RrqIkJiikJdBULmCsIjAiUaqiZgWmpiZFpg2iomR3/+QmKKQlkGoJqqpqSZAmYKQiMCJNuADAMbq/wAABgMAAJQEOEAAAABgzczMzDaBAH0BfPg3KFFmlE6B+v8s2cAgAJkIMMBgDAgMqTwKDJvdDMLHAIrswfT/wM2iwMNBkPyC8P3AoP8g8k4AG4jXO96SxwALmYqpogoAser/wCAAqQsLiFbY/h3wgeb/rQK9A80E4AgAHfAAAAYBAAAAAABgNoEAfQGCxO98GZc4QAwIPAkMqr0DQDvCQMOCwMvApzwFwsw3hgAAkMwg0scAit3CTQAbiEe725LHAAuZiqmiCgCx7v/AIACpCwuIVtj+HfBCVVRUT049AAAAAAAAAAAAAAAAeA==",
+    "staticRamBytes": 24,
+    "flashBytes": 1312,
+    "output": "BUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\nBUTTON=1\r\n",
+    "sawHigh": true,
+    "sawLow": false
+  },
+  "esp32s3:echo": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.println(\"ESP UART READY\");\n}\nvoid loop() {\n  while (Serial.available()) {\n    int c = Serial.read();\n    Serial.write(c);\n  }\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.println(\\\"ESP UART READY\\\");\\n}\\nvoid loop() {\\n  while (Serial.available()) {\\n    int c = Serial.read();\\n    Serial.write(c);\\n  }\\n}\\n\"}]}",
+    "bin": "6QECAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QDwDAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgBlDgAG//8GAwAAFAAAYAAAAGAsAzhANkEAfQGB+/+SoVvAIACZCExcDBiSoP+h+f8M+5DMENH2/8AgAMkNisrCDAAbiLeY6oHx/wzZwCAAmQgMqcAgAJkIHfAGAgAAHAAAYAAAAGA2QQB9AYH8/8AgAJgIgqP/gJkQFjkDkqD/off/wCAAqAqAuhCtCRarAKH0/8AgAKgKkKoQsfL/wCAAqQuh7//AIACoCoCqEFbq/B3wNkEAfQEWtACNAjJIABuIC0RWVP8d8D3wNkEAfQEWBAGNApIDAJJIABuIGzMLRFYE/x3wAAYJAAAUgMk/AIDJPwCAyT8AgMk/jAE4QACAyT+JiIiI001iEOABOEA2QQB9AZH1/4H2/5e4DoCZwAwKokgAC5kbiFZZ/2Hx/1Hy/2e1CYgF4AgAS1VnNfWB7//gCABh7v9SoPBCo+gx7/+A6gOYBokGkIjAker/kKiioKdBULqCsIjAuEa6iJCYopCXQVC5grCIwIlGqomYFpqYmRaYNoqJkd//kJiikJZBqCaqqakmQJmCkIjAiTbgAwDG6v8AAEVTUCBVQVJUIFJFQURZAAAAAAAK",
+    "staticRamBytes": 20,
+    "flashBytes": 864,
+    "output": "ESP UART READY\r\nESP_UART_ACCEPT\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32s3:counter": {
+    "source": "struct Counter {\n  unsigned value;\n  Counter() : value(37) {}\n};\nCounter count;\nvolatile byte memory[2048];\nvoid setup() {\n  Serial.begin(115200);\n  memory[0] = 37;\n  memory[2047] = 77;\n}\nvoid loop() {\n  Serial.print(\"COUNT=\");\n  Serial.print(count.value++);\n  Serial.print(\" RAM=\");\n  Serial.print((unsigned)memory[0]);\n  Serial.print(\"/\");\n  Serial.print((unsigned)memory[2047]);\n  Serial.print(\" ms=\");\n  Serial.println(millis());\n  delay(20);\n}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"struct Counter {\\n  unsigned value;\\n  Counter() : value(37) {}\\n};\\nCounter count;\\nvolatile byte memory[2048];\\nvoid setup() {\\n  Serial.begin(115200);\\n  memory[0] = 37;\\n  memory[2047] = 77;\\n}\\nvoid loop() {\\n  Serial.print(\\\"COUNT=\\\");\\n  Serial.print(count.value++);\\n  Serial.print(\\\" RAM=\\\");\\n  Serial.print((unsigned)memory[0]);\\n  Serial.print(\\\"/\\\");\\n  Serial.print((unsigned)memory[2047]);\\n  Serial.print(\\\" ms=\\\");\\n  Serial.println(millis());\\n  delay(20);\\n}\\n\"}]}",
+    "bin": "6QICAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QEwFAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgBlLwAG//8GAgAAFAAAYASAyT82QQB9AYH8/5KhW8AgAJkIgfv/LFnAIACSSACSp/+aiEzZwCAAkkgAHfA98AYLAAAAAABgPAU4QACAyT/NzMzMQwU4QASAyT8EiMk/iYiIiNNNYhB/qQMAgKkDADaBAH0BTDoMGLKg/5Hz/7CqEMHw/8AgAKkMiqmiCgAbiGZ46oHu/9gIG52ZCAwMDKg8CQya7Q3SxwDK/dHp/9DeotDTQYBtgmBuwJBmIGJPABvM5zre0scAC93K7eIOAPHd/8AgAOkPC8xW3P4sDgwc0dz/sO4Q8df/wCAA6Q/K7eIOABvMZmzqsdf/wCAA0gsADAztDdLHAMr90dH/0N6i0NNBgG2CYG7AkGYgYk8AG8znOt7SxwAL3crt4g4A8cX/wCAA6Q8LzFbc/sHC/yz9wCAA2QzCp//Ku8AgAMILAAwL3QzCxwC67MG9/8DNosDDQYD8gvD9wJD/IPJOABu71zrewscAC8y63NINAOGx/8AgANkOC7tW2/6xrv8sDMAgAMkLwqBtwCAAyQvCoHPAIADJCzzcwCAAyQvA6gOxq//YC8kL0NzA4an/4M2iwPdBwqDwwG+CYN3AaEtq3eDtouDnQcBugmDdwNlL+t7oG+rt6RvoO9ru0Z7/0N6i0GZB2Cva9vkr0qPo0GaCYO7A6TsMDm0P8scA6l/xkf/w9qLw80GAT4JARsCQRCBCRQAb7mc63pLHAAuZ6qmiCgDxhf/AIACpDwvuVt7+kYH/DNrAIACpCcAgAIkJHEiQ6gOg6gOQqsDhhP+nPg7wIACg6gOQqsDhgf/nOvCQ6gOoC5kLoJnAoXr/oOmi4OdBwP6C8JnA+Ev6maCpoqCnQcD6gvCZwJlL6pqoG6qpqRuoO5qaoXD/oKmioKZB6Cvq6ukr0KqCoJnAmTsLiFbo+B3wAAAANkEAfQEWtACNAjJIABuIC0RWVP8d8D3wNkEAfQEWBAGNApIDAJJIABuIGzMLRFYE/x3wAAYJAAAYiMk/BIDJPwSAyT8EgMk/jAE4QASIyT+JiIiI001iEMQBOEA2QQB9AZH1/4H2/5e4DoCZwAwKokgAC5kbiFZZ/2Hx/1Hy/2e1CYgF4AgAS1VnNfWB7//gCABh7v9SoPBCo+gx7/+A6gOYBokGkIjAker/kKiioKdBULqCsIjAuEa6iJCYopCXQVC5grCIwIlGqomYFpqYmRaYNoqJkd//kJiikJZBqCaqqakmQJmCkIjAiTbgAwDG6v8AAENPVU5UPQAgUkFNPQAAAAAAgMk/BAAAACUAAAAAAAAAAAAAUQ==",
+    "staticRamBytes": 2072,
+    "flashBytes": 1408,
+    "output": "COUNT=37 RAM=37/77 ms=0\r\nCOUNT=38 RAM=37/77 ms=20\r\nCOUNT=39 RAM=37/77 ms=40\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32s3:format": {
+    "source": "void setup() {\n  Serial.begin(115200);\n  Serial.print(F(\"HEX=\"));\n  Serial.println(0xDEADBEEFUL, HEX);\n  Serial.print(\"BIN=\");\n  Serial.println(42, BIN);\n  Serial.print(\"SIGNED=\");\n  Serial.println(-2147483647L - 1);\n  Serial.print(\"CHAR=\");\n  Serial.println('A');\n  const byte bytes[] = {79, 75, 13, 10};\n  Serial.write(bytes, sizeof(bytes));\n}\nvoid loop() {}\n",
+    "files": [],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"sketch.ino\",\"content\":\"void setup() {\\n  Serial.begin(115200);\\n  Serial.print(F(\\\"HEX=\\\"));\\n  Serial.println(0xDEADBEEFUL, HEX);\\n  Serial.print(\\\"BIN=\\\");\\n  Serial.println(42, BIN);\\n  Serial.print(\\\"SIGNED=\\\");\\n  Serial.println(-2147483647L - 1);\\n  Serial.print(\\\"CHAR=\\\");\\n  Serial.println('A');\\n  const byte bytes[] = {79, 75, 13, 10};\\n  Serial.write(bytes, sizeof(bytes));\\n}\\nvoid loop() {}\\n\"}]}",
+    "bin": "6QECAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QEwEAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgBlHwAG//8GBgAAFAAAYAAAAGDvvq3eQgQ4QDwEOEBPSw0KNoEAfQGB+P+SoVvAIACZCIH3/0yJwCAAmQhMWcAgAJkIXInAIACZCDzbwCAAuQiR8P8MDAz9PAoMqNDpEIc+BeLON4YAAKDuIPLHAMr/4k8AkJRBG8xmjOAMecLHAJrMwgwA0eL/wCAAyQ0LmWYJ6sHf/wzZwCAAmQzAIACJDEwtwCAA2QxMncAgANkMTO3AIADZDMAgALkMPBuyRwWiRwSyRwOiRwKyRwGiRwAMWsLHAKrMwgwA0c3/wCAAyQ0LqmYK6qHK/8AgAJkKwCAAiQpcPgwcoqD/0cf/oO4Q8cP/wCAA6Q/K7eIOABvMZozqwb//LN3AIADZDDwswkcJskcIPEuyRwc8fMJHBrJHBTyMwkcEPD3SRwM8bdJHArJHAcJHAAybwscAuszCDADRr//AIADJDQu7Zgvqsaz/wCAAmQvAIACJC0w9DBvBq/+g3RDhpv/AIADZDrrc0g0AG7tma+qhov9MG8AgALkKwCAAmQrAIACJCoGh/4kHDAiSxwCKmZIJAKGZ/8AgAJkKG4hmSOod8D3wNkEAfQEd8AA2QQB9ARa0AI0CMkgAG4gLRFZU/x3wPfA2QQB9ARYEAY0CkgMAkkgAG4gbMwtEVgT/HfAABgkAABSAyT8AgMk/AIDJPwCAyT+MAThAAIDJP4mIiIjTTWIQQAM4QDZBAH0BkfX/gfb/l7gOgJnADAqiSAALmRuIVln/YfH/UfL/Z7UJiAXgCABLVWc19YHv/+AIAGHu/1Kg8EKj6DHv/4DqA5gGiQaQiMCR6v+QqKKgp0FQuoKwiMC4RrqIkJiikJdBULmCsIjAiUaqiZgWmpiZFpg2iomR3/+QmKKQlkGoJqqpqSZAmYKQiMCJNuADAMbq/wAAQ0hBUj0AU0lHTkVEPQAAAAAAAFQ=",
+    "staticRamBytes": 20,
+    "flashBytes": 1136,
+    "output": "HEX=DEADBEEF\r\nBIN=101010\r\nSIGNED=-2147483648\r\nCHAR=A\r\nOK\r\n",
+    "sawHigh": false,
+    "sawLow": false
+  },
+  "esp32s3:multifile": {
+    "source": "#include \"lib/blinker.hpp\"\nBlinker led(2);\nvoid setup() { Serial.begin(115200); led.begin(); }\nvoid loop() { led.tick(); delay(20); }\n",
+    "files": [
+      {
+        "name": "lib/blinker.hpp",
+        "content": "#pragma once\n#include \"Arduino.h\"\nclass Blinker {\n  byte pin;\n  bool high = false;\npublic:\n  Blinker(byte p) : pin(p) {}\n  void begin();\n  void tick();\n};\n"
+      },
+      {
+        "name": "lib/blinker.cpp",
+        "content": "#include \"blinker.hpp\"\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\nvoid Blinker::tick() {\n  high = !high;\n  digitalWrite(pin, high);\n  Serial.println(high ? \"MULTI HIGH\" : \"MULTI LOW\");\n}\n"
+      }
+    ],
+    "sourceKey": "{\"chip\":\"esp32s3\",\"files\":[{\"name\":\"lib/blinker.cpp\",\"content\":\"#include \\\"blinker.hpp\\\"\\nvoid Blinker::begin() { pinMode(pin, OUTPUT); }\\nvoid Blinker::tick() {\\n  high = !high;\\n  digitalWrite(pin, high);\\n  Serial.println(high ? \\\"MULTI HIGH\\\" : \\\"MULTI LOW\\\");\\n}\\n\"},{\"name\":\"lib/blinker.hpp\",\"content\":\"#pragma once\\n#include \\\"Arduino.h\\\"\\nclass Blinker {\\n  byte pin;\\n  bool high = false;\\npublic:\\n  Blinker(byte p) : pin(p) {}\\n  void begin();\\n  void tick();\\n};\\n\"},{\"name\":\"sketch.ino\",\"content\":\"#include \\\"lib/blinker.hpp\\\"\\nBlinker led(2);\\nvoid setup() { Serial.begin(115200); led.begin(); }\\nvoid loop() { led.tick(); delay(20); }\\n\"}]}",
+    "bin": "6QICAHQBOEAAAAAACQAAAAAAAAAAAAAAAAA4QKwEAAAAxUkQ1Ukg5Ukw9UkANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUJENUJIOUJMPUJADUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJSQDRCRDZSSDpSTD5SUCASVCQSWCgSXCwSQA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyQkQ2Qkg6Qlw0Qkw+QlAhwlQlwlgpwlwtwkANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM1JANEJEN1JIO1JMP1JQEBJUFBJYGBJcHBJgIBJkJBJoKBJsLBJADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNCRDdCSDtCbDRCTD9CUBLCVBbCWBrCXB7CYCLCZCbCaCrCbC7CQA1AAAAAPDPPwAAOEAR/v8h/v8g5xMQIAAiwfQSYgAlEQAG//8GAwAAFAAAYACAyT9YAzhANkEAfQGB+/+SoVvAIACZCKH6/4H6/+AIAB3wAAYHAAAAgMk/7AM4QH+pAwCAqQMABIDJP4mIiIjTTWIQNkEAfQGh9/+B+P/gCAAcSJH5/6Kg8LKj6MDqA9DqA8DdwOHy/9c+DvAgANDqA8DdwOHv/+c98MDqA9gJyQnQzMDR7f/Q7KLg50Gg/oLwzMD4SfrM0Nyi0NdBoP2C8MzAyUnqzdgZ2tzZGdg5ys3R4//Q3KLQ1kHoKert6Smw3YLQzMDJOQuIVuj4HfA2QQB9ARa0AI0CMkgAG4gLRFZU/x3wPfA2QQB9ARYEAY0CkgMAkkgAG4gbMwtEVgT/HfAABgkAABiAyT8EgMk/AoDJPwKAyT+MAThABIDJP4mIiIjTTWIQuAE4QDZBAH0BkfX/gfb/l7gOgJnADAqiSAALmRuIVln/YfH/UfL/Z7UJiAXgCABLVWc19YHv/+AIAGHu/1Kg8EKj6DHv/4DqA5gGiQaQiMCR6v+QqKKgp0FQuoKwiMC4RrqIkJiikJdBULmCsIjAiUaqiZgWmpiZFpg2iomR3/+QmKKQlkGoJqqpqSZAmYKQiMCJNuADAMbq/wAABgUAAASQAGAAEgAAVEUAYCxAAGAgQABgNkEAfQGCAgAMCwwZHFytCYc8Aa0LwsjP0qD/0MwQ0qDy1zwBnQss67cYTJCqEAwZkKoQVhoEoe3/oKigse3/wCAAuQqh7P+gqKCypQDAIAC5CiwKpzgFoej/hgAAoef/wCAAuAoc/MCIEAAYQACJoYCLIMAgAIkKHfA98AYEAAAAQABglwQ4QKIEOEAAAABgNkEAfQGiAgEMG7CKMIJCAdICABxukqD/DNgMDOc9COLN3ZDuEOc4M7D6EMefCRxOxx8JDM+GAQAcjsef9QyPLAZnPQH9DuHq/+DvIBz/8N0QAB1AANuhwCAA2Q6wqhDHmgWh5P+GAACh5P+yCgAWSwEbqpC7EMHh/8AgALkMsgoAG6pWy/6R3f/AIACJCQyowCAAiQkd8E1VTFRJIEhJR0gATVVMVEkgTE9XAACAyT8EAAAAAgAAAAAAAAAAAAAR",
+    "staticRamBytes": 24,
+    "flashBytes": 1248,
+    "output": "MULTI HIGH\r\nMULTI LOW\r\nMULTI HIGH\r\n",
+    "sawHigh": true,
+    "sawLow": true
+  }
+}

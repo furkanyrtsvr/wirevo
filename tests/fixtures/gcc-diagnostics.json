@@ -1,0 +1,6 @@
+{
+  "error": "avr-ld did not produce /build/HorangFirmware.elf: [object Object] name=ErrnoError errno=44\n[cc1plus] sketch.ino: In function 'void setup()':\n[cc1plus] sketch.ino:3:1: error: expected ';' before '}' token\n[avr-ld] ./this.program: /objects/core_main.o: in function `main':\n[avr-ld] /home/runner/work/avr-gcc-wasm/avr-gcc-wasm/.cache/work/platform/ArduinoCore-avr-1.8.7/cores/arduino/main.cpp:43:(.text.startup.main+0x8): undefined reference to `setup'\n[avr-ld] ./this.program: /home/runner/work/avr-gcc-wasm/avr-gcc-wasm/.cache/work/platform/ArduinoCore-avr-1.8.7/cores/arduino/main.cpp:46:(.text.startup.main+0x10): undefined reference to `loop'",
+  "warnings": [
+    "[cc1plus] sketch.ino:1:2: warning: #warning CircuitForge warning fixture [-Wcpp]"
+  ]
+}

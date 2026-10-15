@@ -1,0 +1,7 @@
+Original CircuitForge semiconductor SVG illustrations and coordinate metadata:
+CC0 1.0 Universal (CC0-1.0), public domain dedication.
+https://creativecommons.org/publicdomain/zero/1.0/
+
+These are original vector illustrations; no manufacturer photo, logo, or datasheet drawing is reproduced.
+Part names identify the represented real components and do not imply manufacturer endorsement.
+Manufacturer datasheets referenced for factual pin assignments retain their respective licenses and copyrights and are not included in this dedication.

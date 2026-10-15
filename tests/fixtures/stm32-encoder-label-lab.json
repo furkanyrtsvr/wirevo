@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 4,
+  "name": "TIM2 · Encoder net label laboratuvarı",
+  "model": "custom",
+  "code": "#include \"cf_board_config.h\"\n#include <stdio.h>\n#define R(a) (*(volatile unsigned*)(a))\n// PB0/PB1 reach PA0/PA1 through equal net labels. No direct CNT fabrication.\nstatic void turn(unsigned reverse){\n if(!reverse){cf_gpio_write(PB0,1);cf_gpio_write(PB1,1);cf_gpio_write(PB0,0);cf_gpio_write(PB1,0);}\n else{cf_gpio_write(PB1,1);cf_gpio_write(PB0,1);cf_gpio_write(PB1,0);cf_gpio_write(PB0,0);}\n}\nint main(void){\n puts(\"ENCODER READY: F=forward +4, B=back -4 (65535 wrap)\");\n for(;;){int ch=cf_uart_read();if(ch=='F'||ch=='B'){turn(ch=='B');printf(\"COUNT=%u DIR=%s\\n\",cf_tim2_encoder_count(),R(0x40000000)&16?\"DOWN\":\"UP\");}}\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 250,
+      "y": 150,
+      "rotation": 0,
+      "params": {
+        "model": "weact-f411ce"
+      }
+    },
+    {
+      "id": "enc0",
+      "type": "netLabel",
+      "x": 411.8945,
+      "y": 295.97,
+      "rotation": 0,
+      "params": {
+        "name": "ENC_A",
+        "side": "left"
+      }
+    },
+    {
+      "id": "enc1",
+      "type": "netLabel",
+      "x": 411.8945,
+      "y": 343.01,
+      "rotation": 0,
+      "params": {
+        "name": "ENC_B",
+        "side": "left"
+      }
+    },
+    {
+      "id": "enc2",
+      "type": "netLabel",
+      "x": 411.8945,
+      "y": 192.29,
+      "rotation": 0,
+      "params": {
+        "name": "ENC_A",
+        "side": "left"
+      }
+    },
+    {
+      "id": "enc3",
+      "type": "netLabel",
+      "x": 411.8945,
+      "y": 239.32999999999998,
+      "rotation": 0,
+      "params": {
+        "name": "ENC_B",
+        "side": "left"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w0",
+      "from": "mcu:PA0",
+      "to": "enc0:NET",
+      "color": "#14b8a6",
+      "points": [
+        {
+          "x": 376.8945,
+          "y": 341.97
+        },
+        {
+          "x": 376.8945,
+          "y": 311.97
+        }
+      ]
+    },
+    {
+      "id": "w1",
+      "from": "mcu:PA1",
+      "to": "enc1:NET",
+      "color": "#3b82f6",
+      "points": [
+        {
+          "x": 376.8945,
+          "y": 329.01
+        },
+        {
+          "x": 376.8945,
+          "y": 359.01
+        }
+      ]
+    },
+    {
+      "id": "w2",
+      "from": "mcu:PB0",
+      "to": "enc2:NET",
+      "color": "#14b8a6",
+      "points": [
+        {
+          "x": 376.8945,
+          "y": 238.29
+        },
+        {
+          "x": 376.8945,
+          "y": 208.29
+        }
+      ]
+    },
+    {
+      "id": "w3",
+      "from": "mcu:PB1",
+      "to": "enc3:NET",
+      "color": "#3b82f6",
+      "points": [
+        {
+          "x": 376.8945,
+          "y": 225.32999999999998
+        },
+        {
+          "x": 376.8945,
+          "y": 255.32999999999998
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "PA0",
+    "stm32Pins": {
+      "version": 1,
+      "pins": {
+        "PA0": {
+          "function": "hw_TIM2_ENC1",
+          "label": "ENC_A",
+          "initial": 0
+        },
+        "PA1": {
+          "function": "hw_TIM2_ENC2",
+          "label": "ENC_B",
+          "initial": 0
+        },
+        "PB0": {
+          "function": "output",
+          "label": "",
+          "initial": 0
+        },
+        "PB1": {
+          "function": "output",
+          "label": "",
+          "initial": 0
+        }
+      },
+      "uart": {
+        "enabled": true,
+        "baud": 115200
+      },
+      "i2cHz": 10000,
+      "spiHz": 20000,
+      "usart1Baud": 9600,
+      "usart1Bits": 8,
+      "usart1Parity": 0,
+      "usart1Stops": 1,
+      "usart2Baud": 9600,
+      "usart2Bits": 8,
+      "usart2Parity": 0,
+      "usart2Stops": 1,
+      "hwSpi1Hz": 500000,
+      "hwSpi1Mode": 0,
+      "hwSpi1Bits": 8,
+      "hwSpi1Lsb": false,
+      "hwI2c1Hz": 100000,
+      "adcMode": "prepare",
+      "adcBits": 12,
+      "adcEach": false,
+      "adcLeft": false,
+      "adcOrder": [],
+      "encoderMode": 3,
+      "encoderARR": 65535,
+      "encoderInvert": 0,
+      "encoderPSC": 0
+    },
+    "tracePins": [
+      "PA1",
+      "PB6",
+      "PB7"
+    ]
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "cf_board_config.h",
+      "content": "// CircuitForge pin configuration v1\n#pragma once\n#include <cf_hal.h>\n#define CF_ENC_A PA0\n#define CF_ENC_B PA1\nvoid cf_board_init(void);\n"
+    },
+    {
+      "name": "cf_board_config.c",
+      "content": "// CircuitForge pin configuration v1\n#include \"cf_board_config.h\"\n\n/* Runs after clocks/data/bss, before main. main may reconfigure GPIO. */\nvoid cf_board_init(void){\n    cf_gpio_mode(PB0,CF_OUTPUT);\n    cf_gpio_write(PB0,0);\n    cf_gpio_mode(PB1,CF_OUTPUT);\n    cf_gpio_write(PB1,0);\n    cf_tim2_encoder_begin(3,65535u,0,0);\n    cf_uart_begin(115200);\n}\n"
+    }
+  ]
+}
