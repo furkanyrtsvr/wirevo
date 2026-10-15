@@ -1,6 +1,6 @@
 # CircuitForge 0.59 · F401/F411 USB OTG FS
 
-F103 PMA ve F401/F411 OTG FS device: gerçek C17/C++17 ARM firmware, ayrı register/FIFO ve IRQ20/67, sanal USB host ile descriptor/adres/configuration/bulk echo. Dokuz STM32 kartında USB örneği. F411 varsayılan 96 MHz / USB48 MHz; F401 84 MHz / USB48 MHz. F103 bxCAN korunur; F401/F411 CAN içermez. [Kullanım/kapsam](dist/notices/STM32-OTG-FS.md), [kabul](docs/QA_0.59.md), [devam ve kart geçişi](docs/STM32_PLAN_0.59.md).
+F103 PMA ve F401/F411 OTG FS device: gerçek C17/C++17 ARM firmware, ayrı register/FIFO ve IRQ20/67, sanal USB host ile descriptor/adres/configuration/bulk echo. Dokuz STM32 kartında USB örneği. F411 varsayılan 96 MHz / USB48 MHz; F401 84 MHz / USB48 MHz. F103 bxCAN korunur; F401/F411 CAN içermez. [Kullanım/kapsam](../dist/notices/STM32-OTG-FS.md), [kabul](../docs/QA_0.59.md), [devam ve kart geçişi](../docs/STM32_PLAN_0.59.md).
 
 Ortak çalışma alanı, breadboard/net label/auto route, HC-05 görünümü/X-Y aynalama/opamp ve STM32 MicroPython WASM devre modu korunur. Tam STM32 silikonu/yerel ARM MicroPython/gerçek PC USB veya harici CAN ağı tamamlandı iddiası yoktur.
 
@@ -192,7 +192,7 @@ Nano ve Pro Mini SVG kart çizimleri yenilendi. Pin/net koordinatları korunur. 
 
 Mega2560 için bağımsız native avr6 backend kabulü eklendi; henüz IDE kart kataloğunda yoktur. 256KB flash, 8KB SRAM, far flash ELPM, üç byte PC, A15, Timer0/millis, Timer5/PWM ve dört USART gerçek firmware ile kontrol edilir. GPIO kesmeleri, DC/bus ve WebAssembly/frontend entegrasyonu sıradadır. Ayrıntılar DEVAM_PLANI.md.
 
-Uno, klasik Nano ve 5 V /16 MHz Pro Mini: kart seçimiyle gerçek AVR GCC ve instruction simülasyonu. 0.30: UART pin çerçeveleri /SoftwareSerial, Nano-Pro Mini A6/A7 analog-only girişleri. [Kart/UART model sınırları](dist/notices/BOARD-UART-MODELS.md).
+Uno, klasik Nano ve 5 V /16 MHz Pro Mini: kart seçimiyle gerçek AVR GCC ve instruction simülasyonu. 0.30: UART pin çerçeveleri /SoftwareSerial, Nano-Pro Mini A6/A7 analog-only girişleri. [Kart/UART model sınırları](../dist/notices/BOARD-UART-MODELS.md).
 
 ## 0.30 · 70 parça /75 örnek
 
