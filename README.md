@@ -4,9 +4,32 @@ Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalı
 
 AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve desteklenen kartlarda MicroPython; sanal sensörler, seri haberleşme ve ölçüm araçları içerir. Kart ve çevrebirim kapsamı birebir tam silikon modeli değildir; ayrıntılar `dist/notices/` altındadır.
 
+Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
+
+## Görseller
+
+Uygulama yerelde çalıştırılarak alınan dört ekran görüntüsü.
+
+### Çalışma alanı ve devre tasarımı
+
+![Çalışma alanı ve devre tasarımı](docs/images/01-workspace.jpg)
+
+### Çalışan MicroPython devresi ve seri çıktı
+
+![Çalışan MicroPython devresi ve seri çıktı](docs/images/02-simulation.jpg)
+
+### Projeye bağlı pin ayarları
+
+![Projeye bağlı pin ayarları](docs/images/03-pin-settings.jpg)
+
+### STM32 kapsam ve sınırları
+
+![STM32 kapsam ve sınırları](docs/images/04-stm32-scope.jpg)
+
+
 ## Başlangıç
 
-Node.js 22 ve npm ile:
+Node.js 24 ve npm ile (GitHub kontrolleri de Node 24 kullanır):
 
 ```sh
 npm ci

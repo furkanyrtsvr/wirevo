@@ -13,14 +13,19 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm test
+      - name: Run all tests across eight shards
+        run: node --test --test-concurrency=2 --test-shard=${{ matrix.shard }}/8 tests/*.test.mjs
       - run: npm run build
   release:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -35,7 +40,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - name: Check that this is still the latest main commit
         id: head

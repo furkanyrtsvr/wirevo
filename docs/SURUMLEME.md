@@ -1,5 +1,7 @@
 # Sürüm yayınlama
 
+CircuitForge kontrolleri Node 24 üzerinde sekiz paralel test grubunda çalışır. Node’un yerleşik `--test-shard` seçeneği bütün test dosyalarını bu gruplara dağıtır; test atlanmaz. Release işi bütün grupların başarılı olmasını bekler. Yerelde `npm test` bütün testleri tek komutta çalıştırmaya devam eder.
+
 `main` dalına gönderilen değişiklikler GitHub Actions tarafından kontrol edilir. Kontroller başarılıysa otomatik bir GitHub Release yayımlanır. Pull request kontrolleri sürüm yayımlamaz.
 
 - İlk sürüm kaynak sürümünü kullanır (package.json veya VERSION).
