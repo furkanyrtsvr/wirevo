@@ -12,6 +12,6 @@ Tarayıcı kabulü: WeAct F411 C++17 gerçek Clang ile derlendi (2684 B Flash); 
 
 Sınırlar: Bu sürüm OTG FS device alt kümesini tamamlar; USB fiziksel PHY/PC erişimi, OTG host/iso/DMA/sınıf yığınları; harici CAN ağı, yerel ARM MicroPython/tam Cube HAL ve ileri STM32 silikon ayrıntıları halen kapsam dışı veya açıktır. Tüm STM32 silikonu tamamlandı iddiası yoktur. Kullanıcının diğer kartlara geçme isteği doğrultusunda sonraki mimari değerlendirmesi devam planına alındı. Otomatik devam zamanlayıcısı kurulmadı.
 
-Kontrol ayrıntıları: QA_0.59.md; kullanım/48 MHz kaynakları: dist/notices/STM32-OTG-FS.md; devam: STM32_PLAN_0.59.md.
+Kontrol ayrıntıları: qa/QA_0.59.md; kullanım/48 MHz kaynakları: dist/notices/STM32-OTG-FS.md; devam: STM32_PLAN_0.59.md.
 
 Doğrulama: genel regresyon1331/1331; ayrıca FIFO2/2, son HCLK/USB10/10 ve build sonrası cache7/7. Hata/iptal/atlanan yok. App shell440 dosya /19648482 bayt.

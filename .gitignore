@@ -4,7 +4,7 @@ node_modules/
 *.tar.gz
 *.tar
 *.log
-research/
+/research/
 
 src/stm32/target/
 src/stm32/vendor/zmu_cortex_m/target/
@@ -16,3 +16,7 @@ src/stm32/vendor/zmu_cortex_m/target/
 .codex/
 .agents/
 *.log
+
+# QA evidence belongs in docs/qa.
+/QA_*.md
+/docs/QA_*.md
