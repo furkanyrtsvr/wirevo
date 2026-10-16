@@ -1,6 +1,8 @@
-# CircuitForge Studio
+# Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.59.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.60.0**.
+
+Yeni W logosu ve sağ üstte TR / EN dil seçimi. Dil seçimi bu tarayıcıda hatırlanır. [Wirevo yayını](https://wirevo-furka.equalwood4.chatgpt.site/). Eski adreste saklanan projeler JSON/ZIP ile aktarılabilir.
 
 AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve desteklenen kartlarda MicroPython; sanal sensörler, seri haberleşme ve ölçüm araçları içerir. Kart ve çevrebirim kapsamı birebir tam silikon modeli değildir; ayrıntılar `dist/notices/` altındadır.
 

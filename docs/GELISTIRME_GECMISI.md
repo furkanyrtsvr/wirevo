@@ -1,3 +1,7 @@
+# Wirevo
+
+Tarayıcıda elektronik devre ve firmware çalışma alanı. TR / EN dil seçimi sağ üsttedir; seçim bu tarayıcıda saklanır. Eski CircuitForge proje dosyaları ve aynı adresteki yerel kayıt anahtarları uyumluluk için korunur. Yayın adresi değiştiğinde tarayıcı depolaması adrese bağlı olduğundan eski adresteki projeler JSON/ZIP ile yeni adrese aktarılmalıdır.
+
 # CircuitForge 0.59 · F401/F411 USB OTG FS
 
 F103 PMA ve F401/F411 OTG FS device: gerçek C17/C++17 ARM firmware, ayrı register/FIFO ve IRQ20/67, sanal USB host ile descriptor/adres/configuration/bulk echo. Dokuz STM32 kartında USB örneği. F411 varsayılan 96 MHz / USB48 MHz; F401 84 MHz / USB48 MHz. F103 bxCAN korunur; F401/F411 CAN içermez. [Kullanım/kapsam](../dist/notices/STM32-OTG-FS.md), [kabul](../docs/QA_0.59.md), [devam ve kart geçişi](../docs/STM32_PLAN_0.59.md).

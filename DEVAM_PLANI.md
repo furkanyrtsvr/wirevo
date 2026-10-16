@@ -1,3 +1,7 @@
+# Wirevo 0.60
+
+Güncel devir: docs/STM32_PLAN_0.60.md. Marka ve TR / EN tamamlandı; teknik STM32 checkpointi 0.59 olarak korunur.
+
 # CircuitForge 0.44 — STM32 USART, ADC ve PWM
 
 Pin ayarları yalnız açık projeye kaydedilir; Uygula öncesi taslaktır. USART1 gerçek 8N1/RX kesmesi, MCU ADC1 12-bit ölçüm ve TIM2 PWM1/update kesmesi altı STM32 kartında çalışır. İki kapsamlı laboratuvar bu yolları kullanır. Hazır kablolar ayrı koridorlara dağıtıldı; eski proje Kabloları düzenle ile geri alınabilir biçimde yenilenir.

@@ -52,3 +52,10 @@
 .property-actions{flex-wrap:wrap}.canvas-tools{flex-wrap:wrap;max-width:calc(100% - 24px)}
 
 .wire-legend{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.wire-legend i{width:12px;height:3px;display:inline-block}.canvas-caption{pointer-events:none}.wire{stroke-linejoin:miter}
+
+/* Wirevo identity and persistent language controls */
+.brand svg{width:31px;height:31px}.brand strong{letter-spacing:-.6px}.brand strong span{color:#59dfc2}.language-switch{display:flex;flex-shrink:0;align-items:center;gap:2px;margin-left:auto;padding:3px;border:1px solid #365164;border-radius:7px;background:#101d29}.language-switch button{border:0;background:transparent;padding:4px 7px;font-size:10px;font-weight:700;color:#91a9bb}.language-switch button[aria-pressed="true"]{background:#214c4b;color:#80f1d7}.language-switch button:focus-visible{outline:2px solid #59dfc2;outline-offset:1px}.menubar-right{margin-left:10px}html[lang="en"] .panel-head{letter-spacing:0}@media(max-width:760px){.menubar{flex-wrap:wrap;height:auto;min-height:42px;gap:5px;padding:5px 8px}.menubar nav{order:3;width:100%;overflow-x:auto}.language-switch{margin-left:auto}.brand small{display:none}}
+
+.dialog-header-tools{display:flex;align-items:center;gap:12px}.dialog-title .language-switch button{font-size:10px;padding:4px 7px}.dialog-title .language-switch button[aria-pressed="true"]{background:#214c4b}
+
+.categories{flex-wrap:wrap}.menubar>.language-switch{margin-left:12px}.menubar-right{margin-left:auto}@media(max-width:1180px){.menubar>.language-switch{margin-left:auto}}
