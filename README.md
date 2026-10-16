@@ -1,5 +1,7 @@
 # Wirevo
 
+<p><img src="dist/assets/wirevo-logo.svg" alt="Wirevo logo" width="80" height="80"></p>
+
 Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.60.0**.
 
 Yeni W logosu ve sağ üstte TR / EN dil seçimi. Dil seçimi bu tarayıcıda hatırlanır. [Wirevo yayını](https://wirevo-furka.equalwood4.chatgpt.site/). Eski adreste saklanan projeler JSON/ZIP ile aktarılabilir.
@@ -10,24 +12,23 @@ Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu 
 
 ## Görseller
 
-Uygulama yerelde çalıştırılarak alınan dört ekran görüntüsü.
+Wirevo 0.60 arayüzünden alınan güncel görüntüler. Yeni W logosu, sağ üst TR / EN seçimi ve proje pencereleri görünür. [Görsel doğrulama kaydı](docs/GORSELLER.md).
 
 ### Çalışma alanı ve devre tasarımı
 
-![Çalışma alanı ve devre tasarımı](docs/images/01-workspace.jpg)
+![Wirevo — STM32 çalışma alanı, yeni logo ve TR / EN seçimi](docs/images/wirevo-workspace.jpg)
 
 ### Çalışan MicroPython devresi ve seri çıktı
 
-![Çalışan MicroPython devresi ve seri çıktı](docs/images/02-simulation.jpg)
+![Wirevo — çalışan MicroPython sensör devresi ve gerçek seri çıktı](docs/images/wirevo-simulation.jpg)
 
 ### Projeye bağlı pin ayarları
 
-![Projeye bağlı pin ayarları](docs/images/03-pin-settings.jpg)
+![Wirevo — projeye özel STM32 pin ve çevrebirim yapılandırması](docs/images/wirevo-pin-settings.jpg)
 
-### STM32 kapsam ve sınırları
+### Kart ve programlama dili seçimi
 
-![STM32 kapsam ve sınırları](docs/images/04-stm32-scope.jpg)
-
+![Wirevo — STM32 kartı, C / C++17 / MicroPython ve dil seçimi](docs/images/wirevo-project-languages.jpg)
 
 ## Başlangıç
 
@@ -69,4 +70,4 @@ Bazı özel firmware kabul komutları ek araç zinciri veya ağ indirmesi gerekt
 
 Üçüncü taraf lisanslar ve kaynak bildirimleri `dist/notices/` altındadır. Projenin tamamına yeni bir açık kaynak lisansı atanmadı.
 
-İlk GitHub aktarımı, yerel CircuitForge kaynağının d50213fa684c26f72ab4a10e22643105e98e8bd1 commit'inden alınmış kaynak görüntüsüdür. Yerel araç ayarları, node_modules ve çalışma arşivleri dahil değildir.
+İlk GitHub aktarımı, eski CircuitForge adıyla tutulan yerel kaynağın d50213fa684c26f72ab4a10e22643105e98e8bd1 commit'inden alınmış kaynak görüntüsüdür. Yerel araç ayarları, node_modules ve çalışma arşivleri dahil değildir.
