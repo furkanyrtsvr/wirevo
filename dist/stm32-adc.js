@@ -1,7 +1,7 @@
 // Regular ADC1 12-bit scan/continuous, alignment and F4 EOCS/OVR.
 // Conversion values come from physical DC nets, never sensor controller state.
 export class STMADC {
- constructor(runtime){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.base=this.f4?0x40012000:0x40012400;this.regs=new Map([[this.base+36,4095]]);this.pending=null;this.sequence=null;this.dmaStopped=false;this.triggerQueue=[];this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.internalSince=null;}
+ constructor(runtime,instance=1){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.instance=instance;if(this.f4&&instance!==1)throw Error('ADC2 bu F4 profilinde yok.');this.base=this.f4?0x40012000:0x40012400+(instance-1)*0x400;this.regs=new Map([[this.base+36,4095]]);this.pending=null;this.sequence=null;this.dmaStopped=false;this.triggerQueue=[];this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.internalSince=null;}
  clocked(){return !!(this.r.regs.get(this.f4?0x40023844:0x40021018)&(1<<(this.f4?8:9)));}
  handles(a){return a>=this.base&&a<=this.base+0x50||this.f4&&a===0x40012304;}
  read(a,n){const aligned=a&~3;if(!this.handles(aligned))return undefined;let v=this.regs.get(aligned)||0;if(aligned===this.base+0x4c){this.regs.set(this.base,(this.regs.get(this.base)||0)&~2);if(this.r.dma)this.r.dma.pendingADC=false;}return n===4?v>>>0:(v>>>((a&3)*8))&(n===1?255:65535);}
@@ -17,9 +17,9 @@ export class STMADC {
    if(!(v&mask))this.internalSince=null;
   }
   this.regs.set(aligned,v>>>0);
-  if(aligned===this.base+8){if(!(v&256)){this.dmaStopped=false;if(this.r.dma)this.r.dma.pendingADC=false;}if(!(v&1)){this.pending=null;this.sequence=null;this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.triggerQueue=[];return true;}if(!this.f4&&(v&12)){this.regs.set(aligned,v&~12);return true;}if(v&(this.f4?1<<30:1<<22))this.start();if(v&(this.f4?1<<22:1<<21))this.startInjected();}return true;
+  if(aligned===this.base+8){if(this.instance!==1&&(v&256))throw Error('STM32F103 ADC2 DMA isteği yoktur.');if(!(v&256)){this.dmaStopped=false;if(this.instance===1&&this.r.dma)this.r.dma.pendingADC=false;}if(!(v&1)){this.pending=null;this.sequence=null;this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.triggerQueue=[];return true;}if(!this.f4&&(v&12)){this.regs.set(aligned,v&~12);return true;}if(v&(this.f4?1<<30:1<<22))this.start();if(v&(this.f4?1<<22:1<<21))this.startInjected();}return true;
  }
- pin(channel){if(channel>15){
+ pin(channel){if(channel>15){if(this.instance!==1)throw Error('ADC2 yalnız haricî kanalları modeller.');
   const cr=this.regs.get(this.f4?0x40012304:this.base+8)||0;
   if(channel===17){if(!(cr&(1<<23)))throw Error('ADC VREFINT için TSVREFE gerekli.');return 'VREFINT';}
   if(channel===16||this.f4&&channel===18){if(this.f4&&(cr&(1<<22))){if(channel!==18)throw Error('VBAT ölçümü için ADC1 kanal18 seçilmeli; kanal16 alias ile VBATE birlikte model kapsamı dışındadır.');return 'VBAT';}if(!(cr&(1<<23)))throw Error('ADC sıcaklık sensörü için TSVREFE gerekli.');return 'TEMP';}
@@ -29,10 +29,10 @@ export class STMADC {
   const cr=this.regs.get(this.base+8)||0,cr1=this.regs.get(this.base+4)||0;
   if(!this.clocked()||!(cr&1))return;
   if(this.pending){this.regs.set(this.base+8,cr&~(this.f4?1<<30:1<<22));return;}
-  if(cr1&~(31|32|64|128|256|512|1024|2048|4096|(7<<13)|(1<<22)|(1<<23)|(this.f4?(1<<26)|(3<<24):0)))throw Error('ADC1 injected/discontinuous henüz desteklenmiyor.');
+  if(cr1&~(31|32|64|128|256|512|1024|2048|4096|(7<<13)|(1<<22)|(1<<23)|(this.f4?(1<<26)|(3<<24):0)))throw Error('ADC'+this.instance+' register modu desteklenmiyor.');
   this.checkDiscontinuous(cr1,cr);
   const allowed=this.f4?1|2|2048|1024|256|512|(1<<22)|(15<<16)|(3<<20)|(15<<24)|(3<<28)|(1<<30):1|2|2048|256|(1<<21)|(7<<12)|(1<<15)|(7<<17)|(1<<20)|(1<<22)|(1<<23);
-  if(cr&~allowed)throw Error('ADC1 external trigger/DMA/internal kanal henüz desteklenmiyor.');
+  if(cr&~allowed)throw Error('ADC'+this.instance+' register modu desteklenmiyor.');
   if(this.f4&&((this.regs.get(0x40012304)||0)&~((3<<16)|(3<<22))))throw Error('ADC1 common register modu henüz desteklenmiyor.');
   if(!this.f4&&(!external&&(!(cr&(1<<20))||((cr>>>17)&7)!==7)))throw Error('F103 ADC1 yazılım EXTSEL/EXTTRIG seçimi gerekli.');
   if(this.f4&&((this.regs.get(this.base)||0)&32))return;
@@ -71,7 +71,7 @@ export class STMADC {
    if(s.injected){const corrected=value-((this.regs.get(this.base+20+s.index*4)||0)&4095);this.regs.set(this.base+60+s.index*4,(s.left?corrected<<(16-s.bits):corrected)&65535);if(last||s.disc){if(last)this.regs.set(this.base,(this.regs.get(this.base)||0)|4);else{s.index++;this.injectedDisc=s;}this.sequence=this.regularReturn;this.regularReturn=null;if(this.sequence)this.schedule(at);}else{s.index++;this.schedule(at);}continue;}
    this.regs.set(this.base+0x4c,s.left?value<<(16-s.bits):value);
    const dma=!!((this.regs.get(this.base+8)||0)&256);if(this.f4&&(s.eocs||dma)&&(sr&2)){this.regs.set(this.base,(this.regs.get(this.base)||0)|32);this.r.dma.pendingADC=false;this.sequence=null;return;}
-   if(s.disc||s.eocs||last||dma)this.regs.set(this.base,(this.regs.get(this.base)||0)|2);if(dma&&!this.dmaStopped)this.r.dma.pendingADC=true;
+   if(s.disc||s.eocs||last||dma)this.regs.set(this.base,(this.regs.get(this.base)||0)|2);if(dma&&!this.dmaStopped&&this.instance===1)this.r.dma.pendingADC=true;
    if(last){const continuous=!!((this.regs.get(this.base+8)||0)&2);s.index=0;if(cr1&1024){this.sequence=continuous?s:null;this.startInjected(true,at);continue;}if(!continuous){this.sequence=null;return;}}else {s.index++;if(s.disc&&!--s.remaining){this.regularDisc=s;this.sequence=null;return;}}
    this.schedule(at);
   }

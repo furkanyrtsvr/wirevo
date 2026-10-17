@@ -1,12 +1,16 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.62.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.63.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
 AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve desteklenen kartlarda MicroPython; sanal sensörler, seri haberleşme ve ölçüm araçları içerir. Kart ve çevrebirim kapsamı birebir tam silikon modeli değildir; ayrıntılar `dist/notices/` altındadır.
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
+
+## Wirevo 0.63 · STM32 kapsamı tamamlandı
+
+F103 ADC2 ve Nucleo F401/F411 SDIO/SDHC; gerçek ARM register/IRQ ve blok veri kabulü. Dokuz kartın Wirevo STM32 uygulama profili tamamlanıp donduruldu; destek sınırları yeni “eksik” listesi üretmez. [Sürüm](docs/RELEASE_0.63.md), [test kaydı](docs/qa/README.md), [kapanış kaydı](docs/STM32_PLAN_0.63.md), [destek sözleşmesi](dist/notices/STM32-SUPPORT-PROFILE.md).
 
 ## Görseller
 

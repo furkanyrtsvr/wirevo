@@ -1,5 +1,12 @@
 # Doğrulama kayıtları
 
+## 0.63 — 17 Ekim 2026
+
+- `npm test`: **1432/1432 geçti**, hata/atlama yok. AVR, ESP ve dokuz kartlık STM32 uçtan uca regresyonu aynı son kaynak ağacıyla çalıştı.
+- `npm run test:stm32`: **794/794 geçti**, hata/atlama yok. Yeni kabul; dört F103 kartında fiziksel PB0 üzerinden ADC2 ve ortak IRQ18, Nucleo F401RE/F411RE'de SDHC başlatma, kalıcı 512 bayt blok yaz/oku, FIFO ve gerçek ARM IRQ49 yolunu kapsar.
+- `npm run build`: kaynak kopyada başarılı, uygulama kabuğu **447 dosya / 19.726.091 bayt**; GitHub `main` tabanındaki tarihsel roadmap gövdesi korunarak hazırlanan yayın kopyasında **447 dosya / 19.734.229 bayt**. `cortex-m3.wasm` 265.308 bayt (`f8edae1e7c6b084a86a7857419aac2a64513d0458ff5df0622557daaf78ab537`), `cortex-m4f.wasm` 707.457 bayt (`565ee6eea4a035616efc0f99ac83c9a30f6a984cbfd2022810d73cfe1fe7ef87`).
+- Profil kapanışı Wirevo'nun belgelenmiş dokuz kartlık uygulama yüzeyidir. Tam ST ürün ailesi, Cube/HAL eşdeğerliği, cycle-accurate silikon ve fiziksel haricî USB/CAN/SD donanımı ürün sınırıdır; eksik özellik listesi değildir.
+
 ## 0.62 — 17 Ekim 2026
 
 - İlk genel yerel koşu: **1419 test,1418 geçti,1 worker duvar saati zaman aşımı**;1360+ eski AVR/ESP/STM32 kapsamı tekrar çalıştı. Sıfır hata diye sunulmaz.20s sınırı eşzamanlı native/WASM yükünde aşıldı (27.4s); ortam beklemesi60s yapıldı, veri/voltaj/CRC/IRQ kontrolleri gevşetilmedi. Düzeltme sonrası worker4/4; süreler25.0s/23.2s. Son yeni worker ve canlı düzenleme testleri, tam koşu başlatıldıktan sonra eklendiği için bu1419sayısına dahil değildir.

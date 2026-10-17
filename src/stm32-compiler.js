@@ -36,6 +36,17 @@ void cf_adc_stop(void){REG(${base}+8)&=~1u;}
 int cf_adc_read(unsigned p){if(cf_adc_config(p)<0)return -1;unsigned channel=p<8?p:p<=PB1?p-PB0+8:p-PC0+10;REG(${base}+44)=0;REG(${base}+52)=channel;unsigned sample=${base}+(channel<10?16:12),shift=(channel<10?channel:channel-10)*3;REG(sample)=(REG(sample)&~(7u<<shift))|(5u<<shift);REG(${base}+8)|=1u<<${f4?30:22};while(!(REG(${base})&2u)){}return REG(${base}+76)&4095u;}
 `;
 }
+export function stmADC2HAL(board){const f4=STM32_BOARDS[board].cpu==='cortex-m4f';if(f4)return `int cf_adc2_config(unsigned p){(void)p;return -1;}\nint cf_adc2_read(unsigned p){(void)p;return -1;}\n`;return `
+int cf_adc2_config(unsigned p){if(!cf_gpio_valid(p)||!((p<8)||(p==PB0)||(p==PB1)||(p>=PC0&&p<=PC5)))return -1;unsigned a=0x40010800+(p/16)*0x400+(p%16<8?0:4);REG(0x40021018)|=(1u<<10)|(1u<<(p/16+2));REG(a)&=~(15u<<((p%8)*4));REG(0x40021004)=(REG(0x40021004)&~(3u<<14))|(2u<<14);REG(0x40012804)=0;REG(0x40012808)=1u|(7u<<17)|(1u<<20);return 0;}
+int cf_adc2_read(unsigned p){if(cf_adc2_config(p)<0)return -1;unsigned channel=p<8?p:p<=PB1?p-PB0+8:p-PC0+10;REG(0x4001282c)=0;REG(0x40012834)=channel;unsigned sample=0x40012800+(channel<10?16:12),shift=(channel<10?channel:channel-10)*3;REG(sample)=(REG(sample)&~(7u<<shift))|(5u<<shift);REG(0x40012808)|=1u<<22;while(!(REG(0x40012800)&2u)){}return REG(0x4001284c)&4095u;}
+`;}
+export function stmSDIOHAL(board){const b=STM32_BOARDS[board],ok=b.cpu==='cortex-m4f'&&['PC8','PC9','PC10','PC11','PC12','PD2'].every(p=>b.gpio.includes(p));if(!ok)return `int cf_sdio_begin(void){return -1;}\nint cf_sdio_read_block(unsigned b,void*p){(void)b;(void)p;return -1;}\nint cf_sdio_write_block(unsigned b,const void*p){(void)b;(void)p;return -1;}\n`;return `
+static int cf_sdio_cmd(unsigned cmd,unsigned arg,unsigned *response){REG(0x40012c38)=0xffffffffu;REG(0x40012c08)=arg;REG(0x40012c0c)=cmd|64u|1024u;unsigned start=REG(0xe0001004);while(!(REG(0x40012c34)&(64u|128u|5u))){if((unsigned)(REG(0xe0001004)-start)>CF_CPU_HZ/10u)return -1;}if(REG(0x40012c34)&5u)return -1;if(response)*response=REG(0x40012c14);return 0;}
+int cf_sdio_begin(void){unsigned pins[6]={PC8,PC9,PC10,PC11,PC12,PD2};REG(0x40023830)|=(1u<<2)|(1u<<3);for(unsigned i=0;i<6;i++){unsigned p=pins[i],n=p%16,a=0x40020000+(p/16)*0x400;REG(a)=(REG(a)&~(3u<<(n*2)))|(2u<<(n*2));REG(a+4)&=~(1u<<n);REG(a+8)|=1u<<(n*2);REG(a+12)|=1u<<(n*2);unsigned af=a+32+(n>=8?4:0),shift=(n%8)*4;REG(af)=(REG(af)&~(15u<<shift))|(12u<<shift);}REG(0x40023844)|=1u<<11;REG(0x40012c00)=3;REG(0x40012c04)=0x100u|118u;unsigned r;if(cf_sdio_cmd(0,0,0)||cf_sdio_cmd(8,0x1aa,&r)||r!=0x1aa)return -1;for(unsigned i=0;i<100;i++){if(cf_sdio_cmd(55,0,0)||cf_sdio_cmd(41,0x40ff8000,&r))return -1;if(r&0x80000000u)break;}if(!(r&0x80000000u)||cf_sdio_cmd(2,0,0)||cf_sdio_cmd(3,0,&r))return -1;unsigned rca=r>>16;if(!rca||cf_sdio_cmd(7,rca<<16,0)||cf_sdio_cmd(16,512,0))return -1;REG(0x40012c04)=0x100u|1u|(1u<<11);return 0;}
+static int cf_sdio_block(unsigned block,unsigned char *data,unsigned write){if(!data||((unsigned)data&3u))return -1;REG(0x40012c24)=0xffffffffu;REG(0x40012c28)=512;REG(0x40012c2c)=0;if(cf_sdio_cmd(write?24:17,block,0))return -1;REG(0x40012c2c)=1u|(9u<<4)|(write?0u:2u);unsigned *word=(unsigned*)data;for(unsigned i=0;i<128;i++){unsigned start=REG(0xe0001004),mask=write?(1u<<14):(1u<<21);while(!(REG(0x40012c34)&mask)){if(REG(0x40012c34)&63u)return -1;if((unsigned)(REG(0xe0001004)-start)>CF_CPU_HZ/10u)return -1;}if(write)REG(0x40012c80)=word[i];else word[i]=REG(0x40012c80);}return (REG(0x40012c34)&256u)?0:-1;}
+int cf_sdio_read_block(unsigned block,void *data){return cf_sdio_block(block,(unsigned char*)data,0);}
+int cf_sdio_write_block(unsigned block,const void *data){return cf_sdio_block(block,(unsigned char*)data,1);}
+`;}
 export function stmEXTIHAL(board){const f4=STM32_BOARDS[board].cpu==='cortex-m4f',base=f4?'0x40013c00':'0x40010400',mux=f4?'0x40013808':'0x40010008';return `
 int cf_exti_begin(unsigned p,unsigned edge,unsigned pull){if(!cf_gpio_valid(p)||edge>2||pull>2)return -1;unsigned n=p%16,bit=1u<<n;cf_gpio_mode(p,pull==1?CF_INPUT_PULLUP:pull==2?CF_INPUT_PULLDOWN:CF_INPUT);REG(${f4?'0x40023844':'0x40021018'})|=1u<<${f4?14:0};REG(${base})&=~bit;unsigned a=${mux}+(n/4)*4,shift=(n%4)*4;REG(a)=(REG(a)&~(15u<<shift))|((p/16)<<shift);REG(${base}+8)=(REG(${base}+8)&~bit)|(edge!=1?bit:0);REG(${base}+12)=(REG(${base}+12)&~bit)|(edge!=0?bit:0);REG(${base}+20)=bit;REG(${base})|=bit;unsigned irq=n<5?6+n:n<10?23:40;REG(0xe000e100+(irq/32)*4)|=1u<<(irq%32);return 0;}
 unsigned cf_exti_pending(unsigned p){return cf_gpio_valid(p)?!!(REG(${base}+20)&(1u<<(p%16))):0;}
@@ -152,8 +163,10 @@ int cf_tim2_capture_begin(unsigned,unsigned,unsigned,unsigned);int cf_tim2_captu
 int cf_i2c1_write_dma(unsigned,const unsigned char*,unsigned);int cf_i2c1_read_dma(unsigned,unsigned char*,unsigned);int cf_i2c1_begin(unsigned,unsigned,unsigned);int cf_i2c1_write(unsigned,const unsigned char*,unsigned);int cf_i2c1_read(unsigned,unsigned char*,unsigned);int cf_i2c1_recover(void);int cf_i2c1_probe(unsigned);int cf_i2c1_write_read(unsigned,const unsigned char*,unsigned,unsigned char*,unsigned);
 int cf_spi1_pins(unsigned,unsigned,unsigned);int cf_spi1_nss_hardware(unsigned);int cf_spi1_begin(unsigned);int cf_spi1_transfer(unsigned char);int cf_spi1_config(unsigned,unsigned,unsigned,unsigned);int cf_spi1_transfer_word(unsigned);
 int cf_adc_config(unsigned);int cf_adc_read(unsigned);
+int cf_adc2_config(unsigned);int cf_adc2_read(unsigned);
 int cf_adc_begin_sequence(const unsigned*,unsigned,unsigned,unsigned,unsigned,unsigned);
 int cf_adc_ready(void);int cf_adc_result(void);void cf_adc_stop(void);
+int cf_sdio_begin(void);int cf_sdio_read_block(unsigned,void*);int cf_sdio_write_block(unsigned,const void*);void SDIO_IRQHandler(void);
 int cf_usart1_stopbits(unsigned);int cf_usart2_stopbits(unsigned);int cf_usart1_oversampling(unsigned);int cf_usart2_oversampling(unsigned);int cf_usart1_begin(unsigned,unsigned,unsigned);int cf_usart2_begin(unsigned,unsigned,unsigned);int cf_usart1_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);int cf_usart2_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);void cf_usart1_write_word(unsigned);void cf_usart2_write_word(unsigned);int cf_usart1_read_word(void);int cf_usart2_read_word(void);void cf_usart2_write(unsigned char);int cf_usart2_read(void);void cf_usart1_write(unsigned char);int cf_usart1_read(void);
 void cf_uart_begin(unsigned);void cf_uart_write(unsigned char);int cf_uart_available(void);int cf_uart_read(void);
 
@@ -186,13 +199,13 @@ void SysTick_Handler(void) __attribute__((weak,alias("Default_Handler")));
 
 
 
-${stmUSART1HAL(board)}${stmEXTIHAL(board)}${stmADCHAL(board)}${stmADCDMAHAL(board)}${stmWatchdogHAL(board)}${stmCRCHAL(board)}${stmRTCHAL(STM32_BOARDS[board])}${stmPWMHAL(board)}${stmSPIHAL(board)}${stmI2CHAL(board)}
+${stmUSART1HAL(board)}${stmEXTIHAL(board)}${stmADCHAL(board)}${stmADC2HAL(board)}${stmADCDMAHAL(board)}${stmWatchdogHAL(board)}${stmCRCHAL(board)}${stmRTCHAL(STM32_BOARDS[board])}${stmPWMHAL(board)}${stmSPIHAL(board)}${stmI2CHAL(board)}${stmSDIOHAL(board)}
 ${stmVectors(board)}
 `}
 function stmVectors(board){
  const f4=STM32_BOARDS[board].cpu==='cortex-m4f',adc=f4?'ADC':'ADC1_2';
  const map={0:'WWDG',3:f4?'RTC_WKUP':'RTC',41:f4?'RTC_Alarm':'RTCAlarm',6:'EXTI0',7:'EXTI1',8:'EXTI2',9:'EXTI3',10:'EXTI4',18:adc,23:'EXTI9_5',28:'TIM2',31:'I2C1_EV',32:'I2C1_ER',35:'SPI1',37:'USART1',38:'USART2',40:'EXTI15_10'};
- if(f4)map[67]='OTG_FS';else Object.assign(map,{19:'USB_HP_CAN1_TX',20:'USB_LP_CAN1_RX0',21:'CAN1_RX1',22:'CAN1_SCE',42:'USBWakeUp'});
+ if(f4){map[67]='OTG_FS';map[49]='SDIO';}else Object.assign(map,{19:'USB_HP_CAN1_TX',20:'USB_LP_CAN1_RX0',21:'CAN1_RX1',22:'CAN1_SCE',42:'USBWakeUp'});
  for(let i=0;i<(f4?8:7);i++)map[f4&&i===7?47:11+i]='DMA1_'+(f4?'Stream'+i:'Channel'+(i+1));
  if(f4)for(const [i,irq]of [56,57,58,59,60,68,69,70].entries())map[irq]='DMA2_Stream'+i;
  const weak=Object.values(map).filter(n=>n!==adc).map(name=>'void '+name+'_IRQHandler(void) __attribute__((weak,alias("Default_Handler")));').join('\n');

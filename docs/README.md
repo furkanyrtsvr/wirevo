@@ -2,10 +2,10 @@
 
 | Konu | Kayıt |
 | --- | --- |
-| Güncel geliştirme planı | [0.62 devam planı](STM32_PLAN_0.62.md) |
-| Son teknik STM32 checkpointi | [0.62 destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
+| Güncel geliştirme planı | [0.63 STM32 kapanış kaydı](STM32_PLAN_0.63.md) |
+| Son teknik STM32 checkpointi | [0.63 destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
 | Test ve kabul sonuçları | [QA dizini](qa/README.md) |
-| Güncel sürüm | [0.62](RELEASE_0.62.md) |
+| Güncel sürüm | [0.63](RELEASE_0.63.md) |
 | Model ve lisans sınırları | [Uygulama model belgeleri](../dist/notices/) |
 | Önceki sürümler / planlar | [Sürüm geçmişi](history/releases/) / [Eski planlar](history/plans/) |
 | Donanım araştırmaları | [Araştırma notları](research/) |

@@ -8,10 +8,11 @@ export const EN={
 
  'Bu projeye özel · C++17':'This project only · C++17',
 
- 'Wirevo 0.62 · Kart ve simülasyon kapsamı':'Wirevo 0.62 · Board and simulation coverage',
- 'Seçili çipin donanımı':'Selected chip hardware',
- 'Çipte olmayan donanım eksik geliştirme işi değildir. “Modellenmedi” olarak gösterilen gerçek çevrebirimler tamamlandı sayılmaz.':'Hardware absent from this chip is not missing implementation work. Real peripherals marked as unmodeled are not complete.',
- 'Çevrebirim':'Peripheral','Çipte':'On chip','Çipte var':'Present on chip','Çipte yok':'Absent from chip','Modellenmedi':'Unmodeled','Bu çipte yok':'Not present on this chip',
+ 'Wirevo 0.63 · STM32 uygulama kapsamı kapandı':'Wirevo 0.63 · STM32 application scope complete',
+ 'Dokuz kartın Wirevo uygulama profili dondurulmuştur. Tablodaki fiziksel silikon/haricî donanım sınırları yeni geliştirme borcu değildir; desteklenmeyen kullanım açık hata verir.':'The Wirevo application profile for nine boards is frozen. Physical silicon and external hardware boundaries are not new development debt; unsupported use fails explicitly.',
+ 'Seçili kartta erişilebilir donanım':'Hardware accessible on the selected board',
+ 'Kartta olmayan veya kapanmış profilin dışında kalan donanım STM32 eksiği olarak izlenmez.':'Hardware absent from the board or outside the closed profile is not tracked as missing STM32 work.',
+ 'Çevrebirim':'Peripheral','Kartta erişim':'Board access','Wirevo modeli':'Wirevo model','Var':'Available','Yok':'Unavailable','Çipte':'On chip','Çipte var':'Present on chip','Çipte yok':'Absent from chip','Modellenmedi':'Unmodeled','Bu çipte yok':'Not present on this chip',
  'Dahili opamp / comparator':'Internal opamp / comparator',
  'Standard/fast 400 kHz 7-bit master ve DMA TX/RX':'Standard/fast 400 kHz 7-bit master and DMA TX/RX',
  'Master, mode 0–3, 8/16 bit, DMA; F4 alternatif pinler':'Master, mode 0–3, 8/16 bits, DMA; F4 alternative pins',
@@ -24,7 +25,8 @@ export const EN={
  'İleri STM32 silikon ayrıntıları otomatik bir sonraki sürüm hedefi değildir; kapsam dışı kalemler denetim kaydında korunur.':'Advanced STM32 silicon features are not an automatic next-release target; excluded features remain documented in the audit.',
 
  'Wirevo 0.61 · Dokuz kart için destek profili':'Wirevo 0.61 · Nine-board support profile',
- 'Destek profili dışında':'Outside the support profile',
+ 'Durum':'Status','Doğrulanan model':'Validated model','Ürün sınırı':'Product boundary','Uygulama tamam':'Application complete','Destek profili dışında':'Outside the support profile',
+ 'Kapanış profili ↗':'Closure profile ↗',
  'Destek profili ve kullanım ↗':'Support profile and usage ↗',
  'Ayrıntılı denetim ↗':'Detailed audit ↗',
  'Gerçek SCK:':'Actual SCK:',

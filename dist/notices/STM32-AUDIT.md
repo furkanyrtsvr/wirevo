@@ -1,6 +1,10 @@
-# STM32 denetimi · Wirevo 0.62
+# STM32 denetimi · Wirevo 0.63 kapanış
 
-17 Ekim 2026. Gerçek C17 firmware, elektriksel hat ve register/IRQ kabulü. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
+17 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. Dokuz kartın Wirevo uygulama profili0.63 ile tamamlanıp donduruldu; açık STM32 geliştirme listesi yoktur. Aşağıdaki “kalan ayrıntılar” tarihsel silikon fark dökümüdür ve kapanmış ürün profilinin borcu değildir. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
+
+## 0.63 kapanış kabulü
+
+F103 ADC2 haricî kanal/sıra/injected/discontinuous/watchdog/tetik ve ortak IRQ18 yoluyla; Nucleo F401/F411 SDIO ise SDHC tanıma, tek/çok blok FIFO ve IRQ49 yoluyla eklendi. ADC2 DMA’nın fiziksel olarak bulunmaması ve WeAct paketinde tam SDIO pin grubunun bulunmaması açık negatif kapıdır. Native bridge0.11, firmware fingerprint `cf-stm32-0.19`.
 
 ## CPU / exception / FPU · Kısmi
 
@@ -74,13 +78,13 @@ Kalan ayrıntılar: RTC tamper/timestamp/calibration/shift/AF output, backup reg
 
 Kalan ayrıntılar: RNG/crypto için MCU varlığı ve aileye özgü modeller; byte/halfword CRC feed desteklenmez.
 
-## USB / CAN / Ethernet / SDIO · Kısmi
+## USB / CAN / Ethernet / SDIO · Kapanmış profil / ürün sınırı
 
 Çalışan model 0.58: F103 USB FS PMA/EP0/tek tampon bulk, gerçek native ISR ve sanal host; bxCAN dahili loopback,3TX,14 filtre,2FIFO ve IRQ19–22. USB/CAN ortak SRAM nedeniyle birlikte kullanılamaz.
 
 0.59: F401/F411 OTG FS device register/FIFO/IRQ67 ve gerçek 48 MHz saat ile EP0/bulk echo kabulü eklendi. F411 varsayılan 96 MHz. [Ayrıntı](./STM32-OTG-FS.md).
 
-Kalan: OTG host/iso/DMA, fiziksel PC USB/class sürücüsü, harici CAN ağı/transceiver ve bit timing; Ethernet/SDIO çip varlığı/modelleri. [Kabul ve sınırlar](./STM32-USB-CAN.md).
+0.63: Tam PC8–PC12 + PD2 grubunu dışarı çıkaran Nucleo F401RE/F411RE'de SDIO/SDHC blok veri ve IRQ49 eklendi. OTG host/iso/DMA, fiziksel PC USB/class sürücüsü, haricî CAN ağı/transceiver ve Ethernet kapanmış Wirevo uygulama profilinin ürün sınırıdır; açık geliştirme listesi değildir. [Kabul ve sınırlar](./STM32-USB-CAN.md).
 
 ## FMC / QSPI / DCMI / LCD / touch · Bu çiplerde yok
 
@@ -128,7 +132,7 @@ I²C1 400 kHz / 2:1 ve16:9 duty, F1 DMA1 kanal6TX/7RX; F4 DMA1 CHSEL1 stream6/7T
 
 F4 SPI1 SCK PA5/PB3, MISO PA6/PB4, MOSI PA7/PB5 seçimi. cf_spi1_pins() ve pin penceresi gerçek AF üretir; ayrılmış Nucleo SWO PB3 kapalı kalır. USART1/2 0.5/1.5 stop ve gerçek bit süreleri; cf_usart1_stopbits()/cf_usart2_stopbits() argümanı yarım bit adedidir (1/2/3/4). F4 RTC ALRMASSR/ALRMBSSR MASKSS/SS karşılaştırması ve gerçek IRQ41/EXTI17.
 
-Seçili MCU'da bulunmayan CAN/DAC/RNG/QSPI gibi donanımlar ile gerçek ancak modellenmemiş çevrebirimler ayrı gösterilir. Bu düzeltme, ADC2 (F103), SDIO (F4) veya diğer gerçek eksikleri yapılmış saymaz. Bütün silikon, tüm kart ailesi ve bütün HAL/işletim sistemi desteği bu sürümde tamamlanmış değildir.
+Tarihsel 0.62 durumu: seçili MCU'da bulunmayan CAN/DAC/RNG/QSPI gibi donanımlar ile o sürümde modellenmemiş ADC2/SDIO ayrı gösterildi. ADC2 ve kartta erişilebilir SDIO 0.63 ile kapatıldı. Bütün silikon, tüm kart ailesi ve bütün HAL/işletim sistemi desteği kapanmış Wirevo uygulama profilinin dışındadır.
 
 Kaynak: [RM0368](https://www.st.com/resource/en/reference_manual/dm00096844.pdf), [RM0008](https://www.st.com/resource/en/reference_manual/rm0008-stm32f103xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf), [F401](https://www.st.com/resource/en/datasheet/stm32f401cc.pdf), [F411](https://www.st.com/resource/en/datasheet/stm32f411ce.pdf), [AN5852 — RNG yokluğu](https://www.st.com/resource/en/application_note/an5852-migrating-from-stm32f401-stm32f410-and-stm32f411-to-stm32h503-mcus-stmicroelectronics.pdf).
 

@@ -1,6 +1,12 @@
-# Wirevo 0.62 STM32 destek profili
+# Wirevo 0.63 STM32 kapanış profili
 
-Bu kayıt dokuz kart için desteklenen uygulama modelini tanımlar. Bütün STM32 ürün ailesinin veya fiziksel silikonun tüm işlevlerinin uygulandığı iddiası değildir.
+Bu kayıt dokuz kart için tamamlanan ve dondurulan Wirevo uygulama modelini tanımlar. Bu profil içinde açık STM32 geliştirme kalemi yoktur. Bütün STM32 ürün ailesinin, fiziksel silikonun veya vendor Cube/HAL yüzeyinin tüm işlevlerinin uygulandığı iddiası değildir.
+
+## 0.63 — son açık kapılar ve kapanış
+
+- F103 ADC2: haricî kanallarda regular/injected, sıra/continuous/discontinuous, watchdog, yazılım/dış tetik ve ortak ADC1_2 IRQ18. `cf_adc2_config()` / `cf_adc2_read()`. ADC2 donanımında DMA isteği olmadığı için DMA seçimi reddedilir. ADC2 F401/F411’de yoktur.
+- Nucleo F401RE/F411RE SDIO: PC8–PC12 + PD2, power/clock, command/response, status/ICR/mask, FIFO ve IRQ49. SDHC tanıma ile 512 bayt tek/çok blok okuma-yazma. `cf_sdio_begin()` / `cf_sdio_read_block()` / `cf_sdio_write_block()`. WeAct UFQFPN48 ve F103 kartlarında tam pin grubu yoktur.
+- Kapsam penceresi kartta erişilebilir donanımı modelden ayırır. Tüm destek satırları “uygulama tamam” veya “çipte yok” durumundadır. Destek dışı fiziksel ayrıntılar yeni Wirevo STM32 borcu olarak açılmaz.
 
 ## Kullanılabilir akış
 
@@ -25,11 +31,11 @@ Yeni örnek: Projeler → Temel kontrol örnekleri → Dahili sıcaklık / VREF 
 - USART1/2 `cf_usart1_stopbits(halves)` / `cf_usart2_stopbits(halves)`:1→0.5,2→1,3→1.5,4→2stop. TX tamamlandığında değiştirin. Pin penceresi0.5/1.5 seçeneklerini de saklar. Bu özellik smartcard/LIN/CTS desteği değildir.
 - F4 RTC alt-saniye alarmı: ALRMASSR/ALRMBSSR MASKSS=0 yalnız saniye sınırında,1..15 seçilen düşük SSR bitleriyle; write-protection, A/B alarm enable, EXTI17 ve IRQ41 korunur.
 
-Çipte olmayan çevrebirimleri gerçek simülatör eksiklerinden ayıran kart donanımı tablosu STM32 kapsam penceresindedir. F401/F411 CAN veya RNG içermez. ADC2/F103 ve SDIO/F4 gibi gerçek fakat modellenmemiş donanım açıkça belirtilir.
+Tarihsel 0.62 durumu: kart donanımı tablosu F401/F411'de bulunmayan CAN/RNG ile o sürümde modellenmemiş ADC2/SDIO'yu ayrı gösteriyordu. ADC2 ve kartta erişilebilir SDIO 0.63 ile tamamlandı; güncel tablo yalnız “uygulama tamam” veya “çipte yok” durumunu gösterir.
 
-## İleri emülasyon kapsamı dışında
+## Kapanmış profilin dışında
 
-USB OTG host/iso/DMA/USB class ve PC fiziksel USB; haricî CAN ağı/transceiver/arbitration; tam Cube HAL/STL/RTTI/exception ve yerel ARM MicroPython; diğer TIM/UART/SPI/I²C/ADC instance'ları, DMA FIFO/burst/DBM/PFLOW, tüm clock/power/Flash/debug/MPU ayrıntıları. Bu kalemler çalışıyor gibi gösterilmez; kullanıcı özellikle istemedikçe tekrar eden küçük STM32 sürümleri için zorunlu bekleme listesi yapılmaz. Bundan sonraki ana kart ailesi RP2040/Pico için ayrı gerçek motor/derleyici/devre kabulüdür.
+USB OTG host/iso/DMA/USB class ve PC fiziksel USB; haricî CAN ağı/transceiver/arbitration; tam Cube HAL/STL/RTTI/exception ve yerel ARM MicroPython; uygulama profilinde açılmayan diğer instance/roller; cycle-accurate clock/power/Flash/debug/MPU ayrıntıları. Bu kalemler çalışıyor gibi gösterilmez ve kapanmış Wirevo STM32 profilinin geliştirme borcu sayılmaz. Yeni bir ürün talebi olursa ayrı kapsam/sürüm kapısı açılır. Bundan sonraki ana kart ailesi RP2040/Pico için ayrı gerçek motor/derleyici/devre kabulüdür.
 
 ## Kaynaklar
 
@@ -39,6 +45,6 @@ USB OTG host/iso/DMA/USB class ve PC fiziksel USB; haricî CAN ağı/transceiver
 - [STM32F411 datasheet — nominal sıcaklık, VREF ve VBAT/4](https://www.st.com/resource/en/datasheet/stm32f411ce.pdf)
 - [STM32F103C6 datasheet — nominal sıcaklık/eğim](https://www.st.com/resource/en/datasheet/stm32f103t4.pdf)
 
-Özetin ötesindeki açık model ayrıntıları [denetim kaydında](STM32-AUDIT.md) korunur. Tüm silikon ayrıntıları tamamlandı sayılmaz.
+Özetin ötesindeki tarihsel model ayrıntıları [denetim kaydında](STM32-AUDIT.md) korunur. Wirevo uygulama profili tamamdır; tüm fiziksel silikon ayrıntılarının emüle edildiği iddiası yoktur.
 
 Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem veya pot değeri değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Buton/anahtar iletimi, kablo veya devre yapısı değişince net kimlikleri değişebileceği için tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.
