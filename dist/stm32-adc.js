@@ -1,7 +1,7 @@
 // Regular ADC1 12-bit scan/continuous, alignment and F4 EOCS/OVR.
 // Conversion values come from physical DC nets, never sensor controller state.
 export class STMADC {
- constructor(runtime){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.base=this.f4?0x40012000:0x40012400;this.regs=new Map([[this.base+36,4095]]);this.pending=null;this.sequence=null;this.dmaStopped=false;this.triggerQueue=[];this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;}
+ constructor(runtime){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.base=this.f4?0x40012000:0x40012400;this.regs=new Map([[this.base+36,4095]]);this.pending=null;this.sequence=null;this.dmaStopped=false;this.triggerQueue=[];this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.internalSince=null;}
  clocked(){return !!(this.r.regs.get(this.f4?0x40023844:0x40021018)&(1<<(this.f4?8:9)));}
  handles(a){return a>=this.base&&a<=this.base+0x50||this.f4&&a===0x40012304;}
  read(a,n){const aligned=a&~3;if(!this.handles(aligned))return undefined;let v=this.regs.get(aligned)||0;if(aligned===this.base+0x4c){this.regs.set(this.base,(this.regs.get(this.base)||0)&~2);if(this.r.dma)this.r.dma.pendingADC=false;}return n===4?v>>>0:(v>>>((a&3)*8))&(n===1?255:65535);}
@@ -11,19 +11,29 @@ export class STMADC {
   if(aligned===this.base){this.regs.set(aligned,(this.regs.get(aligned)||0)&v);return true;}
   if(aligned>=this.base+60&&aligned<=this.base+76)return true;
   if(aligned>=this.base+20&&aligned<=this.base+40)v&=4095;
+  if(aligned===(this.f4?0x40012304:this.base+8)){
+   const mask=this.f4?(3<<22):(1<<23),prior=this.regs.get(aligned)||0;
+   if(((v&mask)&~prior))this.internalSince=this.r.count;
+   if(!(v&mask))this.internalSince=null;
+  }
   this.regs.set(aligned,v>>>0);
   if(aligned===this.base+8){if(!(v&256)){this.dmaStopped=false;if(this.r.dma)this.r.dma.pendingADC=false;}if(!(v&1)){this.pending=null;this.sequence=null;this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.triggerQueue=[];return true;}if(!this.f4&&(v&12)){this.regs.set(aligned,v&~12);return true;}if(v&(this.f4?1<<30:1<<22))this.start();if(v&(this.f4?1<<22:1<<21))this.startInjected();}return true;
  }
- pin(channel){if(channel>15)throw Error('ADC1 dahili sıcaklık/VREF/VBAT kanalları henüz desteklenmiyor.');const pin=channel<8?'PA'+channel:channel<10?'PB'+(channel-8):'PC'+(channel-10);if(!this.r.board.gpio.includes(pin))throw Error('ADC kanalı kart başlığında kullanılamıyor: '+pin);return pin;}
+ pin(channel){if(channel>15){
+  const cr=this.regs.get(this.f4?0x40012304:this.base+8)||0;
+  if(channel===17){if(!(cr&(1<<23)))throw Error('ADC VREFINT için TSVREFE gerekli.');return 'VREFINT';}
+  if(channel===16||this.f4&&channel===18){if(this.f4&&(cr&(1<<22))){if(channel!==18)throw Error('VBAT ölçümü için ADC1 kanal18 seçilmeli; kanal16 alias ile VBATE birlikte model kapsamı dışındadır.');return 'VBAT';}if(!(cr&(1<<23)))throw Error('ADC sıcaklık sensörü için TSVREFE gerekli.');return 'TEMP';}
+  throw Error('ADC1 dahili kanal bu MCU üzerinde desteklenmiyor.');
+ }const pin=channel<8?'PA'+channel:channel<10?'PB'+(channel-8):'PC'+(channel-10);if(!this.r.board.gpio.includes(pin))throw Error('ADC kanalı kart başlığında kullanılamıyor: '+pin);return pin;}
  start(external=false){
   const cr=this.regs.get(this.base+8)||0,cr1=this.regs.get(this.base+4)||0;
   if(!this.clocked()||!(cr&1))return;
   if(this.pending){this.regs.set(this.base+8,cr&~(this.f4?1<<30:1<<22));return;}
   if(cr1&~(31|32|64|128|256|512|1024|2048|4096|(7<<13)|(1<<22)|(1<<23)|(this.f4?(1<<26)|(3<<24):0)))throw Error('ADC1 injected/discontinuous henüz desteklenmiyor.');
   this.checkDiscontinuous(cr1,cr);
-  const allowed=this.f4?1|2|2048|1024|256|512|(1<<22)|(15<<16)|(3<<20)|(15<<24)|(3<<28)|(1<<30):1|2|2048|256|(1<<21)|(7<<12)|(1<<15)|(7<<17)|(1<<20)|(1<<22);
+  const allowed=this.f4?1|2|2048|1024|256|512|(1<<22)|(15<<16)|(3<<20)|(15<<24)|(3<<28)|(1<<30):1|2|2048|256|(1<<21)|(7<<12)|(1<<15)|(7<<17)|(1<<20)|(1<<22)|(1<<23);
   if(cr&~allowed)throw Error('ADC1 external trigger/DMA/internal kanal henüz desteklenmiyor.');
-  if(this.f4&&((this.regs.get(0x40012304)||0)&~(3<<16)))throw Error('ADC1 common register modu henüz desteklenmiyor.');
+  if(this.f4&&((this.regs.get(0x40012304)||0)&~((3<<16)|(3<<22))))throw Error('ADC1 common register modu henüz desteklenmiyor.');
   if(!this.f4&&(!external&&(!(cr&(1<<20))||((cr>>>17)&7)!==7)))throw Error('F103 ADC1 yazılım EXTSEL/EXTTRIG seçimi gerekli.');
   if(this.f4&&((this.regs.get(this.base)||0)&32))return;
   const count=cr1&256?1+(((this.regs.get(this.base+0x2c)||0)>>>20)&15):1;
@@ -39,10 +49,16 @@ export class STMADC {
  checkDiscontinuous(cr1,cr){if((cr1&6144)===6144)throw Error('ADC regular ve injected discontinuous birlikte kullanılamaz.');if((cr1&6144)&&(cr1&1024))throw Error('ADC auto-injected/discontinuous birlikte kullanılamaz.');if((cr1&2048)&&(cr&2))throw Error('ADC continuous/discontinuous birlikte kullanılamaz.');}
  schedule(at){
   const channel=this.sequence.channels[this.sequence.index],pin=this.pin(channel);
-  this.r.circuit?.refresh(true);const voltage=this.r.inputVoltages?.[pin];
+  this.r.circuit?.refresh(true);
+  const env=this.r.circuit?.project.settings.stm32Pins||{},temperature=env.internalTemperature??25,vbat=env.internalVBAT??3;
+  const voltage=pin==='TEMP'?(this.f4 ? .76+.0025*(temperature-25):1.43-.0043*(temperature-25)):pin==='VREFINT'?(this.f4?1.21:1.2):pin==='VBAT'?vbat/4:this.r.inputVoltages?.[pin];
   if(!Number.isFinite(voltage))throw Error('ADC girişi boşta: '+pin);if(voltage<-.000001||voltage>3.300001)throw Error('ADC girişi 0–3.3 V aralığında olmalı.');
   const sampling=((this.regs.get(this.base+(channel<10?16:12))||0)>>>((channel<10?channel:channel-10)*3))&7,samples=this.f4?[3,15,28,56,84,112,144,480]:[1.5,7.5,13.5,28.5,41.5,55.5,71.5,239.5],prescale=this.f4?((this.regs.get(0x40012304)||0)>>>16)&3:((this.r.regs.get(0x40021004)||0)>>>14)&3,divider=(2+prescale*2)*this.r.usarts.divider({number:1});
   if(this.r.board.hz/divider>(this.f4?36000000:14000000))throw Error('ADC saat sınırı aşıldı.');
+  if(channel>15){const minimum=this.f4?(pin==='VBAT'?5:10):17.1;
+   if(samples[sampling]*divider/this.r.board.hz*1e6+1e-9<minimum)throw Error('ADC dahili kanal örnekleme süresi yetersiz: '+minimum+' us gerekli.');
+   if(pin!=='VBAT'&&(this.internalSince===null||at-this.internalSince<this.r.board.hz*10e-6))throw Error('ADC dahili kaynak için en az 10 us başlangıç beklemesi gerekli.');
+  }
   const max=(1<<this.sequence.bits)-1,value=Math.max(0,Math.min(max,Math.round(voltage/3.3*max)));
   this.pending={at:at+Math.ceil((samples[sampling]+(this.f4?this.sequence.bits:12.5))*divider),value};
  }

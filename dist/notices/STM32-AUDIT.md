@@ -1,6 +1,6 @@
-# STM32 denetimi · CircuitForge 0.57
+# STM32 denetimi · Wirevo 0.61
 
-14 Ekim 2026. Gerçek C17 firmware, elektriksel hat ve register/IRQ kabulü. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
+17 Ekim 2026. Gerçek C17 firmware, elektriksel hat ve register/IRQ kabulü. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
 
 ## CPU / exception / FPU · Kısmi
 
@@ -28,15 +28,15 @@ Kalan ayrıntılar: Dahili EXTI hatları, tüm AF/remap tablosu, I/O slew/damage
 
 ## USART1 / USART2 · Kısmi
 
-Çalışan model: USART1/2 DMA istekleri; USART1 ve uygun Blue Pill/WeAct USART2 fiziksel 7E/O,8N/E/O,9N,1/2stop / PE-RXNE-TXE-TC-ORE-FE / IRQ; kart terminali.
+Çalışan model: USART1/2 DMA istekleri; USART1 ve uygun Blue Pill/WeAct USART2 fiziksel 7E/O,8N/E/O,9N,1/2stop / PE-RXNE-TXE-TC-ORE-FE / IRQ; kart terminali; F401/F411 OVER8/OVER16 ve baud korunan geçiş.
 
-Kalan ayrıntılar: OVER8,0.5/1.5stop,CTS/RTS/LIN/smartcard/synchronous; Nucleo fiziksel VCP ve USART2 alternatif başlık/remap.
+Kalan ayrıntılar: 0.5/1.5stop,CTS/RTS/LIN/smartcard/synchronous; Nucleo fiziksel VCP ve USART2 alternatif başlık/remap.
 
 ## ADC1 / diğer ADC / DAC · Kısmi
 
-Çalışan model: ADC1 regular/continuous, 12/10/8/6bit, EOC/OVR/IRQ; injected/offset/JAUTO, regular/injected discontinuous, analog watchdog, EXTI11/TIM2 regular ve EXTI15/TIM2_CC1 injected trigger ve gerçek DMA SRAM.
+Çalışan model: ADC1 regular/continuous, 12/10/8/6bit, EOC/OVR/IRQ; injected/offset/JAUTO, regular/injected discontinuous, analog watchdog, EXTI11/TIM2 regular ve EXTI15/TIM2_CC1 injected trigger ve gerçek DMA SRAM; nominal sıcaklık/VREFINT ve F4 VBAT/4.
 
-Kalan ayrıntılar: Dahili kanallar, diğer injected dış tetikler, sample-hold/noise/kalibrasyon, diğer ADC/DAC.
+Kalan ayrıntılar: Diğer injected dış tetikler, sample-hold/noise/kalibrasyon, diğer ADC/DAC.
 
 ## TIM2 / diğer timer · Kısmi
 
@@ -46,9 +46,9 @@ Kalan ayrıntılar: Digital filter/TRC/remap/external clock/dead-time, encoder t
 
 ## SPI1 / SPI2+ / I²S / SAI · Kısmi
 
-Çalışan model: SPI1 mode0..3,8/16-bit,MSB/LSB master, software NSS/GPIO CS, gerçek hat/IRQ/OVR ve DMA RX/TX.
+Çalışan model: SPI1 mode0..3,8/16-bit,MSB/LSB master, software NSS/GPIO CS veya PA4 hardware NSS/SSOE, gerçek hat/IRQ/OVR ve DMA RX/TX.
 
-Kalan ayrıntılar: Hardware NSS/slave/CRC/remap/receive-only, SPI2+, I²S/SAI.
+Kalan ayrıntılar: NSS input/multimaster/slave/CRC/remap/receive-only, SPI2+, I²S/SAI.
 
 ## I²C1 / I²C2+ · Kısmi
 
@@ -88,11 +88,11 @@ Kalan: OTG host/iso/DMA, fiziksel PC USB/class sürücüsü, harici CAN ağı/tr
 
 Kalan ayrıntılar: Haricî bellek, kamera, ekran/touch çevrebirimleri; varlığı paket/MCUya bağlı.
 
-## Dahili analog / sensörler · Bekliyor
+## Dahili analog / sensörler · Kısmi
 
-Çalışan model: Haricî devre sensörleri ve DC çözümü ayrı modellerdir.
+Çalışan model: Haricî sensörler/DC; ADC1 nominal dahili sıcaklık/VREFINT ve F4 VBAT/4; projeye özel giriş değerleri.
 
-Kalan ayrıntılar: Dahili sıcaklık/VREF, comparator/opamp, analog güç/kalibrasyon ayrıntıları.
+Kalan ayrıntılar: Comparator/opamp, analog güç/kalibrasyon ayrıntıları.
 
 ## C17 / C++ / MicroPython · Kısmi
 
@@ -117,3 +117,7 @@ Son 0.57 kabulü:1303/1303. MicroPython WASM elektriksel devre modu eklendi; yer
 0.58: F103USB/bxCAN/worker19/19; genel1322ilk1317geçti,5kart-katalog varsayımı düzeltildi ve ilgili14/14 tekrar geçti. USB/CAN fiziksel dış ağ veya F4OTG kapsamı değildir. Devam STM32_PLAN_0.58.md.
 
 0.59: F401/F411 OTG FS device/FIFO/IRQ67, beş F4 native USB ve F41196 MHz/USB48 MHz. Genel1331/1331 geçti; ek FIFO2/2 ve son HCLK/USB10/10. İleri silikon sınırları korunur. Devam docs/STM32_PLAN_0.59.md.
+
+## 0.61 destek profili
+
+Yeni özellikler ve sınırlar: [STM32 destek profili](STM32-SUPPORT-PROFILE.md). Dahili ADC fabrika kalibrasyonu/termal model değildir. OVER8 yalnız F401/F411; PA4 NSS yalnız master çıkışı. Kalan ileri silikon özellikleri tamamlandı sayılmaz.

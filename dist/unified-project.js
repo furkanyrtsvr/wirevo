@@ -49,3 +49,6 @@ export function migrateESPProject(old){const p=createUnifiedProject({board:old.c
 
 export function unifiedExampleProject(...args){return spaceNativeParts(unifiedExampleProjectRaw(...args));}
 export function createUnifiedProject(options){return spaceNativeParts(createUnifiedProjectRaw(options));}
+
+// Workspace-to-worker boundary: send circuit inputs, never editor/layout state.
+export function workspaceCircuitPayload(p){const s=p.settings;return {components:p.components,wires:p.wires,settings:{moisture:s.moisture,threshold:s.threshold,pot:s.pot,pressed:s.pressed,probe:'D13',...(isSTM(p)&&s.stm32Pins?{stm32Pins:s.stm32Pins}:{})}};}

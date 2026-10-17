@@ -2,10 +2,10 @@
 
 Güncel giriş: [belge dizini](docs/README.md).
 
-1. [0.60 marka/dil checkpointi](docs/STM32_PLAN_0.60.md).
-2. [Son STM32 teknik checkpointi ve diğer kartlara geçiş](docs/STM32_PLAN_0.59.md).
-3. [Güncel doğrulama kayıtları](docs/qa/README.md).
+1. [0.61 destek profili ve sonraki kartlar](docs/STM32_PLAN_0.61.md).
+2. [STM32 desteklenen işlevler ve model sınırları](dist/notices/STM32-SUPPORT-PROFILE.md).
+3. [Doğrulama sonuçları](docs/qa/README.md).
 
-Sonraki kart adayı RP2040/Pico; resmi pinout, uygun Cortex-M0+ motoru ve gerçek firmware/devre kabulü tamamlanmadan destek iddiası yapılmaz. STM32 ileri silikon eksikleri kapsam kaydında açık kalır. Kullanıcı istemedikçe zamanlayıcı kurulmaz.
+Sonraki ana kart ailesi RP2040/Pico; resmi pinout, gerçek motor/firmware ve elektriksel devre kabulü tamamlanmadan destek iddiası yapılmaz. İleri STM32 silikon ayrıntıları otomatik sonraki sürüm hedefi değildir. Kullanıcı istemedikçe zamanlayıcı kurulmaz.
 
-Eski sürüm bazlı planlar docs/history/plans altında, sürüm notları docs/history/releases altındadır. Önceki raporlar Git geçmişinde korunur.
+Eski planlar ve sürümler docs/history altında, test kanıtları docs/qa altında korunur.

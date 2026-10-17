@@ -2,10 +2,10 @@
 
 | Konu | Kayıt |
 | --- | --- |
-| Güncel geliştirme planı | [0.60 devam planı](STM32_PLAN_0.60.md) |
-| Son teknik STM32 checkpointi | [0.59 kart geçişi / açık kapsam](STM32_PLAN_0.59.md) |
+| Güncel geliştirme planı | [0.61 devam planı](STM32_PLAN_0.61.md) |
+| Son teknik STM32 checkpointi | [0.61 destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
 | Test ve kabul sonuçları | [QA dizini](qa/README.md) |
-| Güncel sürüm | [0.60](RELEASE_0.60.md) / [0.59 teknik sürüm](RELEASE_0.59.md) |
+| Güncel sürüm | [0.61](RELEASE_0.61.md) |
 | Model ve lisans sınırları | [Uygulama model belgeleri](../dist/notices/) |
 | Önceki sürümler / planlar | [Sürüm geçmişi](history/releases/) / [Eski planlar](history/plans/) |
 | Donanım araştırmaları | [Araştırma notları](research/) |
