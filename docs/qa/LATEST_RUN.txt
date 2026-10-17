@@ -1722,3 +1722,368 @@ App shell: 446 files / 19714112 bytes; Clang has separate cache.
 ℹ skipped 0
 ℹ todo 0
 ℹ duration_ms 168888.4541
+
+=== CI shard5 failure and correction ===
+﻿2026-10-17T13:07:11.8792995Z Current runner version: '2.337.0'
+2026-10-17T13:07:11.8817999Z ##[group]Runner Image Provisioner
+2026-10-17T13:07:11.8818966Z Hosted Compute Agent
+2026-10-17T13:07:11.8819570Z Version: 20261012.601
+2026-10-17T13:07:11.8820300Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-17T13:07:11.8821122Z Build Date: 2026-10-12T17:48:21Z
+2026-10-17T13:07:11.8821858Z Worker ID: {9e747c92-35d8-403c-be99-ba78bd14fe1e}
+2026-10-17T13:07:11.8822662Z Region: eastus
+2026-10-17T13:07:11.8823216Z Cloud: Azure
+2026-10-17T13:07:11.8823806Z ##[endgroup]
+2026-10-17T13:07:11.8825292Z ##[group]Operating System
+2026-10-17T13:07:11.8825980Z Ubuntu
+2026-10-17T13:07:11.8826885Z 24.04.5
+2026-10-17T13:07:11.8827472Z LTS
+2026-10-17T13:07:11.8828034Z ##[endgroup]
+2026-10-17T13:07:11.8828718Z ##[group]Runner Image
+2026-10-17T13:07:11.8829474Z Image: ubuntu-24.04
+2026-10-17T13:07:11.8830160Z Version: 20261012.334.1
+2026-10-17T13:07:11.8831427Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-17T13:07:11.8833059Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-17T13:07:11.8834080Z ##[endgroup]
+2026-10-17T13:07:11.8835809Z ##[group]GITHUB_TOKEN Permissions
+2026-10-17T13:07:11.8838225Z Contents: read
+2026-10-17T13:07:11.8838970Z Metadata: read
+2026-10-17T13:07:11.8839568Z ##[endgroup]
+2026-10-17T13:07:11.8841628Z Secret source: Actions
+2026-10-17T13:07:11.8842718Z Cache mode: write
+2026-10-17T13:07:11.8843812Z Prepare workflow directory
+2026-10-17T13:07:11.9303824Z Prepare all required actions
+2026-10-17T13:07:11.9373409Z Getting action download info
+2026-10-17T13:07:12.1511753Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-17T13:07:12.2454744Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-17T13:07:12.4354278Z Complete job name: verify (5)
+2026-10-17T13:07:12.5126242Z ##[group]Run actions/checkout@v4
+2026-10-17T13:07:12.5127743Z with:
+2026-10-17T13:07:12.5128232Z   repository: furkanyrtsvr/wirevo
+2026-10-17T13:07:12.5132182Z   token: ***
+2026-10-17T13:07:12.5132623Z   ssh-strict: true
+2026-10-17T13:07:12.5133070Z   ssh-user: git
+2026-10-17T13:07:12.5133528Z   persist-credentials: true
+2026-10-17T13:07:12.5134019Z   clean: true
+2026-10-17T13:07:12.5134483Z   sparse-checkout-cone-mode: true
+2026-10-17T13:07:12.5135017Z   fetch-depth: 1
+2026-10-17T13:07:12.5135457Z   fetch-tags: false
+2026-10-17T13:07:12.5135907Z   show-progress: true
+2026-10-17T13:07:12.5136536Z   lfs: false
+2026-10-17T13:07:12.5136962Z   submodules: false
+2026-10-17T13:07:12.5137422Z   set-safe-directory: true
+2026-10-17T13:07:12.5137941Z   allow-unsafe-pr-checkout: false
+2026-10-17T13:07:12.5138814Z ##[endgroup]
+2026-10-17T13:07:12.6144062Z Syncing repository: furkanyrtsvr/wirevo
+2026-10-17T13:07:12.6147053Z ##[group]Getting Git version info
+2026-10-17T13:07:12.6148226Z Working directory is '/home/runner/work/wirevo/wirevo'
+2026-10-17T13:07:12.6149808Z [command]/usr/bin/git version
+2026-10-17T13:07:12.6235361Z git version 2.55.0
+2026-10-17T13:07:12.6269531Z ##[endgroup]
+2026-10-17T13:07:12.6277733Z Temporarily overriding HOME='/home/runner/work/_temp/cc169d6d-c437-4564-97ca-b7b42b5df832' before making global git config changes
+2026-10-17T13:07:12.6280329Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-17T13:07:12.6283807Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wirevo/wirevo
+2026-10-17T13:07:12.6348283Z Deleting the contents of '/home/runner/work/wirevo/wirevo'
+2026-10-17T13:07:12.6352909Z ##[group]Initializing the repository
+2026-10-17T13:07:12.6357181Z [command]/usr/bin/git init /home/runner/work/wirevo/wirevo
+2026-10-17T13:07:12.6469150Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-17T13:07:12.6471235Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-17T13:07:12.6472829Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-17T13:07:12.6474411Z hint: call:
+2026-10-17T13:07:12.6475037Z hint:
+2026-10-17T13:07:12.6475836Z hint: 	git config --global init.defaultBranch <name>
+2026-10-17T13:07:12.6477108Z hint:
+2026-10-17T13:07:12.6478096Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-17T13:07:12.6479596Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-17T13:07:12.6480834Z hint:
+2026-10-17T13:07:12.6481570Z hint: 	git branch -m <name>
+2026-10-17T13:07:12.6482381Z hint:
+2026-10-17T13:07:12.6483379Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-17T13:07:12.6484973Z Initialized empty Git repository in /home/runner/work/wirevo/wirevo/.git/
+2026-10-17T13:07:12.6489056Z [command]/usr/bin/git remote add origin https://github.com/furkanyrtsvr/wirevo
+2026-10-17T13:07:12.6539396Z ##[endgroup]
+2026-10-17T13:07:12.6544682Z ##[group]Disabling automatic garbage collection
+2026-10-17T13:07:12.6545460Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-17T13:07:12.6578965Z ##[endgroup]
+2026-10-17T13:07:12.6579997Z ##[group]Setting up auth
+2026-10-17T13:07:12.6586712Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T13:07:12.6621164Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T13:07:12.7012674Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T13:07:12.7053175Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T13:07:12.7283426Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T13:07:12.7320537Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T13:07:12.7547573Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-17T13:07:12.7588138Z ##[endgroup]
+2026-10-17T13:07:12.7588945Z ##[group]Fetching the repository
+2026-10-17T13:07:12.7598755Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c5c30f7f57d3b9d75c5ed976481004d424111eba:refs/remotes/origin/main
+2026-10-17T13:07:13.4511608Z From https://github.com/furkanyrtsvr/wirevo
+2026-10-17T13:07:13.4513696Z  * [new ref]         c5c30f7f57d3b9d75c5ed976481004d424111eba -> origin/main
+2026-10-17T13:07:13.4517733Z ##[endgroup]
+2026-10-17T13:07:13.4519401Z ##[group]Determining the checkout info
+2026-10-17T13:07:13.4521368Z ##[endgroup]
+2026-10-17T13:07:13.4528096Z [command]/usr/bin/git sparse-checkout disable
+2026-10-17T13:07:13.4589294Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-17T13:07:13.4627582Z ##[group]Checking out the ref
+2026-10-17T13:07:13.4633162Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-17T13:07:13.6222530Z Switched to a new branch 'main'
+2026-10-17T13:07:13.6227427Z branch 'main' set up to track 'origin/main'.
+2026-10-17T13:07:13.6241773Z ##[endgroup]
+2026-10-17T13:07:13.6290606Z [command]/usr/bin/git log -1 --format=%H
+2026-10-17T13:07:13.6317725Z c5c30f7f57d3b9d75c5ed976481004d424111eba
+2026-10-17T13:07:13.6710662Z ##[group]Run actions/setup-node@v4
+2026-10-17T13:07:13.6712002Z with:
+2026-10-17T13:07:13.6712951Z   node-version: 24
+2026-10-17T13:07:13.6713999Z   cache: npm
+2026-10-17T13:07:13.6714981Z   always-auth: false
+2026-10-17T13:07:13.6716036Z   check-latest: false
+2026-10-17T13:07:13.6727413Z   token: ***
+2026-10-17T13:07:13.6728403Z ##[endgroup]
+2026-10-17T13:07:13.8191890Z (node:2308) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-17T13:07:13.8197437Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-17T13:07:13.8203662Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-17T13:07:13.8207367Z ##[group]Environment details
+2026-10-17T13:07:14.2546775Z node: v24.21.0
+2026-10-17T13:07:14.2547532Z npm: 11.19.0
+2026-10-17T13:07:14.2548019Z yarn: 1.22.22
+2026-10-17T13:07:14.2549328Z ##[endgroup]
+2026-10-17T13:07:14.2599640Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+2026-10-17T13:07:14.3735174Z /home/runner/.npm
+2026-10-17T13:07:14.4483508Z npm cache is not found
+2026-10-17T13:07:14.4701973Z ##[group]Run npm ci
+2026-10-17T13:07:14.4702343Z [36;1mnpm ci[0m
+2026-10-17T13:07:14.4969803Z shell: /usr/bin/bash -e {0}
+2026-10-17T13:07:14.4970150Z ##[endgroup]
+2026-10-17T13:07:15.6643558Z 
+2026-10-17T13:07:15.6652044Z added 25 packages, and audited 26 packages in 1s
+2026-10-17T13:07:15.6653586Z 
+2026-10-17T13:07:15.6653951Z found 0 vulnerabilities
+2026-10-17T13:07:15.6665447Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-10-17T13:07:15.6667174Z npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-10-17T13:07:15.6668075Z npm warn install-scripts
+2026-10-17T13:07:15.6669284Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-17T13:07:15.7142710Z ##[group]Run node --test --test-concurrency=2 --test-shard=5/8 tests/*.test.mjs
+2026-10-17T13:07:15.7143346Z [36;1mnode --test --test-concurrency=2 --test-shard=5/8 tests/*.test.mjs[0m
+2026-10-17T13:07:15.7208403Z shell: /usr/bin/bash -e {0}
+2026-10-17T13:07:15.7208686Z ##[endgroup]
+2026-10-17T13:07:15.8242310Z ✔ AVR archive indexes global and weak defined symbols, excludes locals and undefined (1.871021ms)
+2026-10-17T13:07:15.8248304Z ✔ GNU ar symbol offsets point to actual member headers including long names and odd padding (0.873194ms)
+2026-10-17T13:07:15.8437080Z ✔ Cancelled compilation releases the worker and cannot accept a late firmware result (2.82075ms)
+2026-10-17T13:07:15.8538620Z ✔ Timeout and progress failure both release compiler resources without hanging (10.394381ms)
+2026-10-17T13:07:15.8544903Z ✔ Successful GCC warnings survive the worker result while oversize firmware is rejected (0.634728ms)
+2026-10-17T13:07:15.8548358Z ✔ Multiple source progress does not finish compilation, cancellation releases it, SRAM overflow cannot run (1.583975ms)
+2026-10-17T13:07:16.4476862Z ✔ Native Uno reads physical diode and divided zener voltages (165.03244ms)
+2026-10-17T13:07:16.4486832Z ✔ Forward diode reverse blocks; reverse zener switches off below breakdown (14.110916ms)
+2026-10-17T13:07:16.4490717Z ✔ Zener load removes regulation when series resistor cannot feed it (10.899367ms)
+2026-10-17T13:07:16.4499226Z ✔ Unrestricted diode current fails circuit instead of pretending valid current (13.806488ms)
+2026-10-17T13:07:16.4501194Z ✔ Diode network voltage/current obey KCL while supply is swept (100.494748ms)
+2026-10-17T13:07:16.4503043Z ✔ 50Ω cycle sine source and diode clipping produce actual changing ADC values (195.901911ms)
+2026-10-17T13:07:16.4627502Z ✔ Concurrent ESP loads cannot initialize two WASM instances or report an older card session (203.729251ms)
+2026-10-17T13:07:16.4629599Z ✔ ESP worker drives three architectures, serial, reset, memory and session IDs (226.845787ms)
+2026-10-17T13:07:16.5108072Z ✔ localization preserves technical identifiers and respects word boundaries (4.43026ms)
+2026-10-17T13:07:16.5118313Z ✔ long phrases win over overlapping words and compound component captions (0.259215ms)
+2026-10-17T13:07:16.5137670Z ✔ branding and offline locale assets ship together without renaming existing project storage (7.30485ms)
+2026-10-17T13:07:19.0090596Z ✔ Six new boards/examples carry genuine GCC firmware, exact sources and target capacities (21.798092ms)
+2026-10-17T13:07:19.0128309Z ✔ Mega canonical port mapping, physical I2C/ground/5V aliases and high-numbered probes survive import (15.835726ms)
+2026-10-17T13:07:19.0130507Z ✔ Mega real A15 ADC, 3KB static SRAM, D53 output and Timer5 D44 PWM reach the physical circuit (455.655095ms)
+2026-10-17T13:07:19.0138201Z ✔ Mega Serial1 sensor request/reply follows D18/D19; removed RX cannot fabricate CO2 (564.774485ms)
+2026-10-17T13:07:19.0141080Z ✔ Mega hardware I2C uses D20/D21 and correct IRQ; disconnected SDA prevents valid sensor reads (504.604546ms)
+2026-10-17T13:07:19.0143357Z ✔ Mega hardware SPI uses PB1/PB2/PB3 and D53 SS; disconnected MISO loses actual ADC data (341.226819ms)
+2026-10-17T13:07:19.0145678Z ✔ Duemilanove and Arduino Pro compile their own macros and execute physical 6ADC/PWM (181.946634ms)
+2026-10-17T13:07:19.0148297Z ✔ Mega six external IRQ vectors and four independent receive queues execute native Arduino handlers (49.557559ms)
+2026-10-17T13:07:19.0150722Z ✔ Real avr6 WASM ELF reserves >2KB SRAM and transmits separately through four USARTs (85.803828ms)
+2026-10-17T13:07:19.0152560Z ✔ Mega D44/D53/A15 remain real analyzer channels and A6/A7 remain digital-capable ports (2.092055ms)
+2026-10-17T13:07:19.0154568Z ✔ All 15 native Mega PWM outputs pulse on their physical pads across six timers; A6/A7 drive ADC (112.360985ms)
+2026-10-17T13:07:19.0156966Z ✔ Mega native pulseIn links its separate assembly core and measures a physically jumpered Timer3 pulse (97.235653ms)
+2026-10-17T13:07:21.8922887Z ✔ Örnek firmware gerçek kaynaklarıyla eşleşir; HEX checksum ve kapasite doğrulanır (218.772455ms)
+2026-10-17T13:07:21.8928505Z ✔ Gerçek Blink AVR kenar aralığı 500ms ve UART mesajları (528.691972ms)
+2026-10-17T13:07:21.8932946Z ✔ Gerçek buton firmwarei netlist ve INPUT_PULLUP ile bas/bırak/kopma (157.819625ms)
+2026-10-17T13:07:21.8936017Z ✔ Gerçek ADC/PWM: 2.5V→512→%50 ve input bağlantı bırakma (229.85153ms)
+2026-10-17T13:07:21.8941378Z ✔ Gerçek sera firmware ADC eşiği ile D7 ve röle değiştirir (160.827572ms)
+2026-10-17T13:07:21.8944075Z ✔ Gerçek USART RX/TX echo, firmware baud ve AVR çevriminde zamanlama (24.754173ms)
+2026-10-17T13:07:21.8951738Z ✔ UART RX/TX register kesişmesi: 200 saat fazında 800 mesaj kayıpsız (3895.641016ms)
+2026-10-17T13:07:21.8957648Z ✔ Yayımlanan worker protokolü: gerçek HEX yükleme, UART gönderme ve 1ms adım (40.767983ms)
+2026-10-17T13:07:21.9011556Z ✔ Worker exposes four pads, revision IDs and cycle-exact input edges after channel changes (9.692919ms)
+2026-10-17T13:07:21.9209262Z ✔ MCP23S17 native write/read, actual LED load/ADC, bit7 input pullup and GPIO IRQ (310.70187ms)
+2026-10-17T13:07:21.9211116Z ✔ MCP23S17 HAEN addresses and wrong opcode reject writes; all16pins bidirectional (0.452637ms)
+2026-10-17T13:07:21.9212658Z ✔ MCP23S17 BANK, sequential pointer, INTCAP clears latched bit7 interrupt (0.214681ms)
+2026-10-17T13:07:21.9214259Z ✔ MCP23S17 missing VDD/reset/CS/SI prevents native output, SO releases when CS high (183.375187ms)
+2026-10-17T13:07:21.9216060Z ✔ SPI address prefetch / aborted read leaves interrupt latched until data byte completes (0.312885ms)
+2026-10-17T13:07:21.9218317Z ✔ MCP23S17 powered output cannot preserve its own disconnected supply (53.159843ms)
+2026-10-17T13:07:24.4688608Z ✔ stm32f103c6 native WFI cycles preserve partial TIM2 PSC phase across RCC gate and explicit CNT write (1694.369791ms)
+2026-10-17T13:07:24.4690348Z ✔ nucleo-f401re native WFI cycles preserve partial TIM2 PSC phase across RCC gate and explicit CNT write (1195.082635ms)
+2026-10-17T13:07:24.4692074Z ✔ weact-f411ce native WFI cycles preserve partial TIM2 PSC phase across RCC gate and explicit CNT write (1291.902553ms)
+2026-10-17T13:10:33.3589810Z ✔ stm32f103c6 hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (9240.57244ms)
+2026-10-17T13:10:33.3591712Z ✔ stm32f103c8 hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (7372.886528ms)
+2026-10-17T13:10:33.3593376Z ✔ stm32f103cb hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (7721.413606ms)
+2026-10-17T13:10:33.3600699Z ✔ nucleo-f103rb hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (7926.902457ms)
+2026-10-17T13:10:33.3602976Z ✔ nucleo-f401re hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (8756.418567ms)
+2026-10-17T13:10:33.3604613Z ✔ nucleo-f411re hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (11279.772976ms)
+2026-10-17T13:10:33.3606225Z ✔ weact-f401cc hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (7660.566535ms)
+2026-10-17T13:10:33.3609286Z ✔ weact-f401ce hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (7530.236248ms)
+2026-10-17T13:10:33.3611944Z ✔ weact-f411ce hardware I2C1 physical SHT31 CRC and live environment/NACK recovery (10123.476401ms)
+2026-10-17T13:10:33.3617900Z ✔ stm32f103c6 I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (3365.766024ms)
+2026-10-17T13:10:33.3620828Z ✔ stm32f103c8 I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (3270.973744ms)
+2026-10-17T13:10:33.3625486Z ✔ stm32f103cb I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (3311.664702ms)
+2026-10-17T13:10:33.3632724Z ✔ nucleo-f103rb I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (3409.638355ms)
+2026-10-17T13:10:33.3676303Z ✔ nucleo-f401re I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (4367.242489ms)
+2026-10-17T13:10:33.3679059Z ✔ nucleo-f411re I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (4402.05613ms)
+2026-10-17T13:10:33.3681181Z ✔ weact-f401cc I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (4278.318727ms)
+2026-10-17T13:10:33.3683237Z ✔ weact-f401ce I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (4123.490689ms)
+2026-10-17T13:10:33.3685287Z ✔ weact-f411ce I2C1 1/2/3/6-byte ACK/POS tails release STOP and preserve exact SHT31 byte stream (4424.121111ms)
+2026-10-17T13:10:33.3687405Z ✔ stm32f103c6 genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (744.276692ms)
+2026-10-17T13:10:33.3689433Z ✔ stm32f103c8 genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (743.409156ms)
+2026-10-17T13:10:33.3691138Z ✔ stm32f103cb genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (720.279002ms)
+2026-10-17T13:10:33.3692810Z ✔ nucleo-f103rb genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (737.68361ms)
+2026-10-17T13:10:33.3694502Z ✔ nucleo-f401re genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (793.707232ms)
+2026-10-17T13:10:33.3696300Z ✔ nucleo-f411re genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (759.918566ms)
+2026-10-17T13:10:33.3698258Z ✔ weact-f401cc genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (788.04118ms)
+2026-10-17T13:10:33.3699756Z ✔ weact-f401ce genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (765.478258ms)
+2026-10-17T13:10:33.3701593Z ✔ weact-f411ce genuine I2C1 EV IRQ31 and AF error IRQ32 across NVIC banks (772.213134ms)
+2026-10-17T13:10:33.3703432Z ✔ stm32f103c6 I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1341.529858ms)
+2026-10-17T13:10:33.3705437Z ✔ stm32f103c8 I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1328.186293ms)
+2026-10-17T13:10:33.3707624Z ✔ stm32f103cb I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1362.992094ms)
+2026-10-17T13:10:33.3709624Z ✔ nucleo-f103rb I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1352.816027ms)
+2026-10-17T13:10:33.3711659Z ✔ nucleo-f401re I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1633.244472ms)
+2026-10-17T13:10:33.3713701Z ✔ nucleo-f411re I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1627.912032ms)
+2026-10-17T13:10:33.3715596Z ✔ weact-f401cc I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1534.246301ms)
+2026-10-17T13:10:33.3717815Z ✔ weact-f401ce I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1550.3234ms)
+2026-10-17T13:10:33.3720150Z ✔ weact-f411ce I2C1 ADDR clear sequence and full two-register BTF physically stretch SCL (1613.009471ms)
+2026-10-17T13:10:33.3722052Z ✔ stm32f103c6 remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1301.96368ms)
+2026-10-17T13:10:33.3723843Z ✔ stm32f103c8 remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1300.317672ms)
+2026-10-17T13:10:33.3725660Z ✔ stm32f103cb remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1315.753148ms)
+2026-10-17T13:10:33.3727855Z ✔ nucleo-f103rb remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1345.444673ms)
+2026-10-17T13:10:33.3729730Z ✔ nucleo-f401re remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1547.023247ms)
+2026-10-17T13:10:33.3731509Z ✔ nucleo-f411re remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1627.965353ms)
+2026-10-17T13:10:33.3733250Z ✔ weact-f401cc remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1569.598192ms)
+2026-10-17T13:10:33.3735047Z ✔ weact-f401ce remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1521.259659ms)
+2026-10-17T13:10:33.3737100Z ✔ weact-f411ce remapped I2C1 PB8/PB9 preserves physical sensor nets and CRC (1591.067718ms)
+2026-10-17T13:10:33.3739221Z ✔ Hardware I2C config rejects duplicate/missing signals, wrong F103 remap, preserves software ZIP and project scope (10.653212ms)
+2026-10-17T13:10:33.3744982Z ✖ stm32f103c6 external SCL low stalls START, times out without invented ACK and recovers after release (20114.800017ms)
+2026-10-17T13:10:33.3746919Z ✖ nucleo-f411re external SCL low stalls START, times out without invented ACK and recovers after release (20563.748054ms)
+2026-10-17T13:10:33.3748579Z ✔ stm32f103c6 I2C1 RCC reset cancels edges, register unsupported modes and AF fail explicitly (610.930309ms)
+2026-10-17T13:10:33.3750353Z ✔ nucleo-f411re I2C1 RCC reset cancels edges, register unsupported modes and AF fail explicitly (685.949413ms)
+2026-10-17T13:10:33.3751943Z ✔ stm32f103c6 ITBUFEN gates RXNE and real I2C1 event ISR receives two bytes with POS (1269.888372ms)
+2026-10-17T13:10:33.3753605Z ✔ nucleo-f411re ITBUFEN gates RXNE and real I2C1 event ISR receives two bytes with POS (1622.409388ms)
+2026-10-17T13:10:33.4529410Z ✔ stm32f103c6 c production internal ADC example compiles, runs and exports without external wiring (1783.83324ms)
+2026-10-17T13:10:33.4531662Z ✔ stm32f103c6 cpp production internal ADC example compiles, runs and exports without external wiring (1185.629448ms)
+2026-10-17T13:10:33.4533723Z ✔ stm32f103c8 c production internal ADC example compiles, runs and exports without external wiring (835.111559ms)
+2026-10-17T13:10:33.4535712Z ✔ stm32f103c8 cpp production internal ADC example compiles, runs and exports without external wiring (1022.500836ms)
+2026-10-17T13:10:33.4538175Z ✔ stm32f103cb c production internal ADC example compiles, runs and exports without external wiring (802.929332ms)
+2026-10-17T13:10:33.4540217Z ✔ stm32f103cb cpp production internal ADC example compiles, runs and exports without external wiring (953.03252ms)
+2026-10-17T13:10:33.4542090Z ✔ nucleo-f103rb c production internal ADC example compiles, runs and exports without external wiring (850.500181ms)
+2026-10-17T13:10:33.4544014Z ✔ nucleo-f103rb cpp production internal ADC example compiles, runs and exports without external wiring (951.780103ms)
+2026-10-17T13:10:33.4545959Z ✔ nucleo-f401re c production internal ADC example compiles, runs and exports without external wiring (847.103236ms)
+2026-10-17T13:10:33.4548122Z ✔ nucleo-f401re cpp production internal ADC example compiles, runs and exports without external wiring (1035.828259ms)
+2026-10-17T13:10:33.4549902Z ✔ nucleo-f411re c production internal ADC example compiles, runs and exports without external wiring (863.97178ms)
+2026-10-17T13:10:33.4551774Z ✔ nucleo-f411re cpp production internal ADC example compiles, runs and exports without external wiring (964.850555ms)
+2026-10-17T13:10:33.4553584Z ✔ weact-f401cc c production internal ADC example compiles, runs and exports without external wiring (777.288008ms)
+2026-10-17T13:10:33.4555858Z ✔ weact-f401cc cpp production internal ADC example compiles, runs and exports without external wiring (957.025455ms)
+2026-10-17T13:10:33.4558130Z ✔ weact-f401ce c production internal ADC example compiles, runs and exports without external wiring (852.827987ms)
+2026-10-17T13:10:33.4559943Z ✔ weact-f401ce cpp production internal ADC example compiles, runs and exports without external wiring (985.289725ms)
+2026-10-17T13:10:33.4561752Z ✔ weact-f411ce c production internal ADC example compiles, runs and exports without external wiring (758.620509ms)
+2026-10-17T13:10:33.4563579Z ✔ weact-f411ce cpp production internal ADC example compiles, runs and exports without external wiring (947.251544ms)
+2026-10-17T13:10:33.4565083Z ✔ F1 downcount ARR reload, CC match, underflow, UG and paused PSC (2.869537ms)
+2026-10-17T13:10:33.4566761Z ✔ F1 center CMS1 triangular CNT/DIR, upper/lower update and CC direction selection (0.444443ms)
+2026-10-17T13:10:33.4568245Z ✔ F1 center CMS2 triangular CNT/DIR, upper/lower update and CC direction selection (0.23458ms)
+2026-10-17T13:10:33.4569719Z ✔ F1 center CMS3 triangular CNT/DIR, upper/lower update and CC direction selection (0.302857ms)
+2026-10-17T13:10:33.4571097Z ✔ F1 center DIR read-only, CEN mode guard, OPM boundary and preload reload (0.649868ms)
+2026-10-17T13:10:33.4572338Z ✔ F4 downcount ARR reload, CC match, underflow, UG and paused PSC (0.430206ms)
+2026-10-17T13:10:33.4573969Z ✔ F4 center CMS1 triangular CNT/DIR, upper/lower update and CC direction selection (0.29329ms)
+2026-10-17T13:10:33.4575438Z ✔ F4 center CMS2 triangular CNT/DIR, upper/lower update and CC direction selection (0.262302ms)
+2026-10-17T13:10:33.4577136Z ✔ F4 center CMS3 triangular CNT/DIR, upper/lower update and CC direction selection (0.378218ms)
+2026-10-17T13:10:33.4578606Z ✔ F4 center DIR read-only, CEN mode guard, OPM boundary and preload reload (0.601917ms)
+2026-10-17T13:10:33.4580142Z ✔ CMS1 OC toggle occurs both directions while CC interrupt flag is gated (0.31469ms)
+2026-10-17T13:10:33.4581514Z ✔ CMS2 OC toggle occurs both directions while CC interrupt flag is gated (0.286978ms)
+2026-10-17T13:10:33.4582899Z ✔ CMS3 OC toggle occurs both directions while CC interrupt flag is gated (0.262031ms)
+2026-10-17T13:10:33.4584261Z ✔ Center CCR outside ARR flags on overflow only, not the lower update (0.268183ms)
+2026-10-17T13:10:33.4585673Z ✔ F1 downward PWM1/PWM2 physical reference and active ARR write preserve CNT (0.632064ms)
+2026-10-17T13:10:33.4587409Z ✔ F4 downward PWM1/PWM2 physical reference and active ARR write preserve CNT (0.291647ms)
+2026-10-17T13:10:33.4588879Z ✔ stm32f103c6 native ARM downcount real compare/update IRQ and direction (2408.817641ms)
+2026-10-17T13:10:33.4590168Z ✔ stm32f103c6 native ARM CMS1 real compare/update IRQ and direction (1502.92225ms)
+2026-10-17T13:10:33.4591256Z ✔ stm32f103c6 native ARM CMS2 real compare/update IRQ and direction (1478.601375ms)
+2026-10-17T13:10:33.4592485Z ✔ stm32f103c6 native ARM CMS3 real compare/update IRQ and direction (1303.352553ms)
+2026-10-17T13:10:33.4593916Z ✔ nucleo-f401re native ARM downcount real compare/update IRQ and direction (1465.861884ms)
+2026-10-17T13:10:33.4595343Z ✔ nucleo-f401re native ARM CMS1 real compare/update IRQ and direction (1343.966292ms)
+2026-10-17T13:10:33.4597011Z ✔ nucleo-f401re native ARM CMS2 real compare/update IRQ and direction (1363.219258ms)
+2026-10-17T13:10:33.4598430Z ✔ nucleo-f401re native ARM CMS3 real compare/update IRQ and direction (1501.268409ms)
+2026-10-17T13:10:33.4599879Z ✔ weact-f411ce native ARM downcount real compare/update IRQ and direction (1437.980394ms)
+2026-10-17T13:10:33.4601116Z ✔ weact-f411ce native ARM CMS1 real compare/update IRQ and direction (1286.388002ms)
+2026-10-17T13:10:33.4602294Z ✔ weact-f411ce native ARM CMS2 real compare/update IRQ and direction (1304.297092ms)
+2026-10-17T13:10:33.4603645Z ✔ weact-f411ce native ARM CMS3 real compare/update IRQ and direction (1303.088621ms)
+2026-10-17T13:10:33.4605231Z ✔ stm32f103c6 environment routes separate interior lanes and preserves electrical nets (7257.239687ms)
+2026-10-17T13:10:33.4607570Z ✔ stm32f103c6 controller routes separate interior lanes and preserves electrical nets (2322.055667ms)
+2026-10-17T13:10:33.4609280Z ✔ stm32f103c8 environment routes separate interior lanes and preserves electrical nets (7090.126909ms)
+2026-10-17T13:10:33.4610985Z ✔ stm32f103c8 controller routes separate interior lanes and preserves electrical nets (2257.74901ms)
+2026-10-17T13:10:33.4612651Z ✔ stm32f103cb environment routes separate interior lanes and preserves electrical nets (7063.964369ms)
+2026-10-17T13:10:33.4614305Z ✔ stm32f103cb controller routes separate interior lanes and preserves electrical nets (2249.415326ms)
+2026-10-17T13:10:33.4616014Z ✔ nucleo-f103rb environment routes separate interior lanes and preserves electrical nets (7066.294958ms)
+2026-10-17T13:10:33.4617954Z ✔ nucleo-f103rb controller routes separate interior lanes and preserves electrical nets (2936.281743ms)
+2026-10-17T13:10:33.4619651Z ✔ nucleo-f401re environment routes separate interior lanes and preserves electrical nets (7138.574657ms)
+2026-10-17T13:10:33.4621447Z ✔ nucleo-f401re controller routes separate interior lanes and preserves electrical nets (3008.31119ms)
+2026-10-17T13:10:33.4623178Z ✔ nucleo-f411re environment routes separate interior lanes and preserves electrical nets (7089.804624ms)
+2026-10-17T13:10:33.4625101Z ✔ nucleo-f411re controller routes separate interior lanes and preserves electrical nets (3030.360782ms)
+2026-10-17T13:10:33.4627110Z ✔ weact-f401cc environment routes separate interior lanes and preserves electrical nets (7571.37795ms)
+2026-10-17T13:10:33.4628872Z ✔ weact-f401cc controller routes separate interior lanes and preserves electrical nets (2184.79906ms)
+2026-10-17T13:10:33.4630291Z ✔ weact-f401ce environment routes separate interior lanes and preserves electrical nets (7442.218691ms)
+2026-10-17T13:10:33.4631782Z ✔ weact-f401ce controller routes separate interior lanes and preserves electrical nets (2292.715846ms)
+2026-10-17T13:10:33.4633215Z ✔ weact-f411ce environment routes separate interior lanes and preserves electrical nets (7656.923014ms)
+2026-10-17T13:10:33.4634659Z ✔ weact-f411ce controller routes separate interior lanes and preserves electrical nets (2254.753825ms)
+2026-10-17T13:10:33.4635435Z ℹ tests 163
+2026-10-17T13:10:33.4635748Z ℹ suites 0
+2026-10-17T13:10:33.4636062Z ℹ pass 161
+2026-10-17T13:10:33.4636624Z ℹ fail 2
+2026-10-17T13:10:33.4637032Z ℹ cancelled 0
+2026-10-17T13:10:33.4637421Z ℹ skipped 0
+2026-10-17T13:10:33.4637760Z ℹ todo 0
+2026-10-17T13:10:33.4638158Z ℹ duration_ms 197695.288557
+2026-10-17T13:10:33.4638443Z 
+2026-10-17T13:10:33.4638629Z ✖ failing tests:
+2026-10-17T13:10:33.4638832Z 
+2026-10-17T13:10:33.4639117Z test at tests/stm32-i2c.test.mjs:34:52
+2026-10-17T13:10:33.4640482Z ✖ stm32f103c6 external SCL low stalls START, times out without invented ACK and recovers after release (20114.800017ms)
+2026-10-17T13:10:33.4655641Z   Error: Missing /WRITE=2 /: WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 
+2026-10-17T13:10:33.4667136Z       at until (file:///home/runner/work/wirevo/wirevo/tests/stm32-i2c.test.mjs:7:120)
+2026-10-17T13:10:33.4668537Z       at TestContext.<anonymous> (file:///home/runner/work/wirevo/wirevo/tests/stm32-i2c.test.mjs:36:258)
+2026-10-17T13:10:33.4669160Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-10-17T13:10:33.4669702Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+2026-10-17T13:10:33.4670032Z 
+2026-10-17T13:10:33.4670200Z test at tests/stm32-i2c.test.mjs:34:52
+2026-10-17T13:10:33.4671022Z ✖ nucleo-f411re external SCL low stalls START, times out without invented ACK and recovers after release (20563.748054ms)
+2026-10-17T13:10:33.4677856Z   Error: Missing /WRITE=2 /: WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 WRITE=-1 
+2026-10-17T13:10:33.4683348Z       at until (file:///home/runner/work/wirevo/wirevo/tests/stm32-i2c.test.mjs:7:120)
+2026-10-17T13:10:33.4684027Z       at TestContext.<anonymous> (file:///home/runner/work/wirevo/wirevo/tests/stm32-i2c.test.mjs:36:258)
+2026-10-17T13:10:33.4684600Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-10-17T13:10:33.4685270Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+2026-10-17T13:10:33.4695286Z ##[error]Process completed with exit code 1.
+2026-10-17T13:10:33.4847002Z Post job cleanup.
+2026-10-17T13:10:33.5727424Z [command]/usr/bin/git version
+2026-10-17T13:10:33.5772190Z git version 2.55.0
+2026-10-17T13:10:33.5812740Z Temporarily overriding HOME='/home/runner/work/_temp/8e699364-500b-4355-a57a-fb28bd804752' before making global git config changes
+2026-10-17T13:10:33.5814193Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-17T13:10:33.5819053Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wirevo/wirevo
+2026-10-17T13:10:33.5861003Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T13:10:33.5918159Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T13:10:33.6195030Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T13:10:33.6223109Z http.https://github.com/.extraheader
+2026-10-17T13:10:33.6235269Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-17T13:10:33.6278460Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T13:10:33.6566731Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T13:10:33.6611923Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T13:10:33.7049127Z Cleaning up orphan processes
+2026-10-17T13:10:33.7381211Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+=== Corrected clamp and live environment regression ===
+✔ stm32f103c6 live temperature edit preserves in-flight I2C DMA frame and subsequent CRC (7802.8942ms)
+✔ weact-f411ce live temperature edit preserves in-flight I2C DMA frame and subsequent CRC (11496.3593ms)
+✔ stm32f103c6 external SCL low stalls START, times out without invented ACK and recovers after release component (2328.2497ms)
+✔ stm32f103c6 external SCL low stalls START, times out without invented ACK and recovers after release project (2695.8413ms)
+✔ nucleo-f411re external SCL low stalls START, times out without invented ACK and recovers after release component (3795.3964ms)
+✔ nucleo-f411re external SCL low stalls START, times out without invented ACK and recovers after release project (3489.2494ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19893.604

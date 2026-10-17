@@ -8,4 +8,6 @@ Kapsam penceresi seçili çipte olmayan donanımı modellenmemiş gerçek çevre
 
 Kullanım/sınırlar: dist/notices/STM32-SUPPORT-PROFILE.md; kabul: docs/qa/README.md. Firmware fingerprint cf-stm32-0.18; eski derlemeler yeni SDK ile yeniden oluşturulur.
 
-Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem, pot değeri ve buton girişi değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Kablo veya devre yapısı değişince tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.
+Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem veya pot değeri değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Buton/anahtar iletimi, kablo veya devre yapısı değişince net kimlikleri değişebileceği için tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.
+
+CI ile bulunan SCL recovery regresyonu düzeltildi: buton iletimi ve global pressed, net topolojisinin parçasıdır. Sensör/pot canlı düzenlemesiyle karıştırılmaz. Component/project buton biçimleri ve aktarım ortasında sıcaklık değişimi6/6 kabul edildi.

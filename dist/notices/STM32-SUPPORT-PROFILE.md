@@ -41,4 +41,4 @@ USB OTG host/iso/DMA/USB class ve PC fiziksel USB; haricî CAN ağı/transceiver
 
 Özetin ötesindeki açık model ayrıntıları [denetim kaydında](STM32-AUDIT.md) korunur. Tüm silikon ayrıntıları tamamlandı sayılmaz.
 
-Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem, pot değeri ve buton girişi değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Kablo veya devre yapısı değişince tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.
+Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem veya pot değeri değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Buton/anahtar iletimi, kablo veya devre yapısı değişince net kimlikleri değişebileceği için tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.
