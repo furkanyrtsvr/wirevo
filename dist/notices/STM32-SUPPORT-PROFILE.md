@@ -1,6 +1,6 @@
-# Wirevo 0.63 STM32 kapanış profili
+# Wirevo STM32 destek profili · 0.63 tarihsel kayıt
 
-Bu kayıt dokuz kart için tamamlanan ve dondurulan Wirevo uygulama modelini tanımlar. Bu profil içinde açık STM32 geliştirme kalemi yoktur. Bütün STM32 ürün ailesinin, fiziksel silikonun veya vendor Cube/HAL yüzeyinin tüm işlevlerinin uygulandığı iddiası değildir.
+Bu belgedeki 0.63 kapanış kararı 18 Ekim 2026 tarihinde geri çekildi. Dokuz kartın o sürümde doğrulanan uygulama modeli tarihsel olarak korunur; fiziksel-silikon açıkları yeniden [aktif denetimde](STM32-AUDIT.md) geliştirme borcudur.
 
 ## 0.63 — son açık kapılar ve kapanış
 

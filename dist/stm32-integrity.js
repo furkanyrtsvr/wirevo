@@ -1,1 +1,1 @@
-export const STM_WASM_HASHES={"cortex-m3":"f8edae1e7c6b084a86a7857419aac2a64513d0458ff5df0622557daaf78ab537","cortex-m4f":"565ee6eea4a035616efc0f99ac83c9a30f6a984cbfd2022810d73cfe1fe7ef87"};
+export const STM_WASM_HASHES={"cortex-m3":"b93e6c4807dd3fced7f8580f83359b57a22d54e0a2742e14d0eb7ef178059835","cortex-m4f":"d50896e1716815a759844d2bde9f23e8f56fe63cba4e6faee4e231e0712d2516"};

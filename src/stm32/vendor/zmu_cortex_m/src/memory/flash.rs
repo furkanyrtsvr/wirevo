@@ -11,6 +11,8 @@ use byteorder::{ByteOrder, LittleEndian};
 /// Flash memory with configurable start address and data content
 pub struct FlashMemory {
     data: Box<[u8]>,
+    program_width: u8,
+    status: u8,
 }
 
 impl FlashMemory {
@@ -19,7 +21,7 @@ impl FlashMemory {
         let mut data = vec![0_u8; size].into_boxed_slice();
         data.copy_from_slice(new_data);
 
-        Self { data }
+        Self { data, program_width: 0, status: 0 }
     }
 
     /// Get the length
@@ -30,6 +32,51 @@ impl FlashMemory {
     /// check if the memory is empty
     pub fn is_empty(&self) -> bool {
         self.data.len() == 0
+    }
+
+    /// Enable a single physical Flash programming width. Zero locks programming.
+    pub fn set_program_width(&mut self, width: u8) {
+        self.program_width = width;
+    }
+
+    /// Abstract controller status: bit 0 programming/sequence, bit 1 alignment.
+    pub fn status(&self) -> u8 { self.status }
+    /// Clear selected abstract controller status flags.
+    pub fn clear_status(&mut self, mask: u8) { self.status &= !mask; }
+
+    /// Erase a checked range to the physical erased value.
+    pub fn erase(&mut self, start: usize, length: usize) -> bool {
+        if start.checked_add(length).is_none_or(|end| end > self.data.len()) {
+            self.status |= 1;
+            return false;
+        }
+        self.data[start..start + length].fill(0xff);
+        true
+    }
+
+    /// Copy the current non-volatile contents into a host snapshot.
+    pub fn copy_to(&self, target: &mut [u8]) -> usize {
+        let length = target.len().min(self.data.len());
+        target[..length].copy_from_slice(&self.data[..length]);
+        length
+    }
+
+    fn program(&mut self, addr: usize, bytes: &[u8]) -> Result<(), Fault> {
+        if self.program_width as usize != bytes.len() {
+            self.status |= if self.program_width == 0 { 1 } else { 2 };
+            return Ok(());
+        }
+        if addr % bytes.len() != 0 || addr.checked_add(bytes.len()).is_none_or(|end| end > self.data.len()) {
+            self.status |= 2;
+            return Ok(());
+        }
+        if bytes.iter().enumerate().any(|(i, value)| self.data[addr + i] & value != *value) {
+            self.status |= 1;
+            return Ok(());
+        }
+        for (i, value) in bytes.iter().enumerate() { self.data[addr + i] &= value; }
+        self.status |= 4;
+        Ok(())
     }
 }
 
@@ -53,17 +100,17 @@ impl Bus for FlashMemory {
     }
 
     #[inline(always)]
-    fn write32(&mut self, _addr: u32, _value: u32) -> Result<(), Fault> {
-        Err(Fault::DAccViol)
+    fn write32(&mut self, addr: u32, value: u32) -> Result<(), Fault> {
+        self.program(addr as usize, &value.to_le_bytes())
     }
 
     #[inline(always)]
-    fn write16(&mut self, _addr: u32, _value: u16) -> Result<(), Fault> {
-        Err(Fault::DAccViol)
+    fn write16(&mut self, addr: u32, value: u16) -> Result<(), Fault> {
+        self.program(addr as usize, &value.to_le_bytes())
     }
     #[inline(always)]
-    fn write8(&mut self, _addr: u32, _value: u8) -> Result<(), Fault> {
-        Err(Fault::DAccViol)
+    fn write8(&mut self, addr: u32, value: u8) -> Result<(), Fault> {
+        self.program(addr as usize, &[value])
     }
 
     #[inline(always)]

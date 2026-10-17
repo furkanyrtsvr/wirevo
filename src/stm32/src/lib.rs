@@ -12,7 +12,7 @@ unsafe extern "C" {
 }
 struct Peripherals;
 impl Bus for Peripherals {
-    fn in_range(&self,a:u32)->bool { (0x40000000..0x60000000).contains(&a) }
+    fn in_range(&self,a:u32)->bool { (0x40000000..0x60000000).contains(&a)||(0x1fff7a00..0x1fff7b00).contains(&a)||(0x1ffff7e0..0x1ffff810).contains(&a) }
     fn read32(&mut self,a:u32)->Result<u32,Fault>{Ok(unsafe{mmio_read(a,4)})}
     fn read16(&self,a:u32)->Result<u16,Fault>{Ok(unsafe{mmio_read(a,2)} as u16)}
     fn read8(&self,a:u32)->Result<u8,Fault>{Ok(unsafe{mmio_read(a,1)} as u8)}
@@ -28,7 +28,7 @@ pub unsafe extern "C" fn deallocate(p:*mut u8,size:usize) {unsafe{drop(Box::from
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn create(p:*const u8,size:usize,flash:usize,ram:usize)->*mut Processor {
     if size>flash||flash>512*1024||ram>128*1024||size<8{return std::ptr::null_mut()}
-    let mut code=vec![0u8;flash];code[..size].copy_from_slice(unsafe{std::slice::from_raw_parts(p,size)});
+    let mut code=vec![0xffu8;flash];code[..size].copy_from_slice(unsafe{std::slice::from_raw_parts(p,size)});
     let mut cpu=Processor::new();cpu.sram=RAM::new(0x20000000,ram);
     cpu.flash_memory(flash,&code).memory_map(Some(MemoryMapConfig::new(0x08000000,0,flash))).device(Some(Box::new(Peripherals)));
     cpu.fault_trap_mode(zmu_cortex_m::core::fault::FaultTrapMode::all());
@@ -49,3 +49,16 @@ pub unsafe extern "C" fn cycles(p:*const Processor)->f64{unsafe{(*p).cycle_count
 pub unsafe extern "C" fn register(p:*mut Processor,n:u16)->u32{let cpu=unsafe{&mut *p};cpu.get_r(Reg::from_u16(n).unwrap_or(Reg::PC))}
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn read(p:*mut Processor,a:u32)->u32 {unsafe{&mut *p}.read8(a).map_or(0,|v|v as u32)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_program_width(p:*mut Processor,width:u32){unsafe{&mut *p}.code.set_program_width(width as u8)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_status(p:*const Processor)->u32{unsafe{(*p).code.status() as u32}}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_clear_status(p:*mut Processor,mask:u32){unsafe{&mut *p}.code.clear_status(mask as u8)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_erase(p:*mut Processor,start:u32,length:u32)->u32{let cpu=unsafe{&mut *p};let erased=cpu.code.erase(start as usize,length as usize);if erased{cpu.invalidate_instruction_cache();}u32::from(erased)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_copy(p:*const Processor,target:*mut u8,length:usize)->usize{
+    let output=unsafe{std::slice::from_raw_parts_mut(target,length)};
+    unsafe{&*p}.code.copy_to(output)
+}

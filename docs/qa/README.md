@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.64 — 18 Ekim 2026
+
+- `npm test`: **1441/1441 geçti**, hata/atlama yok. Dokuz STM32 kartında yeni Flash silikon kabulü ile mevcut AVR, ESP ve STM32 regresyonları aynı kaynak ağacında çalıştı.
+- GitHub çalışma kopyasında `npm run test:stm32`: **794/794 geçti**; hata, atlama veya iptal yok.
+- Yeni `tests/stm32-flash-silicon.test.mjs`: **9/9 geçti**. Kilitli yazma reddi, anahtar dizisiyle kilit açma, F1 sayfa/F4 sektör silme, program genişliği, yalnızca 1→0 bit geçişi, durum bayrakları, 96-bit UID, Flash yoğunluk imzası, aynı oturumda yeni yazılmış Thumb kodunun çalıştırılması ve reset sonrası kalıcılık doğrulandı.
+- `npm run build`: kaynak kopyada **448 dosya / 19.736.398 bayt**, son GitHub çalışma kopyasında **448 dosya / 19.744.564 bayt** ile başarılı. `cortex-m3.wasm` 266.991 bayt (`b93e6c4807dd3fced7f8580f83359b57a22d54e0a2742e14d0eb7ef178059835`), `cortex-m4f.wasm` 709.465 bayt (`d50896e1716815a759844d2bde9f23e8f56fe63cba4e6faee4e231e0712d2516`).
+- Bu sürüm STM32 Flash dilimini tamamlar; bütün fiziksel silikonun kapandığı anlamına gelmez. Option byte/boot/reset ayrıntıları ve denetimde açık kalan çevrebirim davranışları tamamlanmadan başka kart ailesine geçilmeyecek.
+
 ## 0.63 — 17 Ekim 2026
 
 - `npm test`: **1432/1432 geçti**, hata/atlama yok. AVR, ESP ve dokuz kartlık STM32 uçtan uca regresyonu aynı son kaynak ağacıyla çalıştı.

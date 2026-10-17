@@ -507,6 +507,11 @@ impl Processor {
         }
     }
 
+    /// Drop decoded instructions after self-programming changes Flash contents.
+    pub fn invalidate_instruction_cache(&mut self) {
+        self.instruction_cache.clear();
+    }
+
     ///
     /// `BigEndian()` returns true if the processor is big endian
     /// TODO: check architectures where this is supported

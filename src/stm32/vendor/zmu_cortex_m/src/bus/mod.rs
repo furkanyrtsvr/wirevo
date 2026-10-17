@@ -207,7 +207,9 @@ impl Bus for Processor {
             return self.sram.write32(addr, value);
         }
         if self.code.in_range(addr) {
-            return self.code.write32(addr, value);
+            let result=self.code.write32(addr, value);
+            self.invalidate_instruction_cache();
+            return result;
         }
         if let Some(device) = self.device.as_mut()
             && device.in_range(addr)
@@ -284,7 +286,9 @@ impl Bus for Processor {
             return self.sram.write16(addr, value);
         }
         if self.code.in_range(addr) {
-            return self.code.write16(addr, value);
+            let result=self.code.write16(addr, value);
+            self.invalidate_instruction_cache();
+            return result;
         }
         if let Some(device) = self.device.as_mut()
             && device.in_range(addr)
@@ -324,7 +328,9 @@ impl Bus for Processor {
             return self.sram.write8(addr, value);
         }
         if self.code.in_range(addr) {
-            return self.code.write8(addr, value);
+            let result=self.code.write8(addr, value);
+            self.invalidate_instruction_cache();
+            return result;
         }
         if let Some(device) = self.device.as_mut()
             && device.in_range(addr)

@@ -1,6 +1,6 @@
-# STM32 denetimi · Wirevo 0.63 kapanış
+# STM32 fiziksel-silikon denetimi · aktif
 
-17 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. Dokuz kartın Wirevo uygulama profili0.63 ile tamamlanıp donduruldu; açık STM32 geliştirme listesi yoktur. Aşağıdaki “kalan ayrıntılar” tarihsel silikon fark dökümüdür ve kapanmış ürün profilinin borcu değildir. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
+18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 
 ## 0.63 kapanış kabulü
 
@@ -12,11 +12,11 @@ F103 ADC2 haricî kanal/sıra/injected/discontinuous/watchdog/tetik ve ortak IRQ
 
 Kalan ayrıntılar: MPU, cache, cycle-accurate pipeline/bus, tüm fault/priority ayrıntıları.
 
-## Flash / SRAM / reset · Kısmi
+## Flash / SRAM / reset · İlerliyor
 
-Çalışan model: Kartın kendi bellek sınırı, reset vektörü, data/bss ve firmware hedef kontrolü.
+Çalışan model: Kartın kendi bellek sınırı, reset vektörü, data/bss ve firmware hedef kontrolü. F1 anahtar/kilit, 1 KiB sayfa erase ve halfword programlama; F4 anahtar/kilit, sektör/mass erase, PSIZE program genişliği; yalnız 1→0 bit geçişi, EOP/program-alignment hataları, silinmiş 0xFF alan, resetten kalıcı Flash içeriği, 96-bit UID ve doğru Flash yoğunluk imzası. Dokuz kartta gerçek ARM firmware kabulü vardır.
 
-Kalan ayrıntılar: Flash programlama/erase, option bytes, ROM bootloader ve fiziksel NRST/BOOT devresi.
+Kalan ayrıntılar: Option-byte write protection/read protection/reload ayrıntıları, ROM bootloader ve fiziksel NRST/BOOT devresi.
 
 ## RCC / saat / güç · Kısmi
 

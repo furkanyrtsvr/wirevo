@@ -3,6 +3,7 @@ import {STMCAN} from './stm32-can.js';
 import {STMUSB} from './stm32-usb.js';
 import {STMRTC} from './stm32-rtc.js';
 import {STMCRC} from './stm32-crc.js';
+import {STMFlash} from './stm32-flash.js';
 import {STMWatchdogs} from './stm32-watchdog.js';
 import {STMDMA} from './stm32-dma.js';
 import {STMEXTI} from './stm32-exti.js';
@@ -75,3 +76,15 @@ if([0x40021000,0x40021004,0x40021018,0x4002101c,0x4002100c,0x40021010,0x40021014
  readMemory(a,n=128){if(!Number.isInteger(a)||!Number.isInteger(n)||n<1||n>4096||a<0||a+n>0x100000000)throw Error('Bellek aralığı geçersiz.');return Uint8Array.from({length:n},(_,i)=>this.exports.read(this.cpu,a+i));}
  dispose(){if(this.cpu)this.exports.destroy(this.cpu);this.cpu=null;}
 }
+
+const resetSTMPeripherals=STMRuntime.prototype.resetPeripherals;
+STMRuntime.prototype.resetPeripherals=function(){resetSTMPeripherals.call(this);if(this.flash)this.flash.systemReset();else this.flash=new STMFlash(this);};
+const readSTMRegister=STMRuntime.prototype.readRegister;
+STMRuntime.prototype.readRegister=function(a,n=4){const value=this.flash?.read(a,n);return value===undefined?readSTMRegister.call(this,a,n):value;};
+const writeSTMRegister=STMRuntime.prototype.writeRegister;
+STMRuntime.prototype.writeRegister=function(a,v,n=4){return this.flash?.write(a,v,n)||writeSTMRegister.call(this,a,v,n);};
+STMRuntime.prototype.flashSnapshot=function(){const length=this.board.flashSize,p=this.exports.allocate(length);try{this.exports.flash_copy(this.cpu,p,length);return new Uint8Array(this.exports.memory.buffer,p,length).slice();}finally{this.exports.deallocate(p,length);}};
+const resetSTMRuntime=STMRuntime.prototype.reset;
+STMRuntime.prototype.reset=function(){this.image=this.flashSnapshot();return resetSTMRuntime.call(this);};
+const takeSTMHardwareReset=STMRuntime.prototype.takeHardwareReset;
+STMRuntime.prototype.takeHardwareReset=function(){if(this.watchdogs?.pendingReset)this.exports.flash_program_width(this.cpu,0);return takeSTMHardwareReset.call(this);};
