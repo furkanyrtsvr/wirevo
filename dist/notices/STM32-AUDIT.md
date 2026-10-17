@@ -1,4 +1,4 @@
-# STM32 denetimi · Wirevo 0.61
+# STM32 denetimi · Wirevo 0.62
 
 17 Ekim 2026. Gerçek C17 firmware, elektriksel hat ve register/IRQ kabulü. Fiziksel silikonun tamamı veya bütün STM32 ailesi doğrulanmış değildir.
 
@@ -28,9 +28,9 @@ Kalan ayrıntılar: Dahili EXTI hatları, tüm AF/remap tablosu, I/O slew/damage
 
 ## USART1 / USART2 · Kısmi
 
-Çalışan model: USART1/2 DMA istekleri; USART1 ve uygun Blue Pill/WeAct USART2 fiziksel 7E/O,8N/E/O,9N,1/2stop / PE-RXNE-TXE-TC-ORE-FE / IRQ; kart terminali; F401/F411 OVER8/OVER16 ve baud korunan geçiş.
+Çalışan model: USART1/2 DMA istekleri; USART1 ve uygun Blue Pill/WeAct USART2 fiziksel 7E/O,8N/E/O,9N,0.5/1/1.5/2stop / PE-RXNE-TXE-TC-ORE-FE / IRQ; kart terminali; F401/F411 OVER8/OVER16 ve baud korunan geçiş.
 
-Kalan ayrıntılar: 0.5/1.5stop,CTS/RTS/LIN/smartcard/synchronous; Nucleo fiziksel VCP ve USART2 alternatif başlık/remap.
+Kalan ayrıntılar: CTS/RTS/LIN/smartcard/synchronous; Nucleo fiziksel VCP ve USART2 alternatif başlık/remap.
 
 ## ADC1 / diğer ADC / DAC · Kısmi
 
@@ -52,21 +52,21 @@ Kalan ayrıntılar: NSS input/multimaster/slave/CRC/remap/receive-only, SPI2+, I
 
 ## I²C1 / I²C2+ · Kısmi
 
-Çalışan model: Standard 7-bit master, ACK/POS/BTF/STOP, birleşik repeated-start okuma, EEPROM/ACK polling, fiziksel OD/clock wait/IRQ/recovery.
+Çalışan model: Standard/fast 400 kHz 7-bit master ve native DMA TX/RX, ACK/POS/BTF/STOP, birleşik repeated-start okuma, EEPROM/ACK polling, fiziksel OD/clock wait/IRQ/recovery.
 
-Kalan ayrıntılar: Fast/slave/multi-master/arbitration, DMA/PEC/SMBus, analog rise-time, I²C2+.
+Kalan ayrıntılar: Slave/multi-master/arbitration, PEC/SMBus, analog rise-time, I²C2+.
 
 ## DMA / bus arbitration · Kısmi
 
 Çalışan model: F1 DMA1 kanal/F4 DMA1+2 stream, native ARM bus read/write, normal/circular, width/increment/priority, HT/TC/TE IRQ; ADC1/SPI1/USART1+2 requests.
 
-Kalan ayrıntılar: FIFO/burst/double-buffer/PFLOW, I²C DMA, bus contention ve diğer çevrebirim istekleri.
+Kalan ayrıntılar: FIFO/burst/double-buffer/PFLOW, bus contention ve diğer çevrebirim istekleri.
 
 ## RTC / backup / watchdog · Kısmi
 
-Çalışan model: F103 counter/F4 BCD calendar RTC, alarm/wakeup/IRQ, shadow/INIT/WPR, LSE/LSI/HSE, DBP/VOS, resetten korunan backup; IWDG/WWDG gerçek reset/RCC nedeni.
+Çalışan model: F103 counter/F4 BCD calendar RTC, alarm/wakeup/IRQ, F4 alt-saniye alarmı, shadow/INIT/WPR, LSE/LSI/HSE, DBP/VOS, resetten korunan backup; IWDG/WWDG gerçek reset/RCC nedeni.
 
-Kalan ayrıntılar: RTC tamper/timestamp/calibration/shift/subsecond/AF output, backup regulator; tolerans/debug/STOP/STANDBY ayrıntıları.
+Kalan ayrıntılar: RTC tamper/timestamp/calibration/shift/AF output, backup regulator; tolerans/debug/STOP/STANDBY ayrıntıları.
 
 ## CRC / RNG / crypto · Kısmi
 
@@ -82,17 +82,17 @@ Kalan ayrıntılar: RNG/crypto için MCU varlığı ve aileye özgü modeller; b
 
 Kalan: OTG host/iso/DMA, fiziksel PC USB/class sürücüsü, harici CAN ağı/transceiver ve bit timing; Ethernet/SDIO çip varlığı/modelleri. [Kabul ve sınırlar](./STM32-USB-CAN.md).
 
-## FMC / QSPI / DCMI / LCD / touch · Bekliyor
+## FMC / QSPI / DCMI / LCD / touch · Bu çiplerde yok
 
 Çalışan model: Opsiyonel Black Pill SPI flash footprint boş gösterilir.
 
-Kalan ayrıntılar: Haricî bellek, kamera, ekran/touch çevrebirimleri; varlığı paket/MCUya bağlı.
+Kalan ayrıntılar: Dokuz mevcut MCU içinde FMC/QSPI/DCMI/LTDC yoktur; eksik uygulama işi sayılmaz. Haricî SPI bileşenleri bağımsızdır.
 
 ## Dahili analog / sensörler · Kısmi
 
 Çalışan model: Haricî sensörler/DC; ADC1 nominal dahili sıcaklık/VREFINT ve F4 VBAT/4; projeye özel giriş değerleri.
 
-Kalan ayrıntılar: Comparator/opamp, analog güç/kalibrasyon ayrıntıları.
+Kalan ayrıntılar: Bu çiplerde dahili comparator/opamp yoktur. Analog güç/kalibrasyon ayrıntıları ayrıca modellenmez.
 
 ## C17 / C++ / MicroPython · Kısmi
 
@@ -121,3 +121,15 @@ Son 0.57 kabulü:1303/1303. MicroPython WASM elektriksel devre modu eklendi; yer
 ## 0.61 destek profili
 
 Yeni özellikler ve sınırlar: [STM32 destek profili](STM32-SUPPORT-PROFILE.md). Dahili ADC fabrika kalibrasyonu/termal model değildir. OVER8 yalnız F401/F411; PA4 NSS yalnız master çıkışı. Kalan ileri silikon özellikleri tamamlandı sayılmaz.
+
+## 0.62 doğrulanan eklemeler
+
+I²C1 400 kHz / 2:1 ve16:9 duty, F1 DMA1 kanal6TX/7RX; F4 DMA1 CHSEL1 stream6/7TX ve0/5RX; native SRAM bus, LAST/NACK, HT/TC IRQ. Bloklayan SDK cf_i2c1_write_dma/read_dma kullanılabilir. Yardımcılar F1 kanal6/7 veya F4 stream6/0'ı özel kullanır; etkin bir kanalı devralmaz. Öne çıkan çevre istasyonunda SHT31 ve OLED 400 kHz DMA kullanır; EEPROM birleşik okuma/ACK polling korunur.
+
+F4 SPI1 SCK PA5/PB3, MISO PA6/PB4, MOSI PA7/PB5 seçimi. cf_spi1_pins() ve pin penceresi gerçek AF üretir; ayrılmış Nucleo SWO PB3 kapalı kalır. USART1/2 0.5/1.5 stop ve gerçek bit süreleri; cf_usart1_stopbits()/cf_usart2_stopbits() argümanı yarım bit adedidir (1/2/3/4). F4 RTC ALRMASSR/ALRMBSSR MASKSS/SS karşılaştırması ve gerçek IRQ41/EXTI17.
+
+Seçili MCU'da bulunmayan CAN/DAC/RNG/QSPI gibi donanımlar ile gerçek ancak modellenmemiş çevrebirimler ayrı gösterilir. Bu düzeltme, ADC2 (F103), SDIO (F4) veya diğer gerçek eksikleri yapılmış saymaz. Bütün silikon, tüm kart ailesi ve bütün HAL/işletim sistemi desteği bu sürümde tamamlanmış değildir.
+
+Kaynak: [RM0368](https://www.st.com/resource/en/reference_manual/dm00096844.pdf), [RM0008](https://www.st.com/resource/en/reference_manual/rm0008-stm32f103xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf), [F401](https://www.st.com/resource/en/datasheet/stm32f401cc.pdf), [F411](https://www.st.com/resource/en/datasheet/stm32f411ce.pdf), [AN5852 — RNG yokluğu](https://www.st.com/resource/en/application_note/an5852-migrating-from-stm32f401-stm32f410-and-stm32f411-to-stm32h503-mcus-stmicroelectronics.pdf).
+
+Canlı düzenleme düzeltmesi: STM32 SHT31 sıcaklık/nem, pot değeri ve buton girişi değiştiğinde, bağlantılar ve diğer parametreler aynıysa aktif I²C/SPI/BT durumu korunur. Kablo veya devre yapısı değişince tam yeniden kurulum yapılır. USART OVER8 baud telemetrisi BRR mantissa/fraction ve gerçek APB bölücüsünü kullanır.

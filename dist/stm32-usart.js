@@ -21,7 +21,7 @@ export class STMUSARTs {
   const base=0x40010800+bank*1024,c=(this.r.regs.get(base+(n<8?0:4))>>>((n%8)*4))&15;return !!(this.r.regs.get(0x40021018)&(1<<(bank+2)))&&(tx?!!(c&3)&&(c>>>2)===2:!(c&3)&&[1,2].includes(c>>>2));
  }
  physical(u){const p=this.pins(u);return !!(p&&this.mapped(p.tx,true));}
- format(u,receive=true){if(!this.enabled(u,receive?4:8))return null;const p=this.pins(u);if(!p||!this.mapped(p.tx,true)||(receive&&!this.mapped(p.rx,false)))return null;const cr=this.cr(u),cr2=this.cr(u,16),brr=this.cr(u,8)&65535,stop=(cr2>>>12)&3;const over8=!!(cr&32768),divisor=over8?(brr>>>4)*8+(brr&7):brr;if(!divisor||over8&&this.r.board.cpu!=='cortex-m4f'||![0,2].includes(stop))return null;const parity=cr&1024?(cr&512?'odd':'even'):null;return{period:divisor*this.divider(u),bits:(cr&4096?9:8)-(parity?1:0),stops:stop===2?2:1,receiveStops:1,allow9:true,parity};}
+ format(u,receive=true){if(!this.enabled(u,receive?4:8))return null;const p=this.pins(u);if(!p||!this.mapped(p.tx,true)||(receive&&!this.mapped(p.rx,false)))return null;const cr=this.cr(u),cr2=this.cr(u,16),brr=this.cr(u,8)&65535,stop=(cr2>>>12)&3;const over8=!!(cr&32768),divisor=over8?(brr>>>4)*8+(brr&7):brr;if(!divisor||over8&&this.r.board.cpu!=='cortex-m4f')return null;const parity=cr&1024?(cr&512?'odd':'even'):null;return{period:divisor*this.divider(u),bits:(cr&4096?9:8)-(parity?1:0),stops:[1,.5,2,1.5][stop],receiveStops:stop===1?.5:1,allow9:true,parity};}
  readLine(u){const f=this.format(u),pin=this.pins(u)?.rx;if(!f||!pin)return null;const voltage=this.r.inputVoltages?.[pin];return Number.isFinite(voltage)?voltage<.99?false:voltage>=2.31&&voltage<=3.6?true:null:this.r.circuit?null:!!this.r.inputs[pin];}
  observe(){for(const u of this.units)if(this.format(u))u.receiver.observe();else u.receiver.cancel();}
  receive(u,frame){if(!this.enabled(u,4))return;if(u.sr&32)u.sr|=8;else{u.dr=frame.value;u.sr|=32;}if(frame.error)u.sr|=frame.error==='parity'?1:frame.error==='floating'?4:2;}
@@ -43,7 +43,7 @@ export class STMUSARTs {
   if(off===0){u.sr&=v|~(64|32|16|8|4|2|1);return true;}
   if(off===12){if((v&32768)&&this.r.board.cpu!=='cortex-m4f')throw Error('F103 USART OVER8 desteklemez.');if((v&8192)&&(v&32768)&&(this.cr(u,8)&8))throw Error('USART OVER8 için BRR bit3 sıfır olmalı.');if(!(v&8192))this.cancel(u);}
   if(off===8&&(this.cr(u)&32768)&&(v&8))throw Error('USART OVER8 için BRR bit3 sıfır olmalı.');
-  if(off===16&&![0,0x2000].includes(v&0x3000))throw Error('STM32 USART 0.5/1.5 stop bit henüz desteklenmiyor.');if(off===20&&(v&~193))throw Error('STM32 USART flow-control/half-duplex henüz desteklenmiyor.');
+  if(off===20&&(v&~193))throw Error('STM32 USART flow-control/half-duplex henüz desteklenmiyor.');
   this.r.regs.set(u.base+off,v>>>0);this.changed=true;this.r.circuit?.refresh(true);return true;
  }
  irqMask(){let mask=0;for(const u of this.units){const cr=this.cr(u);if(!(cr&(224|256))&&!(this.cr(u,20)&1)||!this.enabled(u))continue;let sr=u.sr;if(!this.physical(u)&&this.terminal(u)&&this.r.rx.length)sr|=32;if((sr&32)&&(cr&32)||(sr&128)&&(cr&128)||(sr&64)&&(cr&64)||(sr&8)&&(cr&32)||(sr&6)&&(this.cr(u,20)&1)||(sr&1)&&(cr&256))mask|=1<<(u.number-1);}return mask;}

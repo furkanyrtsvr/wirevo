@@ -11,6 +11,7 @@ export function stmUSART1HAL(board){const b=STM32_BOARDS[board],f4=b.cpu==='cort
  const setup=f4?`REG(${number===1?'0x40023844':'0x40023840'})|=1u<<${number===1?4:17};unsigned pins[2]={tx,rx};for(unsigned i=0;i<2;i++){unsigned p=pins[i],bank=p/16,n=p%16,a=0x40020000+bank*0x400;REG(0x40023830)|=1u<<bank;REG(a)=(REG(a)&~(3u<<(n*2)))|(2u<<(n*2));REG(a+4)&=~(1u<<n);REG(a+12)=(REG(a+12)&~(3u<<(n*2)))|(1u<<(n*2));unsigned af=a+32+(n>=8?4:0),shift=(n%8)*4;REG(af)=(REG(af)&~(15u<<shift))|(7u<<shift);}`:`REG(${number===1?'0x40021018':'0x4002101c'})|=1u<<${number===1?14:17};REG(0x40021018)|=1u;REG(0x40010004)=(REG(0x40010004)&~${number===1?4:8}u)${number===1?'|(tx==PB6?4u:0)':''};cf_gpio_mode(tx,CF_OUTPUT);cf_gpio_mode(rx,CF_INPUT_PULLUP);unsigned a=0x40010800+(tx/16)*0x400+(tx%16<8?0:4),shift=(tx%8)*4;REG(a)=(REG(a)&~(15u<<shift))|(11u<<shift);`;
  const valid=number===2?'tx==PA2&&rx==PA3':f4?`(tx==PA9||tx==PB6${b.family==='f411'?'||tx==PA15':''})&&(rx==PA10||rx==PB7${b.family==='f411'?'||rx==PB3':''})`:'((tx==PA9&&rx==PA10)||(tx==PB6&&rx==PB7))';return `
 int cf_usart${number}_config(unsigned baud,unsigned tx,unsigned rx,unsigned bits,unsigned parity,unsigned stops){if(baud<1200||baud>115200||!(${valid})||!cf_gpio_valid(tx)||!cf_gpio_valid(rx)||bits<7||bits>9||parity>2||stops<1||stops>2||(!parity&&bits==7)||(parity&&bits==9))return -1;REG(${base}+12)=0;${setup}REG(${base}+8)=(${clock}u+baud/2)/baud;REG(${base}+16)=stops==2?8192u:0;REG(${base}+20)=0;REG(${base}+12)=8192u|12u|((bits==9||(bits==8&&parity))?4096u:0)|(parity?1024u:0)|(parity==2?512u:0);return 0;}
+int cf_usart${number}_stopbits(unsigned halves){if(halves<1||halves>4||!(REG(${base})&64u))return -1;unsigned cr=REG(${base}+12),stop=halves==1?1u:halves==2?0u:halves==3?3u:2u;REG(${base}+12)=cr&~8192u;REG(${base}+16)=(REG(${base}+16)&~12288u)|(stop<<12);REG(${base}+12)=cr;return 0;}
 int cf_usart${number}_oversampling(unsigned factor){if(factor!=16&&factor!=8)return -1;${f4?'':'if(factor==8)return -1;'}unsigned cr=REG(${base}+12),brr=REG(${base}+8),divisor=cr&32768u?(brr>>4)*8u+(brr&7u):brr;if(!divisor||!(REG(${base})&64u))return -1;REG(${base}+12)=cr&~(8192u|32768u);REG(${base}+8)=factor==8?((divisor/8u)<<4)|(divisor%8u):divisor;REG(${base}+12)=(cr&~32768u)|(factor==8?32768u:0);return 0;}
 int cf_usart${number}_begin(unsigned baud,unsigned tx,unsigned rx){return cf_usart${number}_config(baud,tx,rx,8,0,1);}
 void cf_usart${number}_write_word(unsigned c){while(!(REG(${base})&128u)){}REG(${base}+4)=c;}
@@ -72,14 +73,37 @@ int cf_pwm_duty(unsigned p,unsigned duty){if(p>3||!cf_gpio_valid(p)||duty>100)re
 }
 export function stmSPIHAL(board){const b=STM32_BOARDS[board],f4=b.cpu==='cortex-m4f';const setup=f4?`REG(0x40023844)|=1u<<12;REG(0x40023830)|=1u;for(unsigned p=5;p<=7;p++){REG(0x40020000)=(REG(0x40020000)&~(3u<<(p*2)))|(2u<<(p*2));REG(0x40020004)&=~(1u<<p);REG(0x4002000c)=(REG(0x4002000c)&~(3u<<(p*2)))|(p==6?2u<<(p*2):0);REG(0x40020020)=(REG(0x40020020)&~(15u<<(p*4)))|(5u<<(p*4));}`:`REG(0x40021018)|=(1u<<12)|5u;REG(0x40010004)&=~1u;cf_gpio_mode(PA6,CF_INPUT_PULLDOWN);unsigned a=REG(0x40010800);a=(a&~((15u<<20)|(15u<<28)))|(11u<<20)|(11u<<28);REG(0x40010800)=a;`;return `
 int cf_spi1_config(unsigned hz,unsigned mode,unsigned bits,unsigned lsb){if(mode>3||(bits!=8&&bits!=16)||lsb>1)return -1;if(hz<${b.hz/256}u||hz>1000000)return -1;REG(0x40013000)=0;${setup}unsigned br=0,clock=${b.hz}u/2;while(br<7&&clock>hz){br++;clock/=2;}REG(0x40013004)=0;REG(0x40013000)=4u|64u|256u|512u|(br<<3)|mode|(bits==16?2048u:0)|(lsb?128u:0);return (int)clock;}
+int cf_spi1_pins(unsigned sck,unsigned miso,unsigned mosi){if(!cf_gpio_valid(sck)||!cf_gpio_valid(miso)||!cf_gpio_valid(mosi)||!(REG(0x40013000)&4u)||(REG(0x40013008)&128u))return -1;${f4?`if((sck!=PA5&&sck!=PB3)||(miso!=PA6&&miso!=PB4)||(mosi!=PA7&&mosi!=PB5))return -1;unsigned cr=REG(0x40013000);REG(0x40013000)=cr&~64u;unsigned old[6]={PA5,PB3,PA6,PB4,PA7,PB5};for(unsigned i=0;i<6;i++){unsigned p=old[i],n=p%16,a=0x40020000+(p/16)*1024,shift=n*2;if(((REG(a)>>shift)&3u)==2u&&((REG(a+32)>>(n*4))&15u)==5u)REG(a)&=~(3u<<shift);}unsigned pins[3]={sck,miso,mosi};for(unsigned i=0;i<3;i++){unsigned p=pins[i],n=p%16,a=0x40020000+(p/16)*1024;REG(0x40023830)|=1u<<(p/16);REG(a)=(REG(a)&~(3u<<(n*2)))|(2u<<(n*2));REG(a+4)&=~(1u<<n);REG(a+12)=(REG(a+12)&~(3u<<(n*2)))|(i==1?2u<<(n*2):0);REG(a+32)=(REG(a+32)&~(15u<<(n*4)))|(5u<<(n*4));}REG(0x40013000)=cr;return 0;`:'return sck==PA5&&miso==PA6&&mosi==PA7?0:-1;'}}
 int cf_spi1_nss_hardware(unsigned enable){if(enable>1||!(REG(0x40013000)&4u)||(REG(0x40013008)&128u))return -1;unsigned cr=REG(0x40013000);REG(0x40013000)=cr&~64u;if(enable){${f4?'REG(0x40020000)=(REG(0x40020000)&~(3u<<8))|(2u<<8);REG(0x40020004)&=~(1u<<4);REG(0x40020020)=(REG(0x40020020)&~(15u<<16))|(5u<<16);':'REG(0x40010800)=(REG(0x40010800)&~(15u<<16))|(11u<<16);'}REG(0x40013004)|=4u;REG(0x40013000)=(cr|64u)&~768u;}else{REG(0x40013004)&=~4u;cf_gpio_mode(PA4,CF_OUTPUT);cf_gpio_write(PA4,1);REG(0x40013000)=cr|64u|768u;}return 0;}
 int cf_spi1_begin(unsigned hz){return cf_spi1_config(hz,0,8,0);}
 int cf_spi1_transfer_word(unsigned value){unsigned start=REG(0xe0001004);while(!(REG(0x40013008)&2)){if((unsigned)(REG(0xe0001004)-start)>${b.hz/1000}u)return -1;}REG(0x4001300c)=value;while(!(REG(0x40013008)&1)){if((unsigned)(REG(0xe0001004)-start)>${b.hz/1000}u)return -1;}unsigned data=REG(0x4001300c),status=REG(0x40013008);while(REG(0x40013008)&128){if((unsigned)(REG(0xe0001004)-start)>${b.hz/1000}u)return -1;}return status&64?-2:(int)(data&((REG(0x40013000)&2048)?65535:255));}
 int cf_spi1_transfer(unsigned char value){return cf_spi1_transfer_word(value);}
 `;}
+export function stmI2CDMAHAL(board){const b=STM32_BOARDS[board],f4=b.cpu==='cortex-m4f';return `
+/* Blocking native DMA1 helper: owns F1 channels6/7 or F4 streams6/0, CHSEL1. */
+static int cf_i2c_dma(unsigned address,unsigned char *data,unsigned n,unsigned read){
+ if(!data||address>127||n<1||n>1024||!cf_i2c_hz)return -1;
+ unsigned base=read?${f4?'0x40026010u':'0x40020080u'}:${f4?'0x400260a0u':'0x4002006cu'};
+ if(REG(base)&1u)return -1;
+ ${f4?'REG(0x40023830)|=1u<<21;':'REG(0x40021014)|=1u;'}
+ REG(base+4)=n;REG(base+8)=0x40005410u;REG(base+12)=(unsigned)data;
+ REG(base)=${f4?'(1u<<25)|1024u|(read?0u:64u)|1u':'128u|(read?0u:16u)|1u'};
+ REG(0x40005404)=(REG(0x40005404)&~1024u)|2048u|(read?4096u:0u);
+ /* LAST controls a two-byte DMA tail; skip the polling POS sequence. */
+ int error=cf_i2c_address(address,read,n==2&&read?3:n);
+ if(!error){unsigned start=REG(0xe0001004),budget=(${b.hz}u/cf_i2c_hz)*12u*n+${b.hz/100}u;
+  while(REG(base+4)){if((!(REG(base)&1u)&&REG(base+4))||(REG(0x40005414)&0xff00u)||(unsigned)(REG(0xe0001004)-start)>budget){error=-1;break;}}
+  if(!error&&!read)error=cf_i2c_wait(4);
+ }
+ REG(base)&=~1u;REG(0x40005404)&=~6144u;
+ if(error)return cf_i2c_fail();REG(0x40005400)|=512u;if(cf_i2c_stop_wait())return cf_i2c_fail();REG(0x40005400)=(REG(0x40005400)&~2048u)|1024u;return (int)n;
+}
+int cf_i2c1_write_dma(unsigned address,const unsigned char *data,unsigned n){return cf_i2c_dma(address,(unsigned char*)data,n,0);}
+int cf_i2c1_read_dma(unsigned address,unsigned char *data,unsigned n){return cf_i2c_dma(address,data,n,1);}
+`;}
 export function stmI2CHAL(board){const b=STM32_BOARDS[board],f4=b.cpu==='cortex-m4f';const setup=f4?`REG(0x40023840)|=1u<<21;REG(0x40023830)|=2u;for(unsigned n=6;n<=9;n++)REG(0x40020400)&=~(3u<<(n*2));for(unsigned i=0;i<2;i++){unsigned p=i?scl:sda,n=p%16,a=0x40020400;REG(a)=(REG(a)&~(3u<<(n*2)))|(2u<<(n*2));REG(a+4)|=1u<<n;REG(a+12)&=~(3u<<(n*2));unsigned af=a+32+(n>=8?4:0),shift=(n%8)*4;REG(af)=(REG(af)&~(15u<<shift))|(4u<<shift);}`:`REG(0x4002101c)|=1u<<21;REG(0x40021018)|=9u;REG(0x40010004)=(REG(0x40010004)&~2u)|(scl==PB8?2u:0);for(unsigned i=0;i<2;i++){unsigned p=i?scl:sda,n=p%16,a=0x40010c00+(n<8?0:4),shift=(n%8)*4;REG(a)=(REG(a)&~(15u<<shift))|(15u<<shift);}`;const valid=f4?'(scl==PB6||scl==PB8)&&(sda==PB7||sda==PB9)':'((scl==PB6&&sda==PB7)||(scl==PB8&&sda==PB9))';return `
 static unsigned cf_i2c_sda,cf_i2c_scl,cf_i2c_hz;
-int cf_i2c1_begin(unsigned hz,unsigned sda,unsigned scl){if(hz<10000||hz>100000||!(${valid})||!cf_gpio_valid(sda)||!cf_gpio_valid(scl))return -1;REG(0x40005400)=0;${setup}REG(0x40005400)=32768;REG(0x40005400)=0;REG(0x40005404)=${b.hz/2000000}u;REG(0x4000541c)=(${b.hz/2}u+2*hz-1)/(2*hz);REG(0x40005420)=${b.hz/2000000+1}u;REG(0x40005400)=1025;cf_i2c_sda=sda;cf_i2c_scl=scl;cf_i2c_hz=hz;return 0;}
+int cf_i2c1_begin(unsigned hz,unsigned sda,unsigned scl){if(hz<10000||hz>400000||!(${valid})||!cf_gpio_valid(sda)||!cf_gpio_valid(scl))return -1;REG(0x40005400)=0;${setup}REG(0x40005400)=32768;REG(0x40005400)=0;REG(0x40005404)=${b.hz/2000000}u;REG(0x4000541c)=hz>100000?(32768u|(${b.hz/2}u+3*hz-1)/(3*hz)):(${b.hz/2}u+2*hz-1)/(2*hz);REG(0x40005420)=hz>100000?${Math.floor(b.hz/2000000*.3)+1}u:${b.hz/2000000+1}u;REG(0x40005400)=1025;cf_i2c_sda=sda;cf_i2c_scl=scl;cf_i2c_hz=hz;return 0;}
 static int cf_i2c_wait(unsigned mask){unsigned start=REG(0xe0001004);for(;;){unsigned sr=REG(0x40005414);if(sr&0xff00)return -1;if(sr&mask)return 0;if((unsigned)(REG(0xe0001004)-start)>${b.hz/200}u)return -1;}}
 static int cf_i2c_stop_wait(void){unsigned start=REG(0xe0001004);while(REG(0x40005400)&512){if((unsigned)(REG(0xe0001004)-start)>${b.hz/200}u)return -1;}return 0;}
 static unsigned cf_i2c_lock(void){unsigned p;__asm volatile("mrs %0,primask":"=r"(p));__asm volatile("cpsid i":::"memory");return p;}
@@ -93,7 +117,7 @@ int cf_i2c1_probe(unsigned address){if(cf_i2c_address(address,0,1))return -1;REG
 int cf_i2c1_read(unsigned address,unsigned char *data,unsigned n){unsigned size=n;if(!data||cf_i2c_address(address,1,n))return -1;if(n==1){if(cf_i2c_wait(64))return cf_i2c_fail();*data=REG(0x40005410);}else if(n==2){if(cf_i2c_wait(4))return cf_i2c_fail();unsigned lock=cf_i2c_lock();REG(0x40005400)|=512;*data++=REG(0x40005410);*data=REG(0x40005410);cf_i2c_unlock(lock);}else{while(n>3){if(cf_i2c_wait(64))return cf_i2c_fail();*data++=REG(0x40005410);n--;}if(cf_i2c_wait(4))return cf_i2c_fail();REG(0x40005400)&=~1024u;*data++=REG(0x40005410);if(cf_i2c_wait(4))return cf_i2c_fail();unsigned lock=cf_i2c_lock();REG(0x40005400)|=512;*data++=REG(0x40005410);*data=REG(0x40005410);cf_i2c_unlock(lock);}if(cf_i2c_stop_wait())return cf_i2c_fail();REG(0x40005400)=(REG(0x40005400)&~2048u)|1024;return (int)size;}
 /* A single write-prefix/read transaction: BTF then repeated START, no intervening STOP. */
 int cf_i2c1_write_read(unsigned address,const unsigned char *tx,unsigned nt,unsigned char *rx,unsigned nr){if(!tx||!rx||nt<1||nt>1024||nr<1||nr>1024||address>127||!cf_i2c_hz)return -1;if(cf_i2c_send(address,tx,nt)<0)return -1;return cf_i2c1_read(address,rx,nr);}
-`;}
+${stmI2CDMAHAL(board)}`;}
 const enc=new TextEncoder(),file=s=>new File(enc.encode(s));
 export function stmHeader(board){const b=STM32_BOARDS[board];return `#ifdef __cplusplus
 extern "C" {
@@ -125,12 +149,12 @@ int cf_rtc_begin(unsigned);int cf_rtc_counter(unsigned*);int cf_rtc_set_counter(
 int cf_exti_begin(unsigned,unsigned,unsigned);unsigned cf_exti_pending(unsigned);void cf_exti_clear(unsigned);void cf_exti_disable(unsigned);
 int cf_tim2_encoder_begin(unsigned,unsigned,unsigned,unsigned);unsigned cf_tim2_encoder_count(void);
 int cf_tim2_capture_begin(unsigned,unsigned,unsigned,unsigned);int cf_tim2_capture_read(unsigned,unsigned*);
-int cf_i2c1_begin(unsigned,unsigned,unsigned);int cf_i2c1_write(unsigned,const unsigned char*,unsigned);int cf_i2c1_read(unsigned,unsigned char*,unsigned);int cf_i2c1_recover(void);int cf_i2c1_probe(unsigned);int cf_i2c1_write_read(unsigned,const unsigned char*,unsigned,unsigned char*,unsigned);
-int cf_spi1_nss_hardware(unsigned);int cf_spi1_begin(unsigned);int cf_spi1_transfer(unsigned char);int cf_spi1_config(unsigned,unsigned,unsigned,unsigned);int cf_spi1_transfer_word(unsigned);
+int cf_i2c1_write_dma(unsigned,const unsigned char*,unsigned);int cf_i2c1_read_dma(unsigned,unsigned char*,unsigned);int cf_i2c1_begin(unsigned,unsigned,unsigned);int cf_i2c1_write(unsigned,const unsigned char*,unsigned);int cf_i2c1_read(unsigned,unsigned char*,unsigned);int cf_i2c1_recover(void);int cf_i2c1_probe(unsigned);int cf_i2c1_write_read(unsigned,const unsigned char*,unsigned,unsigned char*,unsigned);
+int cf_spi1_pins(unsigned,unsigned,unsigned);int cf_spi1_nss_hardware(unsigned);int cf_spi1_begin(unsigned);int cf_spi1_transfer(unsigned char);int cf_spi1_config(unsigned,unsigned,unsigned,unsigned);int cf_spi1_transfer_word(unsigned);
 int cf_adc_config(unsigned);int cf_adc_read(unsigned);
 int cf_adc_begin_sequence(const unsigned*,unsigned,unsigned,unsigned,unsigned,unsigned);
 int cf_adc_ready(void);int cf_adc_result(void);void cf_adc_stop(void);
-int cf_usart1_oversampling(unsigned);int cf_usart2_oversampling(unsigned);int cf_usart1_begin(unsigned,unsigned,unsigned);int cf_usart2_begin(unsigned,unsigned,unsigned);int cf_usart1_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);int cf_usart2_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);void cf_usart1_write_word(unsigned);void cf_usart2_write_word(unsigned);int cf_usart1_read_word(void);int cf_usart2_read_word(void);void cf_usart2_write(unsigned char);int cf_usart2_read(void);void cf_usart1_write(unsigned char);int cf_usart1_read(void);
+int cf_usart1_stopbits(unsigned);int cf_usart2_stopbits(unsigned);int cf_usart1_oversampling(unsigned);int cf_usart2_oversampling(unsigned);int cf_usart1_begin(unsigned,unsigned,unsigned);int cf_usart2_begin(unsigned,unsigned,unsigned);int cf_usart1_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);int cf_usart2_config(unsigned,unsigned,unsigned,unsigned,unsigned,unsigned);void cf_usart1_write_word(unsigned);void cf_usart2_write_word(unsigned);int cf_usart1_read_word(void);int cf_usart2_read_word(void);void cf_usart2_write(unsigned char);int cf_usart2_read(void);void cf_usart1_write(unsigned char);int cf_usart1_read(void);
 void cf_uart_begin(unsigned);void cf_uart_write(unsigned char);int cf_uart_available(void);int cf_uart_read(void);
 
 #ifdef __cplusplus

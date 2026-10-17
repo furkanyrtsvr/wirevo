@@ -2,6 +2,10 @@
 
 Tarayıcıda elektronik devre ve firmware çalışma alanı. TR / EN dil seçimi sağ üsttedir; seçim bu tarayıcıda saklanır. Eski CircuitForge proje dosyaları ve aynı adresteki yerel kayıt anahtarları uyumluluk için korunur. Yayın adresi değiştiğinde tarayıcı depolaması adrese bağlı olduğundan eski adresteki projeler JSON/ZIP ile yeni adrese aktarılmalıdır.
 
+## Wirevo 0.62 · STM32 çevrebirimleri
+
+I²C400 kHz/DMA ve çok dosyalı sensör istasyonu; F4 alternatif SPI1 pinleri; USART0.5/1.5stop; RTC alt-saniye alarmı. [Sürüm](../docs/RELEASE_0.62.md), [test kaydı](../docs/qa/README.md), [güncel plan](../docs/STM32_PLAN_0.62.md). Gerçek açık silikon işlevleri kapsam kaydında belirtilir.
+
 ## Wirevo 0.61 · STM32 destek profili
 
 Dahili ADC sıcaklık/VREFINT/VBAT örneği, F4 USART OVER8 ve SPI1 PA4 master NSS. [Kullanım ve model sınırları](../dist/notices/STM32-SUPPORT-PROFILE.md), [sürüm](../docs/RELEASE_0.61.md), [doğrulama](../docs/qa/README.md), [devam planı](../docs/STM32_PLAN_0.61.md).
