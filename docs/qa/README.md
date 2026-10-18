@@ -1,5 +1,12 @@
 # Doğrulama kayıtları
 
+## 0.71 — 19 Ekim 2026 · Tiva kart arayüzü ve RGB
+
+- Yalnız `npm run test:tiva-ui`: **12/12 geçti**, hata/atlama/iptal yok; GitHub kopyasında 2,42 saniye. Eski testler çalıştırılmadı. CI yalnız yeni `tests/tiva-c071-ui.test.mjs` dosyasını seçer.
+- Gerçek native C ve elektriksel LED akımlarıyla kapalı durum + yedi renk; kart üstü SW1/SW2 girişleri ve reset; geçersiz DC koruması, değişmeyen 40 pin, canlı lens ve erişilebilir kontroller.
+- Tarayıcıda C örneği derlendi: SW1 kırmızı, SW2 mavi; birlikte magenta/7.88 mA. RESET çıkışları sıfırladı; POWER tıklama/Enter ile değişti. [Görünüm](images/tiva-c071-controls.png).
+- Kaynak ve GitHub kopyasında build başarılı. GitHub kopyasında 485 shell dosyası / 20.742.349 bayt, mevcut 20 MiB sınırında. Native motor ve derleyici davranışı değişmedi.
+
 ## 0.70 — 19 Ekim 2026 · yeni Tiva C kabulü
 
 - GitHub kopyasında `npm run test:tiva`: **12/12 geçti**, hata/atlama/iptal yok;5,7 saniye. Eski STM32/genel testler çalıştırılmadı; bu push’un CI kapısı yalnız `tests/tiva-c070.test.mjs`.

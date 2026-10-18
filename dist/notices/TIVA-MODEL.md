@@ -1,5 +1,9 @@
 # Tiva C · TM4C123G LaunchPad · C17 işlevsel profil
 
+## 0.71 · Kart üstü etkileşim ve RGB
+
+SW1/SW2 kartın çizimi üzerinden tıkla-basılı/tıkla-bırak olarak çalışır; Enter/Space da kullanılabilir. RESET gerçek MCU resetine bağlıdır. POWER SELECT yalnız mevcut Debug/Device besleme seçimini gösterir; modelde ikisi de3.3V sağlar. RGB tek lens üzerinde PF1/PF2/PF3 fiziksel LED akımlarından birleşir, geçersiz/verisiz DC’de kapalıdır. Kablo veya haricî LED gerekmez. [Yeni görünüm/kontrol kabulü](../../docs/RELEASE_0.71.md). Diğer0.70 işlevsel model sınırları değişmedi.
+
 Hedef: EK-TM4C123GXL Rev B, TM4C123GH6PM, Cortex-M4F. Flash 256 KiB, adres0; SRAM32 KiB, adres0x20000000. Başlangıç saati16 MHz, nominal40/80 MHz PLL yapılandırmaları desteklenir. Yalnız `main.c` ve ek `.c`/`.h` dosyaları; Arduino, C++ ve MicroPython bu kartta seçilemez. SDK adı ayrılmış dosyalar kullanıcı kaynaklarıyla değiştirilemez.
 
 ## Kart ve görünüm

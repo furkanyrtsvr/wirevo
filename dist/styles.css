@@ -59,3 +59,5 @@
 .dialog-header-tools{display:flex;align-items:center;gap:12px}.dialog-title .language-switch button{font-size:10px;padding:4px 7px}.dialog-title .language-switch button[aria-pressed="true"]{background:#214c4b}
 
 .categories{flex-wrap:wrap}.menubar>.language-switch{margin-left:12px}.menubar-right{margin-left:auto}@media(max-width:1180px){.menubar>.language-switch{margin-left:auto}}
+.tiva-control{cursor:pointer;outline:none}.tiva-control .tiva-hit{pointer-events:all;stroke-width:.7}.tiva-control:hover .tiva-hit{stroke:#e0eacf80}.tiva-control:focus-visible .tiva-hit{stroke:#9ef3e3;stroke-width:1.1}.tiva-control[aria-pressed="true"] .tiva-hit{stroke:#d6edba;stroke-width:.8}
+.canvas-caption{padding:4px 6px;background:#101c29ed;border:1px solid #2c4053;border-radius:3px;max-width:calc(100% - 130px);overflow:hidden;white-space:nowrap}.canvas-caption .wire-legend{overflow:hidden;text-overflow:ellipsis}

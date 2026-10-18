@@ -1,12 +1,16 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.70.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.71.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
 AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve desteklenen kartlarda MicroPython; sanal sensörler, seri haberleşme ve ölçüm araçları içerir. Kart ve çevrebirim kapsamı birebir tam silikon modeli değildir; ayrıntılar `dist/notices/` altındadır.
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
+
+## Wirevo 0.71 · Kart üstü kontroller ve dahili RGB
+
+Tiva kart çizimi sadeleştirildi; SW1/SW2 ve RESET kart üzerinden kullanılabilir. Dahili RGB, C kodunun sürdüğü PF1/PF2/PF3 LED akımlarıyla tek lens üzerinde renk birleştirir. SW1/SW2 bir tıkla basılı tutulur, ikinci tıkla bırakılır. Yalnız bu sürümün 12 yeni kontrolü ve tarayıcı etkileşimi doğrulandı; eski testler çalıştırılmadı. [Sürüm ve çalışan görünüm](docs/RELEASE_0.71.md).
 
 ## Wirevo 0.70 · Tiva C LaunchPad / yalnız C17
 

@@ -1,6 +1,6 @@
-# Güncel: [0.70 — Tiva C LaunchPad / yalnız C17](RELEASE_0.70.md)
+# Güncel: [0.71 — Tiva kart kontrolleri ve dahili RGB](RELEASE_0.71.md)
 
-Yeni kabul komutu `npm run test:tiva`; eski STM32/genel testler çalıştırılmaz. [Tiva API/model kapsamı](../dist/notices/TIVA-MODEL.md). STM32’nin kabul edilen sınırlarla kapatılan işlevsel profili değiştirilmedi.
+Yeni kabul komutu `npm run test:tiva-ui`; yalnız bu sürümün 12 yeni kontrolü çalıştırılır. [Tiva API/model kapsamı](../dist/notices/TIVA-MODEL.md). STM32’nin kabul edilen sınırlarla kapatılan işlevsel profili değiştirilmedi.
 
 # Belgeler
 
@@ -9,7 +9,7 @@ Yeni kabul komutu `npm run test:tiva`; eski STM32/genel testler çalıştırılm
 | Güncel geliştirme planı | [Aktif STM32 denetimi](../dist/notices/STM32-AUDIT.md) |
 | Son teknik STM32 checkpointi | [Güncel destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
 | Test ve kabul sonuçları | [QA dizini](qa/README.md) |
-| Güncel sürüm | [0.70](RELEASE_0.70.md) |
+| Güncel sürüm | [0.71](RELEASE_0.71.md) |
 | Model ve lisans sınırları | [Uygulama model belgeleri](../dist/notices/) |
 | Önceki sürümler / planlar | [Sürüm geçmişi](history/releases/) / [Eski planlar](history/plans/) |
 | Donanım araştırmaları | [Araştırma notları](research/) |
