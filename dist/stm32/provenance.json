@@ -5,9 +5,10 @@
   "rust": "1.99.0",
   "target": "wasm32-unknown-unknown",
   "bridge": "src/stm32/src/lib.rs",
-  "bridgeVersion": "0.14",
+  "bridgeVersion": "0.15",
   "patches": [
     "Mutable Flash, option-byte WRP enforcement, native SYSRESETREQ, boot vectors, NRST and STOP/STANDBY handshake; native FIFO bus transfers, bit-band, F4 MPU and extra timer/bus IRQs; atomic doubleword Flash, BSY fetch stalls, native PCROP D-bus and RDP SRAM execution guards.",
+    "HCLK/8 SysTick phase and O(1) stalls, DWT/SysTick accounting during Flash and DMA, asynchronous exception entry and basic EXC_RETURN latency, busy erase guard, functional boot wait/RAM-clear and sized native bus read.",
     "Native extra IRQ19/20/21/22/42/49/67 bridge for F103 USB/bxCAN and F4 SDIO/OTG_FS; existing RTC bits preserved.",
     "Additional RTC alarm/wakeup NVIC IRQ bank",
     "Watchdog hardware reset restores ARM vector/NVIC/SysTick and resets peripherals without replacing active CPU",
@@ -23,13 +24,13 @@
   "artifacts": {
     "cortex-m3": {
       "file": "cortex-m3.wasm",
-      "bytes": 225417,
-      "sha256": "eae5001929d1f34bec7aab128af6c5c69927ee7fe6e6e32a0a53b2a209a8bcc0"
+      "bytes": 227760,
+      "sha256": "e6a484031a136e8dfd25e51416277d29b60a82a88d2d547dc67ef660146672d5"
     },
     "cortex-m4f": {
       "file": "cortex-m4f.wasm",
-      "bytes": 627444,
-      "sha256": "30bc7f98ae88439c06e35fdb257d9e61d68641e57e84507a2bac542712ebce41"
+      "bytes": 629756,
+      "sha256": "47b25725727a3040a7395bc0ab48c56fda825accee51d11df045001bd833a910"
     }
   }
 }

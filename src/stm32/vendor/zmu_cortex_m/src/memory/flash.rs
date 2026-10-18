@@ -83,6 +83,7 @@ impl FlashMemory {
 
     /// Erase a checked range to the physical erased value.
     pub fn erase(&mut self, start: usize, length: usize) -> bool {
+        if self.busy > self.now { self.status |= 1; return false; }
         if self.write_protected(start, length) { self.status |= 8; return false; }
         if start.checked_add(length).is_none_or(|end| end > self.data.len()) {
             self.status |= 1;

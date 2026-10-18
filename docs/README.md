@@ -1,19 +1,15 @@
-# Güncel: [0.66 — STM32 ileri modlar ve sanal ağlar](RELEASE_0.66.md)
+# Güncel: [0.67 — STM32 boot protokolleri ve zamanlama tutarlılığı](RELEASE_0.67.md)
 
-Yeni kabul komutu `npm run test:stm32-066`; 0.65 ve daha eski testler tekrar çalıştırılmaz.
-
-# Güncel sürüm
-
-[0.65 — STM32 reset, saat/güç ve çevrebirim genişlemesi](RELEASE_0.65.md). Bu değişiklikte yalnız yeni kabul testleri çalıştırılır.
+Yeni kabul komutu `npm run test:stm32-067`; 0.66 ve daha eski testler tekrar çalıştırılmaz. Orijinal ROM yürütümü ve tam fiziksel çevrim eşdeğerliği iddia edilmez; güncel açıklar sürüm kaydındadır.
 
 # Belgeler
 
 | Konu | Kayıt |
 | --- | --- |
-| Güncel geliştirme planı | [0.63 STM32 kapanış kaydı](STM32_PLAN_0.63.md) |
-| Son teknik STM32 checkpointi | [0.63 destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
+| Güncel geliştirme planı | [Aktif STM32 denetimi](../dist/notices/STM32-AUDIT.md) |
+| Son teknik STM32 checkpointi | [Güncel destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
 | Test ve kabul sonuçları | [QA dizini](qa/README.md) |
-| Güncel sürüm | [0.63](RELEASE_0.63.md) |
+| Güncel sürüm | [0.67](RELEASE_0.67.md) |
 | Model ve lisans sınırları | [Uygulama model belgeleri](../dist/notices/) |
 | Önceki sürümler / planlar | [Sürüm geçmişi](history/releases/) / [Eski planlar](history/plans/) |
 | Donanım araştırmaları | [Araştırma notları](research/) |

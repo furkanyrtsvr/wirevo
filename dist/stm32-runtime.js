@@ -1,4 +1,5 @@
 import {STMOTG} from './stm32-otg-host.js';
+import {installBootUSB} from './stm32-dfu.js';
 import {STMCAN} from './stm32-can-network.js';
 import {STMUSB} from './stm32-usb.js';
 import {STMRTC} from './stm32-rtc-events.js';
@@ -82,7 +83,7 @@ if([0x40021000,0x40021004,0x40021018,0x4002101c,0x4002100c,0x40021010,0x40021014
 }
 
 const resetSTMPeripherals=STMRuntime.prototype.resetPeripherals;
-STMRuntime.prototype.resetPeripherals=function(){const bus=this.can?.bus,previousCAN=this.can,peer=this.usb?.peer;resetSTMPeripherals.call(this);if(bus){bus.detach(previousCAN);bus.attach(this.can);}if(peer)this.usb.attachDevice?.(peer);if(this.flash)this.flash.systemReset();else this.flash=new STMFlash(this);if(this.system)this.system.reset();else this.system=new STMSystem(this);this.gpioLock=new STMGPIOLock(this);};
+STMRuntime.prototype.resetPeripherals=function(){const bus=this.can?.bus,previousCAN=this.can,peer=this.usb?.peer;resetSTMPeripherals.call(this);if(bus){bus.detach(previousCAN);bus.attach(this.can);}if(peer)this.usb.attachDevice?.(peer);if(this.flash)this.flash.systemReset();else this.flash=new STMFlash(this);if(this.system)this.system.reset();else this.system=new STMSystem(this);installBootUSB(this);this.gpioLock=new STMGPIOLock(this);};
 const readSTMRegister=STMRuntime.prototype.readRegister;
 STMRuntime.prototype.readRegister=function(a,n=4){const value=this.gpioLock?.read(a,n)??this.system?.read(a,n)??this.timers?.read(a,n)??this.buses?.read(a,n)??this.flash?.read(a,n);return value===undefined?readSTMRegister.call(this,a,n):value;};
 const writeSTMRegister=STMRuntime.prototype.writeRegister;
@@ -96,3 +97,4 @@ const queueSTMSerial=STMRuntime.prototype.queueSerial;
 const pinSTMStates=STMRuntime.prototype.pinStates;
 STMRuntime.prototype.pinStates=function(){if(this.system?.mode==='standby')return Object.fromEntries(this.board.gpio.map(p=>[p,{high:false,outputEnabled:false,voltage:0,mode:'INPUT'}]));return this.rtc.outputs(this.buses.outputs(this.timers.outputs(pinSTMStates.call(this))));};
 STMRuntime.prototype.queueSerial=function(text){if(this.system.bootMode==='system'){for(const byte of new TextEncoder().encode(text))this.system.bootByte(byte);return;}return queueSTMSerial.call(this,text);};
+STMRuntime.prototype.queueBootBytes=function(bytes){if(this.system.bootMode!=='system')throw Error('Önce BOOT0 ile system-memory moduna resetleyin.');if(!(bytes instanceof Uint8Array)||bytes.length>4096)throw Error('Boot USART girdisi 0..4096 bayt olmalı.');for(const byte of bytes)this.system.bootByte(byte);};

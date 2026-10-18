@@ -224,6 +224,7 @@ pub struct Processor {
     pub syst_rvr: u32,
     pub syst_cvr: u32,
     pub syst_csr: u32,
+    pub syst_phase: u32,
 
     ///
     /// file handle to which to write ITM data
@@ -422,6 +423,7 @@ impl Processor {
             syst_rvr: 0,
             syst_cvr: 0,
             syst_csr: 0,
+            syst_phase: 0,
             instruction_cache: Vec::new(),
             fault_trap_mode: FaultTrapMode::hardfault(),
             pending_fault_trap: None,

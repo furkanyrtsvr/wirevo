@@ -10,16 +10,16 @@ export class STMOTG extends Device {
  active(){return !this.hostMode()&&super.active();}
  hostPending(){return this.channels.reduce((mask,c,i)=>mask|((c.interrupt&c.mask)?1<<i:0),0);}
  status(){if(!this.hostMode())return super.status();return (1|this.events|(this.rx.length?16:0)|(this.hostPending()&(this.hostRegs.get(0x418)||0)?1<<25:0))>>>0;}
- tick(){if(!this.hostMode()||!this.clocked())return;const hz=this.r.board.hz,elapsed=Math.floor((this.r.count-this.frameAt)/(hz/1000));if(elapsed>0){this.hostRegs.set(0x408,((this.hostRegs.get(0x408)||0)+elapsed)&65535);this.frameAt+=elapsed*hz/1000;this.events|=8;}for(let i=0;i<8;i++){const c=this.channels[i];if(c.due>this.r.count)continue;c.due=Infinity;if(!(c.character&ENABLE))continue;this.transfer(i,c);}}
+ tick(){if(!this.hostMode())return super.tick();if(!this.clocked())return;const hz=this.r.board.hz,elapsed=Math.floor((this.r.count-this.frameAt)/(hz/1000));if(elapsed>0){this.hostRegs.set(0x408,((this.hostRegs.get(0x408)||0)+elapsed)&65535);this.frameAt+=elapsed*hz/1000;this.events|=8;}for(let i=0;i<8;i++){const c=this.channels[i];if(c.due>this.r.count)continue;c.due=Infinity;if(!(c.character&ENABLE))continue;this.transfer(i,c);}}
  transfer(i,c){
   const incoming=!!(c.character&32768),ep=c.character>>>11&15,address=c.character>>>22&127,mps=c.character&2047,remaining=c.size&0x7ffff,packetCount=c.size>>>19&1023,setup=(c.size>>>29&3)===3;
   const halt=flags=>{c.interrupt|=flags|2;c.character&=~ENABLE;c.due=Infinity;};
   if(!this.peer||!(this.port&4)||!mps){halt(128);return;}
-  let reply;if(incoming)reply=this.peer.hostIn(address,ep);else{const n=Math.min(mps,remaining);if(c.fifo.length<Math.ceil(n/4)){c.due=this.r.count+this.r.board.hz/1000000;return;}const data=Uint8Array.from({length:n},(_,j)=>c.fifo[j>>>2]>>>((j&3)*8)&255);reply={status:this.peer.hostOut(address,ep,data,setup)};if(reply.status==='ACK')c.fifo.splice(0,Math.ceil(n/4));}
-  if(reply.status==='NAK'){halt(16);return;}if(reply.status==='STALL'){halt(8);return;}if(reply.status!=='ACK'){halt(128);return;}
-  const n=incoming?(reply.data?.length||0):Math.min(mps,remaining);if(n>mps||n>remaining){halt(256);return;}
-  if(incoming){const bytes=reply.data||[];for(let j=0;j<n;j+=4)this.payload.push(((bytes[j]||0)|((bytes[j+1]||0)<<8)|((bytes[j+2]||0)<<16)|((bytes[j+3]||0)<<24))>>>0);this.rx.push(i|(n<<4)|(2<<17));}
-  const left=Math.max(0,remaining-n),packets=Math.max(0,packetCount-1);c.size=(c.size&0xe0000000)|(packets<<19)|left;c.interrupt|=32;
+  let reply;if(incoming)reply=this.peer.hostIn(address,ep,this.peer.tokenACK?{ack:false}:{});else{const n=Math.min(mps,remaining);if(c.fifo.length<Math.ceil(n/4)){c.due=this.r.count+this.r.board.hz/1000000;return;}const data=Uint8Array.from({length:n},(_,j)=>c.fifo[j>>>2]>>>((j&3)*8)&255);reply={status:this.peer.hostOut(address,ep,data,setup,{pid:setup?'DATA0':(c.size>>>29&3)===2?'DATA1':'DATA0'})};if(reply.status==='ACK'||reply.status==='ISO')c.fifo.splice(0,Math.ceil(n/4));}
+  if(reply.status==='NAK'){halt(16);return;}if(reply.status==='STALL'){halt(8);return;}const iso=(c.character>>>18&3)===1;if(reply.status!=='ACK'&&!(iso&&reply.status==='ISO')){halt(128);return;}if(incoming&&!iso&&reply.pid&&reply.pid!==((c.size>>>29&3)===2?'DATA1':'DATA0')){halt(1024);return;}
+  const n=incoming?(reply.data?.length||0):Math.min(mps,remaining);if(n>mps||n>remaining){halt(256);return;}if(incoming&&!iso&&this.peer.tokenACK)this.peer.hostIn(address,ep,{ack:true});
+  if(incoming){const bytes=reply.data||[];for(let j=0;j<n;j+=4)this.payload.push(((bytes[j]||0)|((bytes[j+1]||0)<<8)|((bytes[j+2]||0)<<16)|((bytes[j+3]||0)<<24))>>>0);this.rx.push(i|(n<<4)|((reply.pid==='DATA1'?2:0)<<15)|(2<<17));}
+  const left=Math.max(0,remaining-n),packets=Math.max(0,packetCount-1);c.size=((iso||setup?c.size&0xe0000000:(c.size^(2<<29))&0xe0000000)|(packets<<19)|left)>>>0;c.interrupt|=32;
   if(!left||!packets||incoming&&n<mps){this.rx.push(i|(3<<17));halt(1);}else c.due=this.r.count+this.r.board.hz/12000000*(n*8+50);
  }
  channel(a){const off=(a&~3)-BASE;if(off<0x500||off>=0x600)return null;return{unit:this.channels[(off-0x500)>>>5],off:off&31};}

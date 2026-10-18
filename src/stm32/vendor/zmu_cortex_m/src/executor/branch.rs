@@ -46,7 +46,7 @@ impl IsaBranch for Processor {
         if self.condition_passed() {
             let r_m = self.get_r(rm);
             self.bx_write_pc(r_m)?;
-            return Ok(ExecuteSuccess::Branched { cycles: 3 });
+            return Ok(ExecuteSuccess::Branched { cycles: if r_m & 0xffff_fff0 == 0xffff_fff0 {12} else {3} });
         }
         Ok(ExecuteSuccess::NotTaken)
     }

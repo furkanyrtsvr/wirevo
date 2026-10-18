@@ -1,4 +1,5 @@
 import {STMCAN as Loopback} from './stm32-can.js';
+import {canFrameBits} from './stm32-can-frame.js';
 function arbitration(frame){const tir=frame[0]>>>0,extended=!!(tir&4),base=tir>>>21;return base*2097152+(extended?1572864+((tir>>>3)&262143)*2+(tir&2?1:0):(tir&2?1048576:0));}
 export class CANBus {
  constructor(){this.nodes=new Set();this.active=null;this.frames=0;}
@@ -7,7 +8,7 @@ export class CANBus {
  tick(now){
   if(this.active&&now>=this.active.at){const {node,job,frame,bit}=this.active;this.active=null;let ack=false;for(const other of this.nodes)if(other!==node&&other.running()&&Math.abs(other.bitTicks()-bit)<bit*.015){other.receive(frame);if(!(other.btr&0x80000000))ack=true;}if(ack){node.finish(job,2);node.tec=Math.max(0,node.tec-1);node.esr=node.tec<<16;node.frames++;this.frames++;}else{node.tec=Math.min(256,node.tec+8);node.esr=(3<<4)|(Math.min(255,node.tec)<<16)|(node.tec>=96?1:0)|(node.tec>=128?2:0)|(node.tec>=256?4:0);node.msr|=4;node.busOffAt=now;if(node.mcr&16)node.finish(job,8);else job.submitted=now;}}
   if(this.active)return;const contenders=[];for(const node of this.nodes)if(node.running()&&node.tec<256&&!(node.btr&0x80000000))for(const job of node.pending)if((job.submitted??0)<=now)contenders.push({node,job,frame:node.tx[job.i].slice()});if(!contenders.length)return;contenders.sort((a,b)=>(a.job.submitted??0)-(b.job.submitted??0)||arbitration(a.frame)-arbitration(b.frame));const first=contenders[0],bit=first.node.bitTicks(),same=contenders.filter(c=>(c.job.submitted??0)<=(first.job.submitted??0)+bit);same.sort((a,b)=>arbitration(a.frame)-arbitration(b.frame));const winner=same[0];for(const lost of same.slice(1)){if(lost.node.mcr&16)lost.node.finish(lost.job,4);else lost.job.submitted=now+bit;}
-  if(now<(winner.job.submitted??0)+bit)return;const dlc=winner.frame[1]&15,bits=(winner.frame[0]&4?67:47)+dlc*8;this.active={...winner,bit,at:now+Math.ceil(bits*1.2+3)*bit};
+  if(now<(winner.job.submitted??0)+bit)return;const wire=canFrameBits(winner.frame);this.active={...winner,wire,bit,at:now+wire.length*bit};
  }
 }
 export class STMCAN extends Loopback {

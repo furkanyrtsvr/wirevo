@@ -160,6 +160,13 @@ fn conditional_setflags(setflags: SetFlags, in_it_block: bool) -> bool {
 }
 
 impl Processor {
+    /// Account elapsed HCLK even when no instruction retires (DMA/Flash).
+    pub fn advance_cycles(&mut self, cycles: u32) {
+        self.cycle_count += u64::from(cycles);
+        if self.dwt_ctrl & 1 != 0 { self.dwt_tick(cycles); }
+        if self.syst_csr & 1 != 0 { self.syst_step(cycles); }
+    }
+
     fn active_exception(&self) -> Option<Exception> {
         let active_exception = self.psr.get_isr_number();
         if active_exception == 0 {

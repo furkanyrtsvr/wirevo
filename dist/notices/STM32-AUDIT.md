@@ -2,7 +2,15 @@
 
 18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 
-## 0.66 — yeni uygulama ve kanıt
+## 0.67 — güncel uygulama ve kanıt
+
+F401/F411 işlevsel AN3156 USB DFU; dokuz kartta binary AN3155 USART boot, silme/koruma varyantları; panelden .bin yazma ve USB geri okuma; F103 PMA double-buffer/ISO, USB PID/ACK/CRC/global NAK, I²C10-bit master ve SMBus adres/ALERT/DNF davranışı eklendi. CAN CRC/stuffing süresi, native Flash/DMA/DWT/SysTick ve temel exception gecikmeleri düzeltildi. Yeni kabul yalnız `tests/stm32-v067-*.test.mjs`; native/reg/worker kanıtı ve kalanlar `docs/RELEASE_0.67.md` içinde ayrıdır.
+
+Önceki listedeki **F1/F4 smartcard otomatik retry donanımı beklentisi yanlıştı** (AN4800): tekrar gönderim firmware işidir. Benzer biçimde ARP komut/adres-atama yığını firmware’dir; donanım adres tanıma/PEC/ALERT yolları modelde ayrı uygulanır. F103 low/medium density fabrika ROM’unda DFU yoktur.
+
+Kapanmayan yazılım davranışları: orijinal ROM yürütümü; tüm core fault/priority/pipeline, tail-chaining/late-arrival/FPU stacking ve bus-matrix çevrimleri; I²S full-duplex extension/tüm stereo, advanced-timer COM/preload/lock, bütün USB/CAN hata-zamanlama kombinasyonları. Analog güç/PHY/transceiver ölçümü yoktur. Bu kayıt “STM32 tamamen bitti” değildir; başka kartlara geçiş açılmaz. Alt 0.66/0.65/0.64 kayıtları tarihsel başlangıç durumudur, güncel eksik listesi yerine okunmaz.
+
+## 0.66 — yeni uygulama ve kanıt (tarihsel)
 
 64-bit Flash programlama/BSY, PCROP execute-only ve native RDP SRAM-okuma kapısı; ITR zinciri, TIM1 break/AOE/idle/repetition; SPI RXONLY/tek hat/TI; USART half-duplex/IrDA/CK/smartcard clock-guard-NACK; I²S2/3 MCLK/right-justified; PEC, nominal HSE/PLL/backup hazır gecikmeleri ve RTC tamper filtre eklendi.
 

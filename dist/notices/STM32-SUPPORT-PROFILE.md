@@ -1,4 +1,8 @@
-# Güncel durum · 0.66
+# Güncel durum · 0.67
+
+İşlevsel F401/F411 DFU ve binary USART boot/panel yükleme, F103 PMA double-buffer/ISO; USB PID/ACK/CRC/global NAK, I²C10-bit/SMBus, CAN bit stuffing/CRC süreleri ve native DWT/SysTick/Flash/DMA/exception zamanlama tutarlılığı eklendi. Orijinal ST ROM binary’si veya tam pipeline/bus-matrix çevrim doğruluğu yoktur. [Aktif denetim](STM32-AUDIT.md) günceldir; kalanlar açık tutulur ve tam silikon kapanışı ilan edilmez.
+
+# 0.66 (tarihsel)
 
 Flash koruma/zamanlama, ileri seri/timer modları, sanal USB host/CAN ağı ve MMC stream genişletildi. Üstteki [aktif denetim kaydı](STM32-AUDIT.md) ve kapsam arayüzü günceldir; aşağıdaki 0.65/0.63 metni tarihsel kayıttır. Tam fiziksel silikon eşdeğerliği ilan edilmez.
 

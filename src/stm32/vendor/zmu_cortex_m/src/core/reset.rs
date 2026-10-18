@@ -62,6 +62,7 @@ impl Reset for Processor {
         self.event_register=false;self.waiting_for_event=false;self.sleeping=false;
         self.mpu_ctrl=0;self.mpu_region=0;self.mpu_base=[0;8];self.mpu_attr=[0;8];
 
+        self.syst_phase = 0;
         self.itstate = 0;
         self.execution_priority = self.get_execution_priority();
 

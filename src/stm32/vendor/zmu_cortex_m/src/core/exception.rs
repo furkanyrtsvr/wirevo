@@ -779,6 +779,10 @@ impl ExceptionHandling for Processor {
                     pc,
                     active_exception,
                 });
+            } else {
+                // Cortex-M3/M4 zero-wait-state asynchronous entry latency.
+                // SVC/fault instructions already account their entry in execute().
+                self.advance_cycles(12);
             }
         } else if self.sleeping && self.has_wakeup_condition() {
             self.sleeping = false;

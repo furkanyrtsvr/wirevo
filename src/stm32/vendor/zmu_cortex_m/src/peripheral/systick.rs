@@ -63,6 +63,7 @@ impl SysTick for Processor {
 
     fn syst_write_cvr(&mut self, _value: u32) {
         self.syst_cvr = 0;
+        self.syst_phase = 0;
 
         // writing to CVR always clears countflag
         self.syst_csr &= !SYST_CSR_COUNTFLAG;
@@ -96,19 +97,30 @@ impl SysTick for Processor {
             return;
         }
 
-        for _ in 0..cycles {
-            if self.syst_cvr > 0 {
-                self.syst_cvr -= 1;
-
-                if self.syst_cvr == 0 {
-                    self.syst_csr |= SYST_CSR_COUNTFLAG;
-                    if (self.syst_csr & SYST_CSR_TICKINT) == SYST_CSR_TICKINT {
-                        self.set_exception_pending(Exception::SysTick);
-                    }
-                }
-            } else {
-                self.syst_cvr = self.syst_rvr & 0x00ff_ffff;
-            }
+        // STM32 external SysTick reference is HCLK/8. Keep the divider phase
+        // across instruction, DMA and Flash-stall boundaries.
+        let mut ticks = u64::from(cycles);
+        if self.syst_csr & 4 == 0 {
+            ticks += u64::from(self.syst_phase);
+            self.syst_phase = (ticks % 8) as u32;
+            ticks /= 8;
+        }
+        if ticks == 0 { return; }
+        let mut wrapped = false;
+        if self.syst_cvr != 0 {
+            if ticks < u64::from(self.syst_cvr) { self.syst_cvr -= ticks as u32; return; }
+            ticks -= u64::from(self.syst_cvr);
+            self.syst_cvr = 0;
+            wrapped = true;
+        }
+        let reload = self.syst_rvr & 0x00ff_ffff;
+        let period = u64::from(reload) + 1;
+        if reload != 0 && ticks >= period { wrapped = true; }
+        let remainder = (ticks % period) as u32;
+        self.syst_cvr = if remainder == 0 { 0 } else { reload + 1 - remainder };
+        if wrapped {
+            self.syst_csr |= SYST_CSR_COUNTFLAG;
+            if self.syst_csr & SYST_CSR_TICKINT != 0 { self.set_exception_pending(Exception::SysTick); }
         }
     }
 }

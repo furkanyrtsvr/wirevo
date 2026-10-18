@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.67 — 18 Ekim 2026 · yalnız bu turdaki yeni kabul
+
+- GitHub çalışma kopyasında `npm run test:stm32-067`: **146/146 geçti**, hata/atlama/iptal yok;17,5 saniye. Dört yeni dosya: native boot/timing60; DFU API/panel/worker20; protokol varyantları38; USB/I²C bit akışı28.
+- 0.66 ve daha eski STM32/genel regresyonlar çalıştırılmadı. Bu push’un CI kapısı yalnız `tests/stm32-v067-*.test.mjs`; sıradan push/PR kapısı korunur.
+- Native M3/M4F kaynaklardan release derlendi. M3 227.760 bayt, SHA-256 `e6a484031a136e8dfd25e51416277d29b60a82a88d2d547dc67ef660146672d5`; M4F 629.756 bayt, SHA-256 `47b25725727a3040a7395bc0ab48c56fda825accee51d11df045001bd833a910`.
+- GitHub kopyasında `npm run build` başarılı;468 offline-shell dosyası. DFU paneli USB geri okumasıyla karşılaştırılır, doğrudan Flash aynasıyla sahte başarı üretmez. Kısa son blok ve silmeden önce sınır kontrolü ayrıca kabul edilir.
+- Orijinal ROM/silikon ölçümü ve tüm çevrim doğruluğu iddia edilmez; güncel açıklar RELEASE_0.67.md içindedir.
+
 ## 0.66 — 18 Ekim 2026 · yalnız bu turdaki yeni kabul
 
 - GitHub çalışma kopyasında `npm run test:stm32-066`: **132/132 geçti**, hata/atlama/iptal yok; 48,9 saniye. Altı yeni dosya: native Flash/RDP/PCROP/timer32; ileri modlar27; dış bus/model25; saat/backup14; native fiziksel hat/host/CAN27; USB aygıt/worker7.

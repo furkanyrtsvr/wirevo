@@ -1,9 +1,11 @@
 // STM32F103 / STM32F401 / STM32F411 clock, reset and low-power domains.
 // Time is expressed in nominal-board ticks so peripheral deadlines and physical
 // circuit events retain a common, continuous timeline across clock changes.
+import {STMDFU} from './stm32-dfu.js';
+import {bootByte} from './stm32-boot.js';
 export class STMSystem {
  constructor(r){this.r=r;this.f4=r.board.cpu==='cortex-m4f';this.base=this.f4?0x40023800:0x40021000;this.hsi=this.f4?16000000:8000000;this.seconds=0;this.lastCPU=0;this.pendingReset=0;this.nrst=true;this.hsePresent=true;this.supply=3.3;this.boot0=false;this.boot1=false;this.mode='run';this.bootMode='flash';this.csr=0;this.reset();}
- reset(){this.oscillators=new Map([[1,{at:0,ready:true}]]);this.mode='run';this.goAddress=undefined;this.source=0;this.hclk=this.hsi;this.pclk1=this.hsi;this.pclk2=this.hsi;this.cir=0;this.pwrCSR=this.csr&3;this.bootMode=this.boot0?(this.boot1?'sram':'system'):'flash';this.bootState={stage:'sync',command:0,data:[],address:0};}
+ reset(){this.oscillators=new Map([[1,{at:0,ready:true}]]);this.mode='run';this.goAddress=undefined;this.source=0;this.hclk=this.hsi;this.pclk1=this.hsi;this.pclk2=this.hsi;this.cir=0;this.pwrCSR=this.csr&3;this.bootMode=this.r.flash?.rdp()===2?'flash':this.boot0?(this.boot1?'sram':'system'):'flash';this.bootState={stage:'sync',command:0,data:[],address:0};this.dfu=new STMDFU(this.r);}
  factor(){return this.r.board.hz/this.hclk;}
  i2sHz(){if(!this.f4||!(this.r.regs.get(this.base)&(1<<26)))return 0;const main=this.r.regs.get(this.base+4)||0,pll=this.r.regs.get(this.base+0x84)??0x20003000,m=main&63,n=(pll>>>6)&511,div=(pll>>>28)&7;return m&&div?(main&(1<<22)?this.r.board.hse:this.hsi)/m*n/div:0;}
  irqExtra(){return ((this.r.exti?.regs.get(0)||0)&(this.r.exti?.regs.get(20)||0)&65536?1<<10:0)|(this.cir&(this.cir>>>8)&127?1<<11:0);}
@@ -82,16 +84,5 @@ export class STMSystem {
   for(const event of this.r.usarts?.events||[])event.at=this.r.count+(event.at-this.r.count)*([2,3].includes(event.unit)?oldP1/this.pclk1:oldP2/this.pclk2);
   return true;
  }
- // AN3155 USART boot protocol. This implements commands, not ST ROM bytes.
- bootByte(byte){
-  const b=this.bootState,ack=()=>{this.r.serial+='\x79';},nak=()=>{this.r.serial+='\x1f';},out=bytes=>{this.r.serial+=String.fromCharCode(...bytes);};
-  if(b.stage==='sync'){if(byte===0x7f){ack();b.stage='command';}return;}
-  if(b.stage==='command'){b.command=byte;b.stage='complement';return;}
-  if(b.stage==='complement'){if((b.command^byte)!==255){nak();b.stage='command';return;}const commands=[0,1,2,0x11,0x21,0x31,0x44];if(!commands.includes(b.command)||this.r.flash.rdp()&&![0,1,2].includes(b.command)){nak();b.stage='command';return;}ack();if(b.command===0){out([commands.length,0x31,...commands]);ack();b.stage='command';}else if(b.command===1){out([0x31,0,0]);ack();b.stage='command';}else if(b.command===2){out([1,4,this.f4?(this.r.board.family==='f411'?0x31:0x33):this.r.board.flashSize===32768?0x12:0x10]);ack();b.stage='command';}else{b.data=[];b.stage=b.command===0x44?'erase':'address';}return;}
-  b.data.push(byte);
-  if(b.stage==='address'&&b.data.length===5){const d=b.data;if((d[0]^d[1]^d[2]^d[3])!==d[4]){nak();b.stage='command';return;}b.address=(d[0]*0x1000000+(d[1]<<16)+(d[2]<<8)+d[3])>>>0;b.data=[];ack();b.stage=b.command===0x11?'read':b.command===0x31?'write':'go';if(b.stage==='go'){this.bootMode='flash';this.goAddress=b.address;this.requestReset(7);b.stage='command';}}
-  else if(b.stage==='read'&&b.data.length===2){const [length,check]=b.data;if((length^check)!==255)nak();else{ack();out(this.r.readMemory(b.address,length+1));}b.stage='command';}
-  else if(b.stage==='write'&&b.data.length===b.data[0]+3){const d=b.data,check=d.reduce((a,v)=>a^v,0);if(check)nak();else{const e=this.r.exports;e.flash_program_width(this.r.cpu,this.f4?1:2);let ok=true;for(let i=0;i<=d[0];i+=this.f4?1:2)ok=!!e.memory_write(this.r.cpu,b.address+i,this.f4?d[i+1]:d[i+1]|(d[i+2]??255)<<8,this.f4?1:2)&&ok;e.flash_program_width(this.r.cpu,0);this.r.flash.rawStatus()&11?nak():ok?ack():nak();}b.stage='command';}
-  else if(b.stage==='erase'&&b.data.length>=3){const d=b.data,count=(d[0]<<8)|d[1],needed=count===65535?3:2+(count+1)*2+1;if(d.length!==needed)return;if(d.reduce((a,v)=>a^v,0))nak();else{let ok=true;if(count===65535)ok=this.r.flash.r.exports.flash_erase(this.r.cpu,0,this.r.board.flashSize);else for(let i=0;i<=count;i++){const page=(d[2+i*2]<<8)|d[3+i*2],[a,n]=this.f4?this.r.flash.sector(page):[page*1024,1024];ok=!!this.r.exports.flash_erase(this.r.cpu,a,n)&&ok;}ok?ack():nak();}b.stage='command';}
- }
+ bootByte(byte){return bootByte(this,byte);}
 }
