@@ -61,6 +61,7 @@ impl Bus for Processor {
             return self.sram.read8(addr);
         }
         if self.code.in_range(addr) {
+            if !self.code.data_read_allowed(addr as usize,1,self.code.in_range(self.map_address(self.pc))){return Ok(0);}
             return self.code.read8(addr);
         }
         if let Some(device) = self.device.as_ref()
@@ -93,6 +94,7 @@ impl Bus for Processor {
             return self.sram.read16(addr);
         }
         if self.code.in_range(addr) {
+            if !self.code.data_read_allowed(addr as usize,2,self.code.in_range(self.map_address(self.pc))){return Ok(0);}
             return self.code.read16(addr);
         }
         if let Some(device) = self.device.as_ref()
@@ -132,6 +134,7 @@ impl Bus for Processor {
             return self.sram.read32(addr);
         }
         if self.code.in_range(addr) {
+            if !self.code.data_read_allowed(addr as usize,4,self.code.in_range(self.map_address(self.pc))){return Ok(0);}
             return self.code.read32(addr);
         }
         if let Some(device) = self.device.as_mut()

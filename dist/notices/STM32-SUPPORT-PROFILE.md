@@ -1,3 +1,7 @@
+# Güncel durum · 0.66
+
+Flash koruma/zamanlama, ileri seri/timer modları, sanal USB host/CAN ağı ve MMC stream genişletildi. Üstteki [aktif denetim kaydı](STM32-AUDIT.md) ve kapsam arayüzü günceldir; aşağıdaki 0.65/0.63 metni tarihsel kayıttır. Tam fiziksel silikon eşdeğerliği ilan edilmez.
+
 # Güncel durum · 0.65
 
 Option-byte/boot/NRST, dinamik saat/güç, ek bağımsız çevrebirimler ve yeni native DMA/MPU yolları eklendi. [Aktif denetimin 0.65 kaydı](STM32-AUDIT.md) günceldir. Aşağıdaki kapanış ve kapsam dışı ifadeler **tarihsel 0.63 kaydıdır; güncel karar değildir**. Tam fiziksel silikon desteği ilan edilmez.

@@ -2,7 +2,17 @@
 
 18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 
-## 0.65 uygulama durumu
+## 0.66 — yeni uygulama ve kanıt
+
+64-bit Flash programlama/BSY, PCROP execute-only ve native RDP SRAM-okuma kapısı; ITR zinciri, TIM1 break/AOE/idle/repetition; SPI RXONLY/tek hat/TI; USART half-duplex/IrDA/CK/smartcard clock-guard-NACK; I²S2/3 MCLK/right-justified; PEC, nominal HSE/PLL/backup hazır gecikmeleri ve RTC tamper filtre eklendi.
+
+OTG_FS sekiz host kanalı, port/bağlantı, multi-packet/ISO ve sanal USB vendor aygıtı; F103 sanal çok-düğümlü CAN arbitration/ACK/filtre/bus-off; SDIO SDSC/MMC byte adresleme ve MMC stream eklendi. F401/F411 OTG_FS dahili DMA içermez; bu kalem model eksiği değil silikon yokluğudur.
+
+Güncel kanıt yalnız `tests/stm32-v066-*.test.mjs` dosyalarıdır; önceki 0.65 testleri çalıştırılmadı. Native ARM kanıtı ve doğrudan model kanıtı RELEASE_0.66.md içinde ayrıdır. Alt kayıtlar tarihsel olup yeni eklenen maddeleri halen açık gösteren ifadeler 0.66 için geçerli değildir.
+
+Kapanmamış doğrulama: ST ROM binary/USB DFU; tüm core fault/priority/pipeline ve bus arbitration çevrim doğruluğu; tam SMBus ARP/host-notify, smartcard retry, tüm stereo/advanced-timer/USB hata-PID varyantları; F103 PMA ISO/double-buffer ve fiziksel PHY/transceiver/analog karşılaştırma. Tam fiziksel silikon bitti iddiası yoktur. Yeni aileye geçilmez.
+
+## 0.65 uygulama durumu (tarihsel)
 
 Option-byte WRP/RDP/reload, fiziksel BOOT/NRST, SRAM boot ve işlevsel AN3155 USART komutları; dinamik HSI/HSE/PLL/AHB/APB, CSS/NMI, PVD/BOR ve STOP/STANDBY eklendi. Bunlar orijinal ST ROM kodunun çalıştırılması veya analog güç modeli değildir.
 

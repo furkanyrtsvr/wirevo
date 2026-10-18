@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.66 — 18 Ekim 2026 · yalnız bu turdaki yeni kabul
+
+- GitHub çalışma kopyasında `npm run test:stm32-066`: **132/132 geçti**, hata/atlama/iptal yok; 48,9 saniye. Altı yeni dosya: native Flash/RDP/PCROP/timer32; ileri modlar27; dış bus/model25; saat/backup14; native fiziksel hat/host/CAN27; USB aygıt/worker7.
+- Önceki 0.65’in166 kabulü dahil eski STM32/genel testler çalıştırılmadı. CI bu committe yalnız `tests/stm32-v066-*.test.mjs` dosyalarını çalıştırır; standart push/PR tam kapısı korunur.
+- Native M3/M4F WASM kaynaklardan release derlendi. M3 225.417 bayt, SHA-256 `eae5001929d1f34bec7aab128af6c5c69927ee7fe6e6e32a0a53b2a209a8bcc0`; M4F 627.444 bayt, SHA-256 `30bc7f98ae88439c06e35fdb257d9e61d68641e57e84507a2bac542712ebce41`.
+- `npm run build` GitHub kopyasında başarılı;464 offline-shell dosyası. Dış USB/CAN peer’leri sanal modellerdir, fiziksel cihaz ölçümü değildir. Half-duplex kabul devresinde HAL’in GPIO→AF başlangıç geçişi için1kΩ seri koruma kullanılır; ideal kaynak çakışması yok sayılmaz.
+- Kapanmamış ayrıntılar ve her kanıtın native/register ayrımı RELEASE_0.66.md içindedir. Tam silikon eşdeğerliği ilan edilmez.
+
 ## 0.65 — 18 Ekim 2026 · yalnız yeni kabul
 
 - Eski STM32/genel regresyonlar kullanıcı isteğiyle bu değişiklikte çalıştırılmadı. Önceki sürüm sonuçları aşağıda tarihsel kayıttır.

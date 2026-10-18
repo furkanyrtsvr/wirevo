@@ -3,6 +3,7 @@
 //!
 //!
 use crate::bus::Bus;
+use crate::memory::map::MapMemory;
 use crate::core::fault::{Fault, FaultStatusContext};
 use crate::core::thumb::ThumbCode;
 
@@ -11,10 +12,11 @@ use crate::{Processor, decoder::is_thumb32};
 impl Processor {
     /// Read instruction halfwords without mutating fault-status side channels.
     pub fn fetch_code(&self, pc: u32) -> Result<ThumbCode, Fault> {
-        let hw = self.read16(pc).map_err(Fault::on_instruction_fetch)?;
+        let half=|a|{let mapped=self.map_address(a);if self.code.in_range(mapped){self.code.read16(mapped)}else{self.read16(a)}};
+        let hw = half(pc).map_err(Fault::on_instruction_fetch)?;
 
         if is_thumb32(hw) {
-            let hw2 = self.read16(pc + 2).map_err(Fault::on_instruction_fetch)?;
+            let hw2 = half(pc + 2).map_err(Fault::on_instruction_fetch)?;
             Ok(ThumbCode::Thumb32 {
                 opcode: (u32::from(hw) << 16) + u32::from(hw2),
             })

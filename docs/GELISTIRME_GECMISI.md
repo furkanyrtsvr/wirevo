@@ -2,6 +2,10 @@
 
 Tarayıcıda elektronik devre ve firmware çalışma alanı. TR / EN dil seçimi sağ üsttedir; seçim bu tarayıcıda saklanır. Eski CircuitForge proje dosyaları ve aynı adresteki yerel kayıt anahtarları uyumluluk için korunur. Yayın adresi değiştiğinde tarayıcı depolaması adrese bağlı olduğundan eski adresteki projeler JSON/ZIP ile yeni adrese aktarılmalıdır.
 
+## Wirevo 0.66 · STM32 ileri modlar ve sanal ağlar
+
+64-bit Flash/BSY/PCROP/RDP; timer ITR/break/repetition, SPI/USART ileri modları, sanal USB host ve CAN ağı, MMC stream. Yalnız yeni `stm32-v066-*` kabulü; eski testler çalıştırılmaz. [Sürüm ve kesin kanıt sınırları](../docs/RELEASE_0.66.md).
+
 ## Wirevo 0.65 · STM32 reset, güç ve ek çevrebirimler
 
 Dokuz mevcut kart için option-byte WRP/RDP/reload, BOOT/NRST, işlevsel USART boot protokolü, dinamik saatler/CSS/PVD/BOR ve STOP/STANDBY eklendi. Çipte bulunan ek timer/SPI/I²C/USART birimleri, F4 I²S/FIFO/DBM/MPU ve RTC olayları da gerçek register/IRQ akışına bağlandı. [Sürüm ve kesin sınırlar](../docs/RELEASE_0.65.md). Kullanıcının isteğiyle bu değişiklikte yalnız yeni kabul dosyaları çalıştırıldı; eski regresyonlar tekrar edilmedi.

@@ -1,3 +1,7 @@
+# Güncel: [0.66 — STM32 ileri modlar ve sanal ağlar](RELEASE_0.66.md)
+
+Yeni kabul komutu `npm run test:stm32-066`; 0.65 ve daha eski testler tekrar çalıştırılmaz.
+
 # Güncel sürüm
 
 [0.65 — STM32 reset, saat/güç ve çevrebirim genişlemesi](RELEASE_0.65.md). Bu değişiklikte yalnız yeni kabul testleri çalıştırılır.

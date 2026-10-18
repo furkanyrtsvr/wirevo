@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {STM32_BOARDS} from '../dist/stm32-boards.js';import {STMSystem} from '../dist/stm32-system.js';import {STMRTC} from '../dist/stm32-rtc-events.js';
+for(const[id,board]of Object.entries(STM32_BOARDS)){
+ test(id+' v066 HSE/PLL ready delays, deferred source switch and backup regulator ready',()=>{
+  const f4=board.cpu==='cortex-m4f',base=f4?0x40023800:0x40021000,r={board,count:0,regs:new Map([[base,3]]),rtc:{pwr:f4?0x8000:0,powerClock:()=>true}},s=new STMSystem(r);r.system=s;const cf=base+(f4?8:4);s.write(base,1|65536);s.write(cf,1);assert.equal(s.read(base)&(1<<17),0);assert.equal(s.hclk,s.hsi);r.count=board.hz*.0005;s.settleClocks();assert.ok(s.read(base)&(1<<17));assert.equal(s.hclk,board.hse);s.write(base,1|65536|(1<<24));assert.equal(s.read(base)&(1<<25),0);r.count+=board.hz*.0001+1;s.settleClocks();assert.ok(s.read(base)&(1<<25));if(f4){s.write(0x40007004,512);assert.equal(s.read(0x40007004)&8,0);r.count+=board.hz*.000032+1;s.settleClocks();assert.ok(s.read(0x40007004)&8);s.write(0x40007004,0);assert.equal(s.read(0x40007004)&8,0);}
+ });
+ if(board.cpu==='cortex-m4f')test(id+' v066 RTC tamper digital filter rejects short excursion and clears backup after stable samples',()=>{
+  const r={board,count:0,regs:new Map([[0x40023840,1<<28]]),inputs:{PC13:true}},rtc=new STMRTC(r);r.rtc=rtc;rtc.pwr|=256;rtc.unlocked=true;rtc.bdcr=32768|257;rtc.writeCalendar(76,1|(1<<11));rtc.backup[0]=55;rtc.observe();r.inputs.PC13=false;r.count+=board.hz;rtc.observe();assert.equal(rtc.backup[0],55);r.inputs.PC13=true;r.count+=board.hz;rtc.observe();assert.equal(rtc.backup[0],55);r.inputs.PC13=false;r.count+=board.hz;rtc.observe();r.count+=board.hz;rtc.observe();assert.equal(rtc.backup[0],0);assert.ok(rtc.regs.get(12)&8192);
+ });
+}
