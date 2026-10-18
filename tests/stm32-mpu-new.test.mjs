@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {gunzipSync} from 'node:zlib';
+import {STM32_BOARDS} from '../dist/stm32-boards.js';import {STMRuntime} from '../dist/stm32-runtime.js';import {compileSTM} from '../src/stm32-compiler.js';
+const compiler=await WebAssembly.compile(gunzipSync(await readFile('dist/esp32/compiler/clang.wasm.gz')));for(const cpu of ['cortex-m3','cortex-m4f'])await STMRuntime.initialize(await readFile('dist/stm32/'+cpu+'.wasm'),cpu);
+for(const [id,b]of Object.entries(STM32_BOARDS))test(id+' NEW device MPU presence and genuine recoverable MemManage permission fault',async()=>{
+ const f4=b.cpu==='cortex-m4f',src=`#include <cf_hal.h>\n#include <stdio.h>\n#define R(a) (*(volatile unsigned*)(a))\nvolatile unsigned word __attribute__((aligned(32))),hit,status;void MemManage_Handler(){status=R(0xe000ed28);R(0xe000ed94)=0;hit++;__asm volatile("dsb;isb");}int main(){cf_uart_begin(115200);${f4?'R(0xe000ed24)|=1u<<16;R(0xe000ed98)=0;R(0xe000ed9c)=(unsigned)&word|16;R(0xe000eda0)=1|(4<<1)|(5u<<24);R(0xe000ed94)=5;__asm volatile("dsb;isb");word=99;':''}printf("MPU=%u HIT=%u WORD=%u DACC=%u DONE",R(0xe000ed90)>>8,hit,word,!!(status&2));for(;;);}`;
+ const c=await compileSTM(compiler,src,id),r=await new STMRuntime(c.image,{chip:id}).load();try{let out='';for(let i=0;i<20&&!out.includes('DONE');i++)out+=r.step(10000);assert.match(out,new RegExp(f4?'MPU=8 HIT=1 WORD=99 DACC=1 DONE':'MPU=0 HIT=0 WORD=0 DACC=0 DONE'));}finally{r.dispose();}
+});

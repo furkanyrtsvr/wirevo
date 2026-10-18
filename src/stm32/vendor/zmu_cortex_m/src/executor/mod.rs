@@ -814,7 +814,7 @@ impl Executor for Processor {
         } else {
             (pc >> 1) as usize
         };
-        let count = match self.instruction_cache.get(mapped_pc).copied() {
+        let count = if !self.mpu_permits(pc,2,false,true,false){self.handle_fault(Fault::IAccViol,pc)}else{match self.instruction_cache.get(mapped_pc).copied() {
             Some(CachedInstruction::Decoded {
                 instruction,
                 instruction_size,
@@ -829,7 +829,7 @@ impl Executor for Processor {
                 }
                 Err(fault) => self.handle_fault(fault, pc),
             },
-        };
+        }};
         self.cycle_count += u64::from(count);
         if (self.dwt_ctrl & 1) != 0 {
             self.dwt_tick(count);

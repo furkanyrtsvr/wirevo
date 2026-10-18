@@ -7,14 +7,13 @@ export class STMUSARTs {
   this.r=runtime;this.events=[];this.epoch=0;this.changed=false;
   const f4=runtime.board.cpu==='cortex-m4f';
   this.units=[1,2].map(number=>({number,base:number===1?(f4?0x40011000:0x40013800):0x40004400,sr:0xc0,dr:0,tdr:null,shift:null,high:true,readSR:false,epoch:0}));
-  const self=this,cpu={get cycles(){return self.r.count;},addClockEvent(fn,delay){self.events.push({at:self.r.count+delay,fn});self.events.sort((a,b)=>a.at-b.at);}};
-  for(const u of this.units)u.receiver=new UARTReceiver(cpu,()=>this.readLine(u),()=>this.format(u),frame=>this.receive(u,frame));
+  const self=this;for(const u of this.units){const cpu={get cycles(){return self.r.count;},addClockEvent(fn,delay){self.events.push({at:self.r.count+delay,unit:u.number,fn});self.events.sort((a,b)=>a.at-b.at);}};u.receiver=new UARTReceiver(cpu,()=>this.readLine(u),()=>this.format(u),frame=>this.receive(u,frame));}
  }
  find(a){return this.units.find(u=>a>=u.base&&a<=u.base+24);}
  cr(u,off=12){return this.r.regs.get(u.base+off)||0;}
  clocked(u){const f4=this.r.board.cpu==='cortex-m4f',a=f4?(u.number===1?0x40023844:0x40023840):(u.number===1?0x40021018:0x4002101c);return !!(this.r.regs.get(a)&(1<<(u.number===1?(f4?4:14):17)));}
  enabled(u,mask=0){return this.clocked(u)&&!!(this.cr(u)&8192)&&(!mask||!!(this.cr(u)&mask));}
- divider(u){const f4=this.r.board.cpu==='cortex-m4f',cf=this.r.regs.get(f4?0x40023808:0x40021004)||0,n=(cf>>>(f4?(u.number===1?13:10):(u.number===1?11:8)))&7;return n<4?1:1<<(n-3);}
+ divider(u){const f4=this.r.board.cpu==='cortex-m4f',cf=this.r.regs.get(f4?0x40023808:0x40021004)||0,n=(cf>>>(f4?(u.number===1?13:10):(u.number===1?11:8)))&7;return (n<4?1:1<<(n-3))*(this.r.system?.factor()??1);}
  terminal(u){return u.number===(this.r.board.terminalNumber??1);}
  pins(u){if(u.number===2){if(this.r.board.cpu!=='cortex-m4f'&&(this.r.regs.get(0x40010004)&8))return null;return {tx:'PA2',rx:'PA3'};}const f4=this.r.board.cpu==='cortex-m4f';if(!f4)return this.r.regs.get(0x40010004)&4?{tx:'PB6',rx:'PB7'}:{tx:'PA9',rx:'PA10'};return{tx:['PA9','PB6',...(this.r.board.family==='f411'?['PA15']:[])].find(p=>this.mapped(p,true)),rx:['PA10','PB7',...(this.r.board.family==='f411'?['PB3']:[])].find(p=>this.mapped(p,false))};}
  mapped(pin,tx){if(!pin||!this.r.board.gpio.includes(pin))return false;const bank=pin.charCodeAt(1)-65,n=+pin.slice(2),f4=this.r.board.cpu==='cortex-m4f';if(f4){const base=0x40020000+bank*1024;return !!(this.r.regs.get(0x40023830)&(1<<bank))&&((this.r.regs.get(base)>>>n*2)&3)===2&&((this.r.regs.get(base+32+(n>=8?4:0))>>>((n%8)*4))&15)===7;}
@@ -25,7 +24,7 @@ export class STMUSARTs {
  readLine(u){const f=this.format(u),pin=this.pins(u)?.rx;if(!f||!pin)return null;const voltage=this.r.inputVoltages?.[pin];return Number.isFinite(voltage)?voltage<.99?false:voltage>=2.31&&voltage<=3.6?true:null:this.r.circuit?null:!!this.r.inputs[pin];}
  observe(){for(const u of this.units)if(this.format(u))u.receiver.observe();else u.receiver.cancel();}
  receive(u,frame){if(!this.enabled(u,4))return;if(u.sr&32)u.sr|=8;else{u.dr=frame.value;u.sr|=32;}if(frame.error)u.sr|=frame.error==='parity'?1:frame.error==='floating'?4:2;}
- schedule(u,delay,fn){const epoch=u.epoch;this.events.push({at:this.r.count+delay,fn:()=>{if(epoch===u.epoch)fn();}});this.events.sort((a,b)=>a.at-b.at);}
+ schedule(u,delay,fn){const epoch=u.epoch;this.events.push({at:this.r.count+delay,unit:u.number,fn:()=>{if(epoch===u.epoch)fn();}});this.events.sort((a,b)=>a.at-b.at);}
  pump(u){if(u.shift!==null||u.tdr===null||!this.enabled(u,8))return;const f=this.format(u,false);if(!f)return;const value=u.tdr&((1<<f.bits)-1);u.shift=value;u.tdr=null;u.sr|=128;u.sr&=~64;u.high=false;this.changed=true;let ones=0;
   for(let i=0;i<f.bits;i++){ones+=(value>>i)&1;this.schedule(u,(i+1)*f.period,()=>{u.high=!!(value&(1<<i));this.changed=true;});}
   if(f.parity)this.schedule(u,(f.bits+1)*f.period,()=>{u.high=f.parity==='odd'?!(ones%2):!!(ones%2);this.changed=true;});

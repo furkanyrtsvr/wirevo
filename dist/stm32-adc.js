@@ -2,7 +2,7 @@
 // Conversion values come from physical DC nets, never sensor controller state.
 export class STMADC {
  constructor(runtime,instance=1){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.instance=instance;if(this.f4&&instance!==1)throw Error('ADC2 bu F4 profilinde yok.');this.base=this.f4?0x40012000:0x40012400+(instance-1)*0x400;this.regs=new Map([[this.base+36,4095]]);this.pending=null;this.sequence=null;this.dmaStopped=false;this.triggerQueue=[];this.regularReturn=null;this.regularDisc=null;this.injectedDisc=null;this.internalSince=null;}
- clocked(){return !!(this.r.regs.get(this.f4?0x40023844:0x40021018)&(1<<(this.f4?8:9)));}
+ clocked(){return !!(this.r.regs.get(this.f4?0x40023844:0x40021018)&(1<<(this.f4?8:this.instance===2?10:9)));}
  handles(a){return a>=this.base&&a<=this.base+0x50||this.f4&&a===0x40012304;}
  read(a,n){const aligned=a&~3;if(!this.handles(aligned))return undefined;let v=this.regs.get(aligned)||0;if(aligned===this.base+0x4c){this.regs.set(this.base,(this.regs.get(this.base)||0)&~2);if(this.r.dma)this.r.dma.pendingADC=false;}return n===4?v>>>0:(v>>>((a&3)*8))&(n===1?255:65535);}
  write(a,v,n){
@@ -76,7 +76,7 @@ export class STMADC {
    this.schedule(at);
   }
  }
- externalTrigger(source,rising=true){const cr=this.regs.get(this.base+8)||0;if(!(cr&1)||!this.clocked())return;const edge=en=>en===3||en===(rising?1:2),select=this.f4?(cr>>>24)&15:(cr>>>17)&7,enable=this.f4?(cr>>>28)&3:cr&(1<<20)?1:0,expected=this.f4?select===15?'exti11':select>=3&&select<=5?'tim2_'+(select-1):null:select===6?'exti11':select===3?'tim2_1':null;if(edge(enable)&&source===expected)this.triggerQueue.push(source);const js=this.f4?(cr>>>16)&15:(cr>>>12)&7,je=this.f4?(cr>>>20)&3:cr&(1<<15)?1:0,jexpected=js===(this.f4?15:6)?'exti15':js===(this.f4?2:3)?'tim2_0':null;if(edge(je)&&source===jexpected)this.triggerQueue.push('injected');}
+ externalTrigger(source,rising=true){const cr=this.regs.get(this.base+8)||0;if(!(cr&1)||!this.clocked())return;const regular=this.f4?['tim1_0','tim1_1','tim1_2','tim2_1','tim2_2','tim2_3','tim2_trgo','tim3_0','tim3_trgo','tim4_3','tim5_0','tim5_1','tim5_2',null,null,'exti11']:['tim1_0','tim1_1','tim1_2','tim2_1','tim3_trgo','tim4_3','exti11',null],injected=this.f4?['tim1_3','tim1_trgo','tim2_0','tim2_trgo','tim3_1','tim3_3','tim4_0','tim4_1','tim4_2','tim4_trgo','tim5_3','tim5_trgo',null,null,null,'exti15']:['tim1_trgo','tim1_3','tim2_trgo','tim2_0','tim3_3','tim4_trgo','exti15',null],sel=this.f4?(cr>>>24)&15:(cr>>>17)&7,js=this.f4?(cr>>>16)&15:(cr>>>12)&7,en=this.f4?(cr>>>28)&3:cr&(1<<20)?1:0,je=this.f4?(cr>>>20)&3:cr&(1<<15)?1:0,edge=v=>v===3||v===(rising?1:2);if(regular[sel]===source&&edge(en))this.triggerQueue.push(source);if(injected[js]===source&&edge(je))this.triggerQueue.push('injected');}
 
  dmaComplete(){if(this.f4&&!((this.regs.get(this.base+8)||0)&512))this.dmaStopped=true;}
  irq(){const cr1=this.regs.get(this.base+4)||0,sr=this.regs.get(this.base)||0;return this.clocked()&&!!((cr1&128)&&(sr&4)||(cr1&64)&&(sr&1)||(cr1&32)&&(sr&2)||this.f4&&(cr1&(1<<26))&&(sr&32));}

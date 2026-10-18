@@ -2,6 +2,16 @@
 
 18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 
+## 0.65 uygulama durumu
+
+Option-byte WRP/RDP/reload, fiziksel BOOT/NRST, SRAM boot ve işlevsel AN3155 USART komutları; dinamik HSI/HSE/PLL/AHB/APB, CSS/NMI, PVD/BOR ve STOP/STANDBY eklendi. Bunlar orijinal ST ROM kodunun çalıştırılması veya analog güç modeli değildir.
+
+F4 MPU/bit-band/fault handler, GPIO LCKR, mevcut ek timer/SPI/I²C/USART instance’ları, slave/NSS/MODF/CRC, temel I²S, F4 FIFO/DBM ve ek DMA istekleri, RTC timestamp/tamper/calibration/shift/DST/PC13 eklendi. Ayrıntılı sürüm kaydı: docs/RELEASE_0.65.md. Aşağıdaki 0.64 satırları tarihsel başlangıçtır; güncel kapsam arayüzündeki satırlar ve bu üst kayıt önceliklidir.
+
+Açık ve doğrulanmamış ayrıntılar: tüm silicon fault/priority/pipeline; Flash 64-bit PSIZE/busy/PCROP ve RDP’nin tüm firmware erişim yolları; tam ROM/DFU; osilatör geçiş gecikmeleri/analog akım; timer ITR/break/advanced-control; SPI RXONLY/bidirectional/TI ve I²S MCLK/tüm standart ayrıntıları; tam SMBus/PEC; USART smartcard/IrDA/half-duplex/synchronous; bus contention/burst arbitration; OTG host/iso/DMA, haricî CAN, SDIO stream ve fiziksel cihaz karşılaştırması. Bunlar gizlenmez ve STM32 tamamen bitti denmez.
+
+## 0.64 başlangıç kaydı (tarihsel)
+
 ## 0.63 kapanış kabulü
 
 F103 ADC2 haricî kanal/sıra/injected/discontinuous/watchdog/tetik ve ortak IRQ18 yoluyla; Nucleo F401/F411 SDIO ise SDHC tanıma, tek/çok blok FIFO ve IRQ49 yoluyla eklendi. ADC2 DMA’nın fiziksel olarak bulunmaması ve WeAct paketinde tam SDIO pin grubunun bulunmaması açık negatif kapıdır. Native bridge0.11, firmware fingerprint `cf-stm32-0.19`.

@@ -15,6 +15,8 @@ pub struct RAM {
 }
 
 impl RAM {
+    /// Standby loses ordinary SRAM; backup RAM belongs to the backup domain.
+    pub fn clear(&mut self) { self.data.fill(0); }
     /// Create RAM memory data struct with configurable start address and size
     pub fn new(start_address: u32, size: usize) -> Self {
         let data = vec![0_u8; size].into_boxed_slice();

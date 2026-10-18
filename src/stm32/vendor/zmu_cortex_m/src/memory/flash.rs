@@ -13,6 +13,7 @@ pub struct FlashMemory {
     data: Box<[u8]>,
     program_width: u8,
     status: u8,
+    protected: Vec<(usize, usize)>,
 }
 
 impl FlashMemory {
@@ -21,7 +22,7 @@ impl FlashMemory {
         let mut data = vec![0_u8; size].into_boxed_slice();
         data.copy_from_slice(new_data);
 
-        Self { data, program_width: 0, status: 0 }
+        Self { data, program_width: 0, status: 0, protected: Vec::new() }
     }
 
     /// Get the length
@@ -44,13 +45,25 @@ impl FlashMemory {
     /// Clear selected abstract controller status flags.
     pub fn clear_status(&mut self, mask: u8) { self.status &= !mask; }
 
+    /// Remove ranges before reloading the reset-latched option bytes.
+    pub fn protection_clear(&mut self) { self.protected.clear(); }
+    /// Deny programming and erasure for an option-byte protected range.
+    pub fn protect(&mut self, start: usize, length: usize) {
+        self.protected.push((start, start.saturating_add(length)));
+    }
+    fn write_protected(&self, start: usize, length: usize) -> bool {
+        self.protected.iter().any(|&(a,b)| start < b && start.saturating_add(length) > a)
+    }
+
     /// Erase a checked range to the physical erased value.
     pub fn erase(&mut self, start: usize, length: usize) -> bool {
+        if self.write_protected(start, length) { self.status |= 8; return false; }
         if start.checked_add(length).is_none_or(|end| end > self.data.len()) {
             self.status |= 1;
             return false;
         }
         self.data[start..start + length].fill(0xff);
+        self.status |= 4;
         true
     }
 
@@ -62,6 +75,7 @@ impl FlashMemory {
     }
 
     fn program(&mut self, addr: usize, bytes: &[u8]) -> Result<(), Fault> {
+        if self.write_protected(addr, bytes.len()) { self.status |= 8; return Ok(()); }
         if self.program_width as usize != bytes.len() {
             self.status |= if self.program_width == 0 { 1 } else { 2 };
             return Ok(());

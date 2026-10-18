@@ -2,8 +2,8 @@
 export class STMTimer2 {
  constructor(runtime){this.r=runtime;this.f4=runtime.board.cpu==='cortex-m4f';this.max=this.f4?0xffffffff:65535;this.regs=new Map([[44,this.max]]);this.active={psc:0,arr:this.max,ccr:[0,0,0,0]};this.origin=0;this.savedPhase=0;this.next=Infinity;this.changed=false;this.oc=[false,false,false,false];this.encoderLevels=null;this.encoderPsc=0;this.captures=Array.from({length:4},()=>({level:null,edges:0}));}
  clocked(){return !!(this.r.regs.get(this.f4?0x40023840:0x4002101c)&1);}
- enabled(){return this.clocked()&&!!((this.regs.get(0)||0)&1);}
- ratio(){const apb=this.r.usarts.divider({number:2});return apb>1?apb/2:1;}
+ enabled(){return (!this.r.system||this.r.system.mode==='run')&&this.clocked()&&!!((this.regs.get(0)||0)&1);}
+ ratio(){const apb=this.r.system?.busDivider(1)??this.r.usarts.divider({number:2});return (apb>1?apb/2:1)*(this.r.system?.factor()??1);}
  unit(){return (this.active.psc+1)*this.ratio();}
  center(){return ((this.regs.get(0)||0)>>>5)&3;}
  down(){return !!((this.regs.get(0)||0)&16);}
@@ -29,7 +29,7 @@ export class STMTimer2 {
   const now=this.r.count;this.r.count=at;this.schedule();this.r.count=now;
  }}
  tickAdvanced(){while(this.r.count>=this.next&&this.enabled()){const at=this.next,now=this.r.count,arr=this.active.arr,unit=this.unit(),center=this.center(),cycle=center?2*arr:arr+1,steps=Math.round((at-this.origin)/unit),pos=((steps%cycle)+cycle)%cycle,arrivalDown=center?pos>=arr:true,boundary=center?pos===0||pos===arr:pos===0,cnt=center?(pos>=arr?2*arr-pos:pos):arr-pos;this.r.count=at;this.phase();let sr=this.regs.get(16)||0;for(let ch=0;ch<4;ch++)if(!(this.ccm(ch)&3)){const value=this.active.ccr[ch],match=value===cnt||(center?pos===arr:boundary)&&value>arr;if(match){this.compare(ch);if(!center||center===3||center===1&&arrivalDown||center===2&&!arrivalDown)sr|=1<<(ch+1);}}this.regs.set(16,sr);if(boundary){this.update(false,cnt);this.hold(center?Math.min(cnt,this.active.arr):this.active.arr,0);}this.changed=true;this.schedule();this.r.count=now;}}
- compare(ch){this.r.adc?.externalTrigger('tim2_'+ch,true);const mode=(this.ccm(ch)>>>4)&7;if(mode===1)this.oc[ch]=true;if(mode===2)this.oc[ch]=false;if(mode===3)this.oc[ch]=!this.oc[ch];}
+ compare(ch){for(const adc of [this.r.adc,this.r.adc2])adc?.externalTrigger('tim'+(this.number??2)+'_'+ch,true);const mode=(this.ccm(ch)>>>4)&7;if(mode===1)this.oc[ch]=true;if(mode===2)this.oc[ch]=false;if(mode===3)this.oc[ch]=!this.oc[ch];}
  inputLevel(pin){const v=this.r.inputVoltages?.[pin];return this.r.circuit?Number.isFinite(v)&&v<=.99?false:Number.isFinite(v)&&v>=2.31?true:null:!!this.r.inputs[pin];}
  countEncoder(){const sms=this.encoder();if(!sms)return;const levels=[0,1].map(ch=>this.mapped('PA'+ch,true)&&(this.ccm(ch)&3)===1?this.inputLevel('PA'+ch):null);if(levels.includes(null)||!this.clocked()){this.encoderLevels=null;return;}const cc=this.regs.get(32)||0,now=levels.map((v,ch)=>v!==!!(cc&(2<<ch*4))),before=this.encoderLevels;this.encoderLevels=now;if(!before||!this.enabled())return;const changed=now.map((v,i)=>v!==before[i]);if(changed[0]===changed[1])return;
   const ch=changed[0]?0:1,down=ch===0?now[0]===now[1]:now[0]!==now[1],cr=this.regs.get(0)||0;this.regs.set(0,down?cr|16:cr&~16);
@@ -37,7 +37,7 @@ export class STMTimer2 {
   const old=this.regs.get(36)||0,overflow=down?old===0:old>=this.active.arr,next=overflow?down?this.active.arr:0:old+(down?-1:1);this.regs.set(36,next>>>0);
   let sr=this.regs.get(16)||0;for(let i=0;i<4;i++)if(!(this.ccm(i)&3)&&(next===this.active.ccr[i]||overflow&&this.active.ccr[i]>this.active.arr)){sr|=1<<(i+1);this.compare(i);}this.regs.set(16,sr);if(overflow)this.update();this.changed=true;
  }
- latch(ch){this.r.adc?.externalTrigger('tim2_'+ch,true);const flag=1<<(ch+1),sr=this.regs.get(16)||0;this.regs.set(52+ch*4,this.phase()>>>0);this.regs.set(16,sr|flag|(sr&flag?1<<(ch+9):0));}
+ latch(ch){for(const adc of [this.r.adc,this.r.adc2])adc?.externalTrigger('tim'+(this.number??2)+'_'+ch,true);const flag=1<<(ch+1),sr=this.regs.get(16)||0;this.regs.set(52+ch*4,this.phase()>>>0);this.regs.set(16,sr|flag|(sr&flag?1<<(ch+9):0));}
  capture(){this.countEncoder();for(let ch=0;ch<4;ch++){const mode=this.ccm(ch),select=mode&3,cc=(this.regs.get(32)>>>ch*4)&15,state=this.captures[ch],source=select===2?ch^1:ch,pin='PA'+source;if(!this.clocked()||!select||!(cc&1)||!this.mapped(pin,true)){state.level=null;state.edges=0;continue;}const level=this.inputLevel(pin);if(level===null){state.level=null;continue;}if(state.level!==null&&state.level!==level&&((cc&10)===10||level===!(cc&2))){if(++state.edges>=(1<<((mode>>>2)&3))){state.edges=0;this.latch(ch);}}state.level=level;}}
  read(a,n){const off=(a&~3)-0x40000000;if(off<0||off>0x4c)return undefined;if(off===0)this.phase();let v=off===36?this.phase():this.regs.get(off)||0;if(off>=52&&off<=64&&(this.ccm((off-52)/4)&3))this.regs.set(16,(this.regs.get(16)||0)&~(1<<((off-52)/4+1)));return n===4?v>>>0:(v>>>((a&3)*8))&(n===1?255:65535);}
  write(a,v,n){const off=(a&~3)-0x40000000;if(off<0||off>0x4c)return false;if(n!==4){const shift=(a&3)*8,mask=(n===1?255:65535)<<shift;v=((this.regs.get(off)||0)&~mask)|((v<<shift)&mask);}if([36,44,52,56,60,64].includes(off)&&!this.f4)v&=65535;

@@ -1,14 +1,14 @@
 import {STM32_BOARDS} from './stm32-boards.js';
 // Device presence is distinct from the implemented simulator model.
 export function stm32Capabilities(board){const b=STM32_BOARDS[board];if(!b)throw Error('STM32 kartı geçersiz.');const f4=b.cpu==='cortex-m4f',sdio=f4&&['PC8','PC9','PC10','PC11','PC12','PD2'].every(p=>b.gpio.includes(p));return [
- ['USART1 / USART2',true,'7/8/9 bit, parity, 0.5/1/1.5/2 stop; F4 OVER8/16'],
- ['SPI1',true,'Master, mode 0–3, 8/16 bit, DMA; F4 alternatif pinler'],
- ['I²C1',true,'7-bit master, 100/400 kHz, ACK/POS, DMA TX/RX'],
+ ['USART',true,'USART1/2 ve mevcut USART3/6; 7/8/9 bit, parity, CTS/RTS, LIN break'],
+ ['SPI / I²S',true,'Bağımsız SPI birimleri, master/slave, NSS/MODF/CRC, DMA; F4 I²S CK/WS/SD'],
+ ['I²C',true,'Çipte bulunan I²C1/2/3; master/slave, ACK/STOP, arbitration, DMA'],
  ['ADC1',true,'Regular/injected/DMA ve dahili kaynaklar'],
  ['ADC2',!f4,f4?'Bu çipte yok':'Regular/injected, kesikli, watchdog, tetik ve ortak IRQ'],
- ['TIM2 / RTC',true,'PWM/capture/encoder; RTC alarm ve F4 alt-saniye'],
+ ['Timer / RTC',true,'Mevcut TIM1–11 bağımsız sayaç/IRQ; RTC alarm/tamper/calibration'],
  ['USB FS',true,f4?'OTG device / sanal host':'Device PMA / sanal host'],
  ['CAN',!f4,f4?'Bu çipte yok':'bxCAN dahili loopback'],
- ['SDIO',sdio,sdio?'SDHC tanıma, 1/4-bit ve 512 B tek/çok blok FIFO':f4?'Bu kart paketinde tam SDIO pin grubu yok':'Bu çipte yok'],
+ ['SDIO',sdio,sdio?'SDHC tanıma, 1/4-bit ve 512 B tek/çok blok FIFO/DMA':f4?'Bu kart paketinde tam SDIO pin grubu yok':'Bu çipte yok'],
  ...['DAC','RNG / crypto','Ethernet','FMC / QSPI / DCMI','LTDC / SAI / HRTIM','Dahili opamp / comparator'].map(name=>[name,false,'Bu çipte yok'])
  ];}

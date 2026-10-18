@@ -1,0 +1,8 @@
+// GPIO LCKR 1-0-1 key sequence; configuration stays locked until reset.
+export class STMGPIOLock {
+ constructor(r){this.r=r;this.f4=r.board.cpu==='cortex-m4f';this.states=new Map();}
+ decode(a){const start=this.f4?0x40020000:0x40010800,offset=a-start,bank=Math.floor(offset/1024);if(bank<0||bank>3)return null;return {bank,off:offset%1024,base:start+bank*1024};}
+ read(a,n=4){const d=this.decode(a&~3);if(!d||d.off!==(this.f4?28:24))return undefined;const s=this.states.get(d.bank);if(s?.stage===3)s.locked=true;const v=s?(s.mask|(s.locked?65536:0)):0;return n===4?v:(v>>>((a&3)*8))&(n===1?255:65535);}
+ write(a,v,n=4){const d=this.decode(a&~3);if(!d||d.off!==(this.f4?28:24))return false;const enabled=this.r.regs.get(this.f4?0x40023830:0x40021018)&(1<<(this.f4?d.bank:d.bank+2));if(!enabled)return true;const s=this.states.get(d.bank)||{stage:0,mask:0,locked:false};if(s.locked)return true;const key=!!(v&65536),mask=v&65535;if(s.stage===0&&key){s.stage=1;s.mask=mask;}else if(s.stage===1&&!key&&mask===s.mask)s.stage=2;else if(s.stage===2&&key&&mask===s.mask)s.stage=3;else{s.stage=0;s.mask=0;}this.states.set(d.bank,s);return true;}
+ filter(a,v,n=4){const d=this.decode(a&~3),s=d&&this.states.get(d.bank);if(!s?.locked)return v;const fields=this.f4?{0:2,4:1,8:2,12:2,32:4,36:4}:{0:4,4:4},bits=fields[d.off];if(!bits)return v;let mask=0;const start=this.f4?(d.off===36?8:0):d.off===4?8:0,count=32/bits;for(let i=0;i<count;i++)if(s.mask&(1<<(start+i)))mask|=((2**bits-1)<<(i*bits));const old=this.r.regs.get(d.base+d.off)||0;if(n!==4){const shift=(a&3)*8,width=n===1?255:65535,expanded=(old&~(width<<shift))|((v&width)<<shift);return (((expanded&~mask)|(old&mask))>>>shift)&width;}return ((v&~mask)|(old&mask))>>>0;}
+}

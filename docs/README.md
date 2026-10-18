@@ -1,3 +1,7 @@
+# Güncel sürüm
+
+[0.65 — STM32 reset, saat/güç ve çevrebirim genişlemesi](RELEASE_0.65.md). Bu değişiklikte yalnız yeni kabul testleri çalıştırılır.
+
 # Belgeler
 
 | Konu | Kayıt |

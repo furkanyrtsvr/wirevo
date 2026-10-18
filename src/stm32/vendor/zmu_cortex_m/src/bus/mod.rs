@@ -12,6 +12,12 @@ use crate::peripheral::nvic::NVIC;
 use crate::peripheral::scb::SystemControlBlock;
 use crate::peripheral::systick::SysTick;
 
+fn bit_band(address:u32)->Option<(u32,u32)> {
+    let (base,target)=if (0x2200_0000..0x2400_0000).contains(&address){(0x2200_0000,0x2000_0000)}
+        else if (0x4200_0000..0x4400_0000).contains(&address){(0x4200_0000,0x4000_0000)}else{return None};
+    let byte=(address-base)/32;Some((target+(byte&!3),((byte&3)*8)+((address-base)/4)%8))
+}
+
 ///
 /// Trait for reading and writing via a memory bus.
 ///
@@ -48,6 +54,7 @@ pub trait Bus {
 impl Bus for Processor {
     #[inline(always)]
     fn read8(&self, bus_addr: u32) -> Result<u8, Fault> {
+        if !self.mpu_permits(bus_addr,1,false,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
 
         if self.sram.in_range(addr) {
@@ -79,6 +86,7 @@ impl Bus for Processor {
 
     #[inline(always)]
     fn read16(&self, bus_addr: u32) -> Result<u16, Fault> {
+        if !self.mpu_permits(bus_addr,2,false,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
 
         if self.sram.in_range(addr) {
@@ -115,7 +123,10 @@ impl Bus for Processor {
 
     #[inline(always)]
     fn read32(&mut self, bus_addr: u32) -> Result<u32, Fault> {
+        if !self.mpu_permits(bus_addr,4,false,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
+        if (0xe000_ed90..=0xe000_edb8).contains(&addr){return Ok(self.mpu_read(addr));}
+        if let Some((word,bit))=bit_band(addr){return self.read32(word).map(|v|(v>>bit)&1);}
 
         if self.sram.in_range(addr) {
             return self.sram.read32(addr);
@@ -201,7 +212,10 @@ impl Bus for Processor {
 
     #[inline(always)]
     fn write32(&mut self, bus_addr: u32, value: u32) -> Result<(), Fault> {
+        if !self.mpu_permits(bus_addr,4,true,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
+        if (0xe000_ed90..=0xe000_edb8).contains(&addr){self.mpu_write(addr,value);return Ok(());}
+        if let Some((word,bit))=bit_band(addr){let old=self.read32(word)?;return self.write32(word,(old&!(1<<bit))|((value&1)<<bit));}
 
         if self.sram.in_range(addr) {
             return self.sram.write32(addr, value);
@@ -218,6 +232,9 @@ impl Bus for Processor {
         }
 
         match addr {
+            0xE000_ED0C => {
+                if value >> 16 == 0x05fa { self.aircr = value & 0x0000_0707; }
+            }
             0xE000_0000..=0xE000_007C => {
                 self.write_stim_u32(((addr - 0xE000_0000) >> 2) as u8, value);
             }
@@ -280,6 +297,7 @@ impl Bus for Processor {
 
     #[inline(always)]
     fn write16(&mut self, bus_addr: u32, value: u16) -> Result<(), Fault> {
+        if !self.mpu_permits(bus_addr,2,true,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
 
         if self.sram.in_range(addr) {
@@ -322,6 +340,7 @@ impl Bus for Processor {
 
     #[inline(always)]
     fn write8(&mut self, bus_addr: u32, value: u8) -> Result<(), Fault> {
+        if !self.mpu_permits(bus_addr,1,true,false,false){return Err(Fault::DAccViol);}
         let addr = self.map_address(bus_addr);
 
         if self.sram.in_range(addr) {

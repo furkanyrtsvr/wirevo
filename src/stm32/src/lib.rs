@@ -1,5 +1,6 @@
 //! CircuitForge browser bridge for the genuine Zmu ARMv7-M instruction engine.
 use zmu_cortex_m::peripheral::nvic::NVIC;
+use zmu_cortex_m::core::exception::ExceptionHandling;
 use zmu_cortex_m::{Processor, bus::Bus, core::{fault::Fault, reset::Reset, register::{BaseReg,Reg}}, executor::Executor, memory::{ram::RAM,map::MemoryMapConfig}};
 
 #[link(wasm_import_module = "cf")]
@@ -8,7 +9,9 @@ unsafe extern "C" {
     fn mmio_write(address:u32, value:u32, size:u32);
     fn clock(cycles:f64);
     fn irq_pending()->u32;fn irq_extra()->u32;fn reset_request()->u32;
-    fn dma_request()->u32;fn dma_source()->u32;fn dma_dest()->u32;fn dma_complete(error:u32);
+    fn power_state(sleeping:u32,scr:u32)->u32;fn boot_address()->u32;
+    fn software_reset();
+    fn dma_read_complete(value:u32);fn dma_value()->u32;fn dma_request()->u32;fn dma_source()->u32;fn dma_dest()->u32;fn dma_complete(error:u32);
 }
 struct Peripherals;
 impl Bus for Peripherals {
@@ -31,18 +34,18 @@ pub unsafe extern "C" fn create(p:*const u8,size:usize,flash:usize,ram:usize)->*
     let mut code=vec![0xffu8;flash];code[..size].copy_from_slice(unsafe{std::slice::from_raw_parts(p,size)});
     let mut cpu=Processor::new();cpu.sram=RAM::new(0x20000000,ram);
     cpu.flash_memory(flash,&code).memory_map(Some(MemoryMapConfig::new(0x08000000,0,flash))).device(Some(Box::new(Peripherals)));
-    cpu.fault_trap_mode(zmu_cortex_m::core::fault::FaultTrapMode::all());
+    cpu.fault_trap_mode(zmu_cortex_m::core::fault::FaultTrapMode::hardfault());
     cpu.cache_instructions();if cpu.reset().is_err(){return std::ptr::null_mut()}cpu.running=true;
     Box::into_raw(Box::new(cpu))
 }
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn destroy(p:*mut Processor){unsafe{drop(Box::from_raw(p))}}
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn step(p:*mut Processor,n:u32)->u32 {let cpu=unsafe{&mut *p};let mut previous=0;let mut previous_extra=0;for _ in 0..n{unsafe{clock(cpu.cycle_count as f64)};if unsafe{reset_request()}!=0 {cpu.vtor=0;cpu.nvic_interrupt_enabled=[0;16];cpu.nvic_interrupt_pending=[0;16];let _=cpu.write32(0xe000e010,0);let _=cpu.write32(0xe000e014,0);let _=cpu.write32(0xe000e018,0);if cpu.reset().is_err(){return 1;}previous=0;previous_extra=0;continue;}
-let request=unsafe{dma_request()};if request!=0 {let source=unsafe{dma_source()};let dest=unsafe{dma_dest()};let value=match request&255 {1=>cpu.read8(source).map(u32::from),2=>cpu.read16(source).map(u32::from),_=>cpu.read32(source)};let result=value.and_then(|v|match request>>8 {1=>cpu.write8(dest,v as u8),2=>cpu.write16(dest,v as u16),_=>cpu.write32(dest,v)});unsafe{dma_complete(u32::from(result.is_err()))};}
+pub unsafe extern "C" fn step(p:*mut Processor,n:u32)->u32 {let cpu=unsafe{&mut *p};let mut previous=0;let mut previous_extra=0;for _ in 0..n{unsafe{clock(cpu.cycle_count as f64)};if cpu.aircr&4!=0{unsafe{software_reset()};cpu.aircr&=!4;}let power=unsafe{power_state(u32::from(cpu.sleeping),cpu.scr)};let reason=unsafe{reset_request()};if reason!=0 {cpu.vtor=unsafe{boot_address()};cpu.scr=0;cpu.aircr=0;cpu.nvic_interrupt_enabled=[0;16];cpu.nvic_interrupt_pending=[0;16];let _=cpu.write32(0xe000e010,0);let _=cpu.write32(0xe000e014,0);let _=cpu.write32(0xe000e018,0);if reason==6{cpu.sram.clear();}if cpu.reset().is_err(){return 1;}previous=0;previous_extra=0;continue;}if power&4!=0{cpu.set_exception_pending(zmu_cortex_m::core::exception::Exception::NMI);}if power&1!=0{cpu.cycle_count+=1;continue;}if power&2!=0{cpu.sleeping=false;cpu.waiting_for_event=false;}
+let request=unsafe{dma_request()};if request!=0 {let source=unsafe{dma_source()};let dest=unsafe{dma_dest()};let value=if request&0x20000!=0{Ok(unsafe{dma_value()})}else{match request&255 {1=>cpu.read8(source).map(u32::from),2=>cpu.read16(source).map(u32::from),_=>cpu.read32(source)}};if request&0x10000!=0 {match value{Ok(v)=>unsafe{dma_read_complete(v)},Err(_)=>unsafe{dma_complete(1)}}}else{let result=value.and_then(|v|match (request>>8)&255 {1=>cpu.write8(dest,v as u8),2=>cpu.write16(dest,v as u16),_=>cpu.write32(dest,v)});unsafe{dma_complete(u32::from(result.is_err()))};}}
 let signals=unsafe{irq_pending()};if signals&0x80000000!=0{cpu.send_event();}let level=signals&0x7fffffff;
 if level|previous!=0 {for (bit,irq) in [37u32,38,18,28,35,31,32,6,7,8,9,10,23,40,11,12,13,14,15,16,17,47,56,57,58,59,60,68,69,70,0].iter().enumerate(){let mask=1u32<<bit;let bank=(irq/32) as usize;let flag=1u32<<(irq%32);if level&mask!=0{cpu.nvic_write_ispr(bank,flag);}else if previous&mask!=0{cpu.nvic_write_icpr(bank,flag);}}
-}previous=level;let extra=unsafe{irq_extra()};if extra|previous_extra!=0{for (bit,irq) in [3u32,41,19,20,21,22,42,67,49].iter().enumerate(){let mask=1u32<<bit;let bank=(irq/32) as usize;let flag=1u32<<(irq%32);if extra&mask!=0{cpu.nvic_write_ispr(bank,flag);}else if previous_extra&mask!=0{cpu.nvic_write_icpr(bank,flag);}}}previous_extra=extra;if cpu.sleeping{cpu.cycle_count+=1;cpu.step_sleep()}else{cpu.step()};if cpu.take_pending_fault_trap().is_some()||!cpu.running{return 1}}unsafe{clock(cpu.cycle_count as f64)};0}
+}previous=level;let extra=unsafe{irq_extra()};if extra|previous_extra!=0{for (bit,irq) in [3u32,41,19,20,21,22,42,67,49,2,1,5,24,25,26,27,29,30,50,36,51,84,85,33,34,72,73,39,71].iter().enumerate(){let mask=1u32<<bit;let bank=(irq/32) as usize;let flag=1u32<<(irq%32);if extra&mask!=0{cpu.nvic_write_ispr(bank,flag);}else if previous_extra&mask!=0{cpu.nvic_write_icpr(bank,flag);}}}previous_extra=extra;if cpu.sleeping{cpu.cycle_count+=1;cpu.step_sleep()}else{cpu.step()};if cpu.take_pending_fault_trap().is_some()||!cpu.running{return 1}}unsafe{clock(cpu.cycle_count as f64)};0}
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn cycles(p:*const Processor)->f64{unsafe{(*p).cycle_count as f64}}
 #[unsafe(no_mangle)]
@@ -55,6 +58,12 @@ pub unsafe extern "C" fn flash_program_width(p:*mut Processor,width:u32){unsafe{
 pub unsafe extern "C" fn flash_status(p:*const Processor)->u32{unsafe{(*p).code.status() as u32}}
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn flash_clear_status(p:*mut Processor,mask:u32){unsafe{&mut *p}.code.clear_status(mask as u8)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_protection_clear(p:*mut Processor){unsafe{&mut *p}.code.protection_clear()}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn flash_protect(p:*mut Processor,start:u32,length:u32){unsafe{&mut *p}.code.protect(start as usize,length as usize)}
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn memory_write(p:*mut Processor,a:u32,value:u32,size:u32)->u32{let cpu=unsafe{&mut *p};u32::from(match size{1=>cpu.write8(a,value as u8),2=>cpu.write16(a,value as u16),_=>cpu.write32(a,value)}.is_ok())}
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn flash_erase(p:*mut Processor,start:u32,length:u32)->u32{let cpu=unsafe{&mut *p};let erased=cpu.code.erase(start as usize,length as usize);if erased{cpu.invalidate_instruction_cache();}u32::from(erased)}
 #[unsafe(no_mangle)]

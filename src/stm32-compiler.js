@@ -206,12 +206,16 @@ function stmVectors(board){
  const f4=STM32_BOARDS[board].cpu==='cortex-m4f',adc=f4?'ADC':'ADC1_2';
  const map={0:'WWDG',3:f4?'RTC_WKUP':'RTC',41:f4?'RTC_Alarm':'RTCAlarm',6:'EXTI0',7:'EXTI1',8:'EXTI2',9:'EXTI3',10:'EXTI4',18:adc,23:'EXTI9_5',28:'TIM2',31:'I2C1_EV',32:'I2C1_ER',35:'SPI1',37:'USART1',38:'USART2',40:'EXTI15_10'};
  if(f4){map[67]='OTG_FS';map[49]='SDIO';}else Object.assign(map,{19:'USB_HP_CAN1_TX',20:'USB_LP_CAN1_RX0',21:'CAN1_RX1',22:'CAN1_SCE',42:'USBWakeUp'});
+ Object.assign(map,{1:'PVD',2:f4?'TAMP_STAMP':'TAMPER',5:'RCC',24:f4?'TIM1_BRK_TIM9':'TIM1_BRK',25:f4?'TIM1_UP_TIM10':'TIM1_UP',26:f4?'TIM1_TRG_COM_TIM11':'TIM1_TRG_COM',27:'TIM1_CC',29:'TIM3',30:'TIM4',33:'I2C2_EV',34:'I2C2_ER',36:'SPI2'});
+ if(f4)Object.assign(map,{50:'TIM5',51:'SPI3',71:'USART6',72:'I2C3_EV',73:'I2C3_ER',84:'SPI4',...(STM32_BOARDS[board].family==='f411'?{85:'SPI5'}:{})});else map[39]='USART3';
  for(let i=0;i<(f4?8:7);i++)map[f4&&i===7?47:11+i]='DMA1_'+(f4?'Stream'+i:'Channel'+(i+1));
  if(f4)for(const [i,irq]of [56,57,58,59,60,68,69,70].entries())map[irq]='DMA2_Stream'+i;
+ const core={2:'NMI',3:'HardFault',4:'MemManage',5:'BusFault',6:'UsageFault',11:'SVC',12:'DebugMon',14:'PendSV'};
+ const coreWeak=Object.values(core).map(name=>'void '+name+'_Handler(void) __attribute__((weak,alias("Default_Handler")));').join('\n');
  const weak=Object.values(map).filter(n=>n!==adc).map(name=>'void '+name+'_IRQHandler(void) __attribute__((weak,alias("Default_Handler")));').join('\n');
  // Canonical CMSIS ADC vectors retain compatibility with existing CF handlers.
  const bridge='void ADC1_IRQHandler(void) __attribute__((weak,alias("Default_Handler")));\nvoid '+adc+'_IRQHandler(void) __attribute__((weak));\nvoid '+adc+'_IRQHandler(void){ADC1_IRQHandler();}';
- return weak+'\n'+bridge+'\n__attribute__((section(".vectors"),used)) const unsigned vectors[98]={'+Array.from({length:98},(_,i)=>i===0?'0x20000000+'+STM32_BOARDS[board].ram:i===1?'(unsigned)Reset_Handler':i===15?'(unsigned)SysTick_Handler':map[i-16]?'(unsigned)'+map[i-16]+'_IRQHandler':'(unsigned)Default_Handler').join(',')+'};';
+ return coreWeak+'\n'+weak+'\n'+bridge+'\n__attribute__((section(".vectors"),used)) const unsigned vectors[112]={'+Array.from({length:112},(_,i)=>i===0?'0x20000000+'+STM32_BOARDS[board].ram:i===1?'(unsigned)Reset_Handler':i===15?'(unsigned)SysTick_Handler':core[i]?'(unsigned)'+core[i]+'_Handler':map[i-16]?'(unsigned)'+map[i-16]+'_IRQHandler':'(unsigned)Default_Handler').join(',')+'};';
 }
 export function stmF4HAL(board){const b=STM32_BOARDS[board],mhz=b.hz/1000000;return stmHAL(board).split('\n').map(line=>{
 if(line.startsWith('void cf_gpio_mode'))return 'void cf_gpio_mode(unsigned p,int m){if(!cf_gpio_valid(p))return;unsigned bank=p/16,n=p%16,a=0x40020000+bank*0x400;REG(0x40023830)|=1u<<bank;REG(a)=(REG(a)&~(3u<<(n*2)))|((m==1||m==3?1u:0u)<<(n*2));REG(a+4)=(REG(a+4)&~(1u<<n))|(m==3?1u<<n:0);REG(a+12)=(REG(a+12)&~(3u<<(n*2)))|(m==2?1u<<(n*2):m==4?2u<<(n*2):0);}' ;

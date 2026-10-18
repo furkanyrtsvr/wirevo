@@ -1,3 +1,7 @@
+# Güncel durum · 0.65
+
+Option-byte/boot/NRST, dinamik saat/güç, ek bağımsız çevrebirimler ve yeni native DMA/MPU yolları eklendi. [Aktif denetimin 0.65 kaydı](STM32-AUDIT.md) günceldir. Aşağıdaki kapanış ve kapsam dışı ifadeler **tarihsel 0.63 kaydıdır; güncel karar değildir**. Tam fiziksel silikon desteği ilan edilmez.
+
 # Wirevo STM32 destek profili · 0.63 tarihsel kayıt
 
 Bu belgedeki 0.63 kapanış kararı 18 Ekim 2026 tarihinde geri çekildi. Dokuz kartın o sürümde doğrulanan uygulama modeli tarihsel olarak korunur; fiziksel-silikon açıkları yeniden [aktif denetimde](STM32-AUDIT.md) geliştirme borcudur.

@@ -1,5 +1,14 @@
 # Doğrulama kayıtları
 
+## 0.65 — 18 Ekim 2026 · yalnız yeni kabul
+
+- Eski STM32/genel regresyonlar kullanıcı isteğiyle bu değişiklikte çalıştırılmadı. Önceki sürüm sonuçları aşağıda tarihsel kayıttır.
+- GitHub çalışma kopyasında yeni kabul paketi: **155/155 geçti**, hata/atlama/iptal yok (175,8 saniye). Son eklenen Nucleo F411 SPI4/SPI5 fiziksel loopback/native IRQ: **2/2**; dokuz kart ADC saat/tetik ve TIM1 complementary register kabulü: **9/9**. Toplam **166 farklı yeni kabul** başarılı. CI yalnız `tests/*-new.test.mjs` dosyalarını çalıştırır; normal push/PR akışı tam kapıyı korur.
+- Gerçek ARM firmware: option WRP/reload/SYSRESETREQ, STOP/STANDBY, boot ID/Flash okuma, MPU fault, timer IRQ/DMA, GPIO lock/bit-band, fiziksel NRST, ek SPI/I²C/USART, SPI slave/CRC, I²S stereo, FIFO packing ve SRAM sentinel ile byte unpacking, DBM/CT.
+- RTC olay/kalibrasyon ve ADC tetik tablosu doğrudan register kontrolleridir; fiziksel silikonla karşılaştırma değildir. SPI4/5 tam hatları yalnız erişilebilir Nucleo F411 pinlerinde doğrulandı; WeAct USB için ayrılmış PA11/PA12 serbest bırakılmadı.
+- Native kaynaklardan M3/M4F WASM release derlemesi başarılı. M3: 222.692 bayt, SHA-256 `e40bbb86af08b5c1aea2eaa0266c60738e7c21cdc4aee74cd54c6eccf01dda73`; M4F: 622.725 bayt, SHA-256 `f8910fba5518dfd73216f470a60f70572a12998c6f95186924e534964797fc56`.
+- `npm run build` GitHub kopyasında başarılı. Tam silikon tamamlandı denmez; kesin sınırlar RELEASE_0.65.md ve aktif denetimdedir.
+
 ## 0.64 — 18 Ekim 2026
 
 - `npm test`: **1441/1441 geçti**, hata/atlama yok. Dokuz STM32 kartında yeni Flash silikon kabulü ile mevcut AVR, ESP ve STM32 regresyonları aynı kaynak ağacında çalıştı.

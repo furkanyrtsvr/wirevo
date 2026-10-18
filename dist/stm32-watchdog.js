@@ -7,6 +7,7 @@ export class STMWatchdogs {
  wunit(){return 4096*(1<<((this.w.cfr>>>7)&3))*this.r.usarts.divider({number:2});}
  tick(){const n=this.r.count,i=this.i,w=this.w;if(this.lsiOn())for(const update of [...i.updates])if(update.at<=n){if(update.field==='pr')i.activePR=i.pr;else i.activeRLR=i.rlr;i.updates.splice(i.updates.indexOf(update),1);}
   while(i.enabled&&n>=i.next&&!this.pendingReset){if(i.counter--===0){this.pendingReset=1;break;}i.next+=this.iunit();}
+  if(this.r.system?.mode&&this.r.system.mode!=='run')return;
   const clock=this.wclock();if(!clock){if(w.clocked)w.remaining=Math.max(0,w.next-n);w.clocked=false;w.next=Infinity;return;}if(!w.clocked){w.clocked=true;w.next=n+(w.remaining||this.wunit());w.remaining=0;}
   while(n>=w.next&&!this.pendingReset){const old=w.cr&127,counter=(old-1)&127;w.cr=(w.cr&128)|counter;if(counter===64)w.sr|=1;if((w.cr&128)&&old===64){this.pendingReset=2;break;}w.next+=this.wunit();}
  }
