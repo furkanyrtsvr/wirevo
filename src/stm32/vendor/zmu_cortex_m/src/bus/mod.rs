@@ -55,7 +55,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn read8(&self, bus_addr: u32) -> Result<u8, Fault> {
         if !self.mpu_permits(bus_addr,1,false,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_ref() { if rom.in_range(addr) {if !rom.in_range(addr.saturating_add(0)){return Err(Fault::DAccViol);}return rom.read8(addr);} }
+
 
         if self.sram.in_range(addr) {
             return self.sram.read8(addr);
@@ -72,7 +75,7 @@ impl Bus for Processor {
 
         let result = match addr {
             0xE000_E400..=0xE000_E5EC => {
-                self.nvic_read_ipr_u8(((addr - 0xE000_E400) >> 2) as usize)
+                self.nvic_read_ipr_u8((addr - 0xE000_E400) as usize)
             }
             #[cfg(any(feature = "armv7m", feature = "armv7em"))]
             0xE000_ED18..=0xE000_ED1B => self.read_shpr1_u8((addr - 0xE000_ED18) as usize),
@@ -88,7 +91,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn read16(&self, bus_addr: u32) -> Result<u16, Fault> {
         if !self.mpu_permits(bus_addr,2,false,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_ref() { if rom.in_range(addr) {if !rom.in_range(addr.saturating_add(1)){return Err(Fault::DAccViol);}return rom.read16(addr);} }
+
 
         if self.sram.in_range(addr) {
             return self.sram.read16(addr);
@@ -126,7 +132,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn read32(&mut self, bus_addr: u32) -> Result<u32, Fault> {
         if !self.mpu_permits(bus_addr,4,false,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_mut() { if rom.in_range(addr) {if !rom.in_range(addr.saturating_add(3)){return Err(Fault::DAccViol);}return rom.read32(addr);} }
+
         if (0xe000_ed90..=0xe000_edb8).contains(&addr){return Ok(self.mpu_read(addr));}
         if let Some((word,bit))=bit_band(addr){return self.read32(word).map(|v|(v>>bit)&1);}
 
@@ -216,7 +225,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn write32(&mut self, bus_addr: u32, value: u32) -> Result<(), Fault> {
         if !self.mpu_permits(bus_addr,4,true,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_ref() { if rom.in_range(addr) {return Err(Fault::DAccViol);} }
+
         if (0xe000_ed90..=0xe000_edb8).contains(&addr){self.mpu_write(addr,value);return Ok(());}
         if let Some((word,bit))=bit_band(addr){let old=self.read32(word)?;return self.write32(word,(old&!(1<<bit))|((value&1)<<bit));}
 
@@ -301,7 +313,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn write16(&mut self, bus_addr: u32, value: u16) -> Result<(), Fault> {
         if !self.mpu_permits(bus_addr,2,true,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_ref() { if rom.in_range(addr) {return Err(Fault::DAccViol);} }
+
 
         if self.sram.in_range(addr) {
             return self.sram.write16(addr, value);
@@ -344,7 +359,10 @@ impl Bus for Processor {
     #[inline(always)]
     fn write8(&mut self, bus_addr: u32, value: u8) -> Result<(), Fault> {
         if !self.mpu_permits(bus_addr,1,true,false,false){return Err(Fault::DAccViol);}
+        self.charge_bus(bus_addr);
         let addr = self.map_address(bus_addr);
+        if let Some(rom)=self.system_rom.as_ref() { if rom.in_range(addr) {return Err(Fault::DAccViol);} }
+
 
         if self.sram.in_range(addr) {
             return self.sram.write8(addr, value);

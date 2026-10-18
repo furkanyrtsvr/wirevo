@@ -175,6 +175,16 @@ pub struct Processor {
     /// ram data
     ///
     pub sram: RAM,
+    /// User-supplied, immutable system-ROM dump; never synthesized ST bytes.
+    pub system_rom: Option<RAM>,
+    pub rom_base: u32,
+    pub rom_size: u32,
+    pub rom_alias: bool,
+    pub return_cycles: Option<u32>,
+    pub entry_window: Option<Exception>,
+    pub bus_cycles: std::cell::Cell<u32>,
+    pub bus_dividers: [u32;2],
+    pub flash_wait: u32,
 
     pub cpuid: u32,
     pub icsr: u32,
@@ -365,6 +375,15 @@ impl Processor {
             code: FlashMemory::new(65536, &vec![0; 65536].into_boxed_slice()),
             // TODO make RAM size configurable
             sram: RAM::new_with_fill(0x2000_0000, 128 * 1024, 0xcd),
+            system_rom: None,
+            rom_base: 0,
+            rom_size: 0,
+            rom_alias: false,
+            return_cycles: None,
+            entry_window: None,
+            bus_cycles: std::cell::Cell::new(0),
+            bus_dividers: [1,1],
+            flash_wait: 0,
             itm_file: None,
             sleeping: false,
             event_register: false,

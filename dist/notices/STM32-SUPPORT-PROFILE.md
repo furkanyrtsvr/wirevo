@@ -1,4 +1,8 @@
-# Güncel durum · 0.67
+# Güncel durum · 0.68
+
+Native ROM yükleme/boot alias (ST binary sağlanmadı); tail-chain/late-arrival ve nominal Flash/APB beklemeleri; I²S format/slave/full-duplex extension, TIM1 COM/preload/LOCK. [Kesin kanıt sınırları](../../docs/RELEASE_0.68.md). Tam fiziksel çevrim ve silikon eşdeğerliği iddia edilmez; başka aileye geçilmez. Alt kayıtların eksik listeleri tarihseldir.
+
+# 0.67 (tarihsel)
 
 İşlevsel F401/F411 DFU ve binary USART boot/panel yükleme, F103 PMA double-buffer/ISO; USB PID/ACK/CRC/global NAK, I²C10-bit/SMBus, CAN bit stuffing/CRC süreleri ve native DWT/SysTick/Flash/DMA/exception zamanlama tutarlılığı eklendi. Orijinal ST ROM binary’si veya tam pipeline/bus-matrix çevrim doğruluğu yoktur. [Aktif denetim](STM32-AUDIT.md) günceldir; kalanlar açık tutulur ve tam silikon kapanışı ilan edilmez.
 

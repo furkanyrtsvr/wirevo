@@ -3,6 +3,7 @@
 //!
 
 use crate::core::bits::Bits;
+use crate::bus::Bus;
 use crate::core::condition::Condition;
 use crate::core::exception::{Exception, ExceptionHandling};
 use crate::core::fault::{Fault, FaultStatusContext, FaultTrapReason};
@@ -160,6 +161,11 @@ fn conditional_setflags(setflags: SetFlags, in_it_block: bool) -> bool {
 }
 
 impl Processor {
+    /// Additional STM32 bridge wait states, not instruction execution costs.
+    pub fn charge_bus(&self, address:u32) {
+        let extra=if (0x40000000..0x40020000).contains(&address) {2*self.bus_dividers[usize::from(address>=0x40010000)]-1} else if (0x08000000..0x08080000).contains(&address){self.flash_wait}else{0};
+        self.bus_cycles.set(self.bus_cycles.get().saturating_add(extra));
+    }
     /// Account elapsed HCLK even when no instruction retires (DMA/Flash).
     pub fn advance_cycles(&mut self, cycles: u32) {
         self.cycle_count += u64::from(cycles);
@@ -312,7 +318,7 @@ impl ExecutorHelper for Processor {
         self.itstate.get_bits(0..4) == 0b1000
     }
     fn integer_zero_divide_trapping_enabled(&self) -> bool {
-        true
+        self.ccr & 16 != 0
     }
 
     #[inline(always)]
@@ -815,6 +821,8 @@ impl Executor for Processor {
 
     #[inline(always)]
     fn step(&mut self) {
+        self.bus_cycles.set(0);
+        if let Err(fault)=self.resolve_late_arrival(){let pc=self.get_pc();let count=self.handle_fault(fault,pc);self.advance_cycles(count);return;}
         let pc = self.get_pc();
         let mapped_pc = if self.mem_map.is_some() {
             (self.map_address(pc) >> 1) as usize
@@ -837,6 +845,7 @@ impl Executor for Processor {
                 Err(fault) => self.handle_fault(fault, pc),
             },
         }};
+        let count=count+self.bus_cycles.replace(0)+if self.code.in_range(self.map_address(pc)){self.flash_wait}else{0};
         self.cycle_count += u64::from(count);
         if (self.dwt_ctrl & 1) != 0 {
             self.dwt_tick(count);
@@ -854,6 +863,7 @@ impl Executor for Processor {
     #[inline(always)]
     fn execute(&mut self, instruction: &Instruction, instruction_size: usize) -> u32 {
         self.instruction_count += 1;
+        self.return_cycles = None;
 
         let in_it_block = self.in_it_block();
         let exception_before = self.psr.get_isr_number();
@@ -874,7 +884,7 @@ impl Executor for Processor {
                 if in_it_block && self.psr.get_isr_number() == exception_before {
                     self.it_advance();
                 }
-                cycles
+                self.return_cycles.take().unwrap_or(cycles)
             }
             Ok(ExecuteSuccess::Taken { cycles }) => {
                 self.add_pc(instruction_size as u32);

@@ -1,6 +1,6 @@
 # Wirevo devam planı
 
-Güncel giriş: [belge dizini](docs/README.md).
+Güncel giriş: [belge dizini](docs/README.md). 0.68: native ROM yükleme, I²S full-duplex/format ve TIM1 COM/LOCK uygulandı; tail-chain/late-arrival ve nominal bus beklemeleri düzeltildi. [Kesin kanıt ve kalan fiziksel eşdeğerlik sınırları](docs/RELEASE_0.68.md). Önceki sürüm açıklamaları tarihsel kayıttır; başka aileye geçilmez.
 
 1. [Aktif STM32 fiziksel-silikon denetimi](dist/notices/STM32-AUDIT.md).
 2. [STM32 desteklenen işlevler ve model sınırları](dist/notices/STM32-SUPPORT-PROFILE.md).

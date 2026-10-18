@@ -50,6 +50,11 @@ impl ExceptionState {
 }
 
 impl Processor {
+    /// Replace a not-yet-executed handler after the bridge samples a higher
+    /// priority arrival during entry. The original frame is not stacked twice.
+    pub fn resolve_late_arrival(&mut self)->Result<(),Fault>{
+        if let Some(previous)=self.entry_window.take(){if self.exception_active(previous){if let Some(next)=self.get_pending_exception(){self.deactivate(previous.into());if let Exception::Interrupt{n}=previous{self.nvic_write_ispr(n/32,1u32<<(n%32));}else{self.set_exception_pending(previous);}self.clear_pending_exception(next);if let Exception::Interrupt{n}=next{self.nvic_unpend_interrupt(n);}self.exception_taken(next)?;}}}Ok(())
+    }
     /// Implements the ARMv7-M `ExecutionPriority()` pseudocode.
     ///
     /// Returns the effective execution priority after applying active
@@ -735,7 +740,17 @@ impl ExceptionHandling for Processor {
             }
 
             self.deactivate(returning_exception_number);
+            // The original frame stays on the interrupted stack when chaining.
+            if let Some(next) = self.get_pending_exception() {
+                self.clear_pending_exception(next);
+                if let Exception::Interrupt { n } = next { self.nvic_unpend_interrupt(n); }
+                self.lr = 0xf0000000 | exc_return;
+                self.exception_taken(next)?;
+                self.return_cycles = Some(6);
+                return Ok(());
+            }
             self.pop_stack(frameptr, exc_return)?;
+            self.return_cycles = Some(if cfg!(feature="has-fp") { if exc_return.get_bit(4) {10} else {27} } else {12});
 
             if self.mode == ProcessorMode::ThreadMode
                 && nested_activation == 1 // deactivate() reduced one
@@ -783,6 +798,7 @@ impl ExceptionHandling for Processor {
                 // Cortex-M3/M4 zero-wait-state asynchronous entry latency.
                 // SVC/fault instructions already account their entry in execute().
                 self.advance_cycles(12);
+                self.entry_window = Some(exception);
             }
         } else if self.sleeping && self.has_wakeup_condition() {
             self.sleeping = false;

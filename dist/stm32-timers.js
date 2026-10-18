@@ -2,7 +2,7 @@ import {STMTimer2 as Modes} from './stm32-timer-modes.js';
 import {STMTimer2 as Counter} from './stm32-timer.js';
 
 const CONFIG={1:[0x40012c00,0,1],3:[0x40000400,1,2],4:[0x40000800,2,2],5:[0x40000c00,3,2],9:[0x40014000,16,3],10:[0x40014400,17,3],11:[0x40014800,18,3]};
-class Timer extends Modes {
+export class Timer extends Modes {
  constructor(r,number){super(r);this.number=number;[this.base,this.enableBit,this.af]=CONFIG[number];if(number===1){this.base=this.f4?0x40010000:0x40012c00;this.enableBit=this.f4?0:11;}this.apb2=[1,9,10,11].includes(number);this.max=this.f4&&number===5?0xffffffff:65535;this.regs.set(44,this.max);this.active.arr=this.max;this.channels=number>=10?1:number===9?2:4;this.deadline=Array(4).fill(0);this.refs=Array(4).fill(null);}
  clocked(){return !!(this.r.regs.get(this.f4?(this.apb2?0x40023844:0x40023840):(this.apb2?0x40021018:0x4002101c))&(1<<this.enableBit));}
  ratio(){const div=this.r.system?.busDivider(this.apb2?2:1)??1;return (div>1?div/2:1)*(this.r.system?.factor()??1);}

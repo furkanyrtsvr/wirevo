@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.67.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.68.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -8,7 +8,11 @@ AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve 
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
 
-## Wirevo 0.67 · STM32 boot protokolleri ve zamanlama tutarlılığı
+## Wirevo 0.68 · STM32 native ROM yolu, I²S ve ileri timer
+
+Native salt-okunur ROM yükleme/boot alias; tail-chain/late-arrival ve nominal Flash/APB beklemeleri; I²S format/slave/full-duplex extension, TIM1 COM/preload/LOCK. Yalnız yeni `stm32-v068-*` testleri doğrulanır. ST ROM dökümü sağlanmadı; fiziksel çevrim/silikon eşdeğerliği ilan edilmez. Başka kart ailesine geçilmez. [Kesin kapsam](docs/RELEASE_0.68.md), [test kaydı](docs/qa/README.md), [aktif denetim](dist/notices/STM32-AUDIT.md).
+
+## Wirevo 0.67 · STM32 boot protokolleri ve zamanlama tutarlılığı (tarihsel)
 
 F401/F411 işlevsel USB DFU ve panel yükleme/geri okuma; binary USART boot, F103 PMA double-buffer/ISO, USB PID/ACK/NAK, I²C10-bit/SMBus ve native zamanlama düzeltmeleri. Yalnız bu sürümün yeni testleri çalıştırılır. Önceki “STM32 tamamen donduruldu” iddiası geri çekilmiştir; orijinal ROM/pipeline/bus-matrix ve bazı protokol ayrıntıları hâlâ açıktır. [Sürüm ve kesin kalanlar](docs/RELEASE_0.67.md), [test kaydı](docs/qa/README.md), [aktif denetim](dist/notices/STM32-AUDIT.md).
 

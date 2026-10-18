@@ -51,7 +51,7 @@ export class STMSystem {
   this.oscillators.set(1,{at:this.r.count,ready:true});const cr=(this.r.regs.get(this.base)||0)|1;this.r.regs.set(this.base,cr&~((1<<16)|(1<<24)));const a=this.base+(this.f4?8:4);this.r.regs.set(a,(this.r.regs.get(a)||0)&~15);this.clocks();
  }
  powerState(sleeping,scr){
-  if(this.nmi){this.nmi=false;return 4;}if(!this.nrst||this.brownout||this.bootMode==='system')return 1;
+  if(this.nmi){this.nmi=false;return 4;}if(!this.nrst||this.brownout||this.bootMode==='system'&&!this.r.systemROM)return 1;
   if(sleeping&&(scr&4)&&this.mode==='run')this.pause();
   if(this.mode==='run')return 0;
   const exti=this.r.exti,pr=exti?.regs.get(20)||0,wake=pr&((exti?.regs.get(0)||0)|(exti?.regs.get(4)||0))&(this.mode==='standby'?((1<<17)|(1<<21)|(1<<22)):0xffffffff);

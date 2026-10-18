@@ -2,7 +2,11 @@
 
 18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 
-## 0.67 — güncel uygulama ve kanıt
+## 0.68 — güncel uygulama ve kanıt
+
+19 Ekim 2026. Native salt-okunur ROM yükleme/alias/worker-panel; tail-chain/late-arrival, nominal Flash/APB beklemeleri; I²S tüm format matrisi ve I²S2ext/3ext, TIM1 COM/preload/LOCK eklendi. Yalnız `tests/stm32-v068-*.test.mjs` doğrulanır. ST ROM mevcut değildir; sentetik Thumb fixture orijinal ROM uyumluluğu kanıtı değildir. Tam pipeline/ART/cache/FPU lazy/bus-matrix ve USB/CAN tüm hata çevrimleri, fiziksel analog ölçümler kapanmadı. Tam silikon eşdeğerliği veya yeni aileye geçiş ilan edilmez. [Kesin kapsam](../../docs/RELEASE_0.68.md). Alt sürümlerin eksik listeleri tarihseldir; I²S extension ve TIM1 COM/LOCK artık uygulanmıştır.
+
+## 0.67 — uygulama ve kanıt (tarihsel)
 
 F401/F411 işlevsel AN3156 USB DFU; dokuz kartta binary AN3155 USART boot, silme/koruma varyantları; panelden .bin yazma ve USB geri okuma; F103 PMA double-buffer/ISO, USB PID/ACK/CRC/global NAK, I²C10-bit master ve SMBus adres/ALERT/DNF davranışı eklendi. CAN CRC/stuffing süresi, native Flash/DMA/DWT/SysTick ve temel exception gecikmeleri düzeltildi. Yeni kabul yalnız `tests/stm32-v067-*.test.mjs`; native/reg/worker kanıtı ve kalanlar `docs/RELEASE_0.67.md` içinde ayrıdır.
 

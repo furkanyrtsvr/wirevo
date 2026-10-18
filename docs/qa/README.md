@@ -1,5 +1,12 @@
 # Doğrulama kayıtları
 
+## 0.68 — 19 Ekim 2026 · yalnız bu turdaki yeni kabul
+
+- GitHub çalışma kopyasında `npm run test:stm32-068`: **323/323 geçti**, hata/atlama/iptal yok;8,1 saniye. Native63, timer27, I²S224, worker ROM9. Kaynak kopyasında da323/323 başarılı.
+- 0.67 ve daha eski testler çalıştırılmadı; CI bu push için yalnız `tests/stm32-v068-*.test.mjs` çalıştırır. Genel push/PR kapısı korunur.
+- Native M3/M4F kaynaklardan release derlendi. M3 234.880 bayt, SHA-256 `c69eac83dec1eed34950c0c39dffe3f1255ae65f8c45bce25722322894898e8c`; M4F 636.908 bayt, SHA-256 `6e868b02302afc292f8a5bf1e3e3e693fe943eb73c052a9f3f6e533927161d13`.
+- Kaynak ve GitHub kopyasında `npm run build` başarılı;471 offline-shell dosyası. ROM fixture sentetiktir; ST binary/hardware kalibrasyonu yoktur. I²S format matrisi model bit/kenar; native ROM/exception/DMA gerçek Thumb yürütümüdür. Kesin kalan fiziksel sınırlar RELEASE_0.68.md içindedir.
+
 ## 0.67 — 18 Ekim 2026 · yalnız bu turdaki yeni kabul
 
 - GitHub çalışma kopyasında `npm run test:stm32-067`: **146/146 geçti**, hata/atlama/iptal yok;17,5 saniye. Dört yeni dosya: native boot/timing60; DFU API/panel/worker20; protokol varyantları38; USB/I²C bit akışı28.

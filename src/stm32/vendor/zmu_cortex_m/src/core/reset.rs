@@ -64,6 +64,7 @@ impl Reset for Processor {
 
         self.syst_phase = 0;
         self.itstate = 0;
+        self.entry_window = None;
         self.execution_priority = self.get_execution_priority();
 
         let reset_vector = self.read32(vtor + 4).map_err(Fault::on_vector_read)?;

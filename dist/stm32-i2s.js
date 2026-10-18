@@ -1,0 +1,24 @@
+import {SPIUnit as SPI} from './stm32-spi-modes.js';
+// One physical serial clock drives both halves of full duplex, including when
+// an ARM instruction spans multiple edges. DR remains a bounded halfword.
+export class SPIUnit extends SPI {
+ initAudio(){const f=this.i2sConfig();this.i2s={bit:0,channel:0,rx:0,rxBits:0,clock:f.cpol,data:false,next:this.r.count+this.i2sHalf(),oldWS:null,synced:false};this.i2sDrive(this.i2s,f);return this.i2s;}
+ i2sWS(){const s=this.i2s,f=this.i2sConfig();if(f.standard===3)return ((s.bit+1)%f.channelBits)<(this.regs.get(28)&128?13:1);return !!(s.channel^(f.standard===0&&s.bit===f.channelBits-1?1:0));}
+ i2sSample(s,f){const index=this.i2sIndex(s,f);this.sr=(this.sr&~4)|(f.standard!==3&&s.channel?4:0);if(f.receive&&index>=0&&index<f.dataBits){const high=this.level(this.i2sPins().data);if(high===null){this.sr|=256;return;}s.rx=(s.rx<<1)|(high?1:0);if(++s.rxBits===16||index===f.dataBits-1){if(this.sr&1)this.sr|=64;else{this.dr=(s.rx<<(16-s.rxBits))&65535;this.sr|=1;}s.rx=0;s.rxBits=0;}}}
+ advanceAudio(s,f){if(++s.bit>=f.channelBits){s.bit=0;s.channel^=1;}}
+ syncExtension(leading){const ext=this.extension;if(!ext?.enabled())return;const fresh=!ext.i2s;if(fresh)ext.initAudio();const f=this.i2sConfig(),e=ext.i2sConfig();if(e.receive===f.receive||e.standard!==f.standard||e.dataBits!==f.dataBits||e.channelBits!==f.channelBits||e.cpol!==f.cpol){ext.sr|=256;return;}Object.assign(ext.i2s,{bit:this.i2s.bit,channel:this.i2s.channel,clock:this.i2s.clock});if(leading)ext.i2sSample(ext.i2s,e);else if(!fresh)ext.i2sDrive(ext.i2s,e);}
+ edgeAudio(clock,ws=null){const s=this.i2s,f=this.i2sConfig(),leading=clock!==f.cpol;s.clock=clock;if(leading){if(!f.master&&ws!==null){const changed=s.oldWS!==null&&ws!==s.oldWS;if(f.standard===3){if(changed&&ws){s.bit=f.channelBits-1;s.synced=true;}}else if(changed){const expected=f.standard===0?f.channelBits-1:0;if(s.synced&&s.bit!==expected)this.sr|=256;s.bit=expected;s.channel=f.standard===0?(ws?0:1):(ws?1:0);s.synced=true;}s.oldWS=ws;}this.refresh();this.i2sSample(s,f);this.syncExtension(true);}else{this.advanceAudio(s,f);this.i2sDrive(s,f);this.syncExtension(false);this.refresh();}}
+ tick(){if(!this.i2sOn())return super.tick();if(!this.clocked())return;const f=this.i2sConfig(),p=this.i2sPins();if(!Object.values(p).every(Boolean))return;const s=this.i2s||this.initAudio();if(this.extension?.enabled()&&!this.extension.i2s){this.syncExtension(false);}if(f.master){while(s.next<=this.r.count){const at=s.next,now=this.r.count;this.r.count=at;this.edgeAudio(!s.clock);s.next=at+this.i2sHalf();this.r.count=now;}}else{const clock=this.level(p.clock);if(clock!==null&&clock!==s.clock)this.edgeAudio(clock,this.level(p.ws));}if(this.regs.get(32)&512){const half=this.i2sHalf()/(f.channelBits===32?4:8),level=!!(Math.floor(this.r.count/half)&1);if(level!==this.mclkLevel){this.mclkLevel=level;this.refresh();}}}
+ outputs(states){if(!this.i2sOn())return super.outputs(states);if(!this.clocked()||!this.i2s)return states;const s=this.i2s,f=this.i2sConfig(),p=this.i2sPins(),drive=(pin,high,name)=>{if(pin)states[pin]={high,outputEnabled:true,voltage:high?3.3:0,mode:'I2S'+this.number+'_'+name};};if(f.master){drive(p.clock,s.clock,'CK');drive(p.ws,this.i2sWS(),'WS');if(this.regs.get(32)&512)drive(this.i2sMCKPin(),!!this.mclkLevel,'MCK');}if(!f.receive)drive(p.data,s.data,'SD');this.extension?.outputs(states);return states;}
+ read(a,n=4){const off=(a&~3)-this.base;if(this.i2sOn()&&off===8){const value=super.read(a,n);this.sr&=~(8|256);return value;}return super.read(a,n);}
+ write(a,v,n=4){const off=(a&~3)-this.base;if(off===28&&(v&2048)&&((v>>>1)&3)!==0&&!(v&1))throw Error('I2S 24/32-bit veri CHLEN=32 gerektirir.');if(off===12&&this.i2sOn()&&this.tdr!==null)throw Error('I2S TXE beklenmeli: DR dolu.');return super.write(a,v,n);}
+}
+export class I2SExtension extends SPIUnit {
+ constructor(r,parent){super(r,parent.number);this.parent=parent;this.base=parent.number===2?0x40003400:0x40004000;parent.extension=this;}
+ enabled(){return this.i2sOn()&&this.parent.i2sOn()&&this.clocked();}
+ i2sPins(){return {clock:'INTERNAL_CK',ws:'INTERNAL_WS',data:(this.number===2?['PB14','PC2']:['PB4','PC11']).find(p=>this.mapped(p))};}
+ mapped(pin){if(!pin||!this.r.board.gpio.includes(pin))return false;const n=+pin.slice(2),bank=pin.charCodeAt(1)-65,base=0x40020000+bank*1024,af=this.number===2?6:pin==='PB4'?7:5;return !!(this.r.regs.get(0x40023830)&(1<<bank))&&((this.r.regs.get(base)>>>n*2)&3)===2&&((this.r.regs.get(base+32+(n>=8?4:0))>>>((n%8)*4))&15)===af;}
+ tick(){} // All CK/WS edges are delivered by the associated main I2S unit.
+ write(a,v,n=4){if(a-this.base===28&&((v>>>8)&3)>1)throw Error('I2S extension yalnız slave TX/RX destekler.');return super.write(a,v,n);}
+ outputs(states){if(!this.enabled())return states;return super.outputs(states);}
+}
