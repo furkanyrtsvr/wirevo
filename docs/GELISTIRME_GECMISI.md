@@ -2,6 +2,10 @@
 
 Tarayıcıda elektronik devre ve firmware çalışma alanı. TR / EN dil seçimi sağ üsttedir; seçim bu tarayıcıda saklanır. Eski CircuitForge proje dosyaları ve aynı adresteki yerel kayıt anahtarları uyumluluk için korunur. Yayın adresi değiştiğinde tarayıcı depolaması adrese bağlı olduğundan eski adresteki projeler JSON/ZIP ile yeni adrese aktarılmalıdır.
 
+## Wirevo 0.70 · Tiva C LaunchPad / yalnız C17
+
+EK-TM4C123GXL / TM4C123GH6PM için ayrı ARM motoru ve bellek haritası; otomatik C/driverlib başlıkları, çok dosyalı C kaynakları, RGB LED/SW1/SW2, UART0, Timer A ve ADC. Robiz fotoğrafı ve TI şemasına göre özgün kırmızı kart SVG’si. [Kullanım ve kesin kapsam](../dist/notices/TIVA-MODEL.md), [sürüm ve çalışan görünüm](../docs/RELEASE_0.70.md). Tam TivaWare veya tüm fiziksel silikon desteği iddia edilmez.
+
 ## Wirevo 0.69 · STM32 işlevsel profil
 
 Mevcut geliştirme etabı, kullanıcının kabul ettiği model sınırlarıyla kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel silikonla birebir çevrim/analog eşdeğerliği vaat edilmez. ROM yükleme/değiştirme işlem güvenliği düzeltildi; yalnız yeni 21 kontrol. Desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](../docs/RELEASE_0.69.md).

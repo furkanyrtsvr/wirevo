@@ -1,0 +1,19 @@
+{
+  "engine": "Zmu ARMv7E-M FPv4-SP-D16",
+  "upstream": "https://github.com/jjkt/zmu",
+  "upstreamCommit": "72feb753fea97babc00cc88f2c75e814efc1bfd2",
+  "license": "Apache-2.0",
+  "bridge": "src/tiva/src/lib.rs",
+  "source": "src/stm32/vendor/zmu_cortex_m",
+  "flashOrigin": 0,
+  "flashBytes": 262144,
+  "ramOrigin": 536870912,
+  "ramBytes": 32768,
+  "target": "wasm32-unknown-unknown",
+  "artifact": {
+    "file": "cortex-m4f.wasm",
+    "bytes": 628559,
+    "sha256": "625ea4b08b74c85b88d738b8afce7cafd234c75a59992e5b26d5431c4e992912"
+  },
+  "scope": "Independent TM4C123 bridge; shared instruction engine, no STM32 peripheral alias. Functional model, not physical cycle equivalence."
+}

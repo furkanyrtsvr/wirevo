@@ -1,5 +1,9 @@
 # Wirevo devam planı
 
+## 0.70 · Kullanıcının seçtiği yeni aile: Tiva C
+
+EK-TM4C123GXL yalnız C17 ile eklendi: ayrı ARM/MMIO/Flash0, otomatik C/driverlib başlıkları, özgün kart SVG, GPIO/RGB/SW1/SW2, UART0, Timer A ve ADC. [Kesin destek ve sınırlar](dist/notices/TIVA-MODEL.md), [yeni kabul ve görünüm](docs/RELEASE_0.70.md). Tam silikon desteği değil, belgelenmiş işlevsel profildir. STM32’de kabul edilen fiziksel sınırlar yeniden zorunlu borç olarak açılmaz. Başka kart ekleme işi başlatılmadı.
+
 ## Güncel karar · 0.69
 
 Kullanıcı, donanım olmadan doğrulanamayan ve eklenmeyen ayrıntıları model sınırı olarak kabul etti. Mevcut STM32 işlevsel simülatör genişletme etabı bu sınırlarla kapatıldı; tüm fiziksel silikon tamamlandı iddiası yoktur. Desteklenen davranışlardaki gerçek hatalar normal bakım konusudur. Başka kart eklenmedi ve kendiliğinden yeni aile çalışması başlatılmaz. [Kesin karar ve sınırlar](docs/RELEASE_0.69.md). Aşağıdaki geçiş engelleri önceki kararın tarihsel kaydıdır, güncel zorunluluk değildir.

@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.70 — 19 Ekim 2026 · yeni Tiva C kabulü
+
+- GitHub kopyasında `npm run test:tiva`: **12/12 geçti**, hata/atlama/iptal yok;5,7 saniye. Eski STM32/genel testler çalıştırılmadı; bu push’un CI kapısı yalnız `tests/tiva-c070.test.mjs`.
+- Gerçek C17/Thumb: GPIO/RGB akımı, SW1/SW2/PF0 unlock, UART TX/RX/reset, Timer0A/GPIOF IRQ ve WFI, ADC PE3 canlı pot değişimi, 40→80→16→40 MHz ve sürekli model zaman çizgisi; masked DATA/AHB/R9/R10, çok dosyalı auto include, dil/SDK/image/ZIP korumaları, yeni worker trace/reset. Kaynak kopyasında da yeni kabul başarılı.
+- Bağımsız Tiva M4F WASM release derlendi:628.559 bayt, SHA-256 `625ea4b08b74c85b88d738b8afce7cafd234c75a59992e5b26d5431c4e992912`. STM32 WASM değişmedi.
+- Kaynak ve GitHub kopyasında browser build başarılı;484 offline-shell dosyası, mevcut20 MiB sınırı içinde. Cache sürümü0.70 olarak yenilendi.
+- Tarayıcıda yalnız C seçimi, otomatik başlık paneli, RGB örneği derleme/çalıştırma ve terminal doğrulandı. [Ekran görüntüsü](images/tiva-c070-workspace.png). Tam TivaWare veya fiziksel silikon eşdeğerliği iddia edilmez; TIVA-MODEL.md kesin kapsamdır.
+
 ## 0.69 — 19 Ekim 2026 · yalnız bu turdaki yeni kabul
 
 - Kaynak ve GitHub kopyasında `npm run test:stm32-069`: **21/21 geçti**, hata/atlama/iptal yok; GitHub kopyasında0,09 saniye.

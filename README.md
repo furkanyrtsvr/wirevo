@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.69.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.70.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -8,7 +8,11 @@ AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve 
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
 
-## Wirevo 0.69 · STM32 işlevsel profil
+## Wirevo 0.70 · Tiva C LaunchPad / yalnız C17
+
+EK-TM4C123GXL / TM4C123GH6PM için ayrı ARM motoru ve Flash0/SRAM32KiB, otomatik C/driverlib başlıkları, çok dosyalı C kaynakları; GPIO/RGB LED/SW1/SW2, UART0, Timer A ve ADC. Robiz fotoğrafı ve TI şemasına göre özgün kırmızı kart SVG’si. Tam TivaWare veya tüm fiziksel silikon desteği iddia edilmez. [Kullanım/kapsam](dist/notices/TIVA-MODEL.md), [sürüm ve çalışan görünüm](docs/RELEASE_0.70.md).
+
+## Wirevo 0.69 · STM32 işlevsel profil (tarihsel)
 
 Mevcut geliştirme etabı, kullanıcının kabul ettiği model sınırlarıyla kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel silikonla birebir çevrim/analog eşdeğerliği vaat edilmez; etabın kapanış şartı değildir. ROM yükleme/değiştirme işlem güvenliği düzeltildi; yalnız yeni 21 kontrol. Desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](docs/RELEASE_0.69.md).
 

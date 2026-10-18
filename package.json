@@ -1,6 +1,6 @@
 {
   "name": "wirevo",
-  "version": "0.69.0",
+  "version": "0.70.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,6 +14,7 @@
     "test:esp-workers": "node scripts/accept-esp-worker.mjs",
     "test:esp-integrity": "node scripts/accept-esp-integrity.mjs",
     "test:stm32": "node --test --test-concurrency=4 tests/stm32-runtime.test.mjs tests/stm32-worker.test.mjs tests/stm32-bluetooth.test.mjs tests/stm32-pins-labs.test.mjs tests/stm32-usart.test.mjs tests/stm32-adc.test.mjs tests/stm32-pwm.test.mjs tests/stm32-wire-lanes.test.mjs tests/stm32-spi.test.mjs tests/stm32-i2c.test.mjs tests/stm32-weact.test.mjs tests/stm32-eeprom.test.mjs tests/stm32-spi-formats.test.mjs tests/stm32-usart-formats.test.mjs tests/stm32-itstate.test.mjs tests/stm32-adc-sequence.test.mjs tests/stm32-adc2-sdio.test.mjs tests/stm32-capture.test.mjs tests/stm32-timer-events.test.mjs tests/stm32-exti-dma.test.mjs tests/stm32-watchdog.test.mjs tests/stm32-acceptance.test.mjs tests/stm32-rtc.test.mjs tests/stm32-rtc-firmware.test.mjs tests/stm32-timer-phase.test.mjs tests/stm32-clock-phase-firmware.test.mjs tests/stm32-rtc-lab.test.mjs tests/stm32-cpp.test.mjs tests/stm32-cpp-project.test.mjs tests/stm32-timer-alignment.test.mjs tests/stm32-micropython.test.mjs tests/stm32-adc-discontinuous.test.mjs tests/stm32-can-usb.test.mjs tests/stm32-usb-worker.test.mjs tests/stm32-otg.test.mjs tests/stm32-otg-fifo.test.mjs tests/stm32-internal-adc.test.mjs tests/stm32-final-peripherals.test.mjs tests/stm32-profile-acceptance.test.mjs tests/stm32-environment-worker.test.mjs tests/stm32-i2c-dma-fast.test.mjs tests/stm32-pin-completion.test.mjs",
+    "test:tiva": "node --test tests/tiva-c070.test.mjs",
     "test:stm32-069": "node --test tests/stm32-v069-*.test.mjs",
     "test:stm32-068": "node --test --test-concurrency=2 tests/stm32-v068-*.test.mjs",
     "test:stm32-067": "node --test --test-concurrency=2 tests/stm32-v067-*.test.mjs",

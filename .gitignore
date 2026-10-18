@@ -7,6 +7,7 @@ node_modules/
 /research/
 
 src/stm32/target/
+src/tiva/target/
 src/stm32/vendor/zmu_cortex_m/target/
 
 # Local automation and machine state

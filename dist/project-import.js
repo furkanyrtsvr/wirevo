@@ -1,9 +1,10 @@
+import {validateTivaImage} from './tiva-image.js';
 import {validateSTMImage} from './stm32-image.js';
 import {projectBoard} from './board-hardware.js';
 import {readZip,ZIP_LIMITS} from './zip-reader.js';
 import {validateProject} from './core.js';
 import {projectFiles,normalizeFiles,firmwareMatches,mainFile} from './source-files.js';
-import {isNative as isESP,isSTM,migrateESPProject,decodeBytes} from './unified-project.js';
+import {isNative as isESP,isSTM,isTiva,migrateESPProject,decodeBytes} from './unified-project.js';
 import {parseESPProject} from './esp-project.js';
 import {validateESPImage} from './esp-boards.js';
 import {normalizeLibraries} from './libraries.js';
@@ -17,7 +18,7 @@ export function exportProjectZip(project){
 }
 function sourceSnapshot(project){return JSON.stringify(projectFiles(project).sort((a,b)=>a.name.localeCompare(b.name,'en')));}
 function validHex(hex,project){parseHex(hex,{flashSize:projectBoard(project).mcu==='ATmega2560'?262144:32768});if(hex.length>800000)throw Error('HEX dosyası çok büyük.');}
-function validFirmware(p){if(!p.firmware)return;if(isSTM(p)){if(p.language==='micropython'){if(p.firmware.payload!==p.firmware.source)throw Error('Python programı kaynakla eşleşmiyor.');}else validateSTMImage(decodeBytes(p.firmware.payload),p.firmware.board);return;}if(!isESP(p))return validHex(p.firmware.hex,p);if(p.firmware.format==='esp-bin')validateESPImage(decodeBytes(p.firmware.payload),p.firmware.board,{bootFromROM:!!p.firmware.bootFromROM});else if(p.firmware.payload!==p.firmware.source)throw Error('Python programı kaynakla eşleşmiyor.');}
+function validFirmware(p){if(!p.firmware)return;if(isTiva(p)){validateTivaImage(decodeBytes(p.firmware.payload));return;}if(isSTM(p)){if(p.language==='micropython'){if(p.firmware.payload!==p.firmware.source)throw Error('Python programı kaynakla eşleşmiyor.');}else validateSTMImage(decodeBytes(p.firmware.payload),p.firmware.board);return;}if(!isESP(p))return validHex(p.firmware.hex,p);if(p.firmware.format==='esp-bin')validateESPImage(decodeBytes(p.firmware.payload),p.firmware.board,{bootFromROM:!!p.firmware.bootFromROM});else if(p.firmware.payload!==p.firmware.source)throw Error('Python programı kaynakla eşleşmiyor.');}
 function projectJSON(text,name){const raw=parseJSON(text,name);return validateProject(raw.format==='circuitforge-esp'?migrateESPProject(parseESPProject(text)):raw);}
 function parseJSON(text,name){try{return JSON.parse(text);}catch{throw Error(name+': JSON verisi geçersiz.');}}
 /** Parsing never mutates the current project or browser storage. Sources in the
