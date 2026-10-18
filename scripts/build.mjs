@@ -11,6 +11,7 @@ console.log('ESP Clang WASI adapter built.');
 await build({entryPoints:['src/stm32-compiler.js'],outfile:'dist/stm32-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
 await build({entryPoints:['src/tiva-compiler.js'],outfile:'dist/tiva-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
 await import('./generate-tiva-art.mjs');
+await import('./generate-lcd-art.mjs');
 await import('./generate-stm32-art.mjs');
 await import('./generate-esp-profile-art.mjs');
 await import('./generate-esp-notices.mjs');

@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.72 — 19 Ekim 2026 · yalnız yeni LCD kabulü
+
+- `npm run test:lcd-072`: **9/9 geçti**, hata/atlama/iptal yok. GitHub kopyasında 14,60 saniye. Eski testler, 0.71 Tiva testleri dahil, tekrar çalıştırılmadı.
+- Gerçek native C17/TM4C123: 8×2 paralel, 16×2 paralel ve 8×2 I²C örnekleri iki satıra doğru yazdı; PF3 akımı doğrulandı. Yeni C helper başlığı otomatik sağlandı; I²C ACK doğrulandı.
+- AVR gerçek port yazmalarıyla yeni paralel adaptör; 16 pin/katalog/görsel boyutları; 4/8-bit veri/CGRAM/okuma; clear/güç kesme/kontrast/arka ışık ayrımı; çevrimdışı yeni asset/module listesi.
+- GitHub kopyasında build başarılı: 489 shell dosyası / 20.766.763 bayt, mevcut 20 MiB sınırında. Native WASM değiştirilmedi.
+- Tarayıcıda TM4C123 ile 16×2 paralel ve 8×2 I²C derlendi/çalıştı; iki satır ve dahili yeşil RGB görüldü. [16×2 paralel](images/lcd-v072-tiva16.png), [8×2 I²C](images/lcd-v072-tiva8-i2c.png).
+
 ## 0.71 — 19 Ekim 2026 · Tiva kart arayüzü ve RGB
 
 - Yalnız `npm run test:tiva-ui`: **12/12 geçti**, hata/atlama/iptal yok; GitHub kopyasında 2,42 saniye. Eski testler çalıştırılmadı. CI yalnız yeni `tests/tiva-c071-ui.test.mjs` dosyasını seçer.

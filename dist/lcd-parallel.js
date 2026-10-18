@@ -1,0 +1,14 @@
+import {CharacterLCD} from './lcd-controller.js';
+import {pinVoltage,poweredDevice} from './bus-electrical.js';
+export const PARALLEL_LCD_TYPES=['lcd8p','lcd16p'];
+// Generic ST7066-compatible module. Reference clock: 16 MHz, shared with I2C.
+export class ParallelLCD {
+ constructor(columns){this.lcd=new CharacterLCD(columns);this.reset();}
+ reset(){this.lcd.reset();this.e=null;this.half=null;this.readHalf=false;this.readByte=0;this.writes=0;this.errors=0;this.powered=false;}
+ sample(dc,id,cycle){const p=poweredDevice(dc,id,{min:2.7,max:5.5}),v=pin=>pinVoltage(dc,id,pin),level=pin=>{const n=v(pin);return !Number.isFinite(n)||n<-.3||n>p.voltage+.3?null:n<=.6?false:n>=2?true:null;};if(this.powered&&!p.powered)this.reset();this.powered=p.powered;this.drivers=[];this.connected=false;this.contrast=Number.isFinite(v('VO'))&&v('VO')>=-.02&&v('VO')<=1.5;this.backlight=Number.isFinite(v('A'))&&Number.isFinite(v('K'))&&v('A')-v('K')>=2.5;
+ if(!p.powered){this.e=null;return this.drivers;}const e=level('E'),rs=level('RS'),rw=level('RW');if([e,rs,rw].includes(null)){this.e=null;this.half=null;return this.drivers;}if(rs!==this.lastRS||rw!==this.lastRW)this.readHalf=false;this.lastRS=rs;this.lastRW=rw;const first=this.lcd.fourBit?4:0,bits=Array.from({length:8-first},(_,i)=>level('D'+(first+i)));const initNibble=!rs&&!this.lcd.fourBit&&bits.slice(4).every(b=>b!==null)&&[2,3].includes(bits.slice(4).reduce((n,b,i)=>n|(b?1<<i:0),0));this.connected=rw||bits.every(b=>b!==null)||initNibble;
+ if(rw){if(e&&this.e!==true&&!this.readHalf)this.readByte=rs?(this.lcd.cg?this.lcd.cgram[this.lcd.address&63]:this.lcd.ddram[this.lcd.address&127]):(cycle<this.lcd.busyUntil?128:0)|(this.lcd.address&127);if(e){const value=this.lcd.fourBit?(this.readHalf?this.readByte&15:this.readByte>>4)<<4:this.readByte;for(let i=first;i<8;i++)this.drivers.push({endpoint:id+':D'+i,voltage:value&(1<<i)?p.voltage:0,ohms:100});}if(this.e===true&&!e){if(this.lcd.fourBit&&!this.readHalf)this.readHalf=true;else{this.readHalf=false;if(rs)this.lcd.move(this.lcd.increment?1:-1);}}this.half=null;
+ }else{this.readHalf=false;if(this.e===true&&!e){if(!this.connected){this.half=null;this.errors++;}else if(cycle>=this.lcd.busyUntil){const byte=bits.reduce((n,b,i)=>n|(b?1<<(first+i):0),0);if(!this.lcd.fourBit){this.lcd.execute(byte,rs,cycle);this.writes++;}else if(this.half===null)this.half={byte,rs};else{const high=this.half;this.half=null;if(high.rs===rs){this.lcd.execute(high.byte|(byte>>4),rs,cycle);this.writes++;}else this.errors++;}}}}
+ this.e=e;return this.drivers;}
+ state(cycle){return{...this.lcd.state(cycle),on:this.lcd.display&&this.contrast,backlight:this.backlight,powered:this.powered,connected:this.connected,contrast:this.contrast,interface:'parallel',writes:this.writes,errors:this.errors};}
+}

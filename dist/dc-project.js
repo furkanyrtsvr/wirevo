@@ -43,6 +43,7 @@ export function solveProjectDC(project,firmware,netlist,{pwmAverage=true,drivers
       else if(c.type==='rheostat')branch(c.id,net(c,'1'),net(c,'2'),Math.max(.001,(c.params.ohms??1000)*(c.params.value??50)/100));
       else if(c.type==='coilRelay'){branch(c.id+':coil',net(c,'A1'),net(c,'A2'),c.params.coilOhms??70);relays.push({id:c.id,vcc:net(c,'A1'),gnd:net(c,'A2'),com:net(c,'COM'),no:net(c,'NO'),nc:net(c,'NC'),coil:true,nominalVoltage:c.params.nominalVoltage??5});}
       else if(c.type==='resistor')branch(c.id,net(c,'1'),net(c,'2'),c.params.ohms);
+      else if(['lcd8p','lcd16p'].includes(c.type)){for(const pin of ['GND','VCC','VO','RS','RW','E',...Array.from({length:8},(_,i)=>'D'+i),'A','K'])addNode(net(c,pin));branch(c.id+':backlight',net(c,'A'),net(c,'K'),220);}
       else if(deviceDefinition(c.type)?.bus==='I2C'){
         const def=deviceDefinition(c.type);addNode(net(c,def.power.gnd));addNode(net(c,def.power.vcc));
         if(def.pullup){branch(c.id+':sda-pullup',net(c,def.power.vcc),net(c,def.pins.data),def.pullup);branch(c.id+':scl-pullup',net(c,def.power.vcc),net(c,def.pins.clock),def.pullup);}

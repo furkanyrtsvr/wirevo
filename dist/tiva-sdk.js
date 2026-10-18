@@ -1,3 +1,4 @@
+import {tivaLCDHeader} from './tiva-lcd-sdk.js';
 import {C_HEADERS} from './c-hal.js';
 const ports=[0x40004000,0x40005000,0x40006000,0x40007000,0x40024000,0x40025000];
 const defines={SYSCTL_RCGCGPIO_R:0x400fe608,SYSCTL_RCGCUART_R:0x400fe618,SYSCTL_RCGCTIMER_R:0x400fe604,SYSCTL_RCGCADC_R:0x400fe638,SYSCTL_PRGPIO_R:0x400fea08,SYSCTL_RIS_R:0x400fe050,SYSCTL_RCC_R:0x400fe060,SYSCTL_RCC2_R:0x400fe070,NVIC_EN0_R:0xe000e100,NVIC_EN1_R:0xe000e104,NVIC_ST_CTRL_R:0xe000e010,NVIC_ST_RELOAD_R:0xe000e014,NVIC_ST_CURRENT_R:0xe000e018};
@@ -92,7 +93,7 @@ void cf_gpio_mode(unsigned,int);void cf_gpio_write(unsigned,int);int cf_gpio_rea
 void cf_delay_ms(unsigned);void cf_delay_us(unsigned);unsigned cf_millis(void);void cf_uart_begin(unsigned);void cf_uart_write(unsigned char);int cf_uart_read(void);
 `;
 // Original, intentionally bounded source-compatible API; not the complete TI TivaWare distribution.
-export const TIVA_HEADERS={...C_HEADERS,'cf_hal.h':tivaHeader,'tm4c123gh6pm.h':'#include <cf_hal.h>\n','inc/tm4c123gh6pm.h':'#include <cf_hal.h>\n','inc/hw_memmap.h':'#include <cf_hal.h>\n','inc/hw_types.h':'#include <cf_hal.h>\n','inc/hw_gpio.h':'#include <cf_hal.h>\n',...Object.fromEntries(['sysctl','gpio','pin_map','uart','interrupt','timer','adc'].map(n=>['driverlib/'+n+'.h','#include <cf_hal.h>\n']))};
+export const TIVA_HEADERS={...C_HEADERS,'cf_lcd.h':tivaLCDHeader,'cf_hal.h':tivaHeader,'tm4c123gh6pm.h':'#include <cf_hal.h>\n','inc/tm4c123gh6pm.h':'#include <cf_hal.h>\n','inc/hw_memmap.h':'#include <cf_hal.h>\n','inc/hw_types.h':'#include <cf_hal.h>\n','inc/hw_gpio.h':'#include <cf_hal.h>\n',...Object.fromEntries(['sysctl','gpio','pin_map','uart','interrupt','timer','adc'].map(n=>['driverlib/'+n+'.h','#include <cf_hal.h>\n']))};
 export function tivaLibraries(files){const found=new Set(['cf_hal.h']);for(const f of files)for(const m of f.content.matchAll(/^\s*#\s*include\s*[<"]([^>"\r\n]+)[>"]/gm))if(Object.hasOwn(TIVA_HEADERS,m[1]))found.add(m[1]);return[...found].sort();}
 export const tivaRuntimeC=String.raw`#include <cf_hal.h>
 unsigned SystemCoreClock=16000000;

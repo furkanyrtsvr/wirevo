@@ -4,7 +4,7 @@ import {ESP_BOARDS} from './esp-boards.js';
 import {ESP_PIN_DEFS} from './esp-pin-defs.js';
 import {validatePartParameters} from './part-parameters.js';
 import {solveProjectDC,DC_FAILURES} from './dc-project.js';
-export const ESP_PARTS=['bluetooth','netLabel','resistor','led','button','pot','supply','spdt','diode','zener','npn','mosfet','rheostat','switch','coilRelay','lm35','thermistor','soilCap','joystick','irObstacle','tilt','flame','sound','pir','ldr','oled','sht31','bh1750','bmp280','mpu6050','eeprom','mcp3008','ds18b20','tmp36','relay','opamp','multimeter','hall','mq2','breadboard'];
+export const ESP_PARTS=['lcd8','lcd16','lcd8p','lcd16p','bluetooth','netLabel','resistor','led','button','pot','supply','spdt','diode','zener','npn','mosfet','rheostat','switch','coilRelay','lm35','thermistor','soilCap','joystick','irObstacle','tilt','flame','sound','pir','ldr','oled','sht31','bh1750','bmp280','mpu6050','eeprom','mcp3008','ds18b20','tmp36','relay','opamp','multimeter','hall','mq2','breadboard'];
 export function espBoardDefinition(chip){const b=ESP_BOARDS[chip];return{id:chip,ioVoltage:3.3,logicHigh:2.475,supplyPin:'3V3',pins:ESP_PIN_DEFS[chip],name:b.title||b.name+' '+b.board,width:b.width||220,height:b.height||460,asset:b.asset};}
 export function espPartDefinition(c,chip){if(c.type!=='board')return componentDefinition(c);const d=espBoardDefinition(chip);return{...d,pinDefs:d.pins,pins:d.pins.filter(p=>p.connectable!==false).map(p=>p.id)};}
 export function validateESPCircuit(raw,chip){

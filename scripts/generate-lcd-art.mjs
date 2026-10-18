@@ -1,0 +1,11 @@
+import {writeFile} from 'node:fs/promises';
+import {EXPANDED_MODULES} from '../dist/expanded-hardware.js';
+for(const type of ['lcd8','lcd16','lcd8p','lcd16p']){
+ const d=EXPANDED_MODULES[type],r=d.display,w=d.width,h=d.height,parallel=type.endsWith('p');
+ const holes=[[8,8],[w-8,8],[8,h-30],[w-8,h-30]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="#142820" stroke="#c4b77c"/>`).join('');
+ const pads=d.pins.map(p=>`<rect x="${p.x-4}" y="${p.y-4}" width="8" height="8" rx=".8" fill="#182b25" stroke="#668676" stroke-width=".5"/><rect x="${p.x-1.5}" y="${p.y-1.5}" width="3" height="3" fill="#dfc36c"/><text x="${p.x}" y="${p.y-7}" text-anchor="middle" font-size="4" fill="#e0e9d6">${p.id}</text>`).join('');
+ const cells=Array.from({length:2},(_,row)=>Array.from({length:r.columns},(_,col)=>`<rect x="${r.x+4+col*(r.width-8)/r.columns}" y="${r.y+4+row*(r.height-8)/2}" width="${(r.width-8)/r.columns-2}" height="${(r.height-8)/2-3}" fill="#6b883c" opacity=".12"/>`).join('')).join('');
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-label="${d.name}"><!-- Original Wirevo CC0 artwork. Generic functional module, not a manufacturing footprint. --><defs><linearGradient id="pcb" x2="0" y2="1"><stop stop-color="#28664a"/><stop offset="1" stop-color="#15422f"/></linearGradient><linearGradient id="lcd" x2="0" y2="1"><stop stop-color="#b7ce7b"/><stop offset="1" stop-color="#829f4d"/></linearGradient></defs><g font-family="monospace"><rect x="2" y="2" width="${w-4}" height="${h-20}" rx="4" fill="url(#pcb)" stroke="#688f74"/>${holes}<text x="${w/2}" y="19" text-anchor="middle" fill="#e4efdc" font-size="7">${r.columns}×2 CHARACTER LCD</text><rect x="${r.x-8}" y="${r.y-9}" width="${r.width+16}" height="${r.height+18}" rx="3" fill="#171f20" stroke="#85948a" stroke-width="1.3"/><rect x="${r.x-2}" y="${r.y-2}" width="${r.width+4}" height="${r.height+4}" fill="#4d6237"/><rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" fill="url(#lcd)"/>${cells}<text x="${w/2}" y="${r.y+r.height+14}" text-anchor="middle" font-size="5" fill="#d3e7ca">${parallel?'PARALLEL · RS / RW / E · D0–D7':'PCF8574 BACKPACK · I²C'}</text>${pads}</g></svg>`;
+ await writeFile(new URL('../dist/assets/'+d.asset,import.meta.url),svg);
+}
+console.log('LCD family: 8×2 and 16×2, parallel / I2C.');
