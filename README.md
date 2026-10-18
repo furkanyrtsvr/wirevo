@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.68.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.69.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -8,7 +8,11 @@ AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve 
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
 
-## Wirevo 0.68 · STM32 native ROM yolu, I²S ve ileri timer
+## Wirevo 0.69 · STM32 işlevsel profil
+
+Mevcut geliştirme etabı, kullanıcının kabul ettiği model sınırlarıyla kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel silikonla birebir çevrim/analog eşdeğerliği vaat edilmez; etabın kapanış şartı değildir. ROM yükleme/değiştirme işlem güvenliği düzeltildi; yalnız yeni 21 kontrol. Desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](docs/RELEASE_0.69.md).
+
+## Wirevo 0.68 · STM32 native ROM yolu, I²S ve ileri timer (tarihsel)
 
 Native salt-okunur ROM yükleme/boot alias; tail-chain/late-arrival ve nominal Flash/APB beklemeleri; I²S format/slave/full-duplex extension, TIM1 COM/preload/LOCK. Yalnız yeni `stm32-v068-*` testleri doğrulanır. ST ROM dökümü sağlanmadı; fiziksel çevrim/silikon eşdeğerliği ilan edilmez. Başka kart ailesine geçilmez. [Kesin kapsam](docs/RELEASE_0.68.md), [test kaydı](docs/qa/README.md), [aktif denetim](dist/notices/STM32-AUDIT.md).
 

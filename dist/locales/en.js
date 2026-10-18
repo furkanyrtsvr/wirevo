@@ -1,5 +1,11 @@
 // Turkish source captions -> English presentation. Stable values are never translated.
 export const EN={
+ 'STM32 işlevsel simülatör profili':'STM32 functional simulator profile',
+ 'Destekleniyor':'Supported',
+ 'Kısmi model':'Partial model',
+ 'Model sınırı / isteğe bağlı ayrıntı':'Model boundary / optional detail',
+ 'Kullanıcının kabul ettiği model sınırlarıyla mevcut geliştirme etabı kapatıldı. Orijinal ST ROM uyumluluğu, birebir silikon çevrimleri ve analog/PHY karakterizasyonu zorunlu kapanış şartı değildir. Desteklenen davranışlardaki gerçek hatalar normal bakım konusudur; tüm silikon özellikleri tamamlandı iddiası yoktur.':'The current development phase is closed with user-accepted model boundaries. Original ST ROM compatibility, exact silicon cycles and analog/PHY characterization are not closure requirements. Bugs in supported behavior remain normal maintenance; this is not a claim of complete silicon coverage.',
+ 'Kanıtlar sürüm bazlıdır; eski testler bu değişiklikte yeniden çalıştırılmadı. İşlevsel profilin kabulü, tüm fiziksel silikonun tamamlandığı anlamına gelmez.':'Evidence is release-specific; old tests were not rerun for this change. Accepting the functional profile does not mean complete physical silicon equivalence.',
  'I²C DMA ve ileri pin seçenekleri':'I²C DMA and advanced pin options',
  '400 kHz sensör/OLED DMA, F4 alternatif SPI1 pinleri, USART 0.5/1.5 stop, RTC alt-saniye alarmı ve aktarımı koruyan canlı sensör değişimi. Çok dosyalı C/C++ çevre istasyonu aynı devrede ADC, PWM alarmı ve EEPROM kaydını çalıştırır.':'400 kHz sensor/OLED DMA, F4 alternative SPI1 pins, USART 0.5/1.5 stop bits, RTC subsecond alarms and live sensor changes that preserve transfers. The multifile C/C++ environment station combines ADC, PWM alarms and EEPROM storage in one circuit.',
  'STM32 kapanış kontrolü':'STM32 acceptance review',

@@ -1,4 +1,8 @@
-# STM32 fiziksel-silikon denetimi · aktif
+# STM32 işlevsel simülatör profili · kabul edilen model sınırları
+
+## Güncel karar · 0.69
+
+19 Ekim 2026. Kullanıcının onayıyla orijinal ST ROM uyumluluğu, birebir silikon çevrimleri ve analog/PHY karakterizasyonu zorunlu etap kapanış şartı olmaktan çıkarıldı. Mevcut STM32 genişletme etabı kabul edilen sınırlarla kapatıldı. Bu, fiziksel silikonun tamamlandığı veya tüm yazılım ayrıntılarının uygulandığı anlamına gelmez. Önceki kayıtlardaki kısmi davranışlar isteğe bağlı ayrıntılar olarak görünür kalır; desteklenen işlevlerdeki gerçek hatalar normal bakımdır. ROM yükleme işlem güvenliği düzeltildi. [Kesin kapsam ve kanıt](../../docs/RELEASE_0.69.md). Aşağıdaki denetim ve geçiş engeli ifadeleri tarihseldir; eksikler gizlenmez ama otomatik zorunlu geliştirme borcuna dönüşmez.
 
 18 Ekim 2026. Gerçek C17/C++17 firmware, elektriksel hat ve register/IRQ kabulü. 0.63 ile yazılan “tamamlandı/donduruldu” iddiası geri çekildi. Aşağıdaki kalan maddeler yeniden gerçek geliştirme borcudur. Kartta bulunmayan bloklar ile yalnız laboratuvar ölçümüyle doğrulanabilen analog etkiler ayrıca belirtilir; bunlar yazılım davranışıyla karıştırılmaz.
 

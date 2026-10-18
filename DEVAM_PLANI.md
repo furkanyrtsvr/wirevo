@@ -1,5 +1,9 @@
 # Wirevo devam planı
 
+## Güncel karar · 0.69
+
+Kullanıcı, donanım olmadan doğrulanamayan ve eklenmeyen ayrıntıları model sınırı olarak kabul etti. Mevcut STM32 işlevsel simülatör genişletme etabı bu sınırlarla kapatıldı; tüm fiziksel silikon tamamlandı iddiası yoktur. Desteklenen davranışlardaki gerçek hatalar normal bakım konusudur. Başka kart eklenmedi ve kendiliğinden yeni aile çalışması başlatılmaz. [Kesin karar ve sınırlar](docs/RELEASE_0.69.md). Aşağıdaki geçiş engelleri önceki kararın tarihsel kaydıdır, güncel zorunluluk değildir.
+
 Güncel giriş: [belge dizini](docs/README.md). 0.68: native ROM yükleme, I²S full-duplex/format ve TIM1 COM/LOCK uygulandı; tail-chain/late-arrival ve nominal bus beklemeleri düzeltildi. [Kesin kanıt ve kalan fiziksel eşdeğerlik sınırları](docs/RELEASE_0.68.md). Önceki sürüm açıklamaları tarihsel kayıttır; başka aileye geçilmez.
 
 1. [Aktif STM32 fiziksel-silikon denetimi](dist/notices/STM32-AUDIT.md).

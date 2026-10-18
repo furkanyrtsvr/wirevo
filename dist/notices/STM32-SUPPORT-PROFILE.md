@@ -1,4 +1,8 @@
-# Güncel durum · 0.68
+# Güncel durum · 0.69
+
+Kullanıcının kabul ettiği model sınırlarıyla mevcut STM32 işlevsel simülatör genişletme etabı kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel çevrim/analog eşdeğerliği vaat edilmez ve zorunlu kapanış şartı değildir. Kısmi özellikler kapsam panelinde görünür; desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](../../docs/RELEASE_0.69.md). Alt sürümlerin zorunlu geçiş engelleri tarihseldir.
+
+# 0.68 (tarihsel)
 
 Native ROM yükleme/boot alias (ST binary sağlanmadı); tail-chain/late-arrival ve nominal Flash/APB beklemeleri; I²S format/slave/full-duplex extension, TIM1 COM/preload/LOCK. [Kesin kanıt sınırları](../../docs/RELEASE_0.68.md). Tam fiziksel çevrim ve silikon eşdeğerliği iddia edilmez; başka aileye geçilmez. Alt kayıtların eksik listeleri tarihseldir.
 

@@ -2,7 +2,11 @@
 
 Tarayıcıda elektronik devre ve firmware çalışma alanı. TR / EN dil seçimi sağ üsttedir; seçim bu tarayıcıda saklanır. Eski CircuitForge proje dosyaları ve aynı adresteki yerel kayıt anahtarları uyumluluk için korunur. Yayın adresi değiştiğinde tarayıcı depolaması adrese bağlı olduğundan eski adresteki projeler JSON/ZIP ile yeni adrese aktarılmalıdır.
 
-## Wirevo 0.68 · STM32 native ROM yolu, I²S ve ileri timer
+## Wirevo 0.69 · STM32 işlevsel profil
+
+Mevcut geliştirme etabı, kullanıcının kabul ettiği model sınırlarıyla kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel silikonla birebir çevrim/analog eşdeğerliği vaat edilmez. ROM yükleme/değiştirme işlem güvenliği düzeltildi; yalnız yeni 21 kontrol. Desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](../docs/RELEASE_0.69.md).
+
+## Wirevo 0.68 · STM32 native ROM yolu, I²S ve ileri timer (tarihsel)
 
 Salt-okunur native ROM yükleme/boot alias; tail-chain/late-arrival, nominal Flash/APB beklemeleri; I²S format/slave/full-duplex extension ve TIM1 COM/preload/LOCK. Yalnız yeni `stm32-v068-*` kabulü. [Uygulananlar ve kesin kanıt sınırları](../docs/RELEASE_0.68.md). Orijinal ST ROM sağlanmadı; tam fiziksel çevrim/silikon eşdeğerliği ilan edilmez. Başka kart ailesine geçilmez.
 

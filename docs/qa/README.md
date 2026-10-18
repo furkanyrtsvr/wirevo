@@ -1,5 +1,12 @@
 # Doğrulama kayıtları
 
+## 0.69 — 19 Ekim 2026 · yalnız bu turdaki yeni kabul
+
+- Kaynak ve GitHub kopyasında `npm run test:stm32-069`: **21/21 geçti**, hata/atlama/iptal yok; GitHub kopyasında0,09 saniye.
+- Dokuz profilin kapsam paneli ve başarısız ROM değiştirmede önceki fingerprint’in korunması; çıkarma hatası, çakışan async yükleme/çıkarma, doğru uyumluluk etiketi ve kabul edilen model politikası. ROM testleri JS bridge double kullanır; ST firmware veya native çevrim kanıtı değildir.
+- Eski testler çalıştırılmadı. CI bu push için yalnız `tests/stm32-v069-*.test.mjs` çalıştırır; sıradan push/PR kapısı korunur.
+- Kaynak ve GitHub kopyasında `npm run build` başarılı;471 offline-shell dosyası. Rust/native WASM değişmedi, yeniden derlenmedi. Kullanıcının kabul ettiği sınırlar RELEASE_0.69.md içindedir; fiziksel silikon tamamlandı iddiası yoktur.
+
 ## 0.68 — 19 Ekim 2026 · yalnız bu turdaki yeni kabul
 
 - GitHub çalışma kopyasında `npm run test:stm32-068`: **323/323 geçti**, hata/atlama/iptal yok;8,1 saniye. Native63, timer27, I²S224, worker ROM9. Kaynak kopyasında da323/323 başarılı.
