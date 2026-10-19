@@ -1,3 +1,4 @@
+import {validWireColor} from './wire-colors.js';
 import {bindExampleWires} from './esp-example-bindings.js';
 import {CATALOG,componentDefinition,buildNets,COLORS} from './core.js';
 import {ESP_BOARDS} from './esp-boards.js';
@@ -28,7 +29,7 @@ export function validateESPCircuit(raw,chip){
  });
  if(components.filter(c=>c.type==='board').length!==1)throw Error('ESP devresi bir kart içermelidir.');
  const definition=c=>espPartDefinition(c,chip),pins=new Set(components.flatMap(c=>definition(c).pins.map(p=>c.id+':'+p))),wireIds=new Set();
- const wires=raw.wires.map(w=>{if(!w||!/^[\w-]{1,40}$/.test(w.id)||wireIds.has(w.id)||!pins.has(w.from)||!pins.has(w.to)||w.from===w.to||!COLORS.includes(w.color))throw Error('ESP kablo/pin geçersiz.');wireIds.add(w.id);if(w.routing!==undefined&&!['direct','orthogonal'].includes(w.routing))throw Error('Kablo çizim biçimi geçersiz.');return{id:w.id,from:w.from,to:w.to,color:w.color,...(w.routing?{routing:w.routing}:{}),...(w.points?{points:structuredClone(w.points)}:{})};});
+ const wires=raw.wires.map(w=>{if(!w||!/^[\w-]{1,40}$/.test(w.id)||wireIds.has(w.id)||!pins.has(w.from)||!pins.has(w.to)||w.from===w.to||!validWireColor(w.color))throw Error('ESP kablo/pin geçersiz.');wireIds.add(w.id);if(w.routing!==undefined&&!['direct','orthogonal'].includes(w.routing))throw Error('Kablo çizim biçimi geçersiz.');return{id:w.id,from:w.from,to:w.to,color:w.color,...(w.routing?{routing:w.routing}:{}),...(w.points?{points:structuredClone(w.points)}:{})};});
  return{components,wires,settings:{pressed:false,moisture:50,pot:50}};
 }
 export function createESPBench(chip){const raw=({components:[{id:'mcu',type:'board',x:30,y:30,params:{}},{id:'r1',type:'resistor',x:360,y:100,params:{ohms:220}},{id:'led1',type:'led',x:510,y:90,params:{color:'red',vf:2}},{id:'btn1',type:'button',x:360,y:260,params:{pressed:false}}],wires:[['mcu:GPIO2','r1:1'],['r1:2','led1:A'],['led1:K','mcu:GND'],['mcu:GPIO3','btn1:1'],['btn1:2','mcu:GND']].map(([from,to],i)=>({id:'w'+i,from,to,color:i>2?'#3b82f6':'#14b8a6'}))});raw.wires=bindExampleWires(chip,raw.wires);return validateESPCircuit(raw,chip);}

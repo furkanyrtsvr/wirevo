@@ -25,7 +25,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run all tests across eight shards
-        if: ${{ !contains(github.event.head_commit.message, '[stm32-new-only]') && !contains(github.event.head_commit.message, '[stm32-066-only]') && !contains(github.event.head_commit.message, '[stm32-067-only]') && !contains(github.event.head_commit.message, '[stm32-068-only]') && !contains(github.event.head_commit.message, '[stm32-069-only]') && !contains(github.event.head_commit.message, '[tiva-070-only]') && !contains(github.event.head_commit.message, '[tiva-071-only]') && !contains(github.event.head_commit.message, '[lcd-072-only]') && !contains(github.event.head_commit.message, '[common-073-only]') && !contains(github.event.head_commit.message, '[components-074-only]') && !contains(github.event.head_commit.message, '[expansion-075-only]') && !contains(github.event.head_commit.message, '[protocols-076-only]') }}
+        if: ${{ !contains(github.event.head_commit.message, '[stm32-new-only]') && !contains(github.event.head_commit.message, '[stm32-066-only]') && !contains(github.event.head_commit.message, '[stm32-067-only]') && !contains(github.event.head_commit.message, '[stm32-068-only]') && !contains(github.event.head_commit.message, '[stm32-069-only]') && !contains(github.event.head_commit.message, '[tiva-070-only]') && !contains(github.event.head_commit.message, '[tiva-071-only]') && !contains(github.event.head_commit.message, '[lcd-072-only]') && !contains(github.event.head_commit.message, '[common-073-only]') && !contains(github.event.head_commit.message, '[components-074-only]') && !contains(github.event.head_commit.message, '[expansion-075-only]') && !contains(github.event.head_commit.message, '[protocols-076-only]') && !contains(github.event.head_commit.message, '[visuals-077-only]') }}
         run: node --test --test-concurrency=2 --test-shard=${{ matrix.shard }}/8 tests/*.test.mjs
       # Explicit user-requested validation scope for the 0.65 implementation.
       # Ordinary pushes, pull requests and manual runs retain the full gate.
@@ -66,12 +66,15 @@ jobs:
       - name: Run only new 0.75 expansion acceptance checks
         if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[expansion-075-only]') }}
         run: node --test --test-shard=${{ matrix.shard }}/8 tests/expansion-v075.test.mjs tests/expansion-profile075.test.mjs
-      - name: Install AVR compiler for new 0.76 protocol checks
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[protocols-076-only]') }}
+      - name: Install AVR compiler for new protocol and visual-card firmware checks
+        if: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, '[protocols-076-only]') || contains(github.event.head_commit.message, '[visuals-077-only]')) }}
         run: npm install --prefix .sites-runtime/avr-tools --no-audit --no-fund @horang-corp/avr-gcc-wasm@0.2.0
       - name: Run only newly implemented 0.76 protocol paths
         if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[protocols-076-only]') }}
         run: node --test --test-shard=${{ matrix.shard }}/8 tests/protocols-v076-*.test.mjs
+      - name: Run only newly added 0.77 visual and card checks
+        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[visuals-077-only]') }}
+        run: node --test --test-shard=${{ matrix.shard }}/8 tests/visuals-v077-*.test.mjs
   release:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: verify

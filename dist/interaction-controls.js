@@ -1,0 +1,4 @@
+export function toggleContact(c){if(c.type==='switch'){c.params.closed=(c.params.closed??1)?0:1;return;}if(c.type==='spdt'){c.params.position=c.params.position==='right'?'left':'right';return;}throw Error('Anahtar türü geçersiz.');}
+export function switchControl(c,scale){if(c.type!=='switch')return '';return `<rect data-switch-toggle="${c.id}" x="${10*scale}" y="${2*scale}" width="${29*scale}" height="${24*scale}" rx="3" fill="transparent" role="button" tabindex="0" aria-label="${c.id} aç/kapat" aria-pressed="${!!(c.params.closed??1)}" style="cursor:pointer"><title>Tıkla veya Enter: ON / OFF</title></rect>`;}
+// Reset and run are FIFO messages to the same worker; no stale pause intent.
+export function restartFirmware(worker,payload,speed=1){worker.postMessage({type:'reset',...payload});worker.postMessage({type:'run',speed});}

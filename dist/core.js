@@ -1,3 +1,6 @@
+import {RFID_CARD} from './expansion-rfid-cards.js';
+import {COLORS,validWireColor} from './wire-colors.js';
+export {COLORS} from './wire-colors.js';
 import {EXPANSION_CATALOG} from './expansion-hardware.js';
 import {normalizePinConfig} from './stm32-pin-config.js';
 import {BLUETOOTH_PART} from './bluetooth-model.js';
@@ -37,7 +40,7 @@ import {normalizeLibraries} from './libraries.js';
 const scale=1.35;
 const physical=(definition,category,detail)=>({name:definition.name,category,detail,width:definition.width*scale,height:definition.height*scale,pinDefs:definition.pins.map(p=>({...p,x:p.x*scale,y:p.y*scale})),pins:definition.pins.filter(p=>p.connectable!==false).map(p=>p.id),asset:definition.asset,scale});
 export const CATALOG={
-  netLabel:NET_LABEL,bluetooth:BLUETOOTH_PART,...EXPANSION_CATALOG,
+  rfidCard:RFID_CARD,netLabel:NET_LABEL,bluetooth:BLUETOOTH_PART,...EXPANSION_CATALOG,
   ...LAB_CATALOG,
   ...GENERIC_CATALOG,...DIODE_CATALOG,...SHIFT_CATALOG,...EXTRA_SENSOR_CATALOG,...SPI_GPIO_CATALOG,...TFT_CATALOG,...ACTUATOR_CATALOG,...LOADCELL_CATALOG,...DIGITAL_CATALOG,...BASIC_CATALOG,...PULSE_CATALOG,
   ...SENSOR_CATALOG,
@@ -57,7 +60,7 @@ export const CATALOG={
 };
 export const BOARD_CATALOG=Object.fromEntries(Object.entries(BOARDS).map(([key,d])=>[key,physical(d,'Kartlar',d.mcu+' · '+(d.hz/1e6)+' MHz')]));
 export const componentDefinition=c=>c?.type==='netLabel'?netLabelDefinition(c):c?.type==='board'?BOARD_CATALOG[c.params?.model||'uno']:CATALOG[c?.type];
-export const COLORS=['#14b8a6','#ef4444','#3b82f6','#f59e0b','#8b5cf6','#64748b','#e2e8f0','#22c55e'];
+
 export const endpoint=(id,pin)=>`${id}:${pin}`;
 export function pinExists(p,e){if(typeof e!=='string')return false;const [id,pin,...extra]=e.split(':');return !extra.length&&p.components.some(c=>c.id===id&&componentDefinition(c)?.pins.includes(pin));}
 const finite=n=>Number.isFinite(n)&&Math.abs(n)<=10000;
@@ -70,7 +73,7 @@ export function validateProject(raw){
   const ids=new Set();
   for(const c of raw.components){if(!c||!CATALOG[c.type]||typeof c.id!=='string'||!/^[\w-]{1,40}$/.test(c.id)||ids.has(c.id))throw new Error('Bileşen kimliği geçersiz.');ids.add(c.id);if(c.type==='board'&&!Object.hasOwn(BOARDS,c.params?.model||'uno'))throw Error('Desteklenmeyen kart modeli.');validatePartParameters(c);for(const key of ['mirrorX','mirrorY'])if(c[key]!==undefined&&typeof c[key]!=='boolean')throw Error('Bileşen aynalama ayarı geçersiz.');if(!finite(c.x)||!finite(c.y)||c.rotation!==undefined&&![0,90,180,270].includes(c.rotation))throw new Error('Bileşen konumu geçersiz.');if(!c.params||typeof c.params!=='object'||Array.isArray(c.params))throw new Error('Bileşen ayarları geçersiz.');if(c.type==='supply'&&c.params.voltage!==undefined&&(!Number.isFinite(c.params.voltage)||c.params.voltage<0||c.params.voltage>30))throw Error('Güç kaynağı: 0–30 V.');if(c.type==='resistor'&&(!Number.isFinite(c.params.ohms)||c.params.ohms<.001||c.params.ohms>1e7))throw new Error('Direnç: 1 mΩ–10 MΩ.');if(['pot','sensor'].includes(c.type)&&c.params.value!==undefined&&(!Number.isFinite(c.params.value)||c.params.value<0||c.params.value>100))throw new Error('Analog giriş: %0–100.');if(c.params.pressed!==undefined&&typeof c.params.pressed!=='boolean')throw new Error('Buton durumu geçersiz.');if(c.type==='spdt'&&c.params.position!==undefined&&!['left','right'].includes(c.params.position))throw Error('Anahtar konumu geçersiz.');if(c.type==='relay'&&c.params.activeHigh!==undefined&&typeof c.params.activeHigh!=='boolean')throw Error('Röle aktif seviyesi geçersiz.');if(c.type==='oled'&&c.params.address!==undefined&&![60,61].includes(c.params.address))throw Error('OLED adresi: 0x3C veya 0x3D.');if(c.type==='led'&&c.params.color!==undefined&&!['red','green','blue','yellow'].includes(c.params.color))throw new Error('LED rengi geçersiz.');}
   const wireIds=new Set();
-  for(const w of raw.wires){if(!w||typeof w.id!=='string'||!/^[\w-]{1,40}$/.test(w.id)||wireIds.has(w.id)||!pinExists(raw,w.from)||!pinExists(raw,w.to)||w.from===w.to)throw new Error('Kablo veya pin geçersiz.');wireIds.add(w.id);if(w.routing!==undefined&&!['direct','orthogonal'].includes(w.routing))throw Error('Kablo çizim biçimi geçersiz.');if(!COLORS.includes(w.color)||w.points!==undefined&&(!Array.isArray(w.points)||w.points.length>64||w.points.some(p=>!p||!finite(p.x)||!finite(p.y))))throw new Error('Kablo rotası geçersiz.');}
+  for(const w of raw.wires){if(!w||typeof w.id!=='string'||!/^[\w-]{1,40}$/.test(w.id)||wireIds.has(w.id)||!pinExists(raw,w.from)||!pinExists(raw,w.to)||w.from===w.to)throw new Error('Kablo veya pin geçersiz.');wireIds.add(w.id);if(w.routing!==undefined&&!['direct','orthogonal'].includes(w.routing))throw Error('Kablo çizim biçimi geçersiz.');if(!validWireColor(w.color)||w.points!==undefined&&(!Array.isArray(w.points)||w.points.length>64||w.points.some(p=>!p||!finite(p.x)||!finite(p.y))))throw new Error('Kablo rotası geçersiz.');}
   const gpioPins=new Set(projectBoard(raw).pins.filter(p=>p.port).map(p=>p.net||p.id)),gpio=p=>typeof p==='string'&&gpioPins.has(p);
   const s=raw.settings;if(!s||!['moisture','threshold','pot'].every(k=>Number.isFinite(s[k])&&s[k]>=0&&s[k]<=100)||typeof s.pressed!=='boolean')throw new Error('Giriş ayarları geçersiz.');
   if(s.tracePins!==undefined&&(!Array.isArray(s.tracePins)||s.tracePins.length>3||s.tracePins.some(p=>!gpio(p))||new Set(s.tracePins).size!==s.tracePins.length))throw new Error('Analizör kanalları geçersiz.');

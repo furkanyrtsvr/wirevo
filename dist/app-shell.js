@@ -1,3 +1,3 @@
-export const APP_CACHE='wirevo-app-0.76-protocols';
+export const APP_CACHE='wirevo-app-0.77-visuals';
 // AVR shell + ESP emulator remain bounded; the 22.6 MB Clang package has its own cache.
 export const APP_SHELL_LIMIT=21*1024*1024;

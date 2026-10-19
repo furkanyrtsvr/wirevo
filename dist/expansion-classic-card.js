@@ -3,8 +3,8 @@ export const crcA=bytes=>{let crc=0x6363;for(let v of bytes){v^=crc&255;v^=(v<<4
 const DATA=[['AB','AB','AB','AB'],['AB','','','AB'],['AB','','',''],['B','B','',''],['AB','B','',''],['B','','',''],['AB','B','B','AB'],['','','','']];
 const TRAILER=[['A','A','','A','A'],['A','A','A','A','A'],['','A','','A',''],['B','AB','B','','B'],['B','AB','','','B'],['','AB','B','',''],['','AB','','',''],['','AB','','','']];
 export class ClassicCard {
- constructor(){this.cards=new Map();this.setEnvironment({});}
- setEnvironment(p){const id=(p.uid??0xdeadbeef)>>>0;if(id!==this.id){this.id=id;if(!this.cards.has(id)){const m=new Uint8Array(1024);for(let s=0;s<16;s++){m.fill(255,s*64+48,s*64+54);m.set([255,7,128,105],s*64+54);m.fill(255,s*64+58,s*64+64);}m.set(this.uid());m[4]=this.uid().reduce((a,b)=>a^b,0);this.cards.set(id,m);}this.memory=this.cards.get(id);this.reset();}this.present=!!(p.present??1);if(!this.present)this.reset();}
+ constructor(){this.programs=new Map();this.cards=new Map();this.setEnvironment({});}
+ setEnvironment(p){const id=(p.uid??0xdeadbeef)>>>0;if(id!==this.id){this.id=id;if(!this.cards.has(id)){const m=new Uint8Array(1024);for(let s=0;s<16;s++){m.fill(255,s*64+48,s*64+54);m.set([255,7,128,105],s*64+54);m.fill(255,s*64+58,s*64+64);}m.set(this.uid());m[4]=this.uid().reduce((a,b)=>a^b,0);this.cards.set(id,m);}this.memory=this.cards.get(id);this.reset();}if(typeof p.initialData==='string'&&this.programs.get(id)!==p.initialData){const bytes=new TextEncoder().encode(p.initialData);this.memory.fill(0,64,80);this.memory.set(bytes.subarray(0,16),64);this.programs.set(id,p.initialData);}this.present=!!(p.present??1);if(!this.present)this.reset();}
  uid(){return[this.id>>>24,this.id>>>16&255,this.id>>>8&255,this.id&255];}
  reset(){this.auth=null;this.selected=false;this.halted=false;this.transferValue=null;}
  acl(block){if(!Number.isInteger(block)||block<0||block>=64)return null;const a=(block>>2)*64+54,m=this.memory,c1=m[a+1]>>4,c2=m[a+2]&15,c3=m[a+2]>>4;if((c1^(m[a]&15))!==15||(c2^(m[a]>>4))!==15||(c3^(m[a+1]&15))!==15)return null;const i=block&3;return((c1>>i&1)<<2)|((c2>>i&1)<<1)|(c3>>i&1);}
