@@ -1,5 +1,9 @@
 # Wirevo
 
+## Wirevo 0.75 · 50 yeni bileşen
+
+Ortak kütüphane 124 kart-dışı parçaya çıktı. 6×6 tact, koyu 12 mm buton, yeni ekranlar/sensörler/depolama/haberleşme modelleri AVR, ESP32, STM32 ve Tiva elektriksel ağına bağlıdır. Yalnız yeni sürüm kontrolleri çalıştırılır. [Desteklenen davranışlar ve sınırlar](../docs/RELEASE_0.75.md).
+
 ## Wirevo 0.74 · Native bileşen bağlantıları
 
 MCP23017/MPU6050 elektriksel çıkışları, aygıt zamanlaması, seviye dönüştürücü arkasındaki TM1637, ohmmetre ve native RC/RL geçici rejim tamamlandı. Ortak 74 parça ESP32-C3, STM32F103C8 ve TM4C123 üzerinde derlenen C17 firmware ile sınanır; eski testler çalıştırılmaz. [Yeni doğrulama ve kesin sınırlar](../docs/RELEASE_0.74.md).

@@ -2,7 +2,7 @@ import {componentDefinition} from './core.js';
 import {CATALOG}from'./core.js';
 import {pinPoint,localPoint}from'./geometry.js';
 import {placementClearance}from'./clearance.js';
-export const MOUNTABLE=new Set(['dht11','dht22','led','resistor','button','pot','diode','zener','npn','mosfet','eeprom','opamp','capacitor','inductor','ds18b20','tmp36','lm35','hc4050','mcp3008','ldr','hc595','hc165','mcp23s17','mcp23017']);
+export const MOUNTABLE=new Set(['tact6','dht11','dht22','led','resistor','button','pot','diode','zener','npn','mosfet','eeprom','opamp','capacitor','inductor','ds18b20','tmp36','lm35','hc4050','mcp3008','ldr','hc595','hc165','mcp23s17','mcp23017']);
 const mountingDefs=c=>componentDefinition(c).pinDefs.filter(p=>p.mountable!==false);
 const keys=c=>mountingDefs(c).map(p=>p.id);
 const holeKey=(id,pin)=>id+':'+pin;

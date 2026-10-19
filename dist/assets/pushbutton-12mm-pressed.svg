@@ -1,67 +1,18 @@
-<!-- Adapted Wokwi Elements artwork; Copyright (c) 2020 Uri Shaked; MIT license; see ../WOKWI-LICENSE.txt. -->
-<svg
-      width="67.28314960629922"
-      height="45.35433070866142"
-      version="1.1"
-      viewBox="0 0 67.28314960629922 45.35433070866142"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-    >
-<g transform="translate(11.213858267716537 0.24944881889763693) scale(3.7379527559055123)">
-      <defs>
-        <linearGradient id="grad-up-cf-button" x1="0" x2="1" y1="0" y2="1">
-          <stop stop-color="#ffffff" offset="0" />
-          <stop stop-color="#24272b" offset="0.3" />
-          <stop stop-color="#24272b" offset="0.5" />
-          <stop offset="1" />
-        </linearGradient>
-        <linearGradient id="grad-down-cf-button" x1="1" x2="0" y1="1" y2="0">
-          <stop stop-color="#ffffff" offset="0" />
-          <stop stop-color="#24272b" offset="0.3" />
-          <stop stop-color="#24272b" offset="0.5" />
-          <stop offset="1" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="12" height="12" rx=".44" ry=".44" fill="#464646" />
-      <rect x=".75" y=".75" width="10.5" height="10.5" rx=".211" ry=".211" fill="#eaeaea" />
-      
-      <g fill="#1b1b1b">
-        <circle cx="1.767" cy="1.7916" r=".37" />
-        <circle cx="10.161" cy="1.7916" r=".37" />
-        <circle cx="10.161" cy="10.197" r=".37" />
-        <circle cx="1.767" cy="10.197" r=".37" />
-      </g>
-      <g fill="#999" stroke-width="1.0154">
-        <path
-          d="m12.365 2.426c0.06012 0 0.10849 0.0469 0.1085 0.10522v0.38698h2.2173c0.12023 0 0.217 0.0938 0.217 0.21045v0.50721c0 0.1166-0.09677 0.21045-0.217 0.21045h-2.2173v0.40101c0 0.0583-0.0484 0.10528-0.1085 0.10528h-0.36835v-1.9266z"
-        />
-        <path
-          d="m12.365 7.5c0.06012 0 0.10849 0.0469 0.1085 0.10522v0.38698h2.2173c0.12023 0 0.217 0.0938 0.217 0.21045v0.50721c0 0.1166-0.09677 0.21045-0.217 0.21045h-2.2173v0.40101c0 0.0583-0.0484 0.10528-0.1085 0.10528h-0.36835v-1.9266z"
-        />
-        <path
-          d="m-0.35085 4.3526c-0.06012 0-0.10849-0.0469-0.1085-0.10522v-0.38698h-2.2173c-0.12023 0-0.217-0.0938-0.217-0.21045v-0.50721c0-0.1166 0.09677-0.21045 0.217-0.21045h2.2173v-0.40101c0-0.0583 0.0484-0.10528 0.1085-0.10528h0.36835v1.9266z"
-        />
-        <path
-          d="m-0.35085 9.4266c-0.06012 0-0.10849-0.0469-0.1085-0.10522v-0.38698h-2.2173c-0.12023 0-0.217-0.0938-0.217-0.21045v-0.50721c0-0.1166 0.09677-0.21045 0.217-0.21045h2.2173v-0.40101c0-0.0583 0.0484-0.10528 0.1085-0.10528h0.36835v1.9266z"
-        />
-      </g>
-      <g class="clickable-element">
-        <circle cx="6" cy="6" r="3.822" fill="url(#grad-down-cf-button)" />
-        <circle
-          class="button-active-circle" opacity="1"
-          cx="6"
-          cy="6"
-          r="3.822"
-          fill="url(#grad-down-cf-button)"
-        />
-        <circle
-          cx="6"
-          cy="6"
-          r="2.9"
-          fill="#24272b"
-          stroke="#2f2f2f"
-          stroke-opacity=".47"
-          stroke-width=".08"
-        />
-      </g>
-    </g></svg>
+<!-- Original Wirevo artwork. Original 12 mm footprint dimensions and pin positions retained. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="67.28314960629922" height="45.35433070866142" viewBox="0 0 67.28314960629922 45.35433070866142">
+  <defs>
+    <linearGradient id="case" x2=".25" y2="1"><stop stop-color="#465462"/><stop offset="1" stop-color="#141c26"/></linearGradient>
+    <linearGradient id="metal" x2="1" y2="1"><stop stop-color="#c4ced7"/><stop offset=".35" stop-color="#718391"/><stop offset=".6" stop-color="#a5b5c2"/><stop offset="1" stop-color="#536776"/></linearGradient>
+    <linearGradient id="cap" x2=".3" y2="1"><stop stop-color="#152330"/><stop offset="1" stop-color="#41596c"/></linearGradient>
+  </defs>
+  <path d="M.4 10.8H13V15H.4ZM.4 29.8H13V34H.4ZM54 10.8H66.94V15H54ZM54 29.8H66.94V34H54Z" fill="url(#metal)" stroke="#536676" stroke-width=".6"/>
+  <rect x="11.25" y="0.65" width="44.8" height="44.1" rx="2" fill="url(#case)" stroke="#101822" stroke-width="1.1"/>
+  <rect x="13.55" y="2.9499999999999997" width="40.199999999999996" height="39.5" rx="1.2" fill="url(#metal)" stroke="#cbd5df" stroke-width=".6"/>
+  <g fill="#23323f" stroke="#c9d4df" stroke-width=".5">
+    <circle cx="15.75" cy="5.15" r="1.4"/><circle cx="51.55" cy="5.15" r="1.4"/>
+    <circle cx="15.75" cy="40.25" r="1.4"/><circle cx="51.55" cy="40.25" r="1.4"/>
+  </g>
+  <circle cx="33.65" cy="22.65" r="14.200000000000001" fill="#101a24" stroke="#536b7e" stroke-width=".75"/>
+  <circle cx="33.65" cy="23.2" r="11.9" fill="url(#cap)" stroke="#67c5de" stroke-width="1"/>
+  <path d="M24.793999999999997 28.799999999999997A9.840000000000002 9.840000000000002 0 0 0 42.506 28.799999999999997" fill="none" stroke="#d1dce6" stroke-opacity=".45" stroke-width=".7" stroke-linecap="round"/>
+</svg>

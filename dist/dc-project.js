@@ -1,3 +1,4 @@
+import {stampExpansion} from './expansion-dc.js';
 import {boardDefinition,boardGPIO} from './board-hardware.js';
 import {stampTFT} from './tft-runtime.js';
 import {stampActuator} from './actuator-devices.js';
@@ -35,6 +36,7 @@ export function solveProjectDC(project,firmware,netlist,{pwmAverage=true,drivers
       if(c.type==='supply'){set(net(c,'VCC'),c.params.voltage??5,c.id);set(net(c,'GND'),0,c.id);}
       else if(c.type==='signalgen'){set(net(c,'GND'),0,c.id);if((c.params.enabled??1)&&!drivers.some(d=>d.endpoint===c.id+':OUT')){const source='$driver:'+c.id+':OUT';set(source,generatorVoltage(c.params),c.id);branch(source,source,net(c,'OUT'),50);}}
       else if(c.type==='multimeter'){if(c.params.mode==='current')branch(c.id+':ammeter',net(c,'A'),net(c,'COM'),.1);else if((c.params.mode??'voltage')==='voltage')branch(c.id+':voltmeter',net(c,'V'),net(c,'COM'),1e7);}
+      else if(stampExpansion(c,{net,branch,sensors,addNode,leds,npns,mosfets,relays})){}
       else if(stampTFT(c,{net,branch,sensors,addNode})){}
       else if(stampActuator(c,{net,branch,sensors,addNode})){}
       else if(stampDigital(c,{net,branch})){}
@@ -43,7 +45,7 @@ export function solveProjectDC(project,firmware,netlist,{pwmAverage=true,drivers
       else if(c.type==='rheostat')branch(c.id,net(c,'1'),net(c,'2'),Math.max(.001,(c.params.ohms??1000)*(c.params.value??50)/100));
       else if(c.type==='coilRelay'){branch(c.id+':coil',net(c,'A1'),net(c,'A2'),c.params.coilOhms??70);relays.push({id:c.id,vcc:net(c,'A1'),gnd:net(c,'A2'),com:net(c,'COM'),no:net(c,'NO'),nc:net(c,'NC'),coil:true,nominalVoltage:c.params.nominalVoltage??5});}
       else if(c.type==='resistor')branch(c.id,net(c,'1'),net(c,'2'),c.params.ohms);
-      else if(['lcd8p','lcd16p'].includes(c.type)){for(const pin of ['GND','VCC','VO','RS','RW','E',...Array.from({length:8},(_,i)=>'D'+i),'A','K'])addNode(net(c,pin));branch(c.id+':backlight',net(c,'A'),net(c,'K'),220);}
+      else if(['lcd8p','lcd16p','lcd20p'].includes(c.type)){for(const pin of ['GND','VCC','VO','RS','RW','E',...Array.from({length:8},(_,i)=>'D'+i),'A','K'])addNode(net(c,pin));branch(c.id+':backlight',net(c,'A'),net(c,'K'),220);}
       else if(deviceDefinition(c.type)?.bus==='I2C'){
         const def=deviceDefinition(c.type);addNode(net(c,def.power.gnd));addNode(net(c,def.power.vcc));
         if(def.pullup){branch(c.id+':sda-pullup',net(c,def.power.vcc),net(c,def.pins.data),def.pullup);branch(c.id+':scl-pullup',net(c,def.power.vcc),net(c,def.pins.clock),def.pullup);}

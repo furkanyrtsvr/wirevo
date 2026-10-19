@@ -1,3 +1,5 @@
+import {attachExpansionUART} from './expansion-uart.js';
+import {attachExpansionRuntime,EXPANSION_RUNTIME_TYPES} from './expansion-runtime.js';
 import {attachShiftRuntime} from './shift-runtime.js';
 import {attachSPIGPIORuntime} from './spi-gpio-runtime.js';
 import {attachSPIRuntime} from './spi-runtime.js';
@@ -12,11 +14,11 @@ import {attachUARTDevices} from './uart-device-runtime.js';
 
 // Reuse the Arduino component models on native electrical nets. The facade
 // supplies model time and resolved GPIO only: no invented AVR registers or SPI.
-const models=[
+const models=[['expansionUART',['dfplayer','gps'],attachExpansionUART],['expansion',EXPANSION_RUNTIME_TYPES,attachExpansionRuntime],
  ['shiftDevices',['hc595','hc165'],attachShiftRuntime],
  ['spiGPIO',['mcp23s17'],attachSPIGPIORuntime],
  ['spi',['matrix8','digits8','bmp280'],(r,e,p)=>attachSPIRuntime(r,e,p,{gpioOnly:true,types:['matrix8','digits8','bmp280']})],
- ['tftDevices',['tft7735','tft7789'],attachTFTRuntime],
+ ['tftDevices',['tft7735','tft7789','ili9341'],attachTFTRuntime],
  ['digitalDevices',['dht11','dht22','hx711','tm1637','ky040'],attachDigitalRuntime],
  ['pulseDevices',['hcSr04','servo'],attachPulseRuntime],
  ['actuatorDevices',['ws2812','stepper28byj'],attachActuatorRuntime],
@@ -27,7 +29,7 @@ const models=[
 ];
 export class NativeComponents {
  constructor(circuit){this.c=circuit;this.adapters=new Map();this.observers=new Set();this.drivers=new Map();this.revision=0;this.active=false;const self=this;
-  this.runtime={cpu:{get cycles(){return self.c.cycle();},addClockEvent(fn,delay){self.c.clockEvents.push({at:Math.ceil(self.c.cycle()+Math.max(1,delay)),fn,moduleEvent:true});self.c.clockEvents.sort((a,b)=>a.at-b.at);}},usarts:[],bus:{uart:[]},get gpioPins(){return Object.keys(self.c.pins||{});},readPin(pin){const p=self.c.pins?.[pin]||{},v=self.c.solution.voltages.get(self.c.solution.netlist.net(self.c.board.id+':'+pin));return{...p,high:p.outputEnabled?!!p.high:Number.isFinite(v)&&v>=2.31};},snapshot(){return{pins:self.c.pins||{}};}};
+  this.runtime={cpu:{get cycles(){return self.c.cycle();},addClockEvent(fn,delay){self.c.clockEvents.push({at:Math.ceil(self.c.cycle()+Math.max(1,delay)),fn,moduleEvent:true});self.c.clockEvents.sort((a,b)=>a.at-b.at);}},usarts:[],bus:{uart:[]},get nonvolatile(){return self.c.runtime.nonvolatile??=new Map();},get gpioPins(){return Object.keys(self.c.pins||{});},readPin(pin){const p=self.c.pins?.[pin]||{},v=self.c.solution.voltages.get(self.c.solution.netlist.net(self.c.board.id+':'+pin));return{...p,high:p.outputEnabled?!!p.high:Number.isFinite(v)&&v>=2.31};},snapshot(){return{pins:self.c.pins||{}};}};
   this.engine={get solution(){return self.c.solution;},subscribe(fn){self.observers.add(fn);return()=>self.observers.delete(fn);},setDrivers(owner,next){const old=self.drivers.get(owner)||[];if(JSON.stringify(old)!==JSON.stringify(next)){self.drivers.set(owner,next);self.revision++;}return self.c.solution;},deviceController(id,type,create){return self.c.controllers.get(id)?.controller??create();}};
   this.update(circuit.project);
  }

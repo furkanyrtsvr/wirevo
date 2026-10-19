@@ -1,3 +1,4 @@
+import {EXPANSION_CATALOG} from './expansion-hardware.js';
 import {normalizePinConfig} from './stm32-pin-config.js';
 import {BLUETOOTH_PART} from './bluetooth-model.js';
 import {NET_LABEL,joinNetLabels,netLabelDefinition} from './net-label.js';
@@ -36,7 +37,7 @@ import {normalizeLibraries} from './libraries.js';
 const scale=1.35;
 const physical=(definition,category,detail)=>({name:definition.name,category,detail,width:definition.width*scale,height:definition.height*scale,pinDefs:definition.pins.map(p=>({...p,x:p.x*scale,y:p.y*scale})),pins:definition.pins.filter(p=>p.connectable!==false).map(p=>p.id),asset:definition.asset,scale});
 export const CATALOG={
-  netLabel:NET_LABEL,bluetooth:BLUETOOTH_PART,
+  netLabel:NET_LABEL,bluetooth:BLUETOOTH_PART,...EXPANSION_CATALOG,
   ...LAB_CATALOG,
   ...GENERIC_CATALOG,...DIODE_CATALOG,...SHIFT_CATALOG,...EXTRA_SENSOR_CATALOG,...SPI_GPIO_CATALOG,...TFT_CATALOG,...ACTUATOR_CATALOG,...LOADCELL_CATALOG,...DIGITAL_CATALOG,...BASIC_CATALOG,...PULSE_CATALOG,
   ...SENSOR_CATALOG,
@@ -99,7 +100,7 @@ export function buildNets(project,definition=componentDefinition){
   const parent=new Map();for(const c of project.components)for(const p of definition(c).pins)parent.set(endpoint(c.id,p),endpoint(c.id,p));
   const root=a=>{if(!parent.has(a))return undefined;let p=a;while(p!==parent.get(p))p=parent.get(p);let n=a;while(n!==p){const next=parent.get(n);parent.set(n,p);n=next;}return p;};
   const join=(a,b)=>{a=root(a);b=root(b);if(a!==undefined&&b!==undefined&&a!==b)parent.set(a,b);};
-  for(const c of project.components){const groups=new Map();for(const p of definition(c).pinDefs){if(p.connectable===false)continue;const group=p.bus||p.net;if(group){if(groups.has(group))join(endpoint(c.id,p.id),groups.get(group));else groups.set(group,endpoint(c.id,p.id));}}if(c.type==='button'&&(c.params.pressed??project.settings.pressed))join(endpoint(c.id,'1'),endpoint(c.id,'2'));}
+  for(const c of project.components){const groups=new Map();for(const p of definition(c).pinDefs){if(p.connectable===false)continue;const group=p.bus||p.net;if(group){if(groups.has(group))join(endpoint(c.id,p.id),groups.get(group));else groups.set(group,endpoint(c.id,p.id));}}if(['button','tact6'].includes(c.type)&&(c.params.pressed??project.settings.pressed))join(endpoint(c.id,'1'),endpoint(c.id,'2'));}
   for(const c of project.components)if(c.type==='board')for(const p of definition(c).pinDefs)if(p.port&&p.net&&p.connectable!==false&&p.id!==p.net){const alias=endpoint(c.id,p.net);if(!parent.has(alias))parent.set(alias,alias);join(alias,endpoint(c.id,p.id));}
   for(const w of project.wires)join(w.from,w.to);
   joinNetLabels(project,join);

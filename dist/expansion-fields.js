@@ -1,0 +1,23 @@
+const number=(key,label,min,max,value,step=.1)=>({key,label,min,max,value,step});
+export const EXPANSION_FIELDS={
+ mfrc522:[number('uid','Kart UID (32-bit)',0,4294967295,3735928559,1),number('present','Sanal kart',0,1,1,1)],pn532:[number('uid','Kart UID (32-bit)',0,4294967295,3735928559,1),number('present','Sanal kart',0,1,1,1)],
+ bme680:[number('temperature','Sıcaklık (°C)',-40,85,25),number('pressure','Basınç (hPa)',300,1100,1013.25),number('humidity','Nem (%)',0,100,50),number('gasResistance','Gaz R (Ω)',1000,10000000,100000,1)],
+ vl53l0x:[number('distance','Mesafe (mm)',0,8190,100,1)],
+ bme280:[number('temperature','Sıcaklık (°C)',-40,85,25),number('pressure','Basınç (hPa)',300,1100,1013.25),number('humidity','Nem (%)',0,100,50)],
+ tcs34725:['red','green','blue','clear'].map((key,i)=>number(key,key+' ADC',0,65535,[1500,2500,1000,5000][i],1)),
+ max30102:[number('red','RED ADC',0,262143,50000,1),number('infrared','IR ADC',0,262143,60000,1)],
+ xpt2046:[number('x','X',0,4095,2048,1),number('y','Y',0,4095,2048,1),{key:'pressed',label:'Panel basılı',value:false,options:[[false,'Hayır'],[true,'Evet']]}],
+ irEmitter:[number('channel','Sanal optik kanal',1,32,1,1)],irReceiver:[number('channel','Sanal optik kanal',1,32,1,1)],
+ i2sMic:[number('sample','Signed PCM örneği',-8388608,8388607,1048576,1)],
+ gps:[number('latitude','Enlem',-90,90,41.0082,.0001),number('longitude','Boylam',-180,180,28.9784,.0001)],
+ tact6:[{key:'pressed',label:'Buton',value:false,options:[[false,'Bırakıldı'],[true,'Basılı']]}],
+ water:[number('level','Su seviyesi (%)',0,100,50)],rain:[number('level','Yağmur (%)',0,100,50),number('threshold','Eşik (%)',0,100,50)],soilProbe:[number('level','Nem (%)',0,100,50),number('threshold','Eşik (%)',0,100,50)],
+ dcmotor:[number('ohms','Sargı R (Ω)',1,10000,100),number('nominalVoltage','Nominal V',1,48,5),number('nominalRPM','Nominal RPM',1,100000,200)],
+ pnp:[number('beta','β',1,1000,100),number('vbe','VEB (V)',.1,2,.7),number('vceSat','VEC sat (V)',.01,2,.2)],
+ pmos:[number('gateOn','Açılma |VGS| (V)',.1,15,2),number('rds','RDS ON (Ω)',.001,100,.1)],
+ aht20:[number('temperature','Sıcaklık (°C)',-40,85,25),number('humidity','Nem (%)',0,100,50)],
+ ds3231:[number('temperature','Sıcaklık (°C)',-40,85,25,.25)],
+ adxl345:[...['ax','ay','az'].map((key,i)=>number(key,key.toUpperCase()+' (g)',-16,16,i===2?1:0))],
+ lcd20:[number('address','I²C adres',32,39,39,1)],
+ buzzerActive:[number('frequency','Ton (Hz)',100,10000,2300,1)],
+};

@@ -1,9 +1,10 @@
+import {EXPANSION_FIELDS} from './expansion-fields.js';
 import {validNetName} from './net-label.js';
 // Shared import validation, insertion defaults and compact inspector fields.
 const axis=(key,label,min,max,value=0)=>({key,label,min,max,step:.1,value});
 const flag=(key,label,value=0)=>({key,label,value,options:[[0,'OFF'],[1,'ON']]});
 const polarity={key:'activeLow',label:'Aktif DO',value:1,options:[[1,'LOW'],[0,'HIGH']]};
-export const PART_FIELDS={
+export const PART_FIELDS={...EXPANSION_FIELDS,
  bluetooth:[{key:'baud',label:'UART baud',value:9600,options:[[9600,'9600'],[19200,'19200'],[38400,'38400'],[115200,'115200']]}],
  led:[axis('vf','İleri gerilim (V)',.05,5,2)],
  pot:[axis('ohms','Direnç (Ω)',1,10000000,10000)],

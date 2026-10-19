@@ -17,5 +17,5 @@ export class TFTController {
  if(x>=0&&x<this.width&&y>=0&&y<this.height&&this.window[0]<=this.window[2]&&this.window[1]<=this.window[3]){if(this.madctl&8)pixel=((pixel&31)<<11)|(pixel&0x7e0)|((pixel>>11)&31);this.pixels[y*this.width+x]=pixel;this.writes++;this.revision++;}else this.errors++;
  if(++this.x>this.window[2]){this.x=this.window[0];if(++this.y>this.window[3])this.y=this.window[1];}
  }
- frame(offsetX=0,offsetY=0){const w=this.type==='tft7735'?128:240,h=this.type==='tft7735'?160:240,out=new Uint16Array(w*h);for(let y=0;y<h;y++)for(let x=0;x<w;x++)out[y*w+x]=this.pixels[(y+offsetY)*this.width+x+offsetX]??0;return out;}
+ frame(offsetX=0,offsetY=0){const w=this.type==='tft7735'?128:240,h=this.type==='tft7735'?160:this.type==='ili9341'?320:240,out=new Uint16Array(w*h);for(let y=0;y<h;y++)for(let x=0;x<w;x++)out[y*w+x]=this.pixels[(y+offsetY)*this.width+x+offsetX]??0;return out;}
 }

@@ -1,3 +1,4 @@
+import {EXPANSION_MODULES} from './expansion-hardware.js';
 // Original CircuitForge CC0 vector artwork. Dimensions are illustration units.
 // 9.6 source units = 2.54 mm; world scale 1.35 matches the existing breadboard.
 // Breakout boards are generic assemblies, not certified manufacturer footprints.
@@ -6,7 +7,7 @@ const to92Pins=ids=>ids.map((id,i)=>({id,name:id,number:i+1,x:8.4+i*9.6,y:51,sid
 const maxSource='https://www.analog.com/media/en/technical-documentation/data-sheets/MAX7219-MAX7221.pdf';
 const lcdSource='https://newhavendisplay.com/content/app_notes/ST7066.pdf';
 const parallel=(cols,w,h,x,y,dw,dh)=>({name:'LCD '+cols+'×2 paralel',width:w,height:h,asset:'lcd-'+cols+'x2-parallel.svg',pins:pinRow(['GND','VCC','VO','RS','RW','E',...Array.from({length:8},(_,i)=>'D'+i),'A','K'],(w-144)/2,h-11).map((p,i)=>({...p,number:i+1})),display:{x,y,width:dw,height:dh,columns:cols,rows:2},body:[2,2,w-4,h-20],source:lcdSource,specs:{columns:cols,rows:2,interface:'Parallel 4/8-bit',supplyMin:2.7,supplyMax:5.5}});
-export const EXPANDED_MODULES={
+export const EXPANDED_MODULES={lcd20:EXPANSION_MODULES.lcd20,lcd20p:EXPANSION_MODULES.lcd20p,
   lcd8p:parallel(8,220,132,30,34,160,56),
   lcd16p:parallel(16,302,140,25,35,252,60),
   lcd8:{name:'LCD 8×2 I²C',width:220,height:132,asset:'lcd-8x2-i2c.svg',pins:pinRow(['GND','VCC','SDA','SCL'],95.6,121),display:{x:30,y:34,width:160,height:56,columns:8,rows:2},body:[2,2,216,112],source:lcdSource,backpack:'PCF8574: P0=RS, P1=RW, P2=E, P3=BL, P4–P7=D4–D7',specs:{columns:8,rows:2,interface:'I2C',defaultAddress:39,supplyMin:2.7,supplyMax:5.5}},
@@ -22,4 +23,4 @@ export const EXPANDED_MODULES={
 };
 export const EXPANDED_BODIES=Object.fromEntries(Object.entries(EXPANDED_MODULES).map(([id,d])=>[id,d.body]));
 export function expandedPhysical(definition,category,detail){const scale=1.35;return{name:definition.name,category,detail,width:definition.width*scale,height:definition.height*scale,pinDefs:definition.pins.map(p=>({...p,x:p.x*scale,y:p.y*scale})),pins:definition.pins.map(p=>p.id),asset:definition.asset,scale};}
-export const EXPANDED_CATALOG=Object.fromEntries(Object.entries(EXPANDED_MODULES).map(([id,d])=>[id,expandedPhysical(d,['lcd8p','lcd16p','lcd8','lcd16','matrix8','digits8'].includes(id)?'Çıkışlar':id==='mcp3008'?'Temel':'Girişler',{lcd8p:'8×2 · paralel 4/8-bit',lcd16p:'16×2 · paralel 4/8-bit',lcd8:'8×2 · PCF8574 · I²C',lcd16:'16×2 · PCF8574 · I²C',bmp280:'3.3 V · sıcaklık / basınç · I²C / SPI',mcp3008:'DIP-16 · 8 kanal · 10 bit · SPI',ds18b20:'TO-92 · sıcaklık · 1-Wire',matrix8:'8×8 LED · MAX7219',digits8:'8 hane · MAX7219',tmp36:'10 mV/°C · analog',ldr:'Polaritesiz · ışık / direnç',mhz19:'CO₂ · 9600 baud · UART'}[id]) ]));
+export const EXPANDED_CATALOG=Object.fromEntries(Object.entries(EXPANDED_MODULES).map(([id,d])=>[id,expandedPhysical(d,['lcd8p','lcd16p','lcd8','lcd16','lcd20p','lcd20','matrix8','digits8'].includes(id)?'Çıkışlar':id==='mcp3008'?'Temel':'Girişler',{lcd20p:'20×4 · paralel 4/8-bit',lcd20:'20×4 · PCF8574 · I²C',lcd8p:'8×2 · paralel 4/8-bit',lcd16p:'16×2 · paralel 4/8-bit',lcd8:'8×2 · PCF8574 · I²C',lcd16:'16×2 · PCF8574 · I²C',bmp280:'3.3 V · sıcaklık / basınç · I²C / SPI',mcp3008:'DIP-16 · 8 kanal · 10 bit · SPI',ds18b20:'TO-92 · sıcaklık · 1-Wire',matrix8:'8×8 LED · MAX7219',digits8:'8 hane · MAX7219',tmp36:'10 mV/°C · analog',ldr:'Polaritesiz · ışık / direnç',mhz19:'CO₂ · 9600 baud · UART'}[id]) ]));

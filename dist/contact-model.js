@@ -9,7 +9,7 @@ export function solveContactDC(input,relays=[],switches=[],sensors=[]){
  for(passes=0;passes<16;passes++){
   branches=[...input.branches];states=new Map();known=new Map(input.known);sourceDiagnostics=[];
   for(const s of sensors)if(sensorOutputs.has(s.id)){const volts=sensorOutputs.get(s.id);if(s.ohms){const source='$sensor:'+s.id;known.set(source,volts);branches.push({id:source,a:source,b:s.out,ohms:s.ohms});}else if(known.has(s.out)&&Math.abs(known.get(s.out)-volts)>.02)sourceDiagnostics.push({code:'ideal-source-conflict',componentIds:[s.id],node:s.out,message:'Sensor output conflicts with an ideal source.'});else known.set(s.out,volts);}
-  const add=(c,a,b,target,on=false,powered=false)=>{branches.push({id:c.id+':contact',a,b,ohms:CONTACT_OHMS});states.set(c.id,{target,energized:on,powered,ohms:CONTACT_OHMS});};
+  const add=(c,a,b,target,on=false,powered=false)=>{branches.push({id:c.id+':contact',a,b,ohms:c.contactOhms??CONTACT_OHMS});states.set(c.id,{target,energized:on,powered,ohms:c.contactOhms??CONTACT_OHMS});};
   for(const s of switches)add(s,s.common,s[s.position==='right'?'right':'left'],s.position==='right'?'3':'1');
   for(const r of relays){const on=energized.has(r.id);add(r,r.com,on?r.no:r.nc,on?'NO':'NC',on);}
   result=solveSemiconductorDC({...input,known,branches});if(!result.converged)break;

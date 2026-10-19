@@ -10,7 +10,7 @@ import {solveProjectDC,DC_FAILURES} from './dc-project.js';
 export function attachCircuitRuntime(runtime,project,{capacity=128}={}){
   let netlist=buildNets(project),solving=false,dirty=true,solution=null,lastInputs='',revision=1,lastIntegralCycle=runtime.cpu.cycles,windowStart=runtime.cpu.cycles;
   const ledCharge=new Map();let temporal=new ReactiveNetwork(project,runtime.cpu.cycles),previousState=null,disposed=false,clockEpoch=0;
-  const parallel=new Map();const reconcileLCD=()=>{for(const c of project.components.filter(c=>PARALLEL_LCD_TYPES.includes(c.type))){if(!parallel.has(c.id)||parallel.get(c.id).type!==c.type)parallel.set(c.id,{type:c.type,controller:new ParallelLCD(c.type==='lcd8p'?8:16)});}for(const id of parallel.keys())if(!project.components.some(c=>c.id===id&&c.type===parallel.get(id).type))parallel.delete(id);};reconcileLCD();
+  const parallel=new Map();const reconcileLCD=()=>{for(const c of project.components.filter(c=>PARALLEL_LCD_TYPES.includes(c.type))){if(!parallel.has(c.id)||parallel.get(c.id).type!==c.type)parallel.set(c.id,{type:c.type,controller:new ParallelLCD(c.type==='lcd8p'?8:c.type==='lcd20p'?20:16,c.type==='lcd20p'?4:2)});}for(const id of parallel.keys())if(!project.components.some(c=>c.id===id&&c.type===parallel.get(id).type))parallel.delete(id);};reconcileLCD();
   const controllers=new Map(),observers=new Set(),drivers=new Map();
   const integrate=(cycle=runtime.cpu.cycles)=>{const delta=cycle-lastIntegralCycle;if(delta>0&&solution)for(const[id,led]of solution.ledResults)ledCharge.set(id,(ledCharge.get(id)||0)+Math.max(0,led.current||0)*delta);lastIntegralCycle=cycle;};
   const cache=new Map(),stats={solves:0,cacheHits:0,cycle:0};
@@ -54,7 +54,7 @@ export function attachCircuitRuntime(runtime,project,{capacity=128}={}){
   const adcRead=input=>{solve();return originalADC(input);};runtime.adc.onADCRead=adcRead;
   try{solve();armClock();}catch(error){for(const[port,listener]of listeners)port.removeListener(listener);runtime.adc.onADCRead=originalADC;throw error;}
   return{
-    deviceController(id,type,create){const key=id+':'+type;if(!controllers.has(key))controllers.set(key,create());return controllers.get(key);},
+    deviceController(id,type,create){const key=id+':'+type;if(['fram','mcp4725'].includes(type)){runtime.nonvolatile??=new Map();if(!runtime.nonvolatile.has(key))runtime.nonvolatile.set(key,create());return runtime.nonvolatile.get(key);}if(!controllers.has(key))controllers.set(key,create());return controllers.get(key);},
     setDrivers(owner,next){const before=JSON.stringify(drivers.get(owner)||[]);if(before===JSON.stringify(next))return solution;if(!solving)advance();drivers.set(owner,next);cache.clear();dirty=true;return solve();},
     updateProject(next){advance();integrate();project=next;reconcileLCD();for(const key of controllers.keys())if(!project.components.some(c=>key===c.id+':'+c.type))controllers.delete(key);netlist=buildNets(project);const previous=temporal;temporal=new ReactiveNetwork(project,runtime.cpu.cycles);for(const c of temporal.parts)if(previous.parts.some(old=>old.id===c.id&&old.type===c.type))temporal.history.set(c.id,previous.history.get(c.id)||0);previousState=null;clockEpoch++;armClock();cache.clear();lastInputs='';ledCharge.clear();windowStart=runtime.cpu.cycles;revision++;dirty=true;return solve();},
     solve,

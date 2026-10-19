@@ -1,3 +1,4 @@
+import {EXPANSION_MODULES} from './expansion-hardware.js';
 import {componentDefinition} from './core.js';
 import {DIODE_BODIES} from './diode-hardware.js';
 import {SHIFT_BODIES} from './shift-hardware.js';
@@ -18,7 +19,7 @@ import {localPoint,pinPoint} from './geometry.js';
 
 // Projected artwork bodies in unscaled SVG units, excluding exposed leads.
 // These are 2D editing clearances, not mechanical tolerances or 3D volumes.
-const BODIES={...DIODE_BODIES,...SHIFT_BODIES,...EXTRA_SENSOR_BODIES,...SPI_GPIO_BODIES,...TFT_BODIES,...ACTUATOR_BODIES,...LOADCELL_BODIES,...DIGITAL_BODIES,...BASIC_BODIES,...PULSE_BODIES,...LAB_BODIES,...SENSOR_BODIES,...EXPANDED_BODIES,...Object.fromEntries(Object.entries(ANALOG_ASSETS).map(([id,d])=>[id,d.body])),eeprom:[12,4,20.8,42],led:[11.2816,8.2931,17.438,26.494],resistor:[10.4818,0,38.537,11.3386],button:[11.2139,.2494,44.8554,44.8554],pot:[.567,.567,74.457,62.8],npn:[3,4,30,28],mosfet:[5,3,38,52]};
+const BODIES={...Object.fromEntries(Object.entries(EXPANSION_MODULES).map(([id,d])=>[id,d.body])),...DIODE_BODIES,...SHIFT_BODIES,...EXTRA_SENSOR_BODIES,...SPI_GPIO_BODIES,...TFT_BODIES,...ACTUATOR_BODIES,...LOADCELL_BODIES,...DIGITAL_BODIES,...BASIC_BODIES,...PULSE_BODIES,...LAB_BODIES,...SENSOR_BODIES,...EXPANDED_BODIES,...Object.fromEntries(Object.entries(ANALOG_ASSETS).map(([id,d])=>[id,d.body])),eeprom:[12,4,20.8,42],led:[11.2816,8.2931,17.438,26.494],resistor:[10.4818,0,38.537,11.3386],button:[11.2139,.2494,44.8554,44.8554],pot:[.567,.567,74.457,62.8],npn:[3,4,30,28],mosfet:[5,3,38,52]};
 export function bodyBounds(c){
   const d=componentDefinition(c),b=BODIES[c.type]||[0,0,d.width/(d.scale||1),d.height/(d.scale||1)],s=d.scale||1;
   const [x,y,w,h]=b.map(n=>n*s),points=[[x,y],[x+w,y],[x,y+h],[x+w,y+h]].map(([px,py])=>localPoint(c,px,py));
@@ -40,9 +41,9 @@ export function placementClearance(project,c,candidate){
   for(const other of project.components)if(other.id!==c.id&&other.type!=='breadboard'&&overlaps(body,bodyBounds(other)))return 'Gövde çakışıyor: '+other.id;
   const blocked=coveredHoles(project,new Set([c.id]));
   for(const hole of Object.values(candidate.pins)){const ids=blocked.get(candidate.boardId+':'+hole);if(ids)return 'Delik kapalı: '+hole.toUpperCase()+' · '+ids.join(', ');}
-  if(c.type==='button'){
+  if(['button','tact6'].includes(c.type)){
     const contacts=new Map();
-    for(const def of CATALOG.button.pinDefs){const hole=CATALOG.breadboard.pinDefs.find(p=>p.id===candidate.pins[def.id]);if(!hole)continue;if(!contacts.has(def.bus))contacts.set(def.bus,new Set());contacts.get(def.bus).add(hole.bus);}
+    for(const def of CATALOG[c.type].pinDefs){const hole=CATALOG.breadboard.pinDefs.find(p=>p.id===candidate.pins[def.id]);if(!hole)continue;if(!contacts.has(def.bus))contacts.set(def.bus,new Set());contacts.get(def.bus).add(hole.bus);}
     if([...contacts.get('1')||[]].some(bus=>contacts.get('2')?.has(bus)))return 'Buton kontakları aynı şeritte · R ile döndürün';
   }
   if(['diode','zener','npn','mosfet','eeprom','opamp','capacitor','inductor','ds18b20','tmp36','lm35','hc4050','mcp3008','ldr','hc595','hc165','mcp23s17','mcp23017'].includes(c.type)){

@@ -1,9 +1,9 @@
 import {CharacterLCD} from './lcd-controller.js';
 import {pinVoltage,poweredDevice} from './bus-electrical.js';
-export const PARALLEL_LCD_TYPES=['lcd8p','lcd16p'];
+export const PARALLEL_LCD_TYPES=['lcd8p','lcd16p','lcd20p'];
 // Generic ST7066-compatible module. Reference clock: 16 MHz, shared with I2C.
 export class ParallelLCD {
- constructor(columns){this.lcd=new CharacterLCD(columns);this.reset();}
+ constructor(columns,rows=2){this.lcd=new CharacterLCD(columns,rows);this.reset();}
  reset(){this.lcd.reset();this.e=null;this.half=null;this.readHalf=false;this.readByte=0;this.writes=0;this.errors=0;this.powered=false;}
  sample(dc,id,cycle){const p=poweredDevice(dc,id,{min:2.7,max:5.5}),v=pin=>pinVoltage(dc,id,pin),level=pin=>{const n=v(pin);return !Number.isFinite(n)||n<-.3||n>p.voltage+.3?null:n<=.6?false:n>=2?true:null;};if(this.powered&&!p.powered)this.reset();this.powered=p.powered;this.drivers=[];this.connected=false;this.contrast=Number.isFinite(v('VO'))&&v('VO')>=-.02&&v('VO')<=1.5;this.backlight=Number.isFinite(v('A'))&&Number.isFinite(v('K'))&&v('A')-v('K')>=2.5;
  if(!p.powered){this.e=null;return this.drivers;}const e=level('E'),rs=level('RS'),rw=level('RW');if([e,rs,rw].includes(null)){this.e=null;this.half=null;return this.drivers;}if(rs!==this.lastRS||rw!==this.lastRW)this.readHalf=false;this.lastRS=rs;this.lastRW=rw;const first=this.lcd.fourBit?4:0,bits=Array.from({length:8-first},(_,i)=>level('D'+(first+i)));const initNibble=!rs&&!this.lcd.fourBit&&bits.slice(4).every(b=>b!==null)&&[2,3].includes(bits.slice(4).reduce((n,b,i)=>n|(b?1<<i:0),0));this.connected=rw||bits.every(b=>b!==null)||initNibble;
