@@ -1,5 +1,7 @@
 # Tiva C · TM4C123G LaunchPad · C17 işlevsel profil
 
+0.73 bileşen güncellemesi: Arduino ile aynı 74 parçalı katalog ve ortak native GPIO aygıt köprüsü kullanılır. [Ortak bileşenler ve sınırları](COMMON-COMPONENTS.md). Bu, MCU donanım kayıt kapsamını veya desteklenen dilleri genişletmez; aşağıdaki tarihsel kart/çekirdek sınırları ayrıca geçerlidir.
+
 ## 0.71 · Kart üstü etkileşim ve RGB
 
 SW1/SW2 kartın çizimi üzerinden tıkla-basılı/tıkla-bırak olarak çalışır; Enter/Space da kullanılabilir. RESET gerçek MCU resetine bağlıdır. POWER SELECT yalnız mevcut Debug/Device besleme seçimini gösterir; modelde ikisi de3.3V sağlar. RGB tek lens üzerinde PF1/PF2/PF3 fiziksel LED akımlarından birleşir, geçersiz/verisiz DC’de kapalıdır. Kablo veya haricî LED gerekmez. [Yeni görünüm/kontrol kabulü](../../docs/RELEASE_0.71.md). Diğer0.70 işlevsel model sınırları değişmedi.

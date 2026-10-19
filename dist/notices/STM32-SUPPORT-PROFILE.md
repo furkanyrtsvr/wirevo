@@ -1,5 +1,7 @@
 # Güncel durum · 0.69
 
+0.73 bileşen güncellemesi: Arduino ile aynı 74 parçalı katalog ve ortak native GPIO aygıt köprüsü kullanılır. [Ortak bileşenler ve sınırları](COMMON-COMPONENTS.md). Bu, MCU donanım kayıt kapsamını veya desteklenen dilleri genişletmez; aşağıdaki tarihsel kart/çekirdek sınırları ayrıca geçerlidir.
+
 Kullanıcının kabul ettiği model sınırlarıyla mevcut STM32 işlevsel simülatör genişletme etabı kapatıldı. Orijinal ST ROM uyumluluğu ve fiziksel çevrim/analog eşdeğerliği vaat edilmez ve zorunlu kapanış şartı değildir. Kısmi özellikler kapsam panelinde görünür; desteklenen davranışların gerçek hataları normal bakım konusudur. [Kesin kapsam](../../docs/RELEASE_0.69.md). Alt sürümlerin zorunlu geçiş engelleri tarihseldir.
 
 # 0.68 (tarihsel)

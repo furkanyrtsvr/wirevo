@@ -9,11 +9,11 @@ import {PY_SHT31} from './python-examples.js';
 import {C_SENSOR_EXAMPLES,cBusFiles} from './c-sensor-examples.js';
 import {placementCandidate,attachPlacement} from './mounting.js';
 import {pinPoint,localPoint} from './geometry.js';
-import {componentDefinition} from './core.js';
+import {CATALOG,componentDefinition} from './core.js';
 import {BOARDS,boardKey} from './board-hardware.js';
 import {mainFile} from './source-files.js';
 import {emptyProject,makeProject} from './templates.js';
-import {ESP_PARTS} from './esp-circuit.js';
+
 import {ESP_EXAMPLES} from './esp-boards.js';
 import {ESP_CIRCUIT_EXAMPLES,espExampleCircuit} from './esp-circuit-examples.js';
 export const languageNames={arduino:'Arduino C++',c:'C · main.c',cpp:'C++17 · main.cpp',micropython:'MicroPython · main.py'};
@@ -35,7 +35,7 @@ function unifiedExampleProjectRaw(board,language,id){
  const p=migrateESPProject({chip:board,source:bindExampleSource(board,e.code),files:(e.files||[]).map(f=>({...f,content:bindExampleSource(board,f.content)})),circuit:espExampleCircuit(id,board)});p.name=e.name;
  p.components.push({id:'bb1',type:'breadboard',x:900,y:350,rotation:0,params:{}});return p;
 }
-export function supportedPart(p,type){if(isTiva(p)){if(type==='board')return false;if(type.startsWith('board:'))return isTivaBoard(type.slice(6));return ESP_PARTS.includes(type);}if(isSTM(p)){if(type==='board')return false;if(type.startsWith('board:'))return BOARDS[type.slice(6)]?.architecture==='stm32';return ESP_PARTS.includes(type);}if(type==='board')return !isESP(p);if(type.startsWith('board:'))return (BOARDS[type.slice(6)]?.architecture||'avr')===(BOARDS[boardKey(p)]?.architecture||'avr');return !isESP(p)||ESP_PARTS.includes(type);}
+export function supportedPart(p,type){if(typeof type!=='string')return false;if(type==='board')return !isNative(p);if(type.startsWith('board:')){const target=BOARDS[type.slice(6)];return !!target&&(target.architecture||'avr')===(BOARDS[boardKey(p)]?.architecture||'avr');}return Object.hasOwn(CATALOG,type);}
 function createUnifiedProjectRaw({name='Yeni proje',board='uno',language='arduino',starter='blink'}={}){
  if(isTivaBoard(board))return createTivaProject({name,language,starter});
  if(STM32_BOARDS[board])return createSTMProject({name,board,language,starter});

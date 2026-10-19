@@ -1,5 +1,13 @@
 # Doğrulama kayıtları
 
+## 0.73 — 19 Ekim 2026 · ortak bileşen kütüphanesi
+
+- Yalnız `npm run test:common-073`: **21/21 geçti**, hata/atlama/iptal yok; GitHub kopyasında 2,34 saniye. Önceki test dosyaları çalıştırılmadı; CI yalnız bu yeni dosyayı seçer.
+- 30 kart profilinde aynı 74 ortak parça, tüm native profillerde yerleştirme/kayıt doğrulaması. Bilinmeyen tür reddedilir. Kart seçenekleri mimariyle sınırlıdır.
+- ESP32/STM32 elektriksel Python GPIO köprülerinde TFT piksel/frame, HC595/state retention, MAX7219, servo, DHT, WS2812 ve MH-Z19 byte/3.3 V TX. TM4C123 gerçek C17/native ARM ile HC595 ve reset. AVR hardware SPI girişinin kurulumu/geri alınması yeni hedefli kontrolden geçti.
+- Kaynak ve GitHub kopyasında build başarılı; GitHub kopyasında 491 shell dosyası / 20.773.078 bayt (mevcut 20 MiB sınırında). Yeni ortak runtime/bağımlılıklar cache listesinde. Native WASM değiştirilmedi.
+- Tarayıcıda Tiva projesinde 75 öğe (74 bileşen + kart) ve TFT7735/TFT7789 kütüphane kartları doğrulandı. [Görünüm](images/common-v073-tiva-library.png). Tüm aygıtların her MCU'da fiziksel donanım eşdeğerliği iddiası değildir; [kapsam](../RELEASE_0.73.md).
+
 ## 0.72 — 19 Ekim 2026 · yalnız yeni LCD kabulü
 
 - `npm run test:lcd-072`: **9/9 geçti**, hata/atlama/iptal yok. GitHub kopyasında 14,60 saniye. Eski testler, 0.71 Tiva testleri dahil, tekrar çalıştırılmadı.

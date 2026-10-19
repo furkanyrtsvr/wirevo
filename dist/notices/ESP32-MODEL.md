@@ -1,5 +1,7 @@
 # 0.37 ortak alan güncellemesi
 
+0.73 bileşen güncellemesi: Arduino ile aynı 74 parçalı katalog ve ortak native GPIO aygıt köprüsü kullanılır. [Ortak bileşenler ve sınırları](COMMON-COMPONENTS.md). Bu, MCU donanım kayıt kapsamını veya desteklenen dilleri genişletmez; aşağıdaki tarihsel kart/çekirdek sınırları ayrıca geçerlidir.
+
 ESP32 artık AVR ile aynı breadboard çalışma alanındadır. Yeni proje ekranı kart/mimari/dil seçer. C17 ve MicroPython kapsamı UNIFIED-WORKSPACE.md içinde. Ortak alandaki GPIO grafiği gerçek çözülmüş kenarları ve DC değişimlerini kaydeder; aşağıdaki 0.36 ayrı editör açıklaması tarihsel bağlamdır.
 
 # CircuitForge 0.36 — ESP32 serbest devre ve sensörler

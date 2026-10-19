@@ -4,7 +4,9 @@ import {ESP_BOARDS} from './esp-boards.js';
 import {ESP_PIN_DEFS} from './esp-pin-defs.js';
 import {validatePartParameters} from './part-parameters.js';
 import {solveProjectDC,DC_FAILURES} from './dc-project.js';
-export const ESP_PARTS=['lcd8','lcd16','lcd8p','lcd16p','bluetooth','netLabel','resistor','led','button','pot','supply','spdt','diode','zener','npn','mosfet','rheostat','switch','coilRelay','lm35','thermistor','soilCap','joystick','irObstacle','tilt','flame','sound','pir','ldr','oled','sht31','bh1750','bmp280','mpu6050','eeprom','mcp3008','ds18b20','tmp36','relay','opamp','multimeter','hall','mq2','breadboard'];
+export const COMMON_PARTS=Object.freeze(Object.keys(CATALOG).filter(type=>type!=='board'));
+export const ESP_PARTS=COMMON_PARTS;
+
 export function espBoardDefinition(chip){const b=ESP_BOARDS[chip];return{id:chip,ioVoltage:3.3,logicHigh:2.475,supplyPin:'3V3',pins:ESP_PIN_DEFS[chip],name:b.title||b.name+' '+b.board,width:b.width||220,height:b.height||460,asset:b.asset};}
 export function espPartDefinition(c,chip){if(c.type!=='board')return componentDefinition(c);const d=espBoardDefinition(chip);return{...d,pinDefs:d.pins,pins:d.pins.filter(p=>p.connectable!==false).map(p=>p.id)};}
 export function validateESPCircuit(raw,chip){
@@ -14,14 +16,14 @@ export function validateESPCircuit(raw,chip){
   if(c.type!=='board')validatePartParameters(c);
   if(c.type==='resistor'&&(!(c.params.ohms>=.001)||c.params.ohms>1e7))throw Error('Direnç: 1 mΩ–10 MΩ.');
   if(c.type==='pot'&&(!(c.params.value>=0)||c.params.value>100))throw Error('Pot değeri: %0–100.');
-  if(c.type==='supply'&&(!(c.params.voltage>=0)||c.params.voltage>30))throw Error('Güç kaynağı: 0–30 V.');
+  if(c.type==='supply'&&(!((c.params.voltage??5)>=0)||(c.params.voltage??5)>30))throw Error('Güç kaynağı: 0–30 V.');
   if(c.type==='button'&&typeof c.params.pressed!=='boolean')throw Error('Buton durumu geçersiz.');
   if(c.type==='spdt'&&c.params.position!==undefined&&!['left','right'].includes(c.params.position))throw Error('Anahtar konumu geçersiz.');
   if(c.type==='oled'&&c.params.address!==undefined&&![60,61].includes(c.params.address))throw Error('OLED adresi: 0x3C / 0x3D.');
   if(c.type==='led'&&c.params.color!==undefined&&!['red','green','blue','yellow','white'].includes(c.params.color))throw Error('LED rengi geçersiz.');
   if(c.type==='relay'&&c.params.activeHigh!==undefined&&typeof c.params.activeHigh!=='boolean')throw Error('Röle polaritesi geçersiz.');
   for(const key of ['mirrorX','mirrorY'])if(c[key]!==undefined&&typeof c[key]!=='boolean')throw Error('ESP bileşen aynalama ayarı geçersiz.');
-  if(c.rotation!==undefined&&![0,90,180,270].includes(c.rotation))throw Error('ESP devresinde döndürme henüz desteklenmiyor.');
+  if(c.rotation!==undefined&&![0,90,180,270].includes(c.rotation))throw Error('Bileşen dönüşü geçersiz.');
   return{id:c.id,type:c.type,x:c.x,y:c.y,params:{...c.params},...(c.mirrorX!==undefined?{mirrorX:c.mirrorX}:{}),...(c.mirrorY!==undefined?{mirrorY:c.mirrorY}:{}),...(c.rotation?{rotation:c.rotation}:{}),...(c.mount?{mount:structuredClone(c.mount)}:{})};
  });
  if(components.filter(c=>c.type==='board').length!==1)throw Error('ESP devresi bir kart içermelidir.');
