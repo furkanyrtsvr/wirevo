@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {photoBody079} from './photo-bodies079.mjs';
 import {bareBody,bareTypes} from './expansion-bare078.mjs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -91,6 +92,7 @@ function terminals(m){
 }
 function body(id,m){
  const w=m.width,h=m.height,cx=w/2,cy=h/2;
+ const photo=photoBody079(id,m);if(photo)return photo;
  if(m.kind==='button'){
   const p=m.pins.map(p=>rect(p.x<cx?p.x:cx+9,p.y-2,p.x<cx?cx-9-p.x:p.x-cx-9,4,'url(#metal)',.3,`data-pin="${esc(p.id)}" data-x="${p.x}" data-y="${p.y}"`)).join('');
   return p+rect(cx-13.2,8.8,26.4,26.4,'#17232d',2,'stroke="#0b141d"')+rect(cx-11.2,10.8,22.4,22.4,'url(#metal)',1)+[[-9,-9],[9,-9],[-9,9],[9,9]].map(([dx,dy])=>circle(cx+dx,22+dy,1.15,'#324755')).join('')+circle(cx,22,8.3,'#111d27')+circle(cx,m.pressed?22.5:21.6,m.pressed?6.5:6.9,'url(#cap)',`stroke="${m.pressed?'#67c5de':'#91aabd'}" stroke-width="${m.pressed?1.1:.7}"`);
@@ -131,7 +133,7 @@ function body(id,m){
  const pcb={mfrc522:'#176f9c',pn532:'#ab433c',dfplayer:'#286950',gps:'#215d8b',mcp2515:'#255b8c',a4988:'#29784e',drv8825:'#765091',tb6612:'#843e69',bme280:'#60528e',bme680:'#5b4a83',vl53l0x:'#3f618a',max30102:'#893c4a',pca9685:'#356783'}[id]??['#237e73','#1e617d','#3e5d9b','#7d3d5b','#30674a'][Object.keys(EXPANSION_MODULES).indexOf(id)%5];
  let s=rect(4,4,w-8,h-18,pcb,4,'stroke="#10282b" stroke-width="1.3"');
  for(const x of[11,w-11])s+=circle(x,12,3.1,'#d0b763')+circle(x,12,1.6,'#14232a');
- for(const p of m.pins)s+=line(p.x,p.y-6,cx+(p.x-cx)*.7,64,'#8fbd9c',.5);
+ // No invented fan-shaped traces across the photographed module face.
  s+='<g>';
  const unique=distinctive(id,m);
  if(unique!==null){s+=unique;

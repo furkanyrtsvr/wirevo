@@ -56,12 +56,29 @@ for(const [name,w,h]of [['lcd-8x2-parallel',220,132],['lcd-8x2-i2c',220,132],['l
   add(name,P(`M18 28H${w-18}`,'#b1b8b1',.7)+P(`M18 28V102M${w-18} 28V102`,'#48535a',1.2)+[18,w-18].map(x=>R(x-2.5,50,5,11,'#838b8a','#343e40',.4,.8)).join('')+P(`M19 24H${w-19}`,'#d5e5d1',.5)+smd(17,h-22)+smd(w-24,h-22),s=>s.replace(/<text\b[^>]*font-size="4"[^>]*>[\s\S]*?<\/text>/g,''));
 }
 for(const [name,screenH]of [['st7735-tft128x160',149],['st7789-tft240x240',122]]){
-  add(name,P(`M12 10H132M12 10V${screenH+8}`,'#f4f4e7',.7)+P(`M132 10V${screenH+8}`,'#6b7c87',1)+R(54,screenH+10,36,1.2,'#c8ac5c')+smd(9,screenH+14)+smd(130,screenH+14));
+  let detail=P(`M12 10H132M12 10V${screenH+8}`,'#f4f4e7',.7)+P(`M132 10V${screenH+8}`,'#6b7c87',1)+R(54,screenH+10,36,1.2,'#c8ac5c')+smd(9,screenH+14)+smd(130,screenH+14);
+  if(name==='st7735-tft128x160'){
+    // Amber polyimide ribbon and brushed metal lips, observed in the actual product photograph.
+    // Nothing enters display [18,16,108,135]; screen exclusion also enforces that invariant.
+    detail+=R(11.5,9.5,121,2.4,'#e4e8e5','#8c969b',.3,.6)+R(11.5,12,2.1,143,'#d2d8d6')+R(130.5,12,2.1,143,'#a0adb3')+P('M13 11H131M12.5 13V154','#fff',.65);
+    detail+=P('M46 152.5H98L94 167H50Z','#a45f17',.6,'#c98b29')+R(48,153,48,3.1,'#e0b259')+R(50,157.2,44,6.2,'#d39837');
+    for(let i=0;i<18;i++)detail+=P(`M${51+i*2.4} 156.5V164.8`,'#9b5d15',.35);
+    detail+=R(51,165.2,42,2,'#282a24','#c9bb7a',.4,.3)+P('M49 154H95','#f8d58c',.6);
+  }
+  add(name,detail);
 }
 add('ssd1306-128x64',P('M.8 4.7H26.9M.8 4.7V18.3','#6b8791',.12)+P('M2.5 19H5M22.7 19H25.2','#9fbcbd',.18)+R(2.6,19.6,1.2,.65,'#ad9e75','#60746d',.06)+R(23.4,19.6,1.2,.65,'#ad9e75','#60746d',.06));
 add('max7219-matrix8',P('M15 16H135M15 16V130','#616b6c',.8)+P('M17 130H133','#111b20',1.2)+smd(8,133)+smd(132,133));
 add('max7219-digits8',P('M17 15H257','#6b777a',.8)+P('M17 86H257','#071014',1.2)+smd(8,88)+smd(260,88));
-let strip='';for(let i=0;i<8;i++){const x=24+i*24.5;strip+=R(x-8,17,16,1.2,'#fff7e4')+R(x-8,31.4,16,1,'#a7b1ab')+C(x-5.6,20.1,.55,'#ba993d')+P(`M${x+9.5} 24H${x+12.5}L${x+11} 22.5M${x+12.5} 24L${x+11} 25.5`,'#bac7bf',.45);}add('ws2812-strip8',strip);
+let strip=P('M4 12.7H216M4 37.3H216','#80918a',.55)+C(7.1,25,2.7,'#bc9d54','#dacf98',.5)+C(7.1,25,1.6,'#1a2020')+C(212.9,25,2.7,'#bc9d54','#dacf98',.5)+C(212.9,25,1.6,'#1a2020');
+for(let i=0;i<8;i++){
+  const x=24+i*24.5;
+  // Preserve all 8 pixel centers and their 16px active areas; details sit along the narrow PCB edges.
+  strip+=R(x-8.4,16.3,16.8,.7,'#fff7e4')+R(x-8.4,33,16.8,.65,'#a7b1ab')+R(x-2.5,12.8,5,2.2,'#b5a484','#68736d',.25,.2)+R(x-1.5,12.8,3,2.2,'#555246')+P(`M${x-2} 35.9H${x+2}L${x+.5} 34.9M${x+2} 35.9L${x+.5} 36.9`,'#d5ddd4',.45);
+}
+// The simulator's fixed four terminals are reached by visible leads, not an oversized fictitious PCB.
+for(const x of [95.6,105.2,114.8,124.4])strip+=P(`M${x} 38V55`,'#74858c',1.65)+P(`M${x-.25} 38V55`,'#dce4e5',.5)+C(x,55,2.2,'#c6aa5d','#e1d297',.45)+C(x,55,.9,'#27322e');
+add('ws2812-strip8',strip,s=>s.replace(/<rect x="2" y="(?:2|12)" width="216" height="(?:44|26)" fill="#[\da-f]+" rx="3"\/>/,'<rect x="2" y="12" width="216" height="26" fill="#111b1a" rx="3"/>').replace(/<path\b[^>]*\/>/g,'').replace(/<text\b[^>]*>[\s\S]*?<\/text>/g,'').replace(/<rect\b(?=[^>]*\by="(?:50.8|53.5)")[^>]*\/>/g,''));
 add('bluetooth-hc05',P('M50 15H100M50 15V54','#fff',.65,'none','opacity=".65"')+P('M15 9V33H20V14H25V33H30V14H35V33H40V9','#d5bf62',1.6)+smd(82,63)+smd(91,63));
 add('pushbutton-12mm pushbutton-12mm-pressed',P('M14.4 4H52.3M14.4 4V38','#eef3f2',.5,'none','opacity=".6"')+P('M19 22.6A14.6 14.6 0 0 1 33.6 8.2','#aab7bc',.55,'none','opacity=".55"'));
 add('potentiometer potentiometer-body',P('M16 30Q17 16 31 12','#d6e3df',.6,'none','opacity=".45"'));
@@ -79,9 +96,9 @@ export function screenExclusion078(asset,viewBox){
   const x=clean(d.display.x*ratioX),y=clean(d.display.y*ratioY),width=clean(d.display.width*ratioX),height=clean(d.display.height*ratioY);
   return {x,y,width,height,path:`M0 0H${w}V${h}H0Z M${x} ${y}H${clean(x+width)}V${clean(y+height)}H${x}Z`};
 }
-export function refinePackageArt078(){
+export function refinePackageArt078(onlyAssets=null){
   const changed=[];
-  for(const[name,{art,transform}]of files){const p=path.join(root,name+'.svg');if(!fs.existsSync(p))throw Error('Missing package artwork: '+name);const original=fs.readFileSync(p,'utf8');let s=original.replace(/<!--078:start-->[\s\S]*?<!--078:end-->/g,'');s=transform(s);const viewBox=s.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number),exclusion=screenExclusion078(name+'.svg',viewBox);const clip=exclusion?`<defs><clipPath id="art078-display-exclusion" clipPathUnits="userSpaceOnUse"><path d="${exclusion.path}" fill-rule="evenodd" clip-rule="evenodd"/></clipPath></defs>`:'',clipAttribute=exclusion?' clip-path="url(#art078-display-exclusion)"':'';s=s.replace(/<\/svg>\s*$/,`<!--078:start-->${clip}<g data-art078="physical-refinement" pointer-events="none"${clipAttribute}>${art}</g><!--078:end--></svg>\n`);if(s!==original){fs.writeFileSync(p,s);changed.push(name+'.svg');}}
+  for(const[name,{art,transform}]of files){if(onlyAssets&&!onlyAssets.includes(name+'.svg'))continue;const p=path.join(root,name+'.svg');if(!fs.existsSync(p))throw Error('Missing package artwork: '+name);const original=fs.readFileSync(p,'utf8');let s=original.replace(/<!--078:start-->[\s\S]*?<!--078:end-->/g,'');s=transform(s);const viewBox=s.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number),exclusion=screenExclusion078(name+'.svg',viewBox);const clip=exclusion?`<defs><clipPath id="art078-display-exclusion" clipPathUnits="userSpaceOnUse"><path d="${exclusion.path}" fill-rule="evenodd" clip-rule="evenodd"/></clipPath></defs>`:'',clipAttribute=exclusion?' clip-path="url(#art078-display-exclusion)"':'';s=s.replace(/<\/svg>\s*$/,`<!--078:start-->${clip}<g data-art078="physical-refinement" pointer-events="none"${clipAttribute}>${art}</g><!--078:end--></svg>\n`);if(s!==original){fs.writeFileSync(p,s);changed.push(name+'.svg');}}
   return changed;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))console.log(JSON.stringify({refined:refinePackageArt078()}));

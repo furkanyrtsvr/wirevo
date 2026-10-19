@@ -1,5 +1,9 @@
 # Wirevo
 
+## Wirevo 0.79 · Gerçek fotoğrafa göre görsel düzeltmeler
+
+İndirilen gerçek ürün fotoğraflarıyla CAN, RC522, DFPlayer, pasif piezo, DHT22, SHT31, KY-040, 28BYJ, HC-SR04, WS2812 ve ST7735 çizimleri karşılaştırılıp düzeltildi. Opaque etiket kutuları kaldırılmış, RGB lensi ve dış pin yazıları korunmuştur. Fotoğraflar yerel başvuru dosyalarıdır; uygulamaya yeniden dağıtılmamıştır. Yalnız yeni 0.79 görsel kontrolleri çalıştırılır. [Kapsam ve kaynaklar](../docs/RELEASE_0.79.md).
+
 ## Wirevo 0.76 · Protokol ve ses davranışları
 
 CAN modülleri arasında normal haberleşme, RFID/NFC erişim denetimi ve MIFARE işlemleri, dosyalı DFPlayer oynatma ve sensör alarm/FIFO/IRQ yolları eklendi. Yalnız yeni 0.76 kontrolleri çalıştırılır. [Uygulanan davranışlar ve kesin sınırlar](../docs/RELEASE_0.76.md).
