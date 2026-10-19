@@ -1,5 +1,9 @@
 # Wirevo
 
+## Wirevo 0.76 · Protokol ve ses davranışları
+
+CAN modülleri arasında normal haberleşme, RFID/NFC erişim denetimi ve MIFARE işlemleri, dosyalı DFPlayer oynatma ve sensör alarm/FIFO/IRQ yolları eklendi. Yalnız yeni 0.76 kontrolleri çalıştırılır. [Uygulanan davranışlar ve kesin sınırlar](../docs/RELEASE_0.76.md).
+
 ## Wirevo 0.75 · 50 yeni bileşen
 
 Ortak kütüphane 124 kart-dışı parçaya çıktı. 6×6 tact, koyu 12 mm buton, yeni ekranlar/sensörler/depolama/haberleşme modelleri AVR, ESP32, STM32 ve Tiva elektriksel ağına bağlıdır. Yalnız yeni sürüm kontrolleri çalıştırılır. [Desteklenen davranışlar ve sınırlar](../docs/RELEASE_0.75.md).

@@ -1,6 +1,8 @@
+import {ADVANCED_SENSORS} from './expansion-sensor-advanced.js';
 import {BME680,VL53L0X} from './expansion-gas-tof.js';
-import {PN532} from './expansion-nfc.js';
-import {BME280,INA226,TCS34725,MAX30102} from './expansion-sensors.js';
+import {PN532} from './expansion-nfc-advanced.js';
+import {BME280} from './expansion-sensors.js';
+import {INA226,TCS34725,MAX30102} from './expansion-sensor-alerts.js';
 import {EXPANSION_I2C} from './expansion-i2c.js';
 import {INA219} from './ina219.js';
 import {CharacterLCD} from './lcd-controller.js';
@@ -14,12 +16,12 @@ import {logic} from './bus-electrical.js';
 const strap=(value,supply)=>logic(value,supply),binary=(v,pin,supply)=>strap(v(pin),supply);
 const addressStrap=(pin,low,high)=>(v,supply)=>{const bit=binary(v,pin,supply);return{address:bit?high:low,valid:bit!==null};};
 const basic=(create,min=3,max=5.5,pullup=4700)=>({bus:'I2C',create,power:{vcc:'VCC',gnd:'GND',min,max},pins:{data:'SDA',clock:'SCL'},pullup,maxFrequency:400000,configuration:()=>({valid:true})});
-export const DEVICE_REGISTRY={...EXPANSION_I2C,
+export const DEVICE_REGISTRY={...EXPANSION_I2C,...ADVANCED_SENSORS,
  bme680:{...basic(()=>new BME680(),1.8,3.6),defaultAddress:118,configuration:addressStrap('ADDR',118,119)},
- vl53l0x:{...basic(()=>new VL53L0X(),2.7,3.6),defaultAddress:41,configuration:(v,s)=>({valid:Number.isFinite(v('XSHUT')),resetAsserted:v('XSHUT')<.3*s})},
+ vl53l0x:{...basic(()=>new VL53L0X(),2.7,3.6),defaultAddress:41,configuration:(v,s)=>({valid:Number.isFinite(v('XSHUT')),resetAsserted:v('XSHUT')<.3*s}),dynamicAddress:c=>c.r[0x8a]&127},
  pn532:{...basic(()=>new PN532(),2.7,3.6),defaultAddress:36,configuration:(v,s)=>({valid:Number.isFinite(v('RST')),resetAsserted:v('RST')<.3*s})},
  bme280:{...basic(()=>new BME280(),1.8,3.6),defaultAddress:118,configuration:addressStrap('ADDR',118,119)},
- ina226:{...basic(()=>new INA226(),2.7,3.6),defaultAddress:64,configuration:(v,s)=>{const b=['A0','A1'].map(p=>binary(v,p,s));return{valid:b.every(x=>x!==null),address:64+(b[0]?1:0)+(b[1]?4:0)};},update:(v,c)=>c.setAnalog(v)},
+ ina226:{...basic(()=>new INA226(),2.7,3.6),defaultAddress:64,configuration:(v,s,nets,id)=>{const b=['A0','A1'].map(pin=>nets.same(id+':'+pin,id+':SDA')?2:nets.same(id+':'+pin,id+':SCL')?3:binary(v,pin,s)===null?null:binary(v,pin,s)?1:0);return{valid:b.every(x=>x!==null),address:64+(b[0]??0)+(b[1]??0)*4};},update:(v,c)=>c.setAnalog(v)},
  tcs34725:{...basic(()=>new TCS34725(),2.7,3.6),defaultAddress:41},
  max30102:{...basic(()=>new MAX30102(),2.7,3.6),defaultAddress:87},
  ina219:{...basic(()=>new INA219(),3,5.5,0),defaultAddress:64,ioMargin:.3,configuration:(v,supply,nets,id)=>{const pick=pin=>{if(nets.same(id+':'+pin,id+':SDA'))return 2;if(nets.same(id+':'+pin,id+':SCL'))return 3;const val=v(pin);if(!Number.isFinite(val))return null;return val<=.3*supply?0:val>=.7*supply?1:null;};const a=pick('A0'),b=pick('A1');return{address:64+(b??0)*4+(a??0),valid:a!==null&&b!==null};},update:(v,controller)=>controller.setAnalog(v('VIN+'),v('VIN-'),v('GND'))},

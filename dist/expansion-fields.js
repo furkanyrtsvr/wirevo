@@ -1,11 +1,12 @@
 const number=(key,label,min,max,value,step=.1)=>({key,label,min,max,value,step});
 export const EXPANSION_FIELDS={
+ mcp2515:[{key:'oscillatorMHz',label:'CAN kristal (MHz)',value:16,options:[[8,'8 MHz'],[16,'16 MHz']]}],
  mfrc522:[number('uid','Kart UID (32-bit)',0,4294967295,3735928559,1),number('present','Sanal kart',0,1,1,1)],pn532:[number('uid','Kart UID (32-bit)',0,4294967295,3735928559,1),number('present','Sanal kart',0,1,1,1)],
  bme680:[number('temperature','Sıcaklık (°C)',-40,85,25),number('pressure','Basınç (hPa)',300,1100,1013.25),number('humidity','Nem (%)',0,100,50),number('gasResistance','Gaz R (Ω)',1000,10000000,100000,1)],
  vl53l0x:[number('distance','Mesafe (mm)',0,8190,100,1)],
  bme280:[number('temperature','Sıcaklık (°C)',-40,85,25),number('pressure','Basınç (hPa)',300,1100,1013.25),number('humidity','Nem (%)',0,100,50)],
  tcs34725:['red','green','blue','clear'].map((key,i)=>number(key,key+' ADC',0,65535,[1500,2500,1000,5000][i],1)),
- max30102:[number('red','RED ADC',0,262143,50000,1),number('infrared','IR ADC',0,262143,60000,1)],
+ max30102:[number('temperature','Yonga sıcaklığı (°C)',-40,85,25,.0625),number('red','RED ADC',0,262143,50000,1),number('infrared','IR ADC',0,262143,60000,1)],
  xpt2046:[number('x','X',0,4095,2048,1),number('y','Y',0,4095,2048,1),{key:'pressed',label:'Panel basılı',value:false,options:[[false,'Hayır'],[true,'Evet']]}],
  irEmitter:[number('channel','Sanal optik kanal',1,32,1,1)],irReceiver:[number('channel','Sanal optik kanal',1,32,1,1)],
  i2sMic:[number('sample','Signed PCM örneği',-8388608,8388607,1048576,1)],

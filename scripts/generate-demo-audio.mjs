@@ -1,0 +1,3 @@
+import {writeFile} from 'node:fs/promises';
+// Original half-second PCM demonstration tone; no downloaded media.
+const rate=8000,count=4000,b=Buffer.alloc(44+count*2);b.write('RIFF');b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*2,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(count*2,40);for(let i=0;i<count;i++){const envelope=Math.min(1,i/200,(count-i)/200);b.writeInt16LE(Math.round(6000*envelope*Math.sin(2*Math.PI*440*i/rate)),44+i*2);}await writeFile(new URL('../dist/assets/dfplayer-demo.wav',import.meta.url),b);

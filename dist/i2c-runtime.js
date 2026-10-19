@@ -24,7 +24,7 @@ export function attachI2CRuntime(runtime,circuitRuntime,project){
         const powered=!!(dc.valid&&Number.isFinite(gnd)&&Math.abs(gnd)<.02&&Number.isFinite(supply)&&supply-gnd>=def.power.min&&supply-gnd<=def.power.max&&supplyPresent);
         if(d.powered&&!powered)d.controller.reset(runtime.cpu.cycles);d.powered=powered;d.voltage=supplyPresent&&Number.isFinite(supply)&&Number.isFinite(gnd)?supply-gnd:null;
         const config=def.configuration(v,d.voltage,nets,id);if(config.resetAsserted&&!d.resetAsserted)d.controller.reset(runtime.cpu.cycles);Object.assign(d,config);
-        if(config.address!==undefined)d.address=config.address;
+        if(config.address!==undefined)d.address=config.address;if(def.dynamicAddress)d.address=def.dynamicAddress(d.controller);
         d.controller.setSupply?.(d.voltage);d.controller.setEnvironment?.(project.components.find(c=>c.id===id)?.params);
         if(powered&&!d.resetAsserted){def.update?.(v,d.controller);d.controller.tick?.(runtime.cpu.cycles);if(d.type==='mcp23017')d.controller.inputLevels(Array.from({length:16},(_,i)=>logic(v('GP'+(i<8?'A':'B')+(i&7)),d.voltage)));}
         const {data,clock}=def.pins,values=[v(data),v(clock)];d.overvoltage=def.ioMargin!==undefined&&values.some(value=>Number.isFinite(value)&&value>supply+def.ioMargin);

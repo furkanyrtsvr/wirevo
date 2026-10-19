@@ -20,13 +20,4 @@ export class EPaper {
  drivers(v){return[{pin:'BUSY',voltage:this.until===null?0:v,ohms:50}];}
  state(){return{columns:128,rows:296,writes:this.writes,busy:this.until!==null,revision:this.revision,frame:Array.from(this.frame)};}
 }
-export class MCP2515 {
- constructor(){this.reset();}
- reset(){this.r=new Uint8Array(256);this.r[0x0e]=0x80;this.r[0x0f]=0x87;this.select();this.frames=0;}
- select(){this.tx=255;this.op=null;this.phase=0;this.addr=0;this.mask=0;}
- deselect(){}
- transmit(index){const base=0x30+index*16,dlc=this.r[base+5]&15;if((this.r[15]&0xe0)!==0x40){this.r[base]|=0x18;this.r[0x1c]=Math.min(255,this.r[0x1c]+8);this.r[0x2d]|=0x20;return;}this.r[base]&=~8;this.r[0x2c]|=4<<index;this.frames++;if((this.r[15]&0xe0)===0x40){const dest=this.r[0x2c]&1?0x70:0x60;this.r.set(this.r.slice(base+1,base+6+Math.min(8,dlc)),dest+1);this.r[0x2c]|=dest===0x60?1:2;}}
- transfer(v){if(this.op===null){this.op=v;this.phase=0;if(v===0xc0){this.reset();this.op=0xc0;}if((v&0xf8)===0x80)for(let i=0;i<3;i++)if(v&(1<<i))this.transmit(i);if(v===0xa0)return this.tx=((this.r[0x2c]&3)|((this.r[0x2c]&0x1c)<<1));return this.tx=255;}this.phase++;if(this.op===3){if(this.phase===1){this.addr=v;return this.tx=this.r[this.addr];}this.addr=(this.addr+1)&255;return this.tx=this.r[this.addr];}if(this.op===2){if(this.phase===1)this.addr=v;else{this.r[this.addr]=v;if(this.addr===15)this.r[14]=(this.r[14]&31)|(v&0xe0);if([0x30,0x40,0x50].includes(this.addr)&&v&8)this.transmit((this.addr-0x30)/16);this.addr=(this.addr+1)&255;}}if(this.op===5){if(this.phase===1)this.addr=v;else if(this.phase===2)this.mask=v;else{this.r[this.addr]=(this.r[this.addr]&~this.mask)|(v&this.mask);if(this.addr===15)this.r[14]=(this.r[14]&31)|(this.r[15]&0xe0);}}return this.tx=255;}
- drivers(){return this.r[0x2b]&this.r[0x2c]?[{pin:'INT',voltage:0,ohms:50}]:[];}
- state(){return{mode:this.r[14]>>5,frames:this.frames,interrupt:this.r[0x2c],loopback:(this.r[14]&0xe0)===0x40};}
-}
+export {MCP2515} from './expansion-can.js';
