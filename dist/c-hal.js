@@ -10,6 +10,7 @@ extern "C" void cf_delay_us(unsigned n){delayMicroseconds(n);}
 extern "C" unsigned cf_millis(void){return millis();}
 extern "C" void cf_uart_begin(unsigned n){Serial.begin(n);}
 extern "C" void cf_uart_write(unsigned char c){Serial.write(c);}
+extern "C" int cf_uart_read(void){return Serial.read();}
 void setup(){cf_c_main();} void loop(){}
 `;
 export const C_HEADERS={
@@ -20,7 +21,7 @@ export const C_HEADERS={
 int cf_gpio_valid(unsigned);
 void cf_gpio_mode(unsigned,int); void cf_gpio_write(unsigned,int); int cf_gpio_read(unsigned);
 void cf_delay_ms(unsigned); void cf_delay_us(unsigned); unsigned cf_millis(void);
-void cf_uart_begin(unsigned); void cf_uart_write(unsigned char);
+void cf_uart_begin(unsigned); void cf_uart_write(unsigned char); int cf_uart_read(void);
 `,
  'stdint.h':'#pragma once\ntypedef unsigned char uint8_t; typedef signed char int8_t; typedef unsigned short uint16_t; typedef short int16_t; typedef unsigned int uint32_t; typedef int int32_t; typedef unsigned long long uint64_t; typedef long long int64_t;\n',
  'stdbool.h':'#pragma once\n#define bool _Bool\n#define true 1\n#define false 0\n',

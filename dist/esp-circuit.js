@@ -32,9 +32,9 @@ export function validateESPCircuit(raw,chip){
  return{components,wires,settings:{pressed:false,moisture:50,pot:50}};
 }
 export function createESPBench(chip){const raw=({components:[{id:'mcu',type:'board',x:30,y:30,params:{}},{id:'r1',type:'resistor',x:360,y:100,params:{ohms:220}},{id:'led1',type:'led',x:510,y:90,params:{color:'red',vf:2}},{id:'btn1',type:'button',x:360,y:260,params:{pressed:false}}],wires:[['mcu:GPIO2','r1:1'],['r1:2','led1:A'],['led1:K','mcu:GND'],['mcu:GPIO3','btn1:1'],['btn1:2','mcu:GND']].map(([from,to],i)=>({id:'w'+i,from,to,color:i>2?'#3b82f6':'#14b8a6'}))});raw.wires=bindExampleWires(chip,raw.wires);return validateESPCircuit(raw,chip);}
-export function solveESPCircuit(project,chip,pins={},drivers=[]){
+export function solveESPCircuit(project,chip,pins={},drivers=[],reactive=null){
  const definition=espBoardDefinition(chip),netlist=buildNets(project,c=>espPartDefinition(c,chip));
- const result=solveProjectDC(project,{pins},netlist,{board:definition,pwmAverage:false,drivers});
+ const result=solveProjectDC(project,{pins},netlist,{board:definition,pwmAverage:false,drivers,reactive});
  const board=project.components.find(c=>c.type==='board'),diagnostics=[...result.diagnostics];
  for(const p of definition.pins.filter(p=>p.port)){const voltage=result.voltages.get(netlist.net(board.id+':'+p.id));if(Number.isFinite(voltage)&&(voltage>3.6||voltage<-.3))diagnostics.push({code:'esp-gpio-overvoltage',componentIds:[board.id],pin:p.id,message:p.id+' 3.3 V GPIO sınırını aşıyor.'});}
  const fault=diagnostics.find(d=>DC_FAILURES.includes(d.code)||d.code==='esp-gpio-overvoltage');

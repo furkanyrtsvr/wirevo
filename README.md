@@ -1,12 +1,16 @@
 # Wirevo
 
-Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.73.0**.
+Tarayıcıda elektronik devre tasarımı, firmware derleme ve simülasyon çalışma alanı. Kaynak sürümü: **0.74.0**.
 
 **[Wirevo’yu tarayıcıda aç →](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
 AVR, ESP32 ve STM32 kartları; breadboard, kablolama ve net label; C17/C++17 ve desteklenen kartlarda MicroPython; sanal sensörler, seri haberleşme ve ölçüm araçları içerir. Kart ve çevrebirim kapsamı birebir tam silikon modeli değildir; ayrıntılar `dist/notices/` altındadır.
 
 Amaç, fiziksel prototipe geçmeden desteklenen devreleri kurmak, kaynak kodunu çalıştırmak ve sinyal/çevrebirim davranışını incelemektir.
+
+## Wirevo 0.74 · Native bileşen bağlantıları
+
+MCP23017/MPU6050 gerçek çıkışları, I²C aygıt zamanlaması, seviye dönüştürücü arkasında TM1637, ohmmetre ve native RC/RL geçici rejim. Ortak 74 bileşen ESP32-C3, STM32F103C8 ve TM4C123'te ayrı derlenen C17 firmware ile doğrulanır. Eski testler çalıştırılmaz. [Yeni C matrisi ve kesin sınırlar](docs/RELEASE_0.74.md).
 
 ## Wirevo 0.73 · Tüm kartlarda ortak bileşen kütüphanesi
 

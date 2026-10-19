@@ -133,7 +133,7 @@ int cf_rtc_set_calendar(const unsigned*v){if(!v||v[0]<2000||v[0]>2099||v[1]<1||v
 int cf_gpio_valid(unsigned);
 void cf_gpio_mode(unsigned,int); void cf_gpio_write(unsigned,int); int cf_gpio_read(unsigned);
 void cf_delay_ms(unsigned); void cf_delay_us(unsigned); unsigned cf_millis(void);
-void cf_uart_begin(unsigned); void cf_uart_write(unsigned char);
+void cf_uart_begin(unsigned); void cf_uart_write(unsigned char); int cf_uart_read(void);
 `,"stdint.h":`#pragma once
 typedef unsigned char uint8_t; typedef signed char int8_t; typedef unsigned short uint16_t; typedef short int16_t; typedef unsigned int uint32_t; typedef int int32_t; typedef unsigned long long uint64_t; typedef long long int64_t;
 `,"stdbool.h":`#pragma once
