@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import {photoBody079} from './photo-bodies079.mjs';
+import {photoPackage080} from './photo-packages080.mjs';
+import {photoBody080} from './photo-bodies080.mjs';
 import {bareBody,bareTypes} from './expansion-bare078.mjs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -92,7 +94,9 @@ function terminals(m){
 }
 function body(id,m){
  const w=m.width,h=m.height,cx=w/2,cy=h/2;
+ const pkg=photoPackage080(id,m);if(pkg)return pkg;
  const photo=photoBody079(id,m);if(photo)return photo;
+ const module=photoBody080(id,m);if(module)return module;
  if(m.kind==='button'){
   const p=m.pins.map(p=>rect(p.x<cx?p.x:cx+9,p.y-2,p.x<cx?cx-9-p.x:p.x-cx-9,4,'url(#metal)',.3,`data-pin="${esc(p.id)}" data-x="${p.x}" data-y="${p.y}"`)).join('');
   return p+rect(cx-13.2,8.8,26.4,26.4,'#17232d',2,'stroke="#0b141d"')+rect(cx-11.2,10.8,22.4,22.4,'url(#metal)',1)+[[-9,-9],[9,-9],[-9,9],[9,9]].map(([dx,dy])=>circle(cx+dx,22+dy,1.15,'#324755')).join('')+circle(cx,22,8.3,'#111d27')+circle(cx,m.pressed?22.5:21.6,m.pressed?6.5:6.9,'url(#cap)',`stroke="${m.pressed?'#67c5de':'#91aabd'}" stroke-width="${m.pressed?1.1:.7}"`);

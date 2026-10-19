@@ -1,5 +1,9 @@
 # Wirevo
 
+## Wirevo 0.80 · Kalan katalogda fotoğraf eşleştirmesi
+
+Önceki 11 parça dışında 111 fiziksel bileşen gerçek fotoğraflarla incelendi, 109 çizim düzeltildi; uygun breadboard ve RGB gövdeleri korundu. Pin yazıları büyütüldü, eksik DC motor gövdesi ve dört haneli gösterge taşması düzeltildi. Yalnız yeni 0.80 görsel kontrolleri çalıştırılır. [Kaynaklar ve kesin kapsam](../docs/RELEASE_0.80.md).
+
 ## Wirevo 0.79 · Gerçek fotoğrafa göre görsel düzeltmeler
 
 İndirilen gerçek ürün fotoğraflarıyla CAN, RC522, DFPlayer, pasif piezo, DHT22, SHT31, KY-040, 28BYJ, HC-SR04, WS2812 ve ST7735 çizimleri karşılaştırılıp düzeltildi. Opaque etiket kutuları kaldırılmış, RGB lensi ve dış pin yazıları korunmuştur. Fotoğraflar yerel başvuru dosyalarıdır; uygulamaya yeniden dağıtılmamıştır. Yalnız yeni 0.79 görsel kontrolleri çalıştırılır. [Kapsam ve kaynaklar](../docs/RELEASE_0.79.md).

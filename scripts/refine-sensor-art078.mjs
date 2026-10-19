@@ -18,8 +18,64 @@ const screw=(x,y,radius=2)=>c(x,y,radius,'#c7d2d8','stroke="#526776" stroke-widt
 const smd=(x,y,body='#bea478')=>r(x,y,4,7,body,.5)+r(x,y,4,1.3,'#d5dee2')+r(x,y+5.7,4,1.3,'#b8c9d1');
 const vent=(x,y,w,h,n=5)=>Array.from({length:n},(_,i)=>r(x+i*w/n,y,w/n*.42,h,'#273d42',.7)).join('');
 const mesh=(id,x,y,radius,color='#8c9da5')=>`<defs><pattern id="mesh078-${id}" width="3" height="3" patternUnits="userSpaceOnUse"><path d="M0 0L3 3M3 0L0 3" stroke="${color}" stroke-width=".45"/></pattern></defs>`+c(x,y,radius,`url(#mesh078-${id})`);
+// v080: each of these forms was compared to a downloaded manufacturer photo.
+// Private comparison records identify package-family rather than exact references.
+const ink=(x,y,t,size=3.5,color='#b9c7cb')=>`<text x="${x}" y="${y}" fill="${color}" font-family="Arial,sans-serif" font-size="${size}" text-anchor="middle">${t}</text>`;
+function detail080(id,m){
+ if(id==='ina219')return r(34,33,36,29,'#225c45',1)+r(42,29,20,6,'none',.6,'stroke="#d8e5d7" stroke-width=".5"')+r(42,29,3,6,'#bcc9c9',.3)+r(59,29,3,6,'#bcc9c9',.3)+Array.from({length:4},(_,i)=>r(41,42+i*3,6,1.3,'url(#metal)',.15)+r(57,42+i*3,6,1.3,'url(#metal)',.15)).join('')+r(46,40,12,13,'#1a282c',.6)+c(48,42,0.6,'#a2b1b5')+ink(52,48,'219',3)+p('M43 35v3h8m10-3v3h-6','#9eb6a7',.5)+screw(47.2,14,3.6)+screw(56.8,14,3.6)+smd(23,39)+smd(77,42);
+ if(id==='max6675')return r(35,32,32,31,'#194466',1)+Array.from({length:4},(_,i)=>r(36,38+i*5,5,2,'url(#metal)',.2)+r(61,38+i*5,5,2,'url(#metal)',.2)).join('')+r(40,35,22,26,'#1d2b33',1)+c(43,38,1,'#9aa9b1')+ink(51,46,'MAX',4)+ink(51,53,'6675',4)+r(38,6,26,20,'#4a9878',2,'stroke="#95b8a0" stroke-width=".6"')+r(38,20,26,6,'#357255',.7)+screw(46.2,14,3.8)+screw(55.8,14,3.8)+smd(22,40)+smd(76,44);
+ if(id==='l298n'){
+  let s=r(51,13,58,54,'#1a2126',1,'stroke="#596970" stroke-width=".7"');
+  for(let i=0;i<8;i++)s+=r(53+i*7,14,3,49,'#303b42',.3)+p(`M${53+i*7} 14v47`,'#8a989f',.6)+p(`M${56+i*7} 15v47`,'#111b22',1.1);
+  return s+r(72,32,16,12,'#202b32',1)+screw(80,38,3)+p('M51 66H109','#0d1820',1.5)+[30.5,120].map(x=>c(x,67,5.4,'#bec7c8','stroke="#485f69" stroke-width=".5"')+p(`M${x-3} 67h6m-3-3v6`,'#5c7078',.5)).join('');
+ }
+ if(id==='loadcell')return p('M5 9H165M5 37H165','#f1f4f5',.8)+r(53,17,57,11,'#647b86',5)+r(60,19,43,7,'#1c323c',3)+p('M56 16h51M59 30h45','#c8d5da',.55)+[15,28,142,155].map(x=>c(x,23.5,4.3,'#435b67','stroke="#c1d0d7" stroke-width="1"')+c(x,23.5,2.6,'#203642')).join('')+r(72,9.5,31,5,'#323c38',.7)+p('M74 10h27','#8e9b8c',.6)+['#a23d3a','#3c4547','#bfc3b4','#467c56'].map((color,i)=>p(`M${77+i*5} 14V44H${70.6+i*9.6}V51`,color,1.4)).join('');
+ if(id==='dht11'){
+  let s=r(3.1,3.1,37.8,42,'#2b96c9',2,'stroke="#6ab3cb" stroke-width=".65"');
+  for(let row=0;row<6;row++)for(let col=0;col<4;col++)s+=r(6+col*8.5,7+row*5.7,5.5,3.6,'#185373',.3)+p(`M${6.4+col*8.5} ${10.7+row*5.7}h4.8`,'#72c3d8',.6);
+  return s+p('M5 5H39M4 6V43','#85d0e3',.55)+r(7,41,30,2,'#227aab',.4);
+ }
+ if(id==='hx711')return p('M23 21H45M23 21v23','#9ea9a5',.65)+c(25,24,1,'#c8cfca')+smd(55,26)+smd(55,43,'#343e41')+r(12,60,21,8,'#a1282f',.5,'stroke="#e1c2b8" stroke-width=".6"')+p('M15 64h6m4 0h5','#d1d6ba',.7)+p('M7 56H53M55 57v23','#e2c7bd',.45)+Array.from({length:4},(_,i)=>c(13+i*13,82,1,'#d6b6a2')).join('');
+ if(id==='tm1637')return p('M10.5 12.5H159.5V57.5H10.5Z','#d6d8d0',1.2)+r(11,13.1,148,1.5,'#f0f0e6',.2)+p('M11 58H159','#646e72',.9)+p('M15 60H155','#a6c5cd',.5);
+ if(id==='keypad4x4'){
+  const chars=['1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'];let s='';
+  for(let i=0;i<16;i++){
+   const x=10+i%4*28,y=20+Math.floor(i/4)*28,red=i%4===3||i===12||i===14;
+   s+=r(x,y,24,24,red?'#bd5a4a':'#4e939f',3,'stroke="#d6ded7" stroke-width=".9"')+r(x+1.4,y+1.5,21.2,20.7,'none',2,'stroke="#e1e7dc" stroke-width=".4"')+ink(x+12,y+16,chars[i],11,'#f0f3e4');
+  }
+  return s+p('M7 8H119V138H7Z','#d6ded8',1.1)+p('M10 11H116V135H10Z','#657774',.45)+Array.from({length:8},(_,i)=>p(`M${29.4+i*9.6} 146V152`,'#e9e9d6',2.4)).join('');
+ }
+ if(['lm35','tmp36','ds18b20'].includes(id))return '<path d="M5 7Q18 0 31 7V28Q18 34 5 28Z" fill="#1b252b" stroke="#09141a" stroke-width=".6"/>'+r(6,9,24,18,'#263139',1)+p('M7 8Q18 4 29 8','#7e8f98',.55)+p('M7 10V26','#50646f',.5)+ink(18,18,id==='ds18b20'?'DS18B20':id.toUpperCase(),id==='ds18b20'?3.2:4,'#adb9bd')+ink(18,24,'+  24',2.5,'#75858c')+p('M8.4 35V50M18 34V50M27.6 36V50','#d9e2e1',.55);
+ if(id==='mq2')return c(38,29,22,'#c8c7b2','stroke="#f4f0d6" stroke-width=".8"')+c(38,29,19.5,'#7e8f88')+mesh(id,38,29,19.2,'#3c4d47')+c(38,29,20.4,'none','stroke="#eee9cc" stroke-width="1.4"')+p('M21 15A23 23 0 0 1 53 13','#fffbee',1.1)+p('M20 44A23 23 0 0 0 55 44','#8b8e78',1.4);
+ if(id==='flame')return '<path d="M26 29V17Q26 10 33 10Q40 10 40 17V29Z" fill="#171b26" stroke="#4f596b" stroke-width=".6"/>'+p('M28 17q0-4 4-4','#d6d3dd',.8,'opacity=".65"')+r(25.5,27,15,3,'#303747',.7)+p('M29 31v5M36 31v5','#d1d9d9',.7)+r(9,41,16,17,'#286fba',1)+screw(17,49,3.8)+p('M14.2 46.2l5.6 5.6m0-5.6-5.6 5.6','#e1e7e4',.55);
+ if(id==='sound')return c(33,22,13,'url(#metal)','stroke="#e1e8e7" stroke-width="1"')+c(33,22,10,'#1b2224')+'<defs><pattern id="felt080" width="2.8" height="2.8" patternUnits="userSpaceOnUse"><circle cx=".5" cy=".8" r=".3" fill="#657571"/><circle cx="1.9" cy="2.2" r=".2" fill="#a9b5aa"/></pattern></defs>'+c(33,22,9.7,'url(#felt080)')+p('M24 13A13 13 0 0 1 41 12','#f6faf5',.9)+p('M24 32A13 13 0 0 0 42 31','#566f76',1)+r(9,42,16,17,'#286fba',1)+screw(17,50,3.8);
+ if(id==='pir'){
+  let s='<defs><radialGradient id="dome080" cx=".38" cy=".28" r=".7"><stop stop-color="#ffffff"/><stop offset=".7" stop-color="#e4eae6"/><stop offset="1" stop-color="#bbc9c7"/></radialGradient></defs>'+c(44,39,31,'url(#dome080)','stroke="#b6c7c8" stroke-width=".7"');
+  for(let ring=0;ring<3;ring++)for(let i=0;i<12;i++){
+   const a=(i+ring*.5)*Math.PI/6,b=a+Math.PI/6,ri=ring*9.6,ro=ri+9.6;
+   const xy=[[44+ri*Math.cos(a),39+ri*Math.sin(a)],[44+ro*Math.cos(a),39+ro*Math.sin(a)],[44+ro*Math.cos(b),39+ro*Math.sin(b)],[44+ri*Math.cos(b),39+ri*Math.sin(b)]].map(q=>q.map(v=>v.toFixed(2)).join(',')).join(' ');
+   s+=`<polygon points="${xy}" fill="${(i+ring)%3===0?'#ffffff':'#d6e0db'}" fill-opacity=".26" stroke="#c8d4ce" stroke-width=".3"/>`;
+  }
+  return s+c(44,39,6.5,'#f5f6ee','stroke="#d7dfd5" stroke-width=".5"')+p('M21 19A30 30 0 0 1 66 17','#ffffff',1.1,'opacity=".75"');
+ }
+ if(id==='irObstacle')return [22,50].map((x,i)=>r(x-6,11,12,22,i?'#141b25':'#27303c',5,'stroke="#63737e" stroke-width=".6"')+r(x-7,29,14,3,'#283743',.6)+p(`M${x-4} 17q0-4 4-4`,'#94aab6',.9,'opacity=".5"')).join('')+r(9,44,16,17,'#367cae',1)+screw(17,52,3.8)+p('M14 49l6 6m0-6-6 6','#e8e9de',.5);
+ if(id==='tilt')return r(13,14,18,28,'#62b6ce',7,'stroke="#a4d8dd" stroke-width=".7"')+'<ellipse cx="22" cy="15.5" rx="8.6" ry="2.7" fill="#c4e3de" stroke="#f0f6e7" stroke-width=".5"/>'+p('M16 18v19','#bfe6e5',1.2)+p('M29 18v19','#2b819c',1.2)+r(14,38,16,3,'#2d7f98',1)+screw(45,24,3.8);
+ if(id==='hall')return r(25,10,17,19,'#1c262b',2)+p('M26 13l3-2h10l2 2v13','#5c727a',.6)+ink(33.5,20,'3144',3.1,'#9eafb4')+r(25.5,26,16,2,'#111c24',.3)+p('M28.5 30v7M33.5 30v7M38.5 30v7','#d6dedc',.55);
+ if(id==='joystick')return '<defs><radialGradient id="rubber080" cx=".35" cy=".25" r=".8"><stop stop-color="#566065"/><stop offset=".5" stop-color="#323b40"/><stop offset="1" stop-color="#151f25"/></radialGradient></defs>'+r(9,32,14,20,'#5a9b91',2)+r(39,67,20,10,'#548c82',1)+c(48,41,24,'#1a252b','stroke="#0d181f" stroke-width="1.2"')+c(48,39.2,20.7,'url(#rubber080)','stroke="#697b81" stroke-width=".7"')+c(48,39,15.1,'#263238','stroke="#52666d" stroke-width=".5"')+p('M33 29A20 20 0 0 1 62 27','#8b9a9e',.7,'opacity=".55"')+screw(24,19,1.7)+screw(72,64,1.7);
+ if(id==='thermistor')return p('M27 28V39M39 28V39','#d6e0dc',1.3)+'<ellipse cx="33" cy="22" rx="5.8" ry="8.8" fill="#202a2a" stroke="#526a61" stroke-width=".65"/>'+p('M30 17q1-3 3-3','#a0b4a7',.65)+screw(16,51,3.8);
+ if(id==='soilCap')return '<path d="M8 64H50V164L29 173L8 164Z" fill="#24282a" stroke="#62685c" stroke-width=".7"/>'+p('M11 68V162L29 169L47 162V68','#747b69',.45)+r(12,101,34,23,'#24282a',.5)+ink(29,110,'CAPACITIVE',3.5,'#dde0ca')+ink(29,117,'SOIL SENSOR',3.5,'#dde0ca')+p('M8 65H50','#d8ddc1',.6)+smd(10,17)+smd(44,18)+r(23,48,12,5,'#315f47',.5,'stroke="#759a77" stroke-width=".5"');
+ if(id==='servo')return r(24,43,46,28,'#174e90',1,'stroke="#649ac4" stroke-width=".6"')+ink(47,53,'MICRO SERVO',4,'#ede6c7')+ink(47,62,'9g',5,'#e4dcae')+p('M22 19V76M72 19V76','#b4d5e7',.9,'opacity=".45"')+p('M20 77H74','#0b2d50',1.2)+screw(28,16,1.7)+screw(66,16,1.7)+p('M25 8H68','#8dbce0',.8);
+ if(id==='bh1750')return r(25,20,20,17,'#34423e',1,'stroke="#91a49d" stroke-width=".5"')+r(29,23,12,11,'#e3e7ce',.5)+r(32,25,6,7,'#acb9a6',.25)+r(32.5,25.5,2.1,6,'#d2dcc1',.15)+p('M26 21H44','#c2cec0',.55)+smd(15,24)+smd(51,24,'#3d4845');
+ if(id==='mpu6050')return r(33,29,26,23,'#202b31',1,'stroke="#546c77" stroke-width=".5"')+c(36,32,1,'#a6b4bb')+ink(46,39,'MPU',3.8)+ink(46,45,'6050',3.8)+p('M34 30H57M34 30V50','#738893',.6)+smd(17,43)+r(69,18,15,8,'#2d404f',1)+p('M71 19h11','#8999a0',.6);
+ if(id==='bmp280')return r(28,19,24,22,'#b5c2bd',1,'stroke="#6e848a" stroke-width=".7"')+p('M29 20H51M29 20V37','#f0f3e9',.8)+c(34,24,1.5,'#263d40','stroke="#dce4d9" stroke-width=".4"')+p('M31 34H49','#90a69f',.45)+r(29,38,22,2,'#526c6c',.2);
+ if(id==='ldr')return c(18,18,13.8,'#dfc38b','stroke="#ae865e" stroke-width=".8"')+p('M9 11H25V14H11V17H25V20H11V23H26','#846044',1.5)+p('M10 10H25M10 16H24M10 22H25','#f4dba4',.45)+c(9,11,1.2,'#bac6bd')+c(26,23,1.2,'#bac6bd')+p('M10 7A13 13 0 0 1 27 9','#f8e3b8',.75);
+ if(id==='mhz19')return r(13,12,112,49,'#d7b971',3,'stroke="#9c8148" stroke-width=".7"')+r(16,15,106,43,'#e2c78a',1)+p('M16 15H122M16 15V57','#f8e8b7',.9)+p('M16 59H121','#a28342',1.2)+r(20,33,21,18,'#e7dcc0',.5,'stroke="#b59e6a" stroke-width=".6"')+r(23,36,15,12,'#d0c5a7',.4)+r(83,19,22,8,'#c2a369',.5,'stroke="#f2db9a" stroke-width=".5"')+c(95,46,5.8,'#ba9c59','stroke="#f5e1a9" stroke-width=".8"')+c(95,46,2,'#8a723e')+p('M79 13V59','#bd9d59',.65);
+ if(id==='rtc')return c(61,30,22,'#899b9e','stroke="#d4dddd" stroke-width=".8"')+c(61,30,19,'#cbd4d2','stroke="#839895" stroke-width=".5"')+r(42,23,5,15,'#647b80',.5,'stroke="#cbd6d3" stroke-width=".6"')+r(77,23,6,15,'#81969b',1,'stroke="#ecf0e9" stroke-width=".6"')+p('M48 19A20 20 0 0 1 74 16','#f4f6eb',1)+ink(61,28,'CR1220',3.7,'#718480')+ink(61,36,'+',8,'#748983')+r(13,53,20,7,'url(#metal)',3)+p('M16 54H30','#f4f6eb',.7);
+ return null;
+}
 function detail(id,m){
  const w=m.width/m.scale;
+ const updated=detail080(id,m);if(updated!==null)return updated;
  if(id==='dht22'){
   // The real AM2302/DHT22 has a chamfered mounting ear, not a square PCB.
   let s='<path d="M2.5 18L10 2.5H39L46.5 18V59H2.5ZM28 10a3.5 3.5 0 1 0-7 0 3.5 3.5 0 0 0 7 0Z" fill="#e6e7dc" fill-rule="evenodd" stroke="#a6b4b1" stroke-width=".7"/>';
@@ -88,6 +144,14 @@ for(const id of ids){
  const view=svg.match(/viewBox="([^"]+)"/)[1];
  const pins=new Set((m.pinDefs??[]).flatMap(q=>[q.id,q.name].filter(Boolean)));
  svg=svg.replace(/<g data-refinement078="true">[\s\S]*?<\/g>/g,'');
+ // Photo-dependent body material corrections; the original sockets and pin
+ // coordinates stay intact. Replacements are intrinsically idempotent.
+ if(id==='hx711')svg=svg.replace(/(<rect x="2" y="2" width="74" height="87" fill=")[^"]+/,'$1#b82935');
+ if(id==='tm1637')svg=svg.replace(/(<rect x="10" y="12" width="150" height="46" fill=")[^"]+/,'$1#1b2329');
+ if(id==='keypad4x4')svg=svg.replace(/(<rect x="2" y="2" width="122" height="144" fill=")[^"]+/,'$1#263533');
+ if(['lm35','tmp36','ds18b20'].includes(id))svg=svg.replace(/<text\b[^>]*>TO-92<\/text>/g,'');
+ if(id==='thermistor')svg=svg.replace(/<circle cx="33" cy="22"[^>]*\/>/g,'');
+ if(['ina219','max6675','servo'].includes(id))svg=svg.replace(/<text\b[^>]*>(?:SHUNT ADC|EXTERNAL SHUNT|EXTERNAL K-TC|MICRO SERVO|SERVO|9g)<\/text>/g,'');
  if(id==='dht22')svg=svg.replace(/<rect\b([^>]*)\/>/g,(all,a)=>Number(a.match(/y="([\d.]+)"/)?.[1])<60?'':all).replace(/<text\b[^>]*>DHT22<\/text>/g,'');
  if(id==='stepper28byj')svg=svg.replace(/<rect\b[^>]*x="(?:119|121|157)"[^>]*\/>/g,'').replace(/<circle\b[^>]*cx="(?:161|123|199)"[^>]*\/>/g,'').replace(/<text\b[^>]*>(?:GEARED|STEPPER)<\/text>/g,'');
  svg=svg.replace(/<text\b([^>]*)>([\s\S]*?)<\/text>/g,(all,a,t)=>{

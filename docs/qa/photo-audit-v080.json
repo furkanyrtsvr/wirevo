@@ -1,0 +1,1651 @@
+{
+  "version": "0.80.0",
+  "scope": "Remaining 111 physical catalog entries. Photographs are private reference-only. Original vectors retain simulator adapter anchors; not exact manufacturer footprints.",
+  "previouslyCompleted": [
+    "mcp2515",
+    "mfrc522",
+    "dfplayer",
+    "buzzerPassive",
+    "dht22",
+    "sht31",
+    "ky040",
+    "stepper28byj",
+    "hcSr04",
+    "ws2812",
+    "tft7735"
+  ],
+  "records": [
+    {
+      "id": "breadboard",
+      "asset": "breadboard-400.svg",
+      "assets": [
+        "breadboard-400.svg"
+      ],
+      "page": "https://www.adafruit.com/product/64",
+      "imageUrl": "https://www.adafruit.com/images/480x360/64-06.jpg",
+      "compared": true,
+      "updated": false,
+      "changes": "Fotoğrafla karşılaştırıldı; mevcut delikler ve güç rayları doğru, çizim korundu"
+    },
+    {
+      "id": "dcmotor",
+      "asset": "expansion-dcmotor.svg",
+      "assets": [
+        "expansion-dcmotor.svg"
+      ],
+      "page": "https://www.adafruit.com/product/711",
+      "imageUrl": "https://www.adafruit.com/images/480x360/711-06.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Eksik motor gövdesi eklendi: metal kutu, havalandırma ve mil"
+    },
+    {
+      "id": "epaper",
+      "asset": "expansion-epaper.svg",
+      "assets": [
+        "expansion-epaper.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1028",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1028-08.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Kâğıt yüzey çevresinde gerçekçi ince çerçeve ve amber flex"
+    },
+    {
+      "id": "ili9341",
+      "asset": "expansion-ili9341.svg",
+      "assets": [
+        "expansion-ili9341.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1770",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1770-00.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Metal ekran kenarı, siyah bezel ve bakır izli flex"
+    },
+    {
+      "id": "irEmitter",
+      "asset": "expansion-irEmitter.svg",
+      "assets": [
+        "expansion-irEmitter.svg"
+      ],
+      "page": "https://www.adafruit.com/product/387",
+      "imageUrl": "https://www.adafruit.com/images/480x360/387-01.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Fotoğraftaki mor IR epoksi ve iç elektrotlar"
+    },
+    {
+      "id": "irReceiver",
+      "asset": "expansion-irReceiver.svg",
+      "assets": [
+        "expansion-irReceiver.svg"
+      ],
+      "page": "https://www.adafruit.com/product/157",
+      "imageUrl": "https://www.adafruit.com/images/480x360/157-00.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Füme lens, siyah kalıplı gövde ve üç metal bacak"
+    },
+    {
+      "id": "lcd20",
+      "asset": "expansion-lcd20.svg",
+      "assets": [
+        "expansion-lcd20.svg"
+      ],
+      "page": "https://www.adafruit.com/product/198",
+      "imageUrl": "https://www.adafruit.com/images/480x360/198-10.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "product-family",
+      "changes": "Metal kıvrım kenarı, mavi cam, montaj halkaları ve I²C notu"
+    },
+    {
+      "id": "lcd20p",
+      "asset": "expansion-lcd20p.svg",
+      "assets": [
+        "expansion-lcd20p.svg"
+      ],
+      "page": "https://www.adafruit.com/product/198",
+      "imageUrl": "https://www.adafruit.com/images/480x360/198-10.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "product-family",
+      "changes": "Metal kıvrım kenarı, mavi cam ve gerçek PCB padleri"
+    },
+    {
+      "id": "ledbar",
+      "asset": "expansion-ledbar.svg",
+      "assets": [
+        "expansion-ledbar.svg"
+      ],
+      "page": "https://www.sparkfun.com/10-segment-led-bar-graph-green.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/9/09935-01_3.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "product-family",
+      "changes": "Krem DIP gövde, siyah yüzey ve 10 ayrı difüzör"
+    },
+    {
+      "id": "optocoupler",
+      "asset": "expansion-optocoupler.svg",
+      "assets": [
+        "expansion-optocoupler.svg"
+      ],
+      "page": "https://www.sparkfun.com/optoisolator-1-channel-hcpl-817.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/0/00314-01a.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "DIP-4 çentik/nokta, mat gövde ve yalnız dört bağlantı bacağı"
+    },
+    {
+      "id": "pmos",
+      "asset": "expansion-pmos.svg",
+      "assets": [
+        "expansion-pmos.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1794",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1794-00.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "TO-220 delikli metal tab ve siyah kalıp yüzeyi"
+    },
+    {
+      "id": "pnp",
+      "asset": "expansion-pnp.svg",
+      "assets": [
+        "expansion-pnp.svg"
+      ],
+      "page": "https://www.adafruit.com/product/374",
+      "imageUrl": "https://www.adafruit.com/images/480x360/374-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "TO-92 package-family reference only, not PNP electrical reference",
+      "changes": "TO-92 düz ön yüz ve yuvarlak arka kapak; fotoğraf paket ailesi"
+    },
+    {
+      "id": "rfidCard",
+      "asset": "expansion-rfidCard.svg",
+      "assets": [
+        "expansion-rfidCard.svg"
+      ],
+      "page": "https://www.adafruit.com/product/359",
+      "imageUrl": "https://www.adafruit.com/images/480x360/359-01.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Beyaz PVC kenar ve ince ışık yansıması; UID/veri ve sunma düğmesi sanal arayüzdür"
+    },
+    {
+      "id": "rgbled",
+      "asset": "expansion-rgbled.svg",
+      "assets": [
+        "expansion-rgbled.svg"
+      ],
+      "page": "https://www.sparkfun.com/led-rgb-clear-common-cathode.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/0/00105-LED_-_RGB_Clear_Common_Cathode-01.jpg",
+      "compared": true,
+      "updated": false,
+      "scope": "product-family",
+      "changes": "Şeffaf lens ve dört bacak fotoğrafla karşılaştırıldı; önceki doğru çizim korundu"
+    },
+    {
+      "id": "segment1",
+      "asset": "expansion-segment1.svg",
+      "assets": [
+        "expansion-segment1.svg"
+      ],
+      "page": "https://www.sparkfun.com/7-segment-display-led-red.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/7/S/7SegmentRedLed-04-L.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Beyaz kalıp yan duvarı ve yedi ayrı difüzör"
+    },
+    {
+      "id": "segment4",
+      "asset": "expansion-segment4.svg",
+      "assets": [
+        "expansion-segment4.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1264",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1264-00.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Dört hanenin tuvalden taşması giderildi; statik ve canlı segmentler eşlendi"
+    },
+    {
+      "id": "tact6",
+      "asset": "tact-6x6.svg",
+      "assets": [
+        "tact-6x6.svg"
+      ],
+      "page": "https://www.adafruit.com/product/367",
+      "imageUrl": "https://www.adafruit.com/images/480x360/367-01.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Kıvrılmış metal üst plaka, dört bağlantı kulağı ve siyah basma başlığı"
+    },
+    {
+      "id": "xpt2046",
+      "asset": "expansion-xpt2046.svg",
+      "assets": [
+        "expansion-xpt2046.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1770",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1770-00.jpg",
+      "compared": true,
+      "updated": true,
+      "changes": "Rezistif cam panel kenarı ve amber flex; fotoğraf aynı cam ailesidir, kontrolcü birebir SKU değil"
+    },
+    {
+      "id": "ina219",
+      "asset": "ina219-current-monitor.svg",
+      "assets": [
+        "ina219-current-monitor.svg"
+      ],
+      "page": "https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout",
+      "imageUrl": "https://cdn-learn.adafruit.com/guides/images/000/000/022/medium800/INA219_top_angle.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Reduced oversized IC to physically plausible eight-pin package",
+        "Empty external-shunt footprint and metal-ended SMD details; no implied internal shunt"
+      ]
+    },
+    {
+      "id": "max6675",
+      "asset": "max6675-thermocouple.svg",
+      "assets": [
+        "max6675-thermocouple.svg"
+      ],
+      "page": "https://www.adafruit.com/product/269",
+      "imageUrl": "https://www.adafruit.com/images/480x360/269-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "family: MAX31855 thermocouple breakout; MAX6675 manufacturer photo was inaccessible",
+      "changes": [
+        "Distinct SOIC body and separate realistic green thermocouple terminal",
+        "Photo reference is MAX31855 family only, not an exact MAX6675 PCB"
+      ]
+    },
+    {
+      "id": "l298n",
+      "asset": "l298n-dual-bridge.svg",
+      "assets": [
+        "l298n-dual-bridge.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-66.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/DRI0002/DRI0002_Main_01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Replaced light grille with black extruded heatsink fins",
+        "Dark fin valleys, bright edges and proper electrolytic cap tops"
+      ]
+    },
+    {
+      "id": "loadcell",
+      "asset": "loadcell-strain-bridge.svg",
+      "assets": [
+        "loadcell-strain-bridge.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-1031.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/image/data/SEN0160/SEN0160_ShipList_06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Machined aluminum relief and countersunk mounting holes",
+        "Epoxy gauge seal and differentiated four-wire bridge routing"
+      ]
+    },
+    {
+      "id": "dht11",
+      "asset": "dht11-sensor.svg",
+      "assets": [
+        "dht11-sensor.svg"
+      ],
+      "page": "https://www.adafruit.com/product/386",
+      "imageUrl": "https://www.adafruit.com/images/480x360/386-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Four columns of deep square moulded grille openings",
+        "Thick blue plastic ribs instead of long generic horizontal slots"
+      ]
+    },
+    {
+      "id": "hx711",
+      "asset": "hx711-loadcell.svg",
+      "assets": [
+        "hx711-loadcell.svg"
+      ],
+      "page": "https://www.sparkfun.com/sparkfun-load-cell-amplifier-hx711.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/1/3/13879-SparkFun_Load_Cell_Amplifier_-_HX711-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Red carrier material matching actual manufacturer photo",
+        "Solder-plating, passive and input-pad distinctions on the retained ADC footprint"
+      ]
+    },
+    {
+      "id": "tm1637",
+      "asset": "tm1637-display4.svg",
+      "assets": [
+        "tm1637-display4.svg"
+      ],
+      "page": "https://wiki.seeedstudio.com/Grove-4-Digit_Display/",
+      "imageUrl": "https://files.seeedstudio.com/wiki/Grove-4-Digit_Display/img/Grove-4_digit_display.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Light molded housing border around black optical window",
+        "Retained exact display rectangle and segment coordinates"
+      ]
+    },
+    {
+      "id": "keypad4x4",
+      "asset": "keypad-matrix4x4.svg",
+      "assets": [
+        "keypad-matrix4x4.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-450.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/image/data/FIT0129/FIT0129_Main_01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact membrane 4x4 device class; branded layout differs",
+      "changes": [
+        "Dark flexible membrane backing, cyan number keys and red function keys",
+        "Pale border and ribbon-conductor detail; unchanged key hit regions"
+      ]
+    },
+    {
+      "id": "lm35",
+      "asset": "lm35-to92.svg",
+      "assets": [
+        "lm35-to92.svg"
+      ],
+      "page": "https://www.adafruit.com/product/165",
+      "imageUrl": "https://www.adafruit.com/images/480x360/165-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "family: TMP36 TO-92 package, not LM35 electrical specification",
+      "changes": [
+        "Curved TO-92 molded back and flat front face",
+        "Fine package print instead of large TO-92 label; reference is TMP36 package family"
+      ]
+    },
+    {
+      "id": "mq2",
+      "asset": "mq2-module.svg",
+      "assets": [
+        "mq2-module.svg"
+      ],
+      "page": "https://www.winsen-sensor.com/product/mq-2.html",
+      "imageUrl": "https://www.winsen-sensor.com/d/pic/newpic/mq.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Fine woven mesh mouth and champagne stainless rolled rim",
+        "Metal outer wall and light/dark rim highlights from bare sensor photograph"
+      ]
+    },
+    {
+      "id": "flame",
+      "asset": "flame-module.svg",
+      "assets": [
+        "flame-module.svg"
+      ],
+      "page": "https://sensorkit.joy-it.net/en/sensors/ky-026",
+      "imageUrl": "https://sensorkit.joy-it.net/files/files/sensors/KY-026/KY-026.png",
+      "compared": true,
+      "updated": true,
+      "scope": "exact module class",
+      "changes": [
+        "Rounded black optical dome and flange with distinct leads",
+        "Blue threshold trimmer and contrasting screw detail"
+      ]
+    },
+    {
+      "id": "sound",
+      "asset": "sound-module.svg",
+      "assets": [
+        "sound-module.svg"
+      ],
+      "page": "https://sensorkit.joy-it.net/en/sensors/ky-037",
+      "imageUrl": "https://sensorkit.joy-it.net/files/files/sensors/KY-037/KY-037.png",
+      "compared": true,
+      "updated": true,
+      "scope": "exact module class",
+      "changes": [
+        "Black felt-like microphone mouth, not ultrasonic-style metal crosshatch",
+        "Silver cylindrical rim and separate blue trimmer"
+      ]
+    },
+    {
+      "id": "pir",
+      "asset": "pir-hcsr501.svg",
+      "assets": [
+        "pir-hcsr501.svg"
+      ],
+      "page": "https://www.adafruit.com/product/189",
+      "imageUrl": "https://www.adafruit.com/images/480x360/189-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Spherical translucent white Fresnel material and graded facet rings",
+        "Raised white center and lens highlights rather than flat uniform pie slices"
+      ]
+    },
+    {
+      "id": "irObstacle",
+      "asset": "ir-obstacle-module.svg",
+      "assets": [
+        "ir-obstacle-module.svg"
+      ],
+      "page": "https://sensorkit.joy-it.net/en/sensors/ky-032",
+      "imageUrl": "https://sensorkit.joy-it.net/files/files/sensors/KY-032/KY-032.png",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; branded layout differs",
+      "changes": [
+        "Paired recessed dark optical barrels and flange rims",
+        "Contrasting lens glints and crosshead sensitivity trimmer"
+      ]
+    },
+    {
+      "id": "tilt",
+      "asset": "sw420-module.svg",
+      "assets": [
+        "sw420-module.svg"
+      ],
+      "page": "https://wiki.seeedstudio.com/Grove-Vibration_Sensor_SW-420/",
+      "imageUrl": "https://files.seeedstudio.com/wiki/Grove-Vibration_Sensor-SW-420/img/main.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact SW-420 switch family; carrier differs",
+      "changes": [
+        "Blue cylindrical SW-420 switch with elliptical cap",
+        "Dark lower collar and curved side highlights"
+      ]
+    },
+    {
+      "id": "hall",
+      "asset": "hall-a3144-module.svg",
+      "assets": [
+        "hall-a3144-module.svg"
+      ],
+      "page": "https://sensorkit.joy-it.net/en/sensors/ky-003",
+      "imageUrl": "https://sensorkit.joy-it.net/files/files/sensors/KY-003/KY-003.png",
+      "compared": true,
+      "updated": true,
+      "scope": "exact Hall package class",
+      "changes": [
+        "Small flat Hall package and clearly separated three silver leads",
+        "Subtle molded bevel and fine part marking"
+      ]
+    },
+    {
+      "id": "joystick",
+      "asset": "joystick-module.svg",
+      "assets": [
+        "joystick-module.svg"
+      ],
+      "page": "https://www.sparkfun.com/thumb-joystick.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/9/09032-03-L.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Raised convex rubber cap with a recessed thumb surface",
+        "Teal perpendicular potentiometer bodies and retained gimbal frame"
+      ]
+    },
+    {
+      "id": "thermistor",
+      "asset": "thermistor-module.svg",
+      "assets": [
+        "thermistor-module.svg"
+      ],
+      "page": "https://sensorkit.joy-it.net/en/sensors/ky-013",
+      "imageUrl": "https://sensorkit.joy-it.net/files/files/sensors/KY-013/KY-013.png",
+      "compared": true,
+      "updated": true,
+      "scope": "family: bare NTC carrier without comparator",
+      "changes": [
+        "Small black epoxy NTC bead rather than a large copper disc",
+        "Two slender metal leads; source is NTC package/carrier family"
+      ]
+    },
+    {
+      "id": "soilCap",
+      "asset": "soil-capacitive-module.svg",
+      "assets": [
+        "soil-capacitive-module.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-1385.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/SEN0193/SEN0193_Main_01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Black insulated blade instead of exposed golden electrode stripes",
+        "Fine blade perimeter and sparse real-style part printing"
+      ]
+    },
+    {
+      "id": "servo",
+      "asset": "sg90-microservo.svg",
+      "assets": [
+        "sg90-microservo.svg"
+      ],
+      "page": "https://www.adafruit.com/product/169",
+      "imageUrl": "https://www.adafruit.com/images/480x360/169-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Blue molded translucent case material and dark real-style case label",
+        "Kept output pivot, horn region, mounting ears and cable terminals"
+      ]
+    },
+    {
+      "id": "bh1750",
+      "asset": "bh1750-breakout.svg",
+      "assets": [
+        "bh1750-breakout.svg"
+      ],
+      "page": "https://www.adafruit.com/product/4681",
+      "imageUrl": "https://www.adafruit.com/images/480x360/4681-05.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Small pale optical package with a distinct light window",
+        "Package bevel and metallic passive ends"
+      ]
+    },
+    {
+      "id": "mpu6050",
+      "asset": "mpu6050-gy521.svg",
+      "assets": [
+        "mpu6050-gy521.svg"
+      ],
+      "page": "https://learn.adafruit.com/mpu6050-6-dof-accelerometer-and-gyro",
+      "imageUrl": "https://cdn-learn.adafruit.com/guides/images/000/002/780/medium800/top_crop_with_margin.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Molded dark IMU package with pin-one dot and restrained markings",
+        "Actual ceramic/metal-ended passives without changing GY-521 adapter pins"
+      ]
+    },
+    {
+      "id": "bmp280",
+      "asset": "bmp280-breakout.svg",
+      "assets": [
+        "bmp280-breakout.svg"
+      ],
+      "page": "https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout",
+      "imageUrl": "https://cdn-learn.adafruit.com/guides/images/000/001/096/medium800/BMP280_top.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Brushed pale metal sensor lid and real dark pressure vent",
+        "Crimped lower edge rather than featureless square package"
+      ]
+    },
+    {
+      "id": "ds18b20",
+      "asset": "ds18b20-to92.svg",
+      "assets": [
+        "ds18b20-to92.svg"
+      ],
+      "page": "https://www.adafruit.com/product/374",
+      "imageUrl": "https://www.adafruit.com/images/480x360/374-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "TO-92 curved rear molding and flat face",
+        "Fine printed device identification and metallic leads"
+      ]
+    },
+    {
+      "id": "tmp36",
+      "asset": "tmp36-to92.svg",
+      "assets": [
+        "tmp36-to92.svg"
+      ],
+      "page": "https://www.adafruit.com/product/165",
+      "imageUrl": "https://www.adafruit.com/images/480x360/165-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact sensor family",
+      "changes": [
+        "TO-92 curved rear molding and flat face",
+        "Fine printed device identification and metallic leads"
+      ]
+    },
+    {
+      "id": "ldr",
+      "asset": "ldr-photoresistor.svg",
+      "assets": [
+        "ldr-photoresistor.svg"
+      ],
+      "page": "https://www.adafruit.com/product/161",
+      "imageUrl": "https://www.adafruit.com/images/480x360/161-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class",
+      "changes": [
+        "Tan ceramic disk and thinner brown serpentine photosensitive track",
+        "Distinct two metal track contacts and rim"
+      ]
+    },
+    {
+      "id": "mhz19",
+      "asset": "mh-z19b-uart.svg",
+      "assets": [
+        "mh-z19b-uart.svg"
+      ],
+      "page": "https://www.winsen-sensor.com/product/mh-z19b.html",
+      "imageUrl": "https://www.winsen-sensor.com/d/pic/newpic/mh-z19b.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact sensor family",
+      "changes": [
+        "Replaced fictional open slot grille with closed golden NDIR chamber",
+        "Optical-side aperture, top recess and calibration-hole details"
+      ]
+    },
+    {
+      "id": "rtc",
+      "asset": "ds1307.svg",
+      "assets": [
+        "ds1307.svg"
+      ],
+      "page": "https://learn.adafruit.com/ds1307-real-time-clock-breakout-board-kit",
+      "imageUrl": "https://cdn-learn.adafruit.com/guides/images/000/000/196/medium800/ds1307rtc_LRG.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "exact device class; generic simulator footprint retained",
+      "changes": [
+        "Real coin-cell holder clips over the battery",
+        "Curved stainless highlight and separate watch crystal"
+      ]
+    },
+    {
+      "id": "bluetooth",
+      "asset": "bluetooth-hc05.svg",
+      "assets": [
+        "bluetooth-hc05.svg"
+      ],
+      "page": "https://www.deshide.com/product-details_HC-05.html",
+      "imageUrl": "https://wds-service-1258344699.file.myqcloud.com/20/12636/jpg/1665215171175b20eaec11fe501f5.jpg?version=0",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Replace fictitious RF shield with actual exposed QFP package and tinned perimeter leads",
+        "Refine gold meander antenna, crystal and translucent sleeve edge"
+      ]
+    },
+    {
+      "id": "signalgen",
+      "asset": "lab-signal-generator.svg",
+      "assets": [
+        "lab-signal-generator.svg"
+      ],
+      "page": "https://siglentna.com/waveform-generators/sdg1000x-series-functionarbitrary-waveform-generators/",
+      "imageUrl": "https://siglentna.com/wp-content/uploads/2017/10/SDG1000X.png",
+      "compared": true,
+      "updated": true,
+      "scope": "Generic instrument family only: simulator does not reproduce a SIGLENT model.",
+      "changes": [
+        "Light molded instrument face with reinforced rubber corners",
+        "Knurled control-ring marks and steel BNC ferrule; generic instrument family, not a SIGLENT replica"
+      ]
+    },
+    {
+      "id": "multimeter",
+      "asset": "lab-multimeter.svg",
+      "assets": [
+        "lab-multimeter.svg"
+      ],
+      "page": "https://www.adafruit.com/product/2034",
+      "imageUrl": "https://www.adafruit.com/images/480x360/2034-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Generic multimeter/instrument family: simulator ohmmeter is virtual, not this branded model.",
+      "changes": [
+        "Light injection-molded face with separate protective jacket",
+        "Radial range marks and metallic socket rims; generic meter family"
+      ]
+    },
+    {
+      "id": "ohmmeter",
+      "asset": "lab-ohmmeter.svg",
+      "assets": [
+        "lab-ohmmeter.svg"
+      ],
+      "page": "https://www.adafruit.com/product/2034",
+      "imageUrl": "https://www.adafruit.com/images/480x360/2034-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Generic multimeter/instrument family: simulator ohmmeter is virtual, not this branded model.",
+      "changes": [
+        "Light molded resistance-meter face and protective case",
+        "Separate range-ring ticks and bright terminal ferrules; virtual generic instrument"
+      ]
+    },
+    {
+      "id": "switch",
+      "asset": "basic-switch.svg",
+      "assets": [
+        "basic-switch.svg",
+        "basic-switch-closed.svg"
+      ],
+      "page": "https://www.adafruit.com/product/805",
+      "imageUrl": "https://www.adafruit.com/images/480x360/805-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Generic slide-switch metal/plastic body family; simulator SPST has two terminals rather than photographed SPDT three.",
+      "changes": [
+        "Folded steel case lips and mounting crimps over black slide-switch body",
+        "Preserve separate OFF/ON thumb positions and fixed two terminals"
+      ]
+    },
+    {
+      "id": "rheostat",
+      "asset": "basic-rheostat.svg",
+      "assets": [
+        "basic-rheostat.svg"
+      ],
+      "page": "https://www.adafruit.com/product/356",
+      "imageUrl": "https://www.adafruit.com/images/480x360/356-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Trimmer body family only; adjustable rheostat value remains user-selected.",
+      "changes": [
+        "Blue molded ribbed adjustment wheel instead of gold screw-cap look",
+        "Preserve two lead endpoints and configurable resistance"
+      ]
+    },
+    {
+      "id": "coilRelay",
+      "asset": "basic-relay.svg",
+      "assets": [
+        "basic-relay.svg",
+        "basic-relay-on.svg"
+      ],
+      "page": "https://www.pololu.com/product/2480",
+      "imageUrl": "https://a.pololu-files.com/picture/0J4371.1200x627.jpg?e936eeacbefa8f0f5eaac862709a8765",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual Pololu Omron black molded SPDT relay assembly used for casing/contact and terminal materials; generic simulator casing and module pinout are not an exact Pololu footprint.",
+      "changes": [
+        "Graphite molded relay shell and corner seams instead of open schematic cutaway",
+        "Distinct subdued mechanical status flag without changing coil/contact terminals"
+      ]
+    },
+    {
+      "id": "diode",
+      "asset": "1n4148-do35.svg",
+      "assets": [
+        "1n4148-do35.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1641",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1641-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "DO-35 glass package family; zener and switching diode are distinct electrical models.",
+      "changes": [
+        "Translucent amber glass meniscus and internal electrode hints",
+        "Bright tinned axial-lead edge; black cathode band retained"
+      ]
+    },
+    {
+      "id": "zener",
+      "asset": "bzx55c5v1-do35.svg",
+      "assets": [
+        "bzx55c5v1-do35.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1641",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1641-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "DO-35 glass package family; zener and switching diode are distinct electrical models.",
+      "changes": [
+        "DO-35 glass-package meniscus and electrode highlights from same physical family",
+        "Cathode band and distinct zener model retained"
+      ]
+    },
+    {
+      "id": "hc595",
+      "asset": "74hc595-dip16.svg",
+      "assets": [
+        "74hc595-dip16.svg"
+      ],
+      "page": "https://www.adafruit.com/product/450",
+      "imageUrl": "https://www.adafruit.com/images/480x360/450-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Real HC595 PDIP-16 photograph reused for PDIP-16 molded body, not silicon identity.",
+      "changes": [
+        "Folded tinned PDIP leads meet molded body",
+        "Graphite body edge, pin-one notch and ejector marks"
+      ]
+    },
+    {
+      "id": "hc165",
+      "asset": "74hc165-dip16.svg",
+      "assets": [
+        "74hc165-dip16.svg"
+      ],
+      "page": "https://www.adafruit.com/product/450",
+      "imageUrl": "https://www.adafruit.com/images/480x360/450-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Real HC595 PDIP-16 photograph reused for PDIP-16 molded body, not silicon identity.",
+      "changes": [
+        "Folded tinned PDIP-16 leads and graphite mold parting edge",
+        "Family photo reused without copying unrelated chip identity"
+      ]
+    },
+    {
+      "id": "mcp23s17",
+      "asset": "mcp23s17-dip28.svg",
+      "assets": [
+        "mcp23s17-dip28.svg"
+      ],
+      "page": "https://www.adafruit.com/product/732",
+      "imageUrl": "https://www.adafruit.com/images/480x360/732-05.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "MCP23017 PDIP-28 photograph reused for PDIP-28 body, not silicon identity.",
+      "changes": [
+        "Folded PDIP-28 leads and recessed ejector circles",
+        "MCP23017 package-family photo only; SPI identity retained"
+      ]
+    },
+    {
+      "id": "tft7789",
+      "asset": "st7789-tft240x240.svg",
+      "assets": [
+        "st7789-tft240x240.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3787",
+      "imageUrl": "https://cdn-shop.adafruit.com/970x728/3787-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Bright stamped metal frame lips around the unchanged square active screen",
+        "Amber flex with copper traces and dark connector below the glass"
+      ]
+    },
+    {
+      "id": "hc4050",
+      "asset": "74hc4050-dip16.svg",
+      "assets": [
+        "74hc4050-dip16.svg"
+      ],
+      "page": "https://www.adafruit.com/product/450",
+      "imageUrl": "https://www.adafruit.com/images/480x360/450-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Real HC595 PDIP-16 photograph reused for PDIP-16 molded body, not silicon identity.",
+      "changes": [
+        "Realistic bent tinned PDIP-16 lead knees and matte black plastic edge",
+        "Model name and all sixteen physical lead anchors retained"
+      ]
+    },
+    {
+      "id": "mcp23017",
+      "asset": "mcp23017-dip28.svg",
+      "assets": [
+        "mcp23017-dip28.svg"
+      ],
+      "page": "https://www.adafruit.com/product/732",
+      "imageUrl": "https://www.adafruit.com/images/480x360/732-05.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "MCP23017 PDIP-28 photograph reused for PDIP-28 body, not silicon identity.",
+      "changes": [
+        "Molded graphite PDIP-28 body with subtle circular ejector marks",
+        "Individual bent silver leads refined from actual MCP23017 photograph"
+      ]
+    },
+    {
+      "id": "lcd8p",
+      "asset": "lcd-8x2-parallel.svg",
+      "assets": [
+        "lcd-8x2-parallel.svg"
+      ],
+      "page": "https://www.adafruit.com/product/181",
+      "imageUrl": "https://www.adafruit.com/images/480x360/181-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "16x2 panel family; 8x2 and I2C-backpack variants preserve their distinct logical pinouts.",
+      "changes": [
+        "Black folded-metal bezel and light side retention clips",
+        "More saturated green PCB solder mask, no changes to 8x2 window or sixteen terminals"
+      ]
+    },
+    {
+      "id": "lcd16p",
+      "asset": "lcd-16x2-parallel.svg",
+      "assets": [
+        "lcd-16x2-parallel.svg"
+      ],
+      "page": "https://www.adafruit.com/product/181",
+      "imageUrl": "https://www.adafruit.com/images/480x360/181-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "16x2 panel family; 8x2 and I2C-backpack variants preserve their distinct logical pinouts.",
+      "changes": [
+        "Folded black metal frame with retaining lips and plated corner-hole highlights",
+        "Green solder-mask material refined while keeping 16x2 pixel region and sixteen terminals"
+      ]
+    },
+    {
+      "id": "lcd8",
+      "asset": "lcd-8x2-i2c.svg",
+      "assets": [
+        "lcd-8x2-i2c.svg"
+      ],
+      "page": "https://www.adafruit.com/product/181",
+      "imageUrl": "https://www.adafruit.com/images/480x360/181-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "16x2 panel family; 8x2 and I2C-backpack variants preserve their distinct logical pinouts.",
+      "changes": [
+        "8x2 folded bezel and side retention clips",
+        "Preserve four-terminal I2C variant and existing active text window"
+      ]
+    },
+    {
+      "id": "lcd16",
+      "asset": "lcd-16x2-i2c.svg",
+      "assets": [
+        "lcd-16x2-i2c.svg"
+      ],
+      "page": "https://www.adafruit.com/product/181",
+      "imageUrl": "https://www.adafruit.com/images/480x360/181-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "16x2 panel family; 8x2 and I2C-backpack variants preserve their distinct logical pinouts.",
+      "changes": [
+        "Green PCB material and folded black bezel with silver retention tabs",
+        "Preserve I2C terminal positions and 16x2 text region"
+      ]
+    },
+    {
+      "id": "mcp3008",
+      "asset": "mcp3008-dip16.svg",
+      "assets": [
+        "mcp3008-dip16.svg"
+      ],
+      "page": "https://www.adafruit.com/product/450",
+      "imageUrl": "https://www.adafruit.com/images/480x360/450-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Real HC595 PDIP-16 photograph reused for PDIP-16 molded body, not silicon identity.",
+      "changes": [
+        "Graphite PDIP-16 mold edges with individual tinned lead knees",
+        "ADC identity and channel pinout retained despite shared package-family photograph"
+      ]
+    },
+    {
+      "id": "matrix8",
+      "asset": "max7219-matrix8.svg",
+      "assets": [
+        "max7219-matrix8.svg"
+      ],
+      "page": "https://www.adafruit.com/product/870",
+      "imageUrl": "https://www.adafruit.com/images/480x360/870-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "8x8 LED face package family; photographed I2C backpack is not the MAX7219 controller.",
+      "changes": [
+        "Off-white molded matrix package sidewall behind black LED face",
+        "Beveled outer lips without touching the 8x8 active LED grid"
+      ]
+    },
+    {
+      "id": "digits8",
+      "asset": "max7219-digits8.svg",
+      "assets": [
+        "max7219-digits8.svg"
+      ],
+      "page": "https://wiki.seeedstudio.com/Grove-4-Digit_Display/",
+      "imageUrl": "https://files.seeedstudio.com/wiki/Grove-4-Digit_Display/img/Grove-4_digit_display.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Four-digit TM1637 photo used only for seven-segment package materials, not eight-digit geometry or driver identity.",
+      "changes": [
+        "Cream molded seven-segment package sidewall and subtle eight-body joints",
+        "Keep all eight active digits and SPI connector geometry unchanged"
+      ]
+    },
+    {
+      "id": "opamp",
+      "asset": "lm358.svg",
+      "assets": [
+        "lm358.svg"
+      ],
+      "page": "https://www.sparkfun.com/avr-8-pin-20mhz-8k-4a-d-attiny85.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/9/09378-1.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "ATtiny85 PDIP-8 photograph used solely for molded PDIP-8 body/lead geometry, not opamp/EEPROM identity.",
+      "changes": [
+        "Matte molded PDIP-8 body, ejector mark and folded silver leads",
+        "Generic PDIP-8 photograph used only for package, not ATtiny silicon identity"
+      ]
+    },
+    {
+      "id": "capacitor",
+      "asset": "capacitor.svg",
+      "assets": [
+        "capacitor.svg"
+      ],
+      "page": "https://www.adafruit.com/product/753",
+      "imageUrl": "https://www.adafruit.com/images/480x360/753-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Nonpolar ceramic package reference only; no printed value/polarity copied to configurable simulator.",
+      "changes": [
+        "Smooth yellow ceramic encapsulation and glossy upper edge",
+        "Preserve nonpolar radial model and both metal leads; no false fixed capacitance marking"
+      ]
+    },
+    {
+      "id": "inductor",
+      "asset": "inductor.svg",
+      "assets": [
+        "inductor.svg"
+      ],
+      "page": "https://bourns.com/products/magnetic-products/rf-inductors",
+      "imageUrl": "https://bourns.com/images/products/magnetic-products/70f_73f_part.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Bourns varnished axial choke family, not an inductance or exact-scale claim.",
+      "changes": [
+        "Replace exposed gold coil with dense red insulated thread winding and black ferrite bobbin shoulders",
+        "Whole axial assembly fitted inside original 67.2x14.4 viewBox; preserve two endpoints and configurable inductance"
+      ]
+    },
+    {
+      "id": "led",
+      "asset": "led-red.svg",
+      "assets": [
+        "led-red.svg",
+        "led-red-on.svg",
+        "led-green.svg",
+        "led-blue.svg",
+        "led-yellow.svg"
+      ],
+      "page": "https://www.adafruit.com/product/297",
+      "imageUrl": "https://www.adafruit.com/images/480x360/297-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Epoxy flange highlight, internal anvil edge and bright formed lead edges",
+        "All color and powered variants retain optical center and electrical endpoints"
+      ]
+    },
+    {
+      "id": "resistor",
+      "asset": "resistor-220.svg",
+      "assets": [
+        "resistor-220.svg",
+        "resistor-1000.svg",
+        "resistor-10000.svg"
+      ],
+      "page": "https://www.adafruit.com/product/2780",
+      "imageUrl": "https://www.adafruit.com/images/480x360/2780-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Rounded lacquer end-cap highlights and brighter tinned axial lead edges",
+        "Existing resistance color bands retained in every value variant"
+      ]
+    },
+    {
+      "id": "button",
+      "asset": "pushbutton-12mm.svg",
+      "assets": [
+        "pushbutton-12mm.svg",
+        "pushbutton-12mm-pressed.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1119",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1119-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Stamped-metal side lips, crimp dimples and pressed/unpressed cap highlights",
+        "All four contact anchors and click-target geometry preserved"
+      ]
+    },
+    {
+      "id": "pot",
+      "asset": "potentiometer.svg",
+      "assets": [
+        "potentiometer.svg",
+        "potentiometer-body.svg"
+      ],
+      "page": "https://www.adafruit.com/product/562",
+      "imageUrl": "https://www.adafruit.com/images/480x360/562-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Remove fictitious blue PCB and white disc; draw bare gold-brown metal casing, phenolic wafer and threaded metal shaft/nut",
+        "Preserve runtime rotary pivot at 37.795276,30.23622 and all three original terminal endpoints"
+      ]
+    },
+    {
+      "id": "npn",
+      "asset": "p2n2222a-to92.svg",
+      "assets": [
+        "p2n2222a-to92.svg"
+      ],
+      "page": "https://www.adafruit.com/product/756",
+      "imageUrl": "https://www.adafruit.com/images/480x360/756-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "TO-92 flat front with molded seam and rounded shoulder bevel",
+        "Individual formed silver lead shoulders retained in C/B/E order"
+      ]
+    },
+    {
+      "id": "mosfet",
+      "asset": "irlz44n-to220.svg",
+      "assets": [
+        "irlz44n-to220.svg"
+      ],
+      "page": "https://www.adafruit.com/product/355",
+      "imageUrl": "https://www.adafruit.com/images/480x360/355-02.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "TO-220 power MOSFET package family, not a specific simulated device rating.",
+      "changes": [
+        "Brushed metal tab edge and molded black package shoulders",
+        "Three bright folded lead knees; hole and drain-tab connector remain clear"
+      ]
+    },
+    {
+      "id": "relay",
+      "asset": "relay-module.svg",
+      "assets": [
+        "relay-module.svg",
+        "relay-module-powered.svg",
+        "relay-module-energized.svg"
+      ],
+      "page": "https://www.pololu.com/product/2480",
+      "imageUrl": "https://a.pololu-files.com/picture/0J4371.1200x627.jpg?e936eeacbefa8f0f5eaac862709a8765",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual Pololu Omron black molded SPDT relay assembly used for casing/contact and terminal materials; generic simulator casing and module pinout are not an exact Pololu footprint.",
+      "changes": [
+        "Match actual Pololu package materials: green PCB, graphite black relay case and blue screw-terminal block",
+        "Preserve original input/contact anchors and powered/contact LED states across all three variants"
+      ]
+    },
+    {
+      "id": "spdt",
+      "asset": "slide-switch-left.svg",
+      "assets": [
+        "slide-switch-left.svg",
+        "slide-switch-right.svg"
+      ],
+      "page": "https://www.adafruit.com/product/805",
+      "imageUrl": "https://www.adafruit.com/images/480x360/805-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Generic slide-switch metal/plastic body family; simulator SPST has two terminals rather than photographed SPDT three.",
+      "changes": [
+        "Silver folded case rails over black molded base",
+        "Preserve left/right selector travel and all three leg anchors"
+      ]
+    },
+    {
+      "id": "oled",
+      "asset": "ssd1306-128x64.svg",
+      "assets": [
+        "ssd1306-128x64.svg"
+      ],
+      "page": "https://www.adafruit.com/product/326",
+      "imageUrl": "https://www.adafruit.com/images/480x360/326-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Actual physical package reference; simulator electrical coordinates remain authoritative.",
+      "changes": [
+        "Amber flex tails and dark bonded driver region below glass",
+        "Fine glass edge and plated mounting-hole material; active 128x64 aperture excluded"
+      ]
+    },
+    {
+      "id": "eeprom",
+      "asset": "24lc256.svg",
+      "assets": [
+        "24lc256.svg"
+      ],
+      "page": "https://www.sparkfun.com/avr-8-pin-20mhz-8k-4a-d-attiny85.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/9/09378-1.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "ATtiny85 PDIP-8 photograph used solely for molded PDIP-8 body/lead geometry, not opamp/EEPROM identity.",
+      "changes": [
+        "PDIP-8 black mold seam and ejector mark",
+        "Folded tinned legs preserve all EEPROM pins and identity"
+      ]
+    },
+    {
+      "id": "a4988",
+      "asset": "expansion-a4988.svg",
+      "assets": [
+        "expansion-a4988.svg"
+      ],
+      "page": "https://www.pololu.com/product/1182",
+      "imageUrl": "https://a.pololu-files.com/picture/0J10064.1200x627.jpg?c9f23bb0a581ad7237832aa804ad0006",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Green small carrier, two eight-pad rows, compact central driver and round current trimmer; no generic full-size chip."
+    },
+    {
+      "id": "drv8825",
+      "asset": "expansion-drv8825.svg",
+      "assets": [
+        "expansion-drv8825.svg"
+      ],
+      "page": "https://www.pololu.com/product/2133",
+      "imageUrl": "https://a.pololu-files.com/picture/0J4226.1200x627.jpg?a92e8e8b3227558d31d2fa4af96c7d83",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Purple carrier, taller central driver and lower round current trimmer; separate from green A4988."
+    },
+    {
+      "id": "tb6612",
+      "asset": "expansion-tb6612.svg",
+      "assets": [
+        "expansion-tb6612.svg"
+      ],
+      "page": "https://www.pololu.com/product/713",
+      "imageUrl": "https://a.pololu-files.com/picture/0J4617.1200x627.jpg?c004ffc809543b19fa467449bcefa2ed",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Small green dual-row carrier with wide fine-lead motor driver and local power capacitors."
+    },
+    {
+      "id": "aht20",
+      "asset": "expansion-aht20.svg",
+      "assets": [
+        "expansion-aht20.svg"
+      ],
+      "page": "https://www.adafruit.com/product/4566",
+      "imageUrl": "https://www.adafruit.com/images/480x360/4566-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black board, white JST sockets, small pale humidity cap; no fake metal pressure sensor."
+    },
+    {
+      "id": "ds3231",
+      "asset": "expansion-ds3231.svg",
+      "assets": [
+        "expansion-ds3231.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3013",
+      "imageUrl": "https://www.adafruit.com/images/480x360/3013-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Compact blue RTC breakout, large SOIC clock chip and round corner holes; no invented visible top-side coin battery."
+    },
+    {
+      "id": "adxl345",
+      "asset": "expansion-adxl345.svg",
+      "assets": [
+        "expansion-adxl345.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1231",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1231-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Small black board with tiny MEMS package, axis silkscreen and opposing white JST sockets."
+    },
+    {
+      "id": "water",
+      "asset": "expansion-water.svg",
+      "assets": [
+        "expansion-water.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-798.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/image/data/SEN0121/SEN0121_Main_01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Selected physical variant is DFRobot SEN0121 exposed nested gold water-sensing loops on a black board; not a literal clone of the common red linear probe."
+    },
+    {
+      "id": "rain",
+      "asset": "expansion-rain.svg",
+      "assets": [
+        "expansion-rain.svg"
+      ],
+      "page": "https://wiki.seeedstudio.com/Grove-Water_Sensor/",
+      "imageUrl": "https://files.seeedstudio.com/wiki/Grove-Water_Sensor/img/Grove-Water_Sensor_1.png",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Seeed water/rain sensing comb has visible parallel exposed metal fingers, blue/teal board and white edge connector. Functional AO/DO simulator profile retained rather than claiming this exact Grove wiring."
+    },
+    {
+      "id": "soilProbe",
+      "asset": "expansion-soilProbe.svg",
+      "assets": [
+        "expansion-soilProbe.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-599.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/SEN0114/SEN0114_Main_01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Two long gold-coated pointed prongs and black connector head. Functional AO/DO simulator profile retains existing separate comparator abstraction."
+    },
+    {
+      "id": "ads1115",
+      "asset": "expansion-ads1115.svg",
+      "assets": [
+        "expansion-ads1115.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1085",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1085-10.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black ADC breakout, narrow multi-lead ADC, passives, actual white connectors and gold vias."
+    },
+    {
+      "id": "mcp4725",
+      "asset": "expansion-mcp4725.svg",
+      "assets": [
+        "expansion-mcp4725.svg"
+      ],
+      "page": "https://www.adafruit.com/product/935",
+      "imageUrl": "https://www.adafruit.com/images/480x360/935-11.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Tiny six-lead DAC on black board; reduced chip size and actual white sockets."
+    },
+    {
+      "id": "pcf8574",
+      "asset": "expansion-pcf8574.svg",
+      "assets": [
+        "expansion-pcf8574.svg"
+      ],
+      "page": "https://www.adafruit.com/product/5545",
+      "imageUrl": "https://cdn-shop.adafruit.com/970x728/5545-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black board with larger SOIC GPIO expander, top eight-via bank and white edge sockets."
+    },
+    {
+      "id": "pca9685",
+      "asset": "expansion-pca9685.svg",
+      "assets": [
+        "expansion-pca9685.svg"
+      ],
+      "page": "https://www.adafruit.com/product/815",
+      "imageUrl": "https://www.adafruit.com/images/480x360/815-05.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Long blue board, sixteen triple servo pad positions, green power terminal and cylindrical bulk capacitor."
+    },
+    {
+      "id": "cd4067",
+      "asset": "expansion-cd4067.svg",
+      "assets": [
+        "expansion-cd4067.svg"
+      ],
+      "page": "https://www.sparkfun.com/sparkfun-analog-digital-mux-breakout-cd74hc4067.html",
+      "imageUrl": "https://www.sparkfun.com/media/catalog/product/cache/6b78ac9ed927a3c2db42a3c84dab4ce5/0/9/09056-01.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Narrow red SparkFun multiplexer board with two long banks, small central IC and routed board detail."
+    },
+    {
+      "id": "levelShift",
+      "asset": "expansion-levelShift.svg",
+      "assets": [
+        "expansion-levelShift.svg"
+      ],
+      "page": "https://www.adafruit.com/product/757",
+      "imageUrl": "https://www.adafruit.com/images/480x360/757-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue four-channel board with four separate MOSFET stages instead of one giant controller."
+    },
+    {
+      "id": "fram",
+      "asset": "expansion-fram.svg",
+      "assets": [
+        "expansion-fram.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1895",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1895-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue rounded-corner breakout, eight-lead FRAM IC, address jumpers and gold pads."
+    },
+    {
+      "id": "spiFlash",
+      "asset": "expansion-spiFlash.svg",
+      "assets": [
+        "expansion-spiFlash.svg"
+      ],
+      "page": "https://www.adafruit.com/product/5635",
+      "imageUrl": "https://www.adafruit.com/images/480x360/5635-00.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "W25Q16 photo is used only as the physical SOIC breakout package reference. The simulator remains W25Q32 with its original memory size, electrical pin names and behavior; no claim of exact model/photo identity."
+    },
+    {
+      "id": "sdCard",
+      "asset": "expansion-sdCard.svg",
+      "assets": [
+        "expansion-sdCard.svg"
+      ],
+      "page": "https://www.adafruit.com/product/254",
+      "imageUrl": "https://www.adafruit.com/images/480x360/254-06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue board with real silver microSD holder, dark insertion slot and smaller regulator/logic cluster."
+    },
+    {
+      "id": "bme280",
+      "asset": "expansion-bme280.svg",
+      "assets": [
+        "expansion-bme280.svg"
+      ],
+      "page": "https://www.adafruit.com/product/2652",
+      "imageUrl": "https://www.adafruit.com/images/480x360/2652-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black breakout, tiny silver pressure package with vent, white connectors and four holes."
+    },
+    {
+      "id": "bme680",
+      "asset": "expansion-bme680.svg",
+      "assets": [
+        "expansion-bme680.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3660",
+      "imageUrl": "https://www.adafruit.com/images/480x360/3660-08.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black breakout, small warm-metal gas/environment package with open port, white connectors and four holes."
+    },
+    {
+      "id": "vl53l0x",
+      "asset": "expansion-vl53l0x.svg",
+      "assets": [
+        "expansion-vl53l0x.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3317",
+      "imageUrl": "https://cdn-shop.adafruit.com/970x728/3317-10.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Black breakout with two distinct dark optical windows in the small rangefinder package."
+    },
+    {
+      "id": "pn532",
+      "asset": "expansion-pn532.svg",
+      "assets": [
+        "expansion-pn532.svg"
+      ],
+      "page": "https://www.adafruit.com/product/364",
+      "imageUrl": "https://www.adafruit.com/images/480x360/364-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue long NFC breakout, mostly open antenna region with trace turns; controller and passives grouped at one end."
+    },
+    {
+      "id": "ina226",
+      "asset": "expansion-ina226.svg",
+      "assets": [
+        "expansion-ina226.svg"
+      ],
+      "page": "https://robiz.net/en-gb/ina226",
+      "imageUrl": "https://robiz.net/image/cache/data/sensors/current/ina226/INA226_01-1000x525w.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue CJMCU-style board with large R100 shunt, small sensing IC and grouped jumper passives. Artwork does not alter the existing simulator calibration or shunt model."
+    },
+    {
+      "id": "tcs34725",
+      "asset": "expansion-tcs34725.svg",
+      "assets": [
+        "expansion-tcs34725.svg"
+      ],
+      "page": "https://www.adafruit.com/product/1334",
+      "imageUrl": "https://www.adafruit.com/images/480x360/1334-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue color board, dark color-sensing window and separate pale illumination LED."
+    },
+    {
+      "id": "max30102",
+      "asset": "expansion-max30102.svg",
+      "assets": [
+        "expansion-max30102.svg"
+      ],
+      "page": "https://www.dfrobot.com/product-2164.html",
+      "imageUrl": "https://dfimg.dfrobot.com/enshop/SEN0344_Detail_06.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Downloaded true front detail instead of original OG rear photo; dual optical apertures, gold die details and edge pads."
+    },
+    {
+      "id": "i2sMic",
+      "asset": "expansion-i2sMic.svg",
+      "assets": [
+        "expansion-i2sMic.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3421",
+      "imageUrl": "https://www.adafruit.com/images/480x360/3421-03.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue small breakout with modest silver MEMS microphone can and a single dark acoustic port; not a giant circular electret capsule."
+    },
+    {
+      "id": "i2sAmp",
+      "asset": "expansion-i2sAmp.svg",
+      "assets": [
+        "expansion-i2sAmp.svg"
+      ],
+      "page": "https://www.adafruit.com/product/3006",
+      "imageUrl": "https://www.adafruit.com/images/480x360/3006-04.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue amplifier breakout with prominent green two-screw speaker terminal and small audio driver IC."
+    },
+    {
+      "id": "rs485",
+      "asset": "expansion-rs485.svg",
+      "assets": [
+        "expansion-rs485.svg"
+      ],
+      "page": "https://www.waveshare.com/ttl-to-rs485-c.htm",
+      "imageUrl": "https://www.waveshare.com/media/catalog/product/t/t/ttl-to-rs485-c-1.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Slim black transceiver physical package reference with two local ICs and small status indicators. Waveshare C auto-direction wiring is not imposed on the existing simulator DE/RE profile."
+    },
+    {
+      "id": "gps",
+      "asset": "expansion-gps.svg",
+      "assets": [
+        "expansion-gps.svg"
+      ],
+      "page": "https://www.adafruit.com/product/746",
+      "imageUrl": "https://www.adafruit.com/images/480x360/746-11.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue GNSS breakout with raised beige ceramic patch over a metal module frame and local RF components."
+    },
+    {
+      "id": "buzzerActive",
+      "asset": "expansion-buzzerActive.svg",
+      "assets": [
+        "expansion-buzzerActive.svg"
+      ],
+      "page": "https://wiki.seeedstudio.com/Grove-Buzzer/",
+      "imageUrl": "https://files.seeedstudio.com/wiki/Grove_Buzzer/images/Grove%20Buzzer.jpg",
+      "compared": true,
+      "updated": true,
+      "scope": "Private photo reference only. Original vector artwork is published, photographs are not bundled.",
+      "changes": "Blue active buzzer MODULE with dark cylindrical sounder, acoustic hole and white connector; simulator three-pin input retained, not replaced with a bare two-pin buzzer."
+    }
+  ]
+}
