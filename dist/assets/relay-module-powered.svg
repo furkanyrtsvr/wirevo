@@ -68,4 +68,4 @@
     </text>
     <circle cx="7.1" cy="1.8" r="2.3" id="power-glow" fill="#FF355E" filter="url(#ledFilter)" opacity=".7"></circle>
     <circle cx="7.1" cy="13.6" r="2.3" id="contact-glow" fill="lime" filter="url(#ledFilter)" opacity="0"></circle>
-</g></svg>
+</g><!--078:start--><g data-art078="physical-refinement" pointer-events="none"><path d="M37 9H82M37 9V49" fill="none" stroke="#d7eaff" stroke-width="0.45" opacity=".25"/></g><!--078:end--></svg>

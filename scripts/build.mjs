@@ -18,4 +18,7 @@ await import('./generate-lcd-art.mjs');
 await import('./generate-stm32-art.mjs');
 await import('./generate-esp-profile-art.mjs');
 await import('./generate-esp-notices.mjs');
+await import('./refine-sensor-art078.mjs');
+const {refinePackageArt078}=await import('./refine-package-art078.mjs');
+console.log('Physical package refinements:',refinePackageArt078().length);
 await import('./generate-app-cache.mjs');

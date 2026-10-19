@@ -51,6 +51,6 @@
         <ellipse cx="12.76" cy="18" rx=".61" ry=".63" />
       </g>
       <ellipse cx="9.95" cy="8.06" rx="6.60" ry="6.58" fill="#c3c2c3" stroke-width=".15" />
-      
+
       <rect x="0" y="9.5" width="1" height="1" fill="none" id="firefox-workaround" />
-    </g></svg>
+    </g><!--078:start--><g data-art078="physical-refinement" pointer-events="none"><path d="M16 30Q17 16 31 12" fill="none" stroke="#d6e3df" stroke-width="0.6" opacity=".45"/></g><!--078:end--></svg>

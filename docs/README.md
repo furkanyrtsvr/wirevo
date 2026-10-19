@@ -1,6 +1,6 @@
-# Güncel: [0.77 — görseller, RFID kartları ve anahtarlar](RELEASE_0.77.md)
+# Güncel: [0.78 — fiziksel gövdeler ve okunabilir pinler](RELEASE_0.78.md)
 
-Yeni kabul komutu `npm run test:visuals-077`; yalnız yeni ortak katalog/köprü kontrolleri çalıştırılır. [Tiva API/model kapsamı](../dist/notices/TIVA-MODEL.md). STM32’nin kabul edilen sınırlarla kapatılan işlevsel profili değiştirilmedi.
+Yeni kabul komutu `npm run test:visuals-078`; yalnız yeni ortak katalog/köprü kontrolleri çalıştırılır. [Tiva API/model kapsamı](../dist/notices/TIVA-MODEL.md). STM32’nin kabul edilen sınırlarla kapatılan işlevsel profili değiştirilmedi.
 
 # Belgeler
 
@@ -9,7 +9,7 @@ Yeni kabul komutu `npm run test:visuals-077`; yalnız yeni ortak katalog/köprü
 | Güncel geliştirme planı | [Aktif STM32 denetimi](../dist/notices/STM32-AUDIT.md) |
 | Son teknik STM32 checkpointi | [Güncel destek profili](../dist/notices/STM32-SUPPORT-PROFILE.md) |
 | Test ve kabul sonuçları | [QA dizini](qa/README.md) |
-| Güncel sürüm | [0.77](RELEASE_0.77.md) |
+| Güncel sürüm | [0.78](RELEASE_0.78.md) |
 | Model ve lisans sınırları | [Uygulama model belgeleri](../dist/notices/) |
 | Önceki sürümler / planlar | [Sürüm geçmişi](history/releases/) / [Eski planlar](history/plans/) |
 | Donanım araştırmaları | [Araştırma notları](research/) |

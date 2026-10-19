@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {bareBody,bareTypes} from './expansion-bare078.mjs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {EXPANSION_MODULES} from '../dist/expansion-hardware.js';
@@ -81,10 +82,10 @@ function distinctive(id,m){
 function terminals(m){
  return m.pins.map(p=>{
   const x=Number(p.x),y=Number(p.y);
-  let s=circle(x,y,3.6,'#ba983c')+circle(x,y,2.15,'#222d32')+circle(x,y,.75,'#8e9d9c');
+  let s=bareTypes.has(m._id)?circle(x,y,1.4,'#c4ccd0'):socket(x,y);
   if(m.kind==='button')return '';
-  const compact=m.height<120;
-  s+=compact?text(x+2.2,y-7,p.id,7,'#ffffff',`font-weight="600" transform="rotate(-90 ${x+2.2} ${y-7})"`):text(x,y-7,p.id,5.8,'#ffffff','text-anchor="middle" font-weight="600"');
+
+  // Pin names are drawn once by the shared high-contrast workspace layer.
   return `<g data-pin="${esc(p.id)}" data-x="${x}" data-y="${y}">${s}</g>`;
  }).join('');
 }
@@ -126,11 +127,12 @@ function body(id,m){
   s+=text(cx,18,touch?'XPT2046 · RESISTIVE TOUCH':paper?'SSD1680 · E-PAPER':'ILI9341 · TFT LCD',Math.min(7,w/32),'#dcece6','text-anchor="middle" font-weight="600"');
   return s;
  }
+ if(bareTypes.has(id))return bareBody(id,m,distinctive(id,m));
  const pcb={mfrc522:'#176f9c',pn532:'#ab433c',dfplayer:'#286950',gps:'#215d8b',mcp2515:'#255b8c',a4988:'#29784e',drv8825:'#765091',tb6612:'#843e69',bme280:'#60528e',bme680:'#5b4a83',vl53l0x:'#3f618a',max30102:'#893c4a',pca9685:'#356783'}[id]??['#237e73','#1e617d','#3e5d9b','#7d3d5b','#30674a'][Object.keys(EXPANSION_MODULES).indexOf(id)%5];
  let s=rect(4,4,w-8,h-18,pcb,4,'stroke="#10282b" stroke-width="1.3"');
  for(const x of[11,w-11])s+=circle(x,12,3.1,'#d0b763')+circle(x,12,1.6,'#14232a');
  for(const p of m.pins)s+=line(p.x,p.y-6,cx+(p.x-cx)*.7,64,'#8fbd9c',.5);
- s+='<g transform="translate(0 19) scale(1 .56)">';
+ s+='<g>';
  const unique=distinctive(id,m);
  if(unique!==null){s+=unique;
  }else if(m.kind==='segment'){
@@ -173,17 +175,18 @@ function body(id,m){
   if(id==='aht20')s+=rect(cx-10,37,20,16,'#e3dfcc',1)+circle(cx,44,2,'#566b68');
   for(const dx of[-28,27])s+=rect(cx+dx,36,5,10,'#d5b995',.6)+rect(cx+dx,34.5,5,2,'#a8b9c4')+rect(cx+dx,45.5,5,2,'#a8b9c4');
  }
- const label=m.name.length>35?m.name.slice(0,34)+'…':m.name;
+ const label=({mfrc522:'RFID-RC522',pn532:'PN532',mcp2515:'MCP2515',buzzerActive:'ACTIVE BUZZER'}[id]||id.toUpperCase());
  s+='</g>';
- // Live values occupy the clear y22..33 strip; the app uses valueDisplay.y=29.
- // The bottom band is exclusively for legible vertical connector labels.
- s+=rect(13,21,w-26,12,'#142935',2,'opacity=".88" data-live-value-space="true"');
- s+=rect(7,h-43,w-14,31,'#101e2a',1.5,'opacity=".94"');
+ // Preserve the full physical silhouette; live text uses a small lower annotation.
+ // Shared workspace pin labels sit outside the package, without opaque bands.
+ // No empty black status boxes over the physical artwork.
+
  s+=text(cx,16,label,Math.min(7,(w-24)/(label.length*.53)),'#f5f9ee','text-anchor="middle" font-weight="600"');
  return s;
 }
-const defs=`<defs><linearGradient id="metal" x2=".8" y2="1"><stop stop-color="#dce5e9"/><stop offset=".35" stop-color="#869baa"/><stop offset=".6" stop-color="#c4d0d8"/><stop offset="1" stop-color="#637e90"/></linearGradient><linearGradient id="cap" x2=".3" y2="1"><stop stop-color="#748a99"/><stop offset="1" stop-color="#17232e"/></linearGradient><linearGradient id="green" x2="0" y2="1"><stop stop-color="#28765c"/><stop offset="1" stop-color="#164c3b"/></linearGradient><radialGradient id="lens" cx=".3" cy=".25"><stop stop-color="#f1fcff"/><stop offset=".35" stop-color="#b9dfed" stop-opacity=".9"/><stop offset="1" stop-color="#688f9d" stop-opacity=".8"/></radialGradient></defs>`;
-for(const[id,m]of Object.entries(EXPANSION_MODULES)){
+const defs=`<defs><linearGradient id="clear-epoxy" x2="1" y2=".2"><stop stop-color="#d6e9ec" stop-opacity=".8"/><stop offset=".35" stop-color="#eef9fc" stop-opacity=".55"/><stop offset=".7" stop-color="#a6c1cb" stop-opacity=".65"/><stop offset="1" stop-color="#607c8c" stop-opacity=".9"/></linearGradient><linearGradient id="black-plastic" x2="1" y2="0"><stop stop-color="#131c23"/><stop offset=".4" stop-color="#46515b"/><stop offset="1" stop-color="#152029"/></linearGradient><linearGradient id="metal" x2=".8" y2="1"><stop stop-color="#dce5e9"/><stop offset=".35" stop-color="#869baa"/><stop offset=".6" stop-color="#c4d0d8"/><stop offset="1" stop-color="#637e90"/></linearGradient><linearGradient id="cap" x2=".3" y2="1"><stop stop-color="#748a99"/><stop offset="1" stop-color="#17232e"/></linearGradient><linearGradient id="green" x2="0" y2="1"><stop stop-color="#28765c"/><stop offset="1" stop-color="#164c3b"/></linearGradient><radialGradient id="lens" cx=".3" cy=".25"><stop stop-color="#f1fcff"/><stop offset=".35" stop-color="#b9dfed" stop-opacity=".9"/><stop offset="1" stop-color="#688f9d" stop-opacity=".8"/></radialGradient></defs>`;
+for(const[id,definition]of Object.entries(EXPANSION_MODULES)){
+ const m={...definition,_id:id};
  if(!/^[-a-zA-Z0-9]+\.svg$/.test(m.asset))throw Error(`Unsafe asset name: ${m.asset}`);
  if(m.asset==='pushbutton-12mm.svg'||m.asset==='pushbutton-12mm-pressed.svg')throw Error('Existing button artwork is protected');
  const svg=`<!-- Original Wirevo vector artwork; generated by scripts/generate-expansion-art.mjs. -->\n<svg xmlns="http://www.w3.org/2000/svg" width="${m.width}" height="${m.height}" viewBox="0 0 ${m.width} ${m.height}"><title>${esc(m.name)}</title>${defs}${body(id,m)}${terminals(m)}</svg>\n`;

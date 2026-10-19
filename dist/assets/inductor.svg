@@ -4,4 +4,4 @@
 <path d="M4.8 7.2h57.6" stroke="#556470" stroke-width="2.4"/><path d="M4.8 7.2h57.6" stroke="url(#wire)" stroke-width="1.6"/>
 <rect x="14.4" y="1.6" width="38.4" height="11.2" rx="3.2" fill="url(#core)" stroke="#667072" stroke-width=".5"/>
 <g fill="url(#coil)" stroke="#59341d" stroke-width=".45"><rect x="17.4" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="21.2" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="25" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="28.8" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="32.6" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="36.4" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="40.2" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="44" y="1.4" width="2.8" height="11.6" rx="1"/><rect x="47.8" y="1.4" width="2.8" height="11.6" rx="1"/></g>
-</svg>
+<!--078:start--><g data-art078="physical-refinement" pointer-events="none"><path d="M16.1 2.8H49.4" fill="none" stroke="#ffcf99" stroke-width="0.65" opacity=".55"/><path d="M1.2 6.5H13.7M54.1 6.5H66" fill="none" stroke="#e2edf2" stroke-width="0.55" /></g><!--078:end--></svg>

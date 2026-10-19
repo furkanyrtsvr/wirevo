@@ -1,0 +1,11 @@
+// Original physical bodies. Bare parts have leads, never fictitious PCBs.
+export const bareTypes=new Set(['rgbled','buzzerPassive','dcmotor','pnp','pmos','optocoupler','irEmitter','irReceiver','segment1','segment4','ledbar']);
+export function bareBody(id,m,unique){const cx=m.width/2;
+ const path=(d,s='#a5b3bd',w=2)=>`<path d="${d}" fill="none" stroke="${s}" stroke-width="${w}" stroke-linecap="round"/>`;
+ const legs=m.pins.map((p,i)=>path(`M${cx+(i-(m.pins.length-1)/2)*6} 59V70L${p.x} 81V${p.y}`)).join('');
+ if(id==='rgbled'||id==='irEmitter')return `<g data-bare-package="${id}">${legs}<path d="M${cx-19} 59V34a19 19 0 0 1 38 0v25Z" fill="url(#clear-epoxy)" stroke="#afc4cc" stroke-width="1.2"/><path d="M${cx-14} 57V42h12l-4 8v7m14 0V44h6v13" fill="#9caab0" stroke="#d7e3e7" stroke-width=".8"/><ellipse cx="${cx}" cy="60" rx="22" ry="5" fill="#9db8c2" fill-opacity=".8" stroke="#d7e6e9"/><path d="M${cx-12} 40v-6q0-10 9-12" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".72"/><path d="M${cx+13} 31v20" stroke="#ecf6f9" stroke-width="1.6" opacity=".4"/></g>`;
+ if(id==='buzzerPassive')return `<g data-bare-package="piezo">${legs}<ellipse cx="${cx}" cy="62" rx="30" ry="10" fill="#11181d"/><path d="M${cx-30} 39v22a30 11 0 0 0 60 0V39" fill="url(#black-plastic)" stroke="#58636c" stroke-width="1"/><ellipse cx="${cx}" cy="39" rx="30" ry="24" fill="#2a333a" stroke="#7d8c96" stroke-width="1.2"/><ellipse cx="${cx}" cy="39" rx="26" ry="20" fill="#1b2228" stroke="#39454f"/><ellipse cx="${cx}" cy="39" rx="6" ry="5" fill="#070d11"/><path d="M${cx-20} 32h8m-4-4v8" stroke="#cad2d3" stroke-width="1.3"/><path d="M${cx-22} 25q14-13 31-4" fill="none" stroke="#9ba7ae" stroke-width="1.1" opacity=".6"/></g>`;
+ if(id==='segment1'||id==='segment4'){const n=id==='segment4'?4:1;return `<g data-bare-package="display">${legs}<rect x="${cx-n*19-4}" y="16" width="${n*38+8}" height="63" rx="4" fill="#151a1e" stroke="#697279" stroke-width="1.3"/><path d="M${cx-n*19} 19h${n*38}" stroke="#444a4d" stroke-width="1"/></g>`;}
+ if(id==='ledbar')return `<g data-bare-package="bargraph">${legs}<rect x="${cx-58}" y="17" width="116" height="53" rx="3" fill="#e6e1d4" stroke="#9c9b94"/><path d="M${cx-54} 20h108" stroke="#fff" stroke-width="2"/></g>`;
+ return `<g data-bare-package="${id}">${legs}${unique||''}</g>`;
+}
