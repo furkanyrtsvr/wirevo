@@ -1,6 +1,6 @@
 {
   "name": "wirevo",
-  "version": "0.80.0",
+  "version": "0.81.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -34,6 +34,7 @@
     "test:connections": "node --test tests/net-label-routing.test.mjs tests/stm32-bluetooth.test.mjs tests/bluetooth-bridges.test.mjs"
   },
   "dependencies": {
+    "rp2350js": "2.0.1",
     "@bjorn3/browser_wasi_shim": "0.4.2",
     "@codemirror/lang-cpp": "6.0.3",
     "@codemirror/lang-python": "6.2.1",

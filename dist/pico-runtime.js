@@ -1,0 +1,24 @@
+import {RP2040,RP2350} from './pico-engine.js';
+import {PICO_BOARDS} from './pico-boards.js';
+import {validatePicoImage} from './pico-image.js';
+import {validateProject,componentDefinition,buildNets} from './core.js';
+import {emptyProject} from './templates.js';
+import {solveProjectDC,DC_FAILURES} from './dc-project.js';
+import {ESPCircuitRuntime} from './esp-circuit-runtime.js';
+export function solvePicoCircuit(project,pins={},drivers=[],reactive=null){const board=PICO_BOARDS[project.components.find(c=>c.type==='board')?.params.model];const result=solveProjectDC(project,{pins},buildNets(project),{board,pwmAverage:false,drivers,reactive});const fault=result.diagnostics.find(d=>DC_FAILURES.includes(d.code));return{...result,valid:result.valid&&!fault,fault};}
+export class PicoCircuit extends ESPCircuitRuntime{
+ state(){const r=this.runtime;if(this.lastGPIO===r.gpioVersion)return false;this.lastGPIO=r.gpioVersion;this.pins=r.pinStates();return true;}
+ cycle(){return this.runtime.referenceCycles;}
+ solve(){const drivers=[...this.drivers];for(const[p,s]of Object.entries(this.pins||{}))if(s.mode==='INPUT_PULLDOWN')drivers.push({endpoint:this.board.id+':'+p,voltage:0,ohms:30000});this.solution=solvePicoCircuit(this.project,this.pins||{},drivers,this.reactiveStamps);if(!this.solution.valid)throw Error(this.solution.fault?.message||'Pico devresi çözülemedi.');for(const pin of this.runtime.board.gpio){const id='GPIO'+pin,voltage=this.solution.voltages.get(this.solution.netlist.net(this.board.id+':'+id));if(Number.isFinite(voltage)&&(voltage>3.6||voltage<-.3))throw Error(id+' Pico 3.3 V GPIO sınırını aşıyor.');const high=Number.isFinite(voltage)?voltage>=2.31:this.pins?.[id]?.mode==='INPUT_PULLUP';this.runtime.inputs[id]=high;this.runtime.rp.gpio[pin].setInputValue(!!high);}}
+}
+export class PicoRuntime{
+ constructor(image,id){this.board=PICO_BOARDS[id];this.chip=id;this.image=validatePicoImage(image,id).slice();this.circuitDefinition=this.board;this.circuitValidate=p=>validateProject({...emptyProject(),...p,language:'c',firmware:undefined});this.circuitSolve=p=>solvePicoCircuit(p);this.partDefinition=componentDefinition;this.hz=this.board.hz;this.createCPU();}
+ createCPU(){const newer=this.board.mcu==='RP2350',rp=this.rp=newer?new RP2350({coreArch:'arm'}):new RP2040();rp.clkSys=rp.clkPeri=this.hz;rp.flash.set(this.image);this.core=newer?rp.armCore0:rp.core[0];const v=new DataView(this.image.buffer,this.image.byteOffset,this.image.byteLength),sp=v.getUint32(0,true);if(newer){this.core.regs.sp=sp;this.core.regs.msp=sp;}else this.core.SP=sp;this.core.PC=v.getUint32(4,true)&~1;rp.writeUint32(0xe000ed08,0x10000000);this.count=0;this.referenceCycles=0;this.gpioVersion=0;this.inputs={};this.serial='';rp.uart[0].onByte=c=>this.serial+=String.fromCharCode(c);for(const g of rp.gpio)g.addListener(()=>{this.gpioVersion++;this.circuit?.refresh();});const read=rp.readUint32.bind(rp);rp.readUint32=address=>{if((address>>>0)===0xd0000004)this.circuit?.refresh();return read(address);};this.emulator={cycles:()=>this.count};}
+ attachCircuit(project){this.circuit=new PicoCircuit(this,project);this.circuit.refresh(true);return this.circuit;}
+ pinStates(){return Object.fromEntries(this.board.gpio.map(n=>{const p=this.rp.gpio[n],s=p.value,output=s===0||s===1;return['GPIO'+n,{high:output?s===1:!!this.inputs['GPIO'+n],outputEnabled:output,voltage:output?(s===1?3.3:0):null,mode:output?'OUTPUT':s===3?'INPUT_PULLUP':s===4?'INPUT_PULLDOWN':'INPUT'}];}));}
+ step(count){for(let i=0;i<count;i++){const before=this.core.cycles;this.rp.currentCore=0;this.core.executeInstruction();const elapsed=this.core.cycles-before;if(elapsed<=0)throw Error('Pico CPU ilerlemedi.');this.rp.stepThings(elapsed);this.count=this.core.cycles;this.referenceCycles=this.rp.clock.nanos*.016;if(this.circuit?.clockEvents[0]?.at<=this.referenceCycles)this.circuit.refresh(true);}const out=this.serial;this.serial='';return out;}
+ queueSerial(text){for(const c of new TextEncoder().encode(text))this.rp.uart[0].feedByte(c);}
+ registers(){return Array.from(this.board.mcu==='RP2350'?this.core.regs.r:this.core.registers);}
+ reset(){const project=this.circuit?.project;this.circuit?.peripherals?.dispose();this.circuit=null;this.createCPU();if(project)this.attachCircuit(project);}
+ dispose(){this.circuit?.peripherals?.dispose();this.circuit=null;this.rp=null;this.core=null;}
+}

@@ -1,0 +1,5 @@
+import {build} from 'esbuild';
+const target=['chrome100','firefox100','safari16'];
+await build({entryPoints:['src/code-editor.js'],outfile:'dist/code-editor.js',bundle:true,format:'esm',minify:true,target});
+await build({entryPoints:['src/pico-compiler.js'],outfile:'dist/pico-compiler.js',bundle:true,format:'esm',minify:true,target});
+await build({entryPoints:['src/pico-engine.js'],outfile:'dist/pico-engine.js',bundle:true,format:'esm',minify:true,target,plugins:[{name:'browser-no-filesystem',setup(b){b.onResolve({filter:/^(node:)?fs$/},()=>({path:'fs',namespace:'browser-stub'}));b.onLoad({filter:/.*/,namespace:'browser-stub'},()=>({contents:'export function readFileSync(){throw Error("Tarayıcıda yerel dosya erişimi yok; doğrulanmış proje firmware verisini kullanın.");}',loader:'js'}));b.onLoad({filter:/[\\/]bootroms[\\/]index\.js$/},()=>({contents:'// Wirevo starts its bounded firmware at the reset vector; no vendor ROM image is distributed.\nexport const bootromB1=new Uint32Array(4096);export const bootrom_rp2350_A2=new Uint32Array(8192);',loader:'js'}));}}]});

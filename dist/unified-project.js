@@ -1,3 +1,5 @@
+import {PICO_BOARDS} from './pico-boards.js';
+import {createPicoProject,PICO_EXAMPLES} from './pico-project.js';
 import {TIVA_BOARD,isTivaBoard} from './tiva-board.js';
 import {createTivaProject,TIVA_EXAMPLES} from './tiva-project.js';
 import {STM_FEATURED_EXAMPLES} from './stm32-labs.js';
@@ -20,14 +22,16 @@ export const languageNames={arduino:'Arduino C++',c:'C · main.c',cpp:'C++17 · 
 export const isESP=p=>BOARDS[boardKey(p)]?.architecture==='esp32';
 export const isSTM=p=>BOARDS[boardKey(p)]?.architecture==='stm32';
 export const isTiva=p=>BOARDS[boardKey(p)]?.architecture==='tiva';
-export const isNative=p=>isESP(p)||isSTM(p)||isTiva(p);
+export const isPico=p=>BOARDS[boardKey(p)]?.architecture==='pico';
+export const isNative=p=>isESP(p)||isSTM(p)||isTiva(p)||isPico(p);
 export const artifact=p=>p.firmware?.payload??p.firmware?.hex;
 export const encodeBytes=bytes=>{let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s);};
 export const decodeBytes=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function mountLEDStarter(p){for(const[id,hole,pin]of [['r1','c5','1'],['led1','j11','A']]){const c=p.components.find(c=>c.id===id),def=componentDefinition(c).pinDefs.find(p=>p.id===pin),target=pinPoint(p,'bb1:'+hole),local=localPoint(c,def.x,def.y);c.x=target.x-local.x;c.y=target.y-local.y;attachPlacement(c,placementCandidate(p,c,{radius:.1}));}}
 export const circuitPayload=p=>({components:p.components,wires:p.wires,settings:p.settings});
-export function unifiedExamples(p){if(isTiva(p))return TIVA_EXAMPLES;if(isSTM(p))return p.language==='micropython'?STM_FEATURED_EXAMPLES.filter(e=>e.id==='environment'):STM_FEATURED_EXAMPLES;if(!isESP(p))return[];return p.language==='micropython'?[{id:'blink',name:'GPIO · Breadboard LED',detail:'Pin / await'},{id:'sht31',name:'I²C · SHT31',detail:'SoftI2C / CRC-8'}]:p.language==='c'?[{id:'blink',name:'C17 · Breadboard LED',detail:'main.c / cf_hal.h'},...C_SENSOR_EXAMPLES]:[...ESP_EXAMPLES,...ESP_CIRCUIT_EXAMPLES].filter(e=>e.id!=='sensor-relay'||BOARDS[boardKey(p)].pins.some(p=>p.net==='5V'));}
+export function unifiedExamples(p){if(isPico(p))return PICO_EXAMPLES;if(isTiva(p))return TIVA_EXAMPLES;if(isSTM(p))return p.language==='micropython'?STM_FEATURED_EXAMPLES.filter(e=>e.id==='environment'):STM_FEATURED_EXAMPLES;if(!isESP(p))return[];return p.language==='micropython'?[{id:'blink',name:'GPIO · Breadboard LED',detail:'Pin / await'},{id:'sht31',name:'I²C · SHT31',detail:'SoftI2C / CRC-8'}]:p.language==='c'?[{id:'blink',name:'C17 · Breadboard LED',detail:'main.c / cf_hal.h'},...C_SENSOR_EXAMPLES]:[...ESP_EXAMPLES,...ESP_CIRCUIT_EXAMPLES].filter(e=>e.id!=='sensor-relay'||BOARDS[boardKey(p)].pins.some(p=>p.net==='5V'));}
 function unifiedExampleProjectRaw(board,language,id){
+ if(PICO_BOARDS[board])return createPicoProject({board,language,starter:id});
  if(isTivaBoard(board))return createTivaProject({language,starter:id});
  if(STM32_BOARDS[board])return createSTMProject({board,language,starter:id});
  if(language!=='arduino')return createUnifiedProject({board,language,starter:id});
@@ -37,6 +41,7 @@ function unifiedExampleProjectRaw(board,language,id){
 }
 export function supportedPart(p,type){if(typeof type!=='string')return false;if(type==='board')return !isNative(p);if(type.startsWith('board:')){const target=BOARDS[type.slice(6)];return !!target&&(target.architecture||'avr')===(BOARDS[boardKey(p)]?.architecture||'avr');}return Object.hasOwn(CATALOG,type);}
 function createUnifiedProjectRaw({name='Yeni proje',board='uno',language='arduino',starter='blink'}={}){
+ if(PICO_BOARDS[board])return createPicoProject({name,board,language,starter});
  if(isTivaBoard(board))return createTivaProject({name,language,starter});
  if(STM32_BOARDS[board])return createSTMProject({name,board,language,starter});
  if(!Object.hasOwn(BOARDS,board)||!Object.hasOwn(languageNames,language)||language==='cpp'||BOARDS[board].architecture!=='esp32'&&language!=='arduino')throw Error('Kart ve dil seçimi desteklenmiyor.');

@@ -1,4 +1,5 @@
 import {TIVA_BOARD} from './tiva-board.js';
+import {PICO_BOARDS} from './pico-boards.js';
 import {STM32_BOARDS} from './stm32-boards.js';
 import {ESP_BOARDS} from './esp-boards.js';
 import {ESP_PIN_DEFS} from './esp-pin-defs.js';
@@ -15,7 +16,7 @@ const shieldPins=UNO.pins.filter(p=>!['SCL','SDA','NC','IOREF'].includes(p.id)).
 const DUEMILANOVE={id:'duemilanove',name:'Arduino Duemilanove (ATmega328P)',width:274.31811,height:201.6,asset:'arduino-duemilanove.svg',pins:shieldPins,leds:{power:{x:234,y:64},D13:{x:125,y:46},TX:{x:100,y:67},RX:{x:100,y:76}},source:'https://docs.arduino.cc/retired/boards/arduino-duemilanove/'};
 const PRO={id:'pro',name:'Arduino Pro (5 V / 16 MHz)',width:274.31811,height:201.6,asset:'arduino-pro.svg',pins:shieldPins,leds:{power:{x:225,y:100},D13:{x:130,y:49}},source:'https://docs.arduino.cc/retired/boards/arduino-pro/'};
 const classic=d=>({...d,hz:16000000,mcu:'ATmega328P',flashSize:32768,analogChannels:6,flashLimit:30720,ram:2048});
-export const BOARDS={...STM32_BOARDS,[TIVA_BOARD.id]:TIVA_BOARD,uno:{...classic(UNO),flashLimit:32256},nano:{...classic(NANO),analogChannels:8},'pro-mini':{...classic(MINI),analogChannels:8},mega:{...MEGA,hz:16000000,mcu:'ATmega2560',flashSize:262144,analogChannels:16,flashLimit:253952,ram:8192},duemilanove:classic(DUEMILANOVE),pro:classic(PRO),...Object.fromEntries(Object.entries(ESP_BOARDS).map(([id,b])=>[id,{...b,id,name:b.title||b.name+' '+b.board,mcu:b.name,architecture:'esp32',ioVoltage:3.3,logicHigh:2.475,supplyPin:'3V3',width:b.width||220,height:b.height||460,pins:ESP_PIN_DEFS[id],flashSize:b.flash,flashLimit:b.flash,ram:b.ram??(id==='esp32c3'?240*1024:id==='esp32c6'?432*1024:400*1024),leds:{}}]))};
+export const BOARDS={...PICO_BOARDS,...STM32_BOARDS,[TIVA_BOARD.id]:TIVA_BOARD,uno:{...classic(UNO),flashLimit:32256},nano:{...classic(NANO),analogChannels:8},'pro-mini':{...classic(MINI),analogChannels:8},mega:{...MEGA,hz:16000000,mcu:'ATmega2560',flashSize:262144,analogChannels:16,flashLimit:253952,ram:8192},duemilanove:classic(DUEMILANOVE),pro:classic(PRO),...Object.fromEntries(Object.entries(ESP_BOARDS).map(([id,b])=>[id,{...b,id,name:b.title||b.name+' '+b.board,mcu:b.name,architecture:'esp32',ioVoltage:3.3,logicHigh:2.475,supplyPin:'3V3',width:b.width||220,height:b.height||460,pins:ESP_PIN_DEFS[id],flashSize:b.flash,flashLimit:b.flash,ram:b.ram??(id==='esp32c3'?240*1024:id==='esp32c6'?432*1024:400*1024),leds:{}}]))};
 export const boardKey=p=>p?.components?.find(c=>c.type==='board')?.params?.model||'uno';
 export const boardDefinition=c=>BOARDS[c?.params?.model||'uno'];
 export const projectBoard=p=>BOARDS[boardKey(p)];

@@ -1,5 +1,17 @@
 // Turkish source captions -> English presentation. Stable values are never translated.
 export const EN={
+ 'Dosya / kütüphane al':'Import files / library',
+ 'Yan yana':'Side by side',
+ 'Satıra git':'Go to line',
+ '◆ İşaret':'◆ Bookmark',
+ 'Bağlantılar':'Includes / bookmarks',
+ 'İkinci dosya':'Second file',
+ 'İkinci düzenleyici dosyası':'Second editor file',
+ 'Satır ve sütuna git':'Go to line and column',
+ 'Kaynak / kütüphane içe aktar':'Import sources / library',
+ 'Dosyaları projeye ekle':'Add files to project',
+ 'Aynı adlı dosyaların içeriğini değiştir':'Replace existing files',
+ 'Hedef klasör (isteğe bağlı)':'Target folder (optional)',
  'STM32 işlevsel simülatör profili':'STM32 functional simulator profile',
  'Destekleniyor':'Supported',
  'Kısmi model':'Partial model',
