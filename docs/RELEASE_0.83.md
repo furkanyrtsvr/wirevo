@@ -1,0 +1,13 @@
+# v0.83.0 · Pico ileri C çalışma profilleri
+
+Sekiz resmî Pico kartına USB CDC, PIO/DMA ve çift çekirdek C yolları eklendi. Bunlar kütüphane girdileri değildir: ARM firmware gerçek denetleyici/FIFO/SRAM modeline erişir. W/WH modellerinde ayrıca açıkça sanal olarak etiketlenmiş AP/UDP ve BLE UART laboratuvarı bulunur; kablosuz olmayan kartlara dahili radyo eklenmez.
+
+- **USB CDC:** firmware SETUP paketlerini işler, yapılandırma descriptor'ünü iki EP0 paketiyle döndürür; sanal USB host CDC uçlarını bulur, DTR açar. Terminal verisi gerçek denetleyici DPRAM'inden IN/OUT transferleriyle geçer. `stdio_usb_init`, polled `tud_task`, bağlantı, read/write/available alt kümesi. Tam TinyUSB/USB host/HID/MSC/DFU/BOOTSEL desteği iddia edilmez.
+- **PIO:** C program yükleme/yerleştirme, state-machine ayarları, FIFO, pin yönü, OUT/SET/IN konfigürasyonu, wrap, saat bölücü ve DREQ. RP2040 PIO0/1; RP2350 PIO0/1/2. Kod motorun PIO instruction yürütümünden GPIO'ya ulaşır. `.pio` assembler otomatik çalıştırılmaz; C instruction dizisi veya üretilmiş `.pio.h` kullanılır.
+- **DMA:** aileye özel CTRL alanları (RP2040 12 / RP2350 16 kanal), veri boyutu, adres artımı, zincir hedefi, DREQ, configure/start/wait ve adres/sayaç yardımcıları. Bellek kopyası ve FIFO derinliğini aşan PIO TX DREQ aktarımı doğrulandı. Tam IRQ/sniffer/ring SDK yüzeyi sunulmaz.
+- **İki çekirdek:** `multicore_launch_core1`, özel stack, reset, `get_core_num` ve gerçek SIO FIFO. İkinci ARM çekirdeği kendi PC/register/stack'iyle aynı SRAM'de ilerler. İki çekirdek deterministik zamanlanır; fiziksel yarış zamanlaması eşdeğer değildir. Launch üretici ROM el sıkışması yerine sınırlı Wirevo boot servisini kullanır. Kaynak debugger core 0'ı izler ve durduğunda tüm simülasyon durur; core 1 kaynak debugger henüz yoktur.
+- **W/WH sanal ağ:** varsayılan AP `WirevoLab` / `wirevo1234`, aç/kapat, kimlik doğrulama, zaman aşımı, UDP echo `192.168.4.1:7`, W LED'i. Sanal BLE UART reklam/PC bağlantısı/veri aktarımı. `wirevo/net.h` API'si açıkça Wirevo'ya aittir; gerçek CYW43 firmware, RF, Internet, lwIP veya BTstack uyumluluğu değildir. Sınırlı `cyw43_arch` yardımcıları sanal modele bağlanır.
+
+Projeler menüsüne USB CDC, çift çekirdek + PIO/DMA ve W sanal ağ örnekleri eklendi. Pico bağlantıları penceresi USB/çekirdek/ağ durumunu ve sanal BLE verisini gösterir. Dahili LED görseli firmware durumunu izler. Yeni ARM ABI bellek yardımcıları derleyicinin ürettiği dizi/struct kopyalarını destekler.
+
+Yalnız yeni `tests/pico-advanced083.test.mjs` doğrulamaları çalıştırılır. Eski testler ve eski kabul paketleri çalıştırılmadı. Tam silikon veya tam Pico SDK tamamlandığı iddia edilmez. Güncel kapsam: `dist/notices/PICO-MODEL.md`.

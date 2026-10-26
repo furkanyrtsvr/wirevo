@@ -1,1 +1,1 @@
-export {RP2040,RP2350,GPIOPinState} from 'rp2350js';
+export {RP2040,RP2350,GPIOPinState,USBCDC} from 'rp2350js';

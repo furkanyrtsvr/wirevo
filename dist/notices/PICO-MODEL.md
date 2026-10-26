@@ -1,4 +1,4 @@
-# Pico C modeli · v0.82
+# Pico C modeli · v0.83
 
 Sekiz resmî model: Pico / Pico H / Pico W / Pico WH / Pico 2 / Pico 2 with headers / Pico 2 W / Pico 2 W with headers.
 
@@ -12,11 +12,21 @@ Sekiz resmî model: Pico / Pico H / Pico W / Pico WH / Pico 2 / Pico 2 with head
 - Yeni: Clang -O0 / DWARF4 ile derlenen Pico C kodunda gerçek adres breakpointi (F9), kaynak satırı adımı (F10, step-into), duraklat/devam ve gerçek RAM/yazmaç üzerinden scalar global/yerel/parametre izleme. Kaynak dışındaki kodda ilerleyip yeni kullanıcı satırına ulaşır; bir satır adımı 500.000 komutla sınırlıdır. Satır çalıştırılmadan önce durur; yeni tanımlanan ama henüz atanmayan yerel değişkende RAM'in o andaki değeri görülebilir.
 - Değişken izlemesi ad kabul eder; genel C ifade değerlendirme, struct/array genişletme, çağrı yığını, step-over/out ve diğer mimarilerde kaynak debugger henüz sunulmaz. Desteklenmeyen DWARF konumu/türü “kullanılamıyor” gösterir. Eski firmware debugger için yeniden derlenir.
 - GPIO 3.3 V'tur. H/header varyantlarında pin dizilimi aynıdır; görünümde hazır başlık ayrımı vardır.
-- Örnek bütün modellerde harici LED kullanır. W kartlarının dahili LED'i GP25'e bağlı değildir; CYW43 üzerinden sürülür ve bu başlangıçta desteklenmez. Kablosuz olmayan kartların dahili LED'i de bu yayında görsel olarak modellenmez.
+- Dahili LED görseli kablosuz olmayan modellerde gerçek GP25 çıkışını, W modellerinde sınırlı cyw43_arch_gpio_put(0, ...) model durumunu izler.
+
+
+## v0.83 ileri çalışma profilleri
+
+- USB CDC: pico/stdio_usb.h + tusb.h içindeki polled alt küme, gerçek SETUP/DPRAM/IN/OUT modeline bağlıdır. stdio_usb_init sonrası while (!stdio_usb_connected()) tud_task(); kullanın; ana döngüde tud_task() çağırın. Tam TinyUSB değildir.
+- PIO: hardware/pio.h, instruction dizisi yükleme, SM konfigürasyonları, wrap/saat/pin/FIFO/DREQ; RP2040 iki, RP2350 üç PIO bloğu. Otomatik .pio assembler yoktur.
+- DMA: hardware/dma.h, gerçek aileye özel kanal register'leri, SRAM kopyası ve PIO DREQ. IRQ/sniffer/ring SDK yüzeyinin tümü yoktur.
+- Multicore: pico/multicore.h; iki native ARM çekirdeği, ortak SRAM, SIO FIFO, özel 2 KiB varsayılan core 1 stack. Üretici ROM yerine Wirevo launch servisi, deterministik zamanlayıcı; fiziksel cycle/race eşdeğerliği iddia edilmez. Kaynak debugger core 0 içindir; duraklatma iki çekirdeği durdurur.
+- W/WH: sanal AP varsayılan WirevoLab / wirevo1234. UDP echo 192.168.4.1:7; yalnız sanal endpoint, Internet yok. wirevo/net.h ile UDP / BLE UART, sınırlı pico/cyw43_arch.h yardımcıları. BLE için firmware advertise yapar, Pico bağlantıları penceresinden PC bağlanır. Bu gerçek CYW43 firmware/RF, lwIP veya BTstack değildir.
+- Hazır örnekler: Projeler menüsündeki USB CDC, Çift çekirdek + PIO/DMA, W Sanal AP / UDP / BLE.
 
 ## Henüz desteklenmeyenler
 
-Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve çekirdek 0 kullanılır. USB/UF2/BOOTSEL-ROM açılışı, CYW43 radyo/Wi-Fi/Bluetooth, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, çok çekirdekli eşzamanlılık, MicroPython, genel IRQ SDK'sı, PIO/DMA ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Flash firmware'i doğrudan reset vektöründen başlatılır; gerçek karta aktarılabilir UF2 çıktısı değildir.
+Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. UF2/BOOTSEL-ROM açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, USB host/HID/MSC/DFU, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Flash firmware'i doğrudan reset vektöründen başlatılır; gerçek karta aktarılabilir UF2 çıktısı değildir.
 
 Motor rp2350js 2.0.1 (MIT); RP2040 ve RP2350 için ayrı yerel ARM yürütüm yolları kullanılır. Üretici ROM görüntüsü dağıtılmaz; model kendi sınırlı firmware'ini reset vektöründen başlatır. Döngü/zaman doğruluğu fiziksel silikonla eşdeğer kabul edilmemelidir.
 
