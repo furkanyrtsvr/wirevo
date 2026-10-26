@@ -1,0 +1,77 @@
+{
+  "sourceOwner": "Raspberry Pi Ltd",
+  "accessed": "2026-10-26",
+  "use": "Downloaded local comparison references only. Published SVG artwork is original vector construction; no photo embeds.",
+  "productPhotos": [
+    {
+      "model": "pico",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico.png",
+      "sha256": "cbd8f9e22c3a45123f2d916ea996e99beb236dcaaaca0430cd2575a91bdf5a33",
+      "localReferenceName": "pico.png"
+    },
+    {
+      "model": "pico-h",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-h.png",
+      "sha256": "f793705bdad6b4f3e5f555e080c919d6ae194bc46b4878b216170972b54c5368",
+      "localReferenceName": "pico-h.png"
+    },
+    {
+      "model": "pico-w",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-w.png",
+      "sha256": "39646c3fc2c305a2bd11cce34775776d4d291a931934d373d839125932e53ce2",
+      "localReferenceName": "pico-w.png"
+    },
+    {
+      "model": "pico-wh",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-wh.png",
+      "sha256": "17ec38392d9d52d866b670b90df84a7103c54cb4cd3c5d1392491f82f6a1fa61",
+      "localReferenceName": "pico-wh.png"
+    },
+    {
+      "model": "pico-2",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-2.png",
+      "sha256": "cea7994f11fc63f00077e017a79f000d0f245f220227bf47ff4a99f5398d6db9",
+      "localReferenceName": "pico-2.png"
+    },
+    {
+      "model": "pico-2-headers",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-2-h.jpg",
+      "sha256": "0c9b246ef98abb1751face99c7c5c3a9ba116a7b321ec126d07d7c475b465ce8",
+      "localReferenceName": "pico-2-headers.jpg"
+    },
+    {
+      "model": "pico-2-w",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-2-w.png",
+      "sha256": "81ab24169e312bf8202179854178af4cdd46c7deaed5b687d2121d8b78a93574",
+      "localReferenceName": "pico-2-w.png"
+    },
+    {
+      "model": "pico-2-w-headers",
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/computers/raspberry-pi/images/pico-2-wh.jpg",
+      "sha256": "7052dbd8785468e0140bcf1c5dd0fe3954e4e793ae32117a8d5267dd5e0ded39",
+      "localReferenceName": "pico-2-w-headers.jpg"
+    }
+  ],
+  "topDownFamilyPhotos": [
+    {
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/microcontrollers/pico-series/images/pico-1s.png",
+      "localReferenceName": "pico-1s.png",
+      "sha256": "8792c510a59477802d47abbdf2f8c1a33dd349b40de85f27fb4c9ba3e186c97c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/raspberrypi/documentation/master/documentation/asciidoc/microcontrollers/pico-series/images/pico-2s.png",
+      "localReferenceName": "pico-2s.png",
+      "sha256": "6c9c55bcc15dee477132e48dc9902f1cf6e6443161307c89600c39dd52d71339"
+    }
+  ],
+  "observedCorrections": [
+    "micro-USB shell and contacts",
+    "four plated mounting holes",
+    "BOOTSEL and LED positions",
+    "MCU package and external flash",
+    "crystal and regulator layout",
+    "W shield / antenna keepout",
+    "headers and SWD connector differences",
+    "pin caption contrast / size; connection centres unchanged"
+  ]
+}

@@ -1,0 +1,11 @@
+# v0.84.0 · Pico USB sınıfları ve fotoğraf karşılaştırmalı kart görselleri
+
+Sekiz Pico kartında yeni HID/MSC/DFU cihaz profilleri C firmware'inin USB SETUP/DPRAM/uç noktalarından çalışır. Pico bağlantıları penceresinde sanal USB host ve hazır örnekler bulunur. İşlemler işletim sistemine gerçek klavye/diske erişmez.
+
+- **HID:** descriptor ile uyumlu klavye (8 bayt), fare (5 bayt, boot modunda 3), basma/bırakma, modifier, wheel/pan, GET/SET_REPORT, GET/SET_IDLE ve GET/SET_PROTOCOL. Klavye LED çıkışı kullanıcı C callback'ine ulaşır. Report ID ve keyfi composite/custom HID descriptor sunulmaz.
+- **MSC:** Bulk-Only Transport CBW/CSW ve SCSI INQUIRY, TEST_UNIT_READY, REQUEST_SENSE, READ_CAPACITY10, READ10/WRITE10, temel START_STOP/SYNCHRONIZE_CACHE. Tek LUN, 512 bayt sektör, en fazla 32 sektör/komut. Kapasite, medya hazır/yazılabilir ve read/write C callback'lerinden gelir; olmayan medyaya sahte veri verilmez. Hazır örnek 8 sektörlük volatil RAM disktir. Dosya sistemi, OS disk mount ve otomatik UF2 flash programlama yoktur.
+- **DFU:** uygulama DFU modu, EP0 DNLOAD/UPLOAD (256 bayt aktarım), GETSTATUS/GETSTATE, CLRSTATUS/ABORT, manifestation ve callback hata durumu. C uygulaması indirme/hedef belleği/manifestation işini belirler. Örnek yalnız RAM staging yapar; çalışan programı otomatik değiştirmez. Pico'nun özgün BOOTSEL/ROM veya UF2 boot sürecinin yerine geçmez.
+- **CYW43 arayüz alt kümesi:** sanal AP için asenkron bağlantı, NONET/BADAUTH, NOIP→UP, Wi-Fi ve TCP/IP link ayrımı, disconnect/STA disable, deterministik model MAC ve model RSSI. Gerçek CYW43 firmware/backplane/SPI/RF modeli, lwIP/BTstack ve internet bağlantısı eklenmiş değildir. `cyw43_t` yalnız bu kaynak arayüzünün opaque türüdür; özgün sürücünün binary ABI'si değildir.
+- **Görseller:** sekiz resmî ürün fotoğrafı ve iki resmî üstten aile fotoğrafı indirildi ve incelendi. Sekiz özgün SVG; USB, BOOTSEL, MCU, flash, regülatör, kristal, shield/anten ve SWD/header ayrımlarıyla düzeltildi. 85×216 ölçü ve 40 pin merkezi korundu; pin adları güçlendirildi. Fotoğraflar asset içine gömülmedi. Kaynaklar ve hash'ler `docs/qa/pico-photo-references084.json` dosyasındadır.
+
+Bu yayın **tam Pico SDK veya tam silikon emülatörü değildir**. Eski testler çalıştırılmadı; yalnız yeni USB, CYW43 arayüz ve görsel doğrulamaları çalıştırıldı.

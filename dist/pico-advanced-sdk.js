@@ -1,3 +1,5 @@
+import {usbClassHeader} from './pico-usb-classes.js';
+import {cyw43Header} from './pico-cyw43-compat.js';
 export function advancedHeaders(board){return{
  'pico/multicore.h':`#pragma once
 #include <pico/stdlib.h>
@@ -43,14 +45,17 @@ bool stdio_usb_init(void);bool stdio_usb_connected(void);
  'tusb.h':`#pragma once
 #include <pico/stdlib.h>
 bool tud_init(uint8_t);void tud_task(void);bool tud_mounted(void);bool tud_cdc_connected(void);uint32_t tud_cdc_available(void);uint32_t tud_cdc_read(void*,uint32_t);int32_t tud_cdc_read_char(void);uint32_t tud_cdc_write(const void*,uint32_t);uint32_t tud_cdc_write_char(char);uint32_t tud_cdc_write_flush(void);
+${usbClassHeader}
 `,
- ...(board.wireless?{'pico/cyw43_arch.h':`#pragma once
+ ...(board.wireless?{'cyw43.h':cyw43Header,'pico/cyw43_arch.h':`#pragma once
 #include <pico/stdlib.h>
+#include <cyw43.h>
 #define CYW43_AUTH_OPEN 0
 #define CYW43_AUTH_WPA2_AES_PSK 0x00400004u
 #define CYW43_WL_GPIO_LED_PIN 0
 #define CYW43_ITF_STA 0
 int cyw43_arch_init(void);void cyw43_arch_deinit(void);void cyw43_arch_enable_sta_mode(void);int cyw43_arch_wifi_connect_timeout_ms(const char*,const char*,uint32_t,uint32_t);void cyw43_arch_gpio_put(uint,bool);bool cyw43_arch_gpio_get(uint);void cyw43_arch_poll(void);
+int cyw43_arch_wifi_connect_async(const char*,const char*,uint32_t);void cyw43_arch_disable_sta_mode(void);
 `,'wirevo/net.h':`#pragma once
 #include <pico/stdlib.h>
 // Explicit simulator network: virtual AP + local UDP echo, no Internet or CYW43 binary.
