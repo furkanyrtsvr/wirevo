@@ -31,9 +31,13 @@ Sekiz resmî model: Pico / Pico H / Pico W / Pico WH / Pico 2 / Pico 2 with head
 - Pico bağlantıları menüsünde sanal host komutları ve sonuçları; Projeler menüsünde dört yeni örnek vardır. Gerçek OS klavyesi veya diski bağlanmaz.
 - CYW43 helper'ları sanal AP bağlantı/error/link/MAC/RSSI/leave akışına bağlanır. Özgün sürücü firmware'i, SPI/backplane/RF, lwIP ve BTstack yürütülmez. Opaque cyw43_t binary driver ABI uyumluluğu iddia etmez.
 
+## v0.85 işlevsel Flash / BOOTSEL
+
+C: hardware/flash.h ve pico/bootrom.h. 4096 bayt erase, 256 bayt program, 1→0 kuralı ve oturum içi reset kalıcılığı. Pico bağlantıları panelinde firmware UF2 indir / BOOTSEL / UF2 dosyası seç akışı bulunur. UF2 doğru aile, 256 bayt sayfa ve 0x10000000 doğrudan vektör tablosu gerektirir. Özgün ROM/boot2/picobin/partition/güvenli açılış yürütülmez. Bu dosyalar simülasyon içindir; fiziksel kart uyumluluğu vaat edilmez. Sadece güncellenen sektörler silinir. Kullanıcı flash verisi yeniden derleme, proje/sayfa yükleme boyunca saklanmaz; JSON içe alınan firmware’i içerir. Fiziksel flash zamanlaması, XIP stall ve flash-safe multicore kilidi modellenmez.
+
 ## Henüz desteklenmeyenler
 
-Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. UF2/BOOTSEL-ROM açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Flash firmware'i doğrudan reset vektöründen başlatılır; gerçek karta aktarılabilir UF2 çıktısı değildir.
+Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. Özgün BOOTSEL-ROM açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Flash firmware'i doğrudan reset vektöründen başlatılır; gerçek karta aktarılabilir UF2 çıktısı değildir.
 
 Motor rp2350js 2.0.1 (MIT); RP2040 ve RP2350 için ayrı yerel ARM yürütüm yolları kullanılır. Üretici ROM görüntüsü dağıtılmaz; model kendi sınırlı firmware'ini reset vektöründen başlatır. Döngü/zaman doğruluğu fiziksel silikonla eşdeğer kabul edilmemelidir.
 

@@ -1,3 +1,4 @@
+import {addFlashPanel,updateFlashPanel} from './pico-flash-ui.js';
 import {isPico} from './unified-project.js';
 import {PICO_BOARDS} from './pico-boards.js';
 import {addUSBPanel,updateUSBPanel} from './pico-usb-ui.js';
@@ -12,6 +13,6 @@ export function installPicoPanel({getProject,getSnapshot,showDialog,send,save}){
  document.getElementById('pico-session-status').textContent=s?['USB '+(s.usb.kind||'device')+': '+(s.usb.connected?'bağlı':'bekliyor'),...s.cores.map(c=>'Core '+c.id+': '+(c.running?'çalışıyor':'kapalı')+' · '+c.cycles+' çevrim · PC 0x'+c.pc.toString(16)),b?.wireless?'Sanal radyo: '+({0:'bağlı değil',1:'bağlanıyor',2:'IP bekliyor',3:'bağlı','-1':'bağlantı reddedildi','-2':'AP bulunamadı','-3':'kimlik doğrulama başarısız'}[s.radio.link]||s.radio.link):''].join('\n'):'Henüz çalışan firmware yok.';
  const form=document.getElementById('pico-network-form');if(form){const config=configuration();form.elements.ssid.value=config.ssid;form.elements.password.value=config.password;form.elements.enabled.checked=config.enabled;form.onsubmit=e=>{e.preventDefault();p.settings.picoNetwork={ssid:form.elements.ssid.value,password:form.elements.password.value,enabled:form.elements.enabled.checked};save();send({type:'pico-network',config:p.settings.picoNetwork});document.getElementById('pico-session-status').textContent='Sanal AP güncellendi. Firmware bağlantı isteğini yeniden çalıştırın.';};}
  };
- const open=button.onclick;button.onclick=()=>{open();addUSBPanel({getSnapshot,send});addBLE();};
- return{render(){button.hidden=!isPico(getProject());updateBLE();terminal();updateUSBPanel(getSnapshot());},payload:()=>({picoNetwork:configuration()})};
+ const open=button.onclick;button.onclick=()=>{open();addFlashPanel({getSnapshot,getProject,send});addUSBPanel({getSnapshot,send});addBLE();};
+ return{render(){button.hidden=!isPico(getProject());updateBLE();terminal();updateUSBPanel(getSnapshot());updateFlashPanel(getSnapshot());},payload:()=>({picoNetwork:configuration()})};
 }
