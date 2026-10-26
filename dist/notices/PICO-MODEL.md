@@ -35,9 +35,17 @@ Sekiz resmî model: Pico / Pico H / Pico W / Pico WH / Pico 2 / Pico 2 with head
 
 C: hardware/flash.h ve pico/bootrom.h. 4096 bayt erase, 256 bayt program, 1→0 kuralı ve oturum içi reset kalıcılığı. Pico bağlantıları panelinde firmware UF2 indir / BOOTSEL / UF2 dosyası seç akışı bulunur. UF2 doğru aile, 256 bayt sayfa ve 0x10000000 doğrudan vektör tablosu gerektirir. Özgün ROM/boot2/picobin/partition/güvenli açılış yürütülmez. Bu dosyalar simülasyon içindir; fiziksel kart uyumluluğu vaat edilmez. Sadece güncellenen sektörler silinir. Kullanıcı flash verisi yeniden derleme, proje/sayfa yükleme boyunca saklanmaz; JSON içe alınan firmware’i içerir. Fiziksel flash zamanlaması, XIP stall ve flash-safe multicore kilidi modellenmez.
 
-## v0.86 özgün ROM inceleme\n\nPico, H, W ve WH için yerel RP2040 B1 ROM .bin dosyası seçilerek özgün kod salt okunur, izole oturumda yürütülür. USB aygıt bilgisi, disk kapasitesi ve RPI-RP2 sektörleri doğrudan ROM kodundan okunur. ROM baytları siteyle dağıtılmaz. Boyut/CRC yalnız desteklenen B1 revizyonunu tanımlar. Proje devresi ve flash belleği bu oturuma bağlı değildir; özgün ROM ile flash yazma ve RP2350 güvenlik geçişi desteklenmez. CYW43 firmware/radyo modeli eklenmemiştir. Bu tam Pico desteği değildir.\n\n## Henüz desteklenmeyenler
+## v0.86 özgün ROM inceleme
 
-Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. Özgün BOOTSEL-ROM açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Flash firmware'i doğrudan reset vektöründen başlatılır; gerçek karta aktarılabilir UF2 çıktısı değildir.
+Pico, H, W ve WH için yerel RP2040 B1 ROM .bin dosyası seçilerek özgün kod salt okunur, izole oturumda yürütülür. USB aygıt bilgisi, disk kapasitesi ve RPI-RP2 sektörleri doğrudan ROM kodundan okunur. ROM baytları siteyle dağıtılmaz. Boyut/CRC yalnız desteklenen B1 revizyonunu tanımlar. Proje devresi ve flash belleği bu oturuma bağlı değildir; özgün ROM ile flash yazma ve RP2350 güvenlik geçişi desteklenmez. CYW43 firmware/radyo modeli eklenmemiştir. Bu tam Pico desteği değildir.
+
+## v0.87 özgün ROM USB açılışı ve flash
+
+Sekiz kartta doğru yerel ROM (RP2040 B1 / RP2350 A2) seçilerek özgün kod çalıştırılır. RP2350 NSBOOT için BXNS/SG ve APSR_nzcvqg eklendi; tam TrustZone güvenlik yalıtımı değildir. Her iki ailenin XIP SRAM, USB abort/tampon sıfırlama ve SSI/QMI NOR aktarımı modellendi. UF2 seçildikten sonra flash baytları doğrulanır ve flash binary indirilebilir. ROM görüntüsü dağıtılmaz. İzole oturum proje devresinden bağımsızdır; pencere kapanmadan flash’ı indirin. Oturum başına tek UF2; sonraki oturum için ROM dosyasını yeniden seçin. Genel uygulama boot/picobin/partition/OTP/imzalı güvenli açılış ve tüm SDK uyumluluğu iddia edilmez. CYW43 firmware/radyo modeli hâlâ yoktur. Önceki sürümlerdeki salt okunur ROM/RP2350 kapalı açıklamaları tarihsel sürüm kapsamıdır.
+
+## Henüz desteklenmeyenler
+
+Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. ROM profilinin dışındaki genel uygulama açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Proje uygulama motoru doğrudan reset vektöründen başlar; özgün ROM oturumu ayrı çalışır. Proje UF2 çıktısı için fiziksel kart uyumluluğu vaat edilmez.
 
 Motor rp2350js 2.0.1 (MIT); RP2040 ve RP2350 için ayrı yerel ARM yürütüm yolları kullanılır. Üretici ROM görüntüsü dağıtılmaz; model kendi sınırlı firmware'ini reset vektöründen başlatır. Döngü/zaman doğruluğu fiziksel silikonla eşdeğer kabul edilmemelidir.
 
