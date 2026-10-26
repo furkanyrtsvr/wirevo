@@ -1,5 +1,6 @@
 // Turkish source captions -> English presentation. Stable values are never translated.
 export const EN={
+ 'Yeni dosya':'New file',
  'Dosya / kütüphane al':'Import files / library',
  'Yan yana':'Side by side',
  'Satıra git':'Go to line',
