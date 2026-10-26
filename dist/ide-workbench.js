@@ -8,7 +8,7 @@ export function installWorkbench({getProject,getActive,editor,openSource,commit,
  const second=document.createElement('section');second.id='ide-secondary';second.hidden=true;second.innerHTML='<label>İkinci dosya <select aria-label="İkinci düzenleyici dosyası"></select></label><div id="ide-second-editor"></div>';container.append(second);
  let secondFile=null,lastProject=null;
  const secondary=createCodeEditor(second.querySelector('div'),'',value=>{if(!secondFile)return;setFileContent(getProject(),secondFile,value);invalidate();},()=>{});
- const tools=document.createElement('div');tools.className='ide-toolbar';tools.innerHTML='<button id="ide-new">Yeni dosya</button><button id="ide-import">Dosya / kütüphane al</button><button id="ide-split" aria-pressed="false">Yan yana</button><button id="ide-goto">Satıra git</button><button id="ide-mark" title="F9 - satır işareti, firmware breakpoint değildir">◆ İşaret</button><button id="ide-includes">Bağlantılar</button>';container.before(tools);
+ const tools=document.createElement('div');tools.className='ide-toolbar';tools.innerHTML='<button id="ide-new">Yeni dosya</button><button id="ide-import">Dosya / kütüphane al</button><button id="ide-split" aria-pressed="false">Yan yana</button><button id="ide-goto">Satıra git</button><button id="ide-mark" title="Gezinme işareti; firmware breakpoint değildir">◆ İşaret</button><button id="ide-includes">Bağlantılar</button>';container.before(tools);
  const input=document.createElement('input');input.type='file';input.multiple=true;input.accept='.c,.cpp,.h,.hpp,.ino,.py,.zip';input.hidden=true;tools.append(input);
  tools.querySelector('#ide-new').onclick=createSource;
  tools.querySelector('#ide-import').onclick=()=>input.click();

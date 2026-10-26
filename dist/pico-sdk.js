@@ -1,5 +1,6 @@
 import {C_HEADERS} from './c-hal.js';
 import {tivaLCDHeader} from './tiva-lcd-sdk.js';
+import {peripheralHeaders,peripheralRuntimeC} from './pico-peripheral-sdk.js';
 export function picoHeaders(board){const h=`#pragma once
 #include <stdint.h>
 #include <stdbool.h>
@@ -8,6 +9,9 @@ typedef unsigned int uint;
 #define GPIO_OUT 1
 #define GPIO_FUNC_UART 2
 #define GPIO_FUNC_SIO 5
+#define GPIO_FUNC_SPI 1
+#define GPIO_FUNC_I2C 3
+#define GPIO_FUNC_PWM 4
 #define CF_INPUT 0
 #define CF_OUTPUT 1
 #define CF_INPUT_PULLUP 2
@@ -21,7 +25,7 @@ void sleep_ms(uint32_t);void sleep_us(uint64_t);uint32_t time_us_32(void);void t
 void stdio_init_all(void);void cf_uart_begin(unsigned);void cf_uart_write(unsigned char);int cf_uart_read(void);
 void cf_gpio_mode(unsigned,int);void cf_gpio_write(unsigned,int);int cf_gpio_read(unsigned);int cf_gpio_valid(unsigned);
 void cf_delay_ms(unsigned);void cf_delay_us(unsigned);unsigned cf_millis(void);
-`;return{...C_HEADERS,'cf_hal.h':h,'pico/stdlib.h':h,'pico/time.h':h,'hardware/gpio.h':h,'cf_lcd.h':tivaLCDHeader};}
+`;return{...C_HEADERS,...peripheralHeaders,'cf_hal.h':h,'pico/stdlib.h':h,'pico/time.h':h,'hardware/gpio.h':h,'cf_lcd.h':tivaLCDHeader};}
 export function picoRuntimeC(board){const gen2=board.mcu==='RP2350',io=gen2?'0x40028000u':'0x40014000u',pads=gen2?'0x40038000u':'0x4001c000u',timer=gen2?'0x400b0028u':'0x40054028u',uart=gen2?'0x40070000u':'0x40034000u';return`#include <pico/stdlib.h>
 #define REG(a) (*(volatile unsigned *)(a))
 #define IO ${io}
@@ -29,7 +33,8 @@ export function picoRuntimeC(board){const gen2=board.mcu==='RP2350',io=gen2?'0x4
 #define UART ${uart}
 unsigned __aeabi_uidiv(unsigned n,unsigned d){if(!d)return 0;unsigned q=0,b=1;while(!(d&0x80000000u)&&d<n){d<<=1;b<<=1;}while(b){if(n>=d){n-=d;q|=b;}d>>=1;b>>=1;}return q;}
 int cf_gpio_valid(unsigned p){return p<${gen2?30:30};}
-void gpio_set_function(uint p,uint f){if(cf_gpio_valid(p))REG(IO+4+p*8)=f;}
+void cf_bus_mux(uint,uint);
+void gpio_set_function(uint p,uint f){if(cf_gpio_valid(p)){cf_bus_mux(p,f);REG(IO+4+p*8)=f;}}
 void gpio_set_dir(uint p,bool out){if(cf_gpio_valid(p))REG(out?${gen2?'0xd0000038u':'0xd0000024u'}:${gen2?'0xd0000040u':'0xd0000028u'})=1u<<p;}
 void gpio_put(uint p,bool v){if(cf_gpio_valid(p))REG(v?${gen2?'0xd0000018u':'0xd0000014u'}:${gen2?'0xd0000020u':'0xd0000018u'})=1u<<p;}
 bool gpio_get(uint p){return cf_gpio_valid(p)&&!!(REG(0xd0000004u)&(1u<<p));}
@@ -53,4 +58,4 @@ extern unsigned _sidata,_sdata,_edata,_sbss,_ebss,_estack;extern int main(void);
 void Default_Handler(void){for(;;){}}
 void Reset_Handler(void){unsigned*s=&_sidata,*d=&_sdata;while(d<&_edata)*d++=*s++;for(d=&_sbss;d<&_ebss;)*d++=0;main();for(;;){}}
 __attribute__((section(".vectors"),used))void(*const vectors[16])(void)={[0]=(void*)&_estack,[1]=Reset_Handler,[2]=Default_Handler,[3]=Default_Handler};
-`;}
+`+peripheralRuntimeC(board);}
