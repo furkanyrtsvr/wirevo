@@ -68,3 +68,9 @@ Kaynaklar:
 - https://www.raspberrypi.com/documentation/pico-sdk/hardware.html
 - https://github.com/c1570/rp2350js
 - https://dwarfstd.org/doc/DWARF4.pdf
+
+## v0.90 — ROM-free language profiles
+
+All eight boards: genuine MicroPython WASM with a circuit-backed machine adapter (Pin, ADC, PWM, guarded mem, GPIO I2C/SPI, terminal UART, cooperative GPIO IRQ). Four W boards: onboard LED and explicitly virtual WLAN. No native RP2 firmware, hard Python IRQ, threads, sockets or real radio. Interactive Python programs should yield with `await js.cf.sleep(ms)`.
+
+Four RP2350 boards: real RV32IMAC ELF compilation/execution, Hazard3 CSR machine IRQ, two cores and scalar core-0 debug. Direct Wirevo vector startup; no original RISC-V ROM/UF2 boot. C adds absolute time, core-0 alarms (16 slots; 32 us rearm margin; maximum delay 2^31-1 us), SIO spinlocks (claimed pool 16–30, resource guard 31), critical sections and mutexes. This is not full upstream SDK/CMake or cycle-exact silicon. Historical limitations below/above apply unless explicitly superseded here; current ledger: docs/PICO_SUPPORT.md.

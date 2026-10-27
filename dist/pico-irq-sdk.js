@@ -1,6 +1,16 @@
+import {syncSDKHeader} from './pico-sdk-extra.js';
+import {riscvIRQRuntimeC} from './pico-riscv-sdk.js';
 export function irqHeaders(board){const n=board.mcu==='RP2350';return {'hardware/irq.h':`#pragma once
 #include <pico/stdlib.h>
 typedef void (*irq_handler_t)(void);
+#define TIMER_IRQ_0 0
+#define TIMER_IRQ_1 1
+#define TIMER_IRQ_2 2
+#define TIMER_IRQ_3 3
+#define TIMER0_IRQ_0 0
+#define TIMER0_IRQ_1 1
+#define TIMER0_IRQ_2 2
+#define TIMER0_IRQ_3 3
 #define DMA_IRQ_0 ${n?10:11}
 #define DMA_IRQ_1 ${n?11:12}
 ${n?'#define DMA_IRQ_2 12\n#define DMA_IRQ_3 13':''}
@@ -15,6 +25,7 @@ void irq_set_exclusive_handler(uint,irq_handler_t);irq_handler_t irq_get_exclusi
 void irq_set_enabled(uint,bool);bool irq_is_enabled(uint);void irq_set_pending(uint);void irq_clear(uint);void irq_set_priority(uint,uint8_t);uint8_t irq_get_priority(uint);
 `, 'hardware/sync.h':`#pragma once
 #include <pico/stdlib.h>
+${syncSDKHeader}
 uint32_t save_and_disable_interrupts(void);void restore_interrupts(uint32_t);
 `};}
 export const gpioIRQHeader=`
@@ -25,7 +36,7 @@ export const gpioIRQHeader=`
 typedef void (*gpio_irq_callback_t)(uint,uint32_t);
 void gpio_set_irq_enabled(uint,uint32_t,bool);void gpio_set_irq_callback(gpio_irq_callback_t);void gpio_set_irq_enabled_with_callback(uint,uint32_t,bool,gpio_irq_callback_t);uint32_t gpio_get_irq_event_mask(uint);void gpio_acknowledge_irq(uint,uint32_t);
 `;
-export function irqRuntimeC(board){const newer=board.mcu==='RP2350',count=newer?52:32;return `
+export function irqRuntimeC(board){const newer=board.mcu==='RP2350',count=newer?52:32;const code=`
 #include <hardware/irq.h>
 #include <hardware/sync.h>
 static unsigned cf_vectors[2][128] __attribute__((aligned(512)));
@@ -49,4 +60,4 @@ void gpio_set_irq_enabled(uint p,uint32_t events,bool e){if(p<30){unsigned a=cf_
 static void cf_gpio_irq_handler(void){unsigned core=get_core_num();for(uint p=0;p<30;p++){uint32_t events=gpio_get_irq_event_mask(p);if(events){gpio_acknowledge_irq(p,events);if(cf_gpio_callback[core])cf_gpio_callback[core](p,events);}}}
 void gpio_set_irq_callback(gpio_irq_callback_t cb){cf_gpio_callback[get_core_num()]=cb;if(cb)irq_set_exclusive_handler(IO_IRQ_BANK0,cf_gpio_irq_handler);}
 void gpio_set_irq_enabled_with_callback(uint p,uint32_t ev,bool e,gpio_irq_callback_t cb){gpio_set_irq_callback(cb);gpio_set_irq_enabled(p,ev,e);if(e)irq_set_enabled(IO_IRQ_BANK0,1);}
-`;}
+`;return board.cpuArch==='riscv'?riscvIRQRuntimeC+code.slice(code.indexOf('static unsigned cf_gpio_irq_reg')):code;}

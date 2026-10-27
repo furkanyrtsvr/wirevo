@@ -1,3 +1,4 @@
+import {timeSDKHeader,extraSDKHeaders,extraSDKRuntimeC} from './pico-sdk-extra.js';
 import {irqHeaders,irqRuntimeC,gpioIRQHeader} from './pico-irq-sdk.js';
 import {flashHeaders,flashRuntimeC} from './pico-flash-sdk.js';
 import {C_HEADERS} from './c-hal.js';
@@ -24,7 +25,11 @@ typedef unsigned int uint;
 ${!board.wireless?'#define PICO_DEFAULT_LED_PIN 25':''}
 #define PICO_RP2040 ${board.mcu==='RP2040'?1:0}
 #define PICO_RP2350 ${board.mcu==='RP2350'?1:0}
+#define PICO_RISCV ${board.cpuArch==='riscv'?1:0}
+#define PICO_ARM ${board.cpuArch==='riscv'?0:1}
+#define PICO_CYW43_SUPPORTED ${board.wireless?1:0}
 ${gpioIRQHeader}
+${timeSDKHeader}
 void gpio_init(uint);void gpio_set_dir(uint,bool);void gpio_put(uint,bool);bool gpio_get(uint);
 void gpio_pull_up(uint);void gpio_pull_down(uint);void gpio_disable_pulls(uint);void gpio_set_function(uint,uint);
 void sleep_ms(uint32_t);void sleep_us(uint64_t);uint32_t time_us_32(void);void tight_loop_contents(void);
@@ -32,7 +37,7 @@ void stdio_init_all(void);void cf_uart_begin(unsigned);void cf_uart_write(unsign
 uint get_core_num(void);
 void cf_gpio_mode(unsigned,int);void cf_gpio_write(unsigned,int);int cf_gpio_read(unsigned);int cf_gpio_valid(unsigned);
 void cf_delay_ms(unsigned);void cf_delay_us(unsigned);unsigned cf_millis(void);
-`;return{...C_HEADERS,...irqHeaders(board),...flashHeaders,...peripheralHeaders,...advancedHeaders(board),'cf_hal.h':h,'pico/stdlib.h':h,'pico/time.h':h,'hardware/gpio.h':h,'cf_lcd.h':tivaLCDHeader};}
+`;return{...C_HEADERS,...extraSDKHeaders,...irqHeaders(board),...flashHeaders,...peripheralHeaders,...advancedHeaders(board),'cf_hal.h':h,'pico/stdlib.h':h,'pico/time.h':h,'hardware/gpio.h':h,'cf_lcd.h':tivaLCDHeader};}
 export function picoRuntimeC(board){const gen2=board.mcu==='RP2350',io=gen2?'0x40028000u':'0x40014000u',pads=gen2?'0x40038000u':'0x4001c000u',timer=gen2?'0x400b0028u':'0x40054028u',uart=gen2?'0x40070000u':'0x40034000u';return`#include <pico/stdlib.h>
 #define REG(a) (*(volatile unsigned *)(a))
 #define IO ${io}
@@ -73,4 +78,4 @@ extern unsigned _sidata,_sdata,_edata,_sbss,_ebss,_estack;extern int main(void);
 void Default_Handler(void){for(;;){}}
 void Reset_Handler(void){unsigned*s=&_sidata,*d=&_sdata;while(d<&_edata)*d++=*s++;for(d=&_sbss;d<&_ebss;)*d++=0;cf_irq_init();main();for(;;){}}
 __attribute__((section(".vectors"),used))void(*const vectors[16])(void)={[0]=(void*)&_estack,[1]=Reset_Handler,[2]=Default_Handler,[3]=Default_Handler};
-`+peripheralRuntimeC(board)+irqRuntimeC(board)+advancedRuntimeC(board)+usbRuntimeC()+radioRuntimeC(board)+flashRuntimeC;}
+`+peripheralRuntimeC(board)+irqRuntimeC(board)+advancedRuntimeC(board)+usbRuntimeC()+radioRuntimeC(board)+flashRuntimeC+extraSDKRuntimeC(board);}
