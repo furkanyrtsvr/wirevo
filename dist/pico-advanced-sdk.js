@@ -53,6 +53,9 @@ ${usbClassHeader}
 #define CYW43_AUTH_OPEN 0
 #define CYW43_AUTH_WPA2_AES_PSK 0x00400004u
 #define CYW43_WL_GPIO_LED_PIN 0
+#define CYW43_WL_GPIO_SMPS_PIN 1
+#define CYW43_WL_GPIO_VBUS_PIN 2
+#define CYW43_WL_GPIO_COUNT 3
 #define CYW43_ITF_STA 0
 int cyw43_arch_init(void);void cyw43_arch_deinit(void);void cyw43_arch_enable_sta_mode(void);int cyw43_arch_wifi_connect_timeout_ms(const char*,const char*,uint32_t,uint32_t);void cyw43_arch_gpio_put(uint,bool);bool cyw43_arch_gpio_get(uint);void cyw43_arch_poll(void);
 int cyw43_arch_wifi_connect_async(const char*,const char*,uint32_t);void cyw43_arch_disable_sta_mode(void);
