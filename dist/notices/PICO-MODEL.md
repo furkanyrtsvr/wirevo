@@ -49,9 +49,17 @@ W/WH modellerinde GP23 güç, GP25 CS, GP29 saat, GP24 ortak veri/IRQ hattına b
 
 Bu çip işlemcisinin veya firmware/radyonun yürütülmesi değildir. ROM ve bilinmeyen backplane adresleri hata üretir. F2 FIFO en fazla sekiz gönderiyi bekletir; firmware tüketicisi/SDPCM yanıtı yoktur ve F2/F3 hazır gösterilmez. Desteklenen hat profili saat boşta düşük, yükselen kenarda örnekleme, baytta MSB-first, sürücünün başlangıç word-swap ve 32-bit düzenidir; tüm SPI biçimleri/zamanlama ve özgün Pico SDK sürücüsü uyumluluğu doğrulanmamıştır. GPIO1 yalnız besleme-modu durumunu tutar; analog güç regülatörü modellenmez. Önceki “SPI/backplane yok” açıklamaları tarihsel sürüm kapsamıdır. Özgün ROM, çip işlemcisi, MAC/PHY/radyo, OTP ve diğer backplane çevrebirimleri tamamlanmış sayılmaz.
 
+## v0.89 ROM gerektirmeyen donanım ve SDK tamamlamaları
+
+Sekiz ARM profilde hardware/irq.h exclusive handler, NVIC enable/pending/clear/priority, hardware/sync.h PRIMASK ve iki çekirdekte ayrı RAM vektörleri eklendi. GPIO callback/maske/force kayıtları çekirdek başına ayrıdır. RP2350 GPIO adres çözümlemesi/IRQ öncelik adresleri ve RP2040 tek seferlik yazılım kesmesi düzeltildi. DMA ring, byte swap, IRQ quiet/routing/status/ack ve abort yardımcıları vardır. RP2350 BSWAP kaybı motor seviyesinde giderildi.
+
+ADC FIFO/run/round-robin/divider/IRQ yardımcıları eklendi; FIFO boşalınca IRQ temizlenir, START_ONCE kendini temizler ve kanal seçimi ilerler. Pico bağlantıları panelinde sıcaklık, VSYS ve USB VBUS girdileri proje ayarlarına kaydedilir. Sıcaklık sensörü etkinleştirilmelidir. W/WH'de CS seçiliyken VSYS ölçümü ADC hatası verir. Girdiler deterministiktir; analog/termal güç simülasyonu değildir.
+
+CYW43 backplane üzerinden SDIO/ARM/SRAM IOCTRL/RESETCTRL ve banka göre ayrı SRAM PDA kontrol kayıtları okunup yazılabilir. ARM çekirdeği veya firmware başlatılmaz; F2 hazır/başarılı WLAN cevabı uydurulmaz. Tam SRAM banka geometrisi ve OTP bilinmeyen kayıtlar olarak kalır. Önceki IRQ/ADC/VBUS ve bütün backplane kayıtlarının yokluğuna ilişkin notlar tarihsel sürüm kapsamıdır. Güncel destek sınırları ve sürüm açıklaması: [v0.89](https://github.com/furkanyrtsvr/wirevo/blob/main/docs/RELEASE_0.89.md) (GitHub kaynak dağıtımı).
+
 ## Henüz desteklenmeyenler
 
-Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. ROM profilinin dışındaki genel uygulama açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython, genel IRQ SDK'sı ve dahili sıcaklık/VSYS ADC devre adaptörü sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Proje uygulama motoru doğrudan reset vektöründen başlar; özgün ROM oturumu ayrı çalışır. Proje UF2 çıktısı için fiziksel kart uyumluluğu vaat edilmez.
+Bu **tam Pico SDK veya tam silikon emülatörü değildir**. C17 ve iki ARM çekirdeği kullanılır. ROM profilinin dışındaki genel uygulama açılışı, gerçek CYW43 firmware/RF/Internet/lwIP/BTstack, genel USB host/composite sınıfları, TrustZone/güvenli açılış, RP2350 Hazard3 seçimi, MicroPython ve IRQ paylaşımlı handler zincirleri sunulmaz. Desteklenmeyen başlıklar derleme hatası verir. Proje uygulama motoru doğrudan reset vektöründen başlar; özgün ROM oturumu ayrı çalışır. Proje UF2 çıktısı için fiziksel kart uyumluluğu vaat edilmez.
 
 Motor rp2350js 2.0.1 (MIT); RP2040 ve RP2350 için ayrı yerel ARM yürütüm yolları kullanılır. Üretici ROM görüntüsü dağıtılmaz; model kendi sınırlı firmware'ini reset vektöründen başlatır. Döngü/zaman doğruluğu fiziksel silikonla eşdeğer kabul edilmemelidir.
 

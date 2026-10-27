@@ -1,0 +1,2 @@
+// rp2350js 2.0.1 truncates RP2350 CTRL writes to 24 bits, losing BSWAP.
+export function installPicoDMA(runtime){if(runtime.board.mcu!=='RP2350')return;for(const ch of runtime.rp.dma.channels){const write=ch.writeUint32.bind(ch);ch.writeUint32=(offset,value)=>{write(offset,value);if([12,16,32,48].includes(offset)){ch.ctrl=(ch.ctrl&~0x03000000)|(value&0x03000000);if(ch.dataSize===2)ch.transferFn=ch.ctrl&0x01000000?ch.transferSwap16:ch.transfer16;else if(ch.dataSize===4)ch.transferFn=ch.ctrl&0x01000000?ch.transferSwap32:ch.transfer32;}};}}

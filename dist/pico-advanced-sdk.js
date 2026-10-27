@@ -13,7 +13,8 @@ typedef struct {uint32_t ctrl;} dma_channel_config;
 #define DMA_SIZE_16 1
 #define DMA_SIZE_32 2
 #define DREQ_FORCE 63
-dma_channel_config dma_channel_get_default_config(uint);void channel_config_set_transfer_data_size(dma_channel_config*,uint);void channel_config_set_read_increment(dma_channel_config*,bool);void channel_config_set_write_increment(dma_channel_config*,bool);void channel_config_set_dreq(dma_channel_config*,uint);void channel_config_set_chain_to(dma_channel_config*,uint);
+dma_channel_config dma_channel_get_default_config(uint);void channel_config_set_transfer_data_size(dma_channel_config*,uint);void channel_config_set_read_increment(dma_channel_config*,bool);void channel_config_set_write_increment(dma_channel_config*,bool);void channel_config_set_dreq(dma_channel_config*,uint);void channel_config_set_chain_to(dma_channel_config*,uint);void channel_config_set_ring(dma_channel_config*,bool,uint);void channel_config_set_bswap(dma_channel_config*,bool);void channel_config_set_irq_quiet(dma_channel_config*,bool);
+void dma_channel_set_irq0_enabled(uint,bool);void dma_channel_set_irq1_enabled(uint,bool);void dma_irqn_set_channel_enabled(uint,uint,bool);bool dma_irqn_get_channel_status(uint,uint);void dma_irqn_acknowledge_channel(uint,uint);void dma_channel_acknowledge_irq0(uint);void dma_channel_acknowledge_irq1(uint);void dma_channel_abort(uint);
 int dma_claim_unused_channel(bool);void dma_channel_unclaim(uint);bool dma_channel_is_busy(uint);void dma_channel_wait_for_finish_blocking(uint);void dma_channel_configure(uint,const dma_channel_config*,volatile void*,const void*,uint32_t,bool);void dma_start_channel_mask(uint32_t);void dma_channel_set_read_addr(uint,const void*,bool);void dma_channel_set_write_addr(uint,volatile void*,bool);void dma_channel_set_trans_count(uint,uint32_t,bool);
 `,
  'hardware/pio.h':`#pragma once
@@ -71,7 +72,7 @@ export function advancedRuntimeC(board){const gen2=board.mcu==='RP2350',writeShi
 #include <hardware/pio.h>
 #define CF_SERVICE 0x5fffe000u
 static unsigned cf_core1_stack[512] __attribute__((aligned(8)));static void(*cf_core1_entry)(void);
-static void cf_core1_trampoline(void){cf_core1_entry();for(;;)__asm__ volatile("nop");}
+static void cf_core1_trampoline(void){cf_irq_init();cf_core1_entry();for(;;)__asm__ volatile("nop");}
 uint get_core_num(void){return REG(0xd0000000u);}
 void multicore_reset_core1(void){REG(CF_SERVICE+8)=0;}
 void multicore_launch_core1_with_stack(void(*entry)(void),uint32_t*stack,unsigned bytes){cf_core1_entry=entry;REG(CF_SERVICE+4)=(unsigned)stack+bytes;REG(CF_SERVICE+8)=(unsigned)cf_core1_trampoline;}
@@ -80,6 +81,16 @@ bool multicore_fifo_rvalid(void){return !!(REG(0xd0000050u)&1);}bool multicore_f
 void multicore_fifo_push_blocking(uint32_t v){while(!multicore_fifo_wready()){}REG(0xd0000054u)=v;}
 uint32_t multicore_fifo_pop_blocking(void){while(!multicore_fifo_rvalid()){}return REG(0xd0000058u);}void multicore_fifo_drain(void){while(multicore_fifo_rvalid())(void)REG(0xd0000058u);}
 static unsigned cf_dma_claimed;
+void channel_config_set_ring(dma_channel_config*c,bool write,uint bits){c->ctrl=(c->ctrl&~(31u<<${gen2?8:6}))|((bits&15)<<${gen2?8:6})|(write?1u<<${gen2?12:10}:0);}
+void channel_config_set_bswap(dma_channel_config*c,bool e){c->ctrl=(c->ctrl&~(1u<<${gen2?24:22}))|(e?1u<<${gen2?24:22}:0);}
+void channel_config_set_irq_quiet(dma_channel_config*c,bool e){c->ctrl=(c->ctrl&~(1u<<${gen2?23:21}))|(e?1u<<${gen2?23:21}:0);}
+void dma_irqn_set_channel_enabled(uint n,uint ch,bool e){if(n<${gen2?4:2}&&ch<${gen2?16:12}){unsigned a=0x50000404u+n*16,mask=1u<<ch;REG(a)=e?REG(a)|mask:REG(a)&~mask;}}
+void dma_channel_set_irq0_enabled(uint ch,bool e){dma_irqn_set_channel_enabled(0,ch,e);}void dma_channel_set_irq1_enabled(uint ch,bool e){dma_irqn_set_channel_enabled(1,ch,e);}
+bool dma_irqn_get_channel_status(uint n,uint ch){return n<${gen2?4:2}&&ch<${gen2?16:12}&&!!(REG(0x5000040cu+n*16)&(1u<<ch));}
+void dma_irqn_acknowledge_channel(uint n,uint ch){if(n<${gen2?4:2}&&ch<${gen2?16:12})REG(0x5000040cu+n*16)=1u<<ch;}
+void dma_channel_acknowledge_irq0(uint ch){dma_irqn_acknowledge_channel(0,ch);}void dma_channel_acknowledge_irq1(uint ch){dma_irqn_acknowledge_channel(1,ch);}
+void dma_channel_abort(uint ch){if(ch<${gen2?16:12}){REG(${gen2?'0x50000464u':'0x50000444u'})=1u<<ch;while(REG(${gen2?'0x50000464u':'0x50000444u'})&(1u<<ch)){} }}
+
 dma_channel_config dma_channel_get_default_config(uint ch){dma_channel_config c={1u|(2u<<2)|(1u<<4)|(ch<<${chainShift})|(63u<<${treqShift})};return c;}
 void channel_config_set_transfer_data_size(dma_channel_config*c,uint n){c->ctrl=(c->ctrl&~12u)|((n&3)<<2);}
 void channel_config_set_read_increment(dma_channel_config*c,bool e){c->ctrl=(c->ctrl&~16u)|(e?16u:0);}

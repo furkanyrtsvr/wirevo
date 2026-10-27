@@ -3,7 +3,7 @@
 export const peripheralHeaders={
  'hardware/adc.h':`#pragma once
 #include <pico/stdlib.h>
-void adc_init(void);void adc_gpio_init(uint);void adc_select_input(uint);uint adc_get_selected_input(void);uint16_t adc_read(void);void adc_set_temp_sensor_enabled(bool);
+void adc_init(void);void adc_gpio_init(uint);void adc_select_input(uint);uint adc_get_selected_input(void);uint16_t adc_read(void);void adc_set_temp_sensor_enabled(bool);void adc_run(bool);void adc_set_round_robin(uint);void adc_fifo_setup(bool,bool,uint,bool,bool);bool adc_fifo_is_empty(void);uint adc_fifo_get_level(void);uint16_t adc_fifo_get(void);uint16_t adc_fifo_get_blocking(void);void adc_fifo_drain(void);void adc_irq_set_enabled(bool);void adc_set_clkdiv(float);
 `,
  'hardware/pwm.h':`#pragma once
 #include <pico/stdlib.h>
@@ -56,6 +56,14 @@ void adc_gpio_init(uint p){gpio_init(p);gpio_disable_pulls(p);REG(PADS+4+p*4)&=~
 void adc_select_input(uint n){REG(ADC)=(REG(ADC)&~(7u<<12))|((n&7u)<<12);}
 uint adc_get_selected_input(void){return (REG(ADC)>>12)&7;}
 void adc_set_temp_sensor_enabled(bool e){REG(ADC)=(REG(ADC)&~2u)|(e?2u:0);}
+void adc_run(bool on){REG(ADC)=(REG(ADC)&~8u)|(on?8u:0);}
+void adc_set_round_robin(uint mask){REG(ADC)=(REG(ADC)&~(31u<<16))|((mask&31u)<<16);}
+void adc_fifo_setup(bool en,bool dreq,uint threshold,bool err,bool shift){REG(ADC+8)=(en?1u:0)|(shift?2u:0)|(err?4u:0)|(dreq?8u:0)|((threshold&15)<<24);}
+bool adc_fifo_is_empty(void){return !!(REG(ADC+8)&256u);}uint adc_fifo_get_level(void){return(REG(ADC+8)>>16)&15;}
+uint16_t adc_fifo_get(void){return REG(ADC+12);}uint16_t adc_fifo_get_blocking(void){while(adc_fifo_is_empty()){}return adc_fifo_get();}
+void adc_fifo_drain(void){while(!adc_fifo_is_empty())(void)adc_fifo_get();}
+void adc_irq_set_enabled(bool e){REG(ADC+0x18)=e?1:0;}
+void adc_set_clkdiv(float value){union{float f;unsigned bits;}v={value};unsigned exp=(v.bits>>23)&255,scaled=0;if(!(v.bits>>31)&&exp&&exp<255){int shift=(int)exp-127-15;unsigned mant=(v.bits&0x7fffffu)|0x800000u;scaled=shift>=1?0xffffffu:shift==0?mant:shift<=-24?0:mant>>(-shift);}REG(ADC+16)=scaled;}
 uint16_t adc_read(void){REG(ADC)|=4;while(!(REG(ADC)&256)){}return REG(ADC+4)&4095;}
 uint pwm_gpio_to_slice_num(uint p){return(p>>1)&7;}uint pwm_gpio_to_channel(uint p){return p&1;}
 pwm_config pwm_get_default_config(void){pwm_config c={0,16,65535};return c;}

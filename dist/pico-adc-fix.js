@@ -1,0 +1,2 @@
+// Complete FIFO IRQ deassertion, START_ONCE self-clear and round-robin channel selection.
+export function installPicoADC(runtime){const adc=runtime.rp.adc,read=adc.readUint32.bind(adc),write=adc.writeUint32.bind(adc);adc.readUint32=offset=>{const value=read(offset);if(offset===12)adc.checkInterrupts();return value;};adc.writeUint32=(offset,value)=>{write(offset,value);if(offset===0){adc.cs&=~4;if(value&1024)adc.cs&=~1024;}adc.checkInterrupts();};Object.defineProperty(adc,'activeChannel',{get(){return(adc.cs>>>12)&7;},set(value){adc.cs=(adc.cs&~(7<<12))|((value&7)<<12);}});}
