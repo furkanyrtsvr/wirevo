@@ -1,0 +1,7 @@
+// Native ROM/SDK core reset handshake. No source-level thread substitute.
+export function installNativeCorePower(rp){
+ const newer=rp.identifier==='rp2350',p=rp.peripherals[newer?0x40018:0x40010],bits=newer?[0x00800000,0x01000000]:[0x8000,0x10000],mask=newer?0x1ffffff:0x1ffff;
+ const state={on:0,off:0,wdsel:0,resets:[0,0],held:core=>!!(state.off&bits[core])};
+ p.readUint32=off=>off===0?state.on:off===4?state.off:off===8?state.wdsel:off===12?(mask&~state.off)|(state.on&state.off):0;
+ p.writeUint32=(off,v)=>{v&=mask;if(off===0)state.on=v;else if(off===8)state.wdsel=v;else if(off===4){const old=state.off;state.off=v;for(let id=0;id<2;id++)if((old^v)&bits[id]){const c=rp.core[id],cycles=rp.core[0].cycles;if(v&bits[id]){c.VTOR=0;c.waiting=false;c.eventRegistered=false;if(newer){const st=c.ppb();for(const field of ['nvicPending','nvicEnabled','nvicActive','nvicPriority'])st[field].fill(0);for(const field of ['vtor','scr','ccr','shcsr','cfsr','hfsr','cpacr','shpr2','shpr3','systickReload'])st[field]=0;st.pendingNMI=st.pendingPendSV=st.pendingSystick=st.systickIntEnable=st.systickCountFlag=false;st.systickTimer.enable=false;}if(!newer){c.PM=false;c.SPSEL=0;c.IPSR=0;c.nPRIV=false;c.currentMode=0;c.enabledInterrupts=0;c.pendingInterrupts=0;c.pendingNMI=c.pendingPendSV=c.pendingSVCall=c.pendingSystick=false;c.interruptsUpdated=false;}c.reset();state.resets[id]++;}c.cycles=cycles;}}};return state;
+}

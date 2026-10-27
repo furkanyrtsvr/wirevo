@@ -1,3 +1,11 @@
+# Pico model — current v0.93 profile
+
+New in v0.93: native RP2 MicroPython 1.29 ARM, real shared-memory _thread on both CPUs, native module/files and time.sleep; verified original RP2040/RP2350 ROM loaded on demand. Separate WASM mode is retained. All eight profiles use generic CPU firmware, with no native W radio.
+
+Actual upstream SDK/CMake builds can run on the computer using the downloadable builder, then import ARM UF2 into original-ROM circuit execution. Browser quick compilation retains a bounded subset. [SDK instructions](PICO-SDK-NATIVE.md) · [ROM sources/licenses](PICO-ROM-SOURCES.md). Native SDK source debug mapping, CYW43 ROM/radio, secure boot/OTP and complete silicon/cycle equivalence remain outside the accepted profile.
+
+The entries below document earlier quick-compiler/WASM profiles and their limits. Statements about no native RP2/threads apply to those older profiles; the native engine above supersedes them.
+
 # Pico C modeli · v0.84
 
 Sekiz resmî model: Pico / Pico H / Pico W / Pico WH / Pico 2 / Pico 2 with headers / Pico 2 W / Pico 2 W with headers.

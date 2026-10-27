@@ -29,9 +29,9 @@ export const encodeBytes=bytes=>{let s='';for(const b of bytes)s+=String.fromCha
 export const decodeBytes=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function mountLEDStarter(p){for(const[id,hole,pin]of [['r1','c5','1'],['led1','j11','A']]){const c=p.components.find(c=>c.id===id),def=componentDefinition(c).pinDefs.find(p=>p.id===pin),target=pinPoint(p,'bb1:'+hole),local=localPoint(c,def.x,def.y);c.x=target.x-local.x;c.y=target.y-local.y;attachPlacement(c,placementCandidate(p,c,{radius:.1}));}}
 export const circuitPayload=p=>({components:p.components,wires:p.wires,settings:p.settings});
-export function unifiedExamples(p){if(isPico(p))return p.language==='micropython'?PICO_EXAMPLES.filter(e=>['blink','buttons','py091','dma092'].includes(e.id)).map(e=>({...e,name:e.name.replace('Pico C','Pico MicroPython')})):PICO_EXAMPLES.filter(e=>e.language!=='micropython'&&(!e.wireless||PICO_BOARDS[boardKey(p)].wireless));if(isTiva(p))return TIVA_EXAMPLES;if(isSTM(p))return p.language==='micropython'?STM_FEATURED_EXAMPLES.filter(e=>e.id==='environment'):STM_FEATURED_EXAMPLES;if(!isESP(p))return[];return p.language==='micropython'?[{id:'blink',name:'GPIO · Breadboard LED',detail:'Pin / await'},{id:'sht31',name:'I²C · SHT31',detail:'SoftI2C / CRC-8'}]:p.language==='c'?[{id:'blink',name:'C17 · Breadboard LED',detail:'main.c / cf_hal.h'},...C_SENSOR_EXAMPLES]:[...ESP_EXAMPLES,...ESP_CIRCUIT_EXAMPLES].filter(e=>e.id!=='sensor-relay'||BOARDS[boardKey(p)].pins.some(p=>p.net==='5V'));}
-function unifiedExampleProjectRaw(board,language,id,architecture='arm'){
- if(PICO_BOARDS[board])return createPicoProject({board,language,starter:id,architecture});
+export function unifiedExamples(p){if(isPico(p))return p.language==='micropython'?PICO_EXAMPLES.filter(e=>['blink','buttons','py091','dma092','thread093'].includes(e.id)).map(e=>({...e,name:e.name.replace('Pico C','Pico MicroPython')})):PICO_EXAMPLES.filter(e=>e.language!=='micropython'&&(!e.wireless||PICO_BOARDS[boardKey(p)].wireless));if(isTiva(p))return TIVA_EXAMPLES;if(isSTM(p))return p.language==='micropython'?STM_FEATURED_EXAMPLES.filter(e=>e.id==='environment'):STM_FEATURED_EXAMPLES;if(!isESP(p))return[];return p.language==='micropython'?[{id:'blink',name:'GPIO · Breadboard LED',detail:'Pin / await'},{id:'sht31',name:'I²C · SHT31',detail:'SoftI2C / CRC-8'}]:p.language==='c'?[{id:'blink',name:'C17 · Breadboard LED',detail:'main.c / cf_hal.h'},...C_SENSOR_EXAMPLES]:[...ESP_EXAMPLES,...ESP_CIRCUIT_EXAMPLES].filter(e=>e.id!=='sensor-relay'||BOARDS[boardKey(p)].pins.some(p=>p.net==='5V'));}
+function unifiedExampleProjectRaw(board,language,id,architecture='arm',pythonEngine='wasm'){
+ if(PICO_BOARDS[board])return createPicoProject({board,language,starter:id,architecture,pythonEngine});
  if(isTivaBoard(board))return createTivaProject({language,starter:id});
  if(STM32_BOARDS[board])return createSTMProject({board,language,starter:id});
  if(language!=='arduino')return createUnifiedProject({board,language,starter:id});
@@ -40,8 +40,8 @@ function unifiedExampleProjectRaw(board,language,id,architecture='arm'){
  p.components.push({id:'bb1',type:'breadboard',x:900,y:350,rotation:0,params:{}});return p;
 }
 export function supportedPart(p,type){if(typeof type!=='string')return false;if(type==='board')return !isNative(p);if(type.startsWith('board:')){const target=BOARDS[type.slice(6)];return !!target&&(target.architecture||'avr')===(BOARDS[boardKey(p)]?.architecture||'avr');}return Object.hasOwn(CATALOG,type);}
-function createUnifiedProjectRaw({name='Yeni proje',board='uno',language='arduino',starter='blink',architecture='arm'}={}){
- if(PICO_BOARDS[board])return createPicoProject({name,board,language,starter,architecture});
+function createUnifiedProjectRaw({name='Yeni proje',board='uno',language='arduino',starter='blink',architecture='arm',pythonEngine='wasm'}={}){
+ if(PICO_BOARDS[board])return createPicoProject({name,board,language,starter,architecture,pythonEngine});
  if(isTivaBoard(board))return createTivaProject({name,language,starter});
  if(STM32_BOARDS[board])return createSTMProject({name,board,language,starter});
  if(!Object.hasOwn(BOARDS,board)||!Object.hasOwn(languageNames,language)||language==='cpp'||BOARDS[board].architecture!=='esp32'&&language!=='arduino')throw Error('Kart ve dil seçimi desteklenmiyor.');
@@ -61,4 +61,4 @@ export function unifiedExampleProject(...args){return spaceNativeParts(unifiedEx
 export function createUnifiedProject(options){return spaceNativeParts(createUnifiedProjectRaw(options));}
 
 // Workspace-to-worker boundary: send circuit inputs, never editor/layout state.
-export function workspaceCircuitPayload(p){const s=p.settings;return {components:p.components,wires:p.wires,settings:{moisture:s.moisture,threshold:s.threshold,pot:s.pot,pressed:s.pressed,probe:'D13',...(isSTM(p)&&s.stm32Pins?{stm32Pins:s.stm32Pins}:{}),...(isPico(p)&&s.picoArchitecture?{picoArchitecture:s.picoArchitecture}:{}),...(isPico(p)&&s.picoEnvironment?{picoEnvironment:{...s.picoEnvironment}}:{})}};}
+export function workspaceCircuitPayload(p){const s=p.settings;return {components:p.components,wires:p.wires,settings:{moisture:s.moisture,threshold:s.threshold,pot:s.pot,pressed:s.pressed,probe:'D13',...(isSTM(p)&&s.stm32Pins?{stm32Pins:s.stm32Pins}:{}),...(isPico(p)&&s.picoPythonEngine?{picoPythonEngine:s.picoPythonEngine}:{}),...(isPico(p)&&s.picoArchitecture?{picoArchitecture:s.picoArchitecture}:{}),...(isPico(p)&&s.picoEnvironment?{picoEnvironment:{...s.picoEnvironment}}:{})}};}

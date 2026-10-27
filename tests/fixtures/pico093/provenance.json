@@ -1,0 +1,18 @@
+{
+  "RP2040": {
+    "sha256": "f2158f15e92b1f3aef260da3257e541fa2c1ba22a0c388677fab7f5335dc084f",
+    "bytes": 32260,
+    "sdk": "2.3.1",
+    "sdkCommit": "079c6f39023649b154152db30f1d781e884879bc",
+    "compiler": "Arm GNU 14.3.Rel1",
+    "cmake": "4.4.4"
+  },
+  "RP2350": {
+    "sha256": "2a4445ffb8fdbb4bc321e91ca471d6b2d4f35fc17175c5d0d87678cd5cc4e054",
+    "bytes": 28468,
+    "sdk": "2.3.1",
+    "sdkCommit": "079c6f39023649b154152db30f1d781e884879bc",
+    "compiler": "Arm GNU 14.3.Rel1",
+    "cmake": "4.4.4"
+  }
+}
