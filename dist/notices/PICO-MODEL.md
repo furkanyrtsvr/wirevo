@@ -74,3 +74,9 @@ Kaynaklar:
 All eight boards: genuine MicroPython WASM with a circuit-backed machine adapter (Pin, ADC, PWM, guarded mem, GPIO I2C/SPI, terminal UART, cooperative GPIO IRQ). Four W boards: onboard LED and explicitly virtual WLAN. No native RP2 firmware, hard Python IRQ, threads, sockets or real radio. Interactive Python programs should yield with `await js.cf.sleep(ms)`.
 
 Four RP2350 boards: real RV32IMAC ELF compilation/execution, Hazard3 CSR machine IRQ, two cores and scalar core-0 debug. Direct Wirevo vector startup; no original RISC-V ROM/UF2 boot. C adds absolute time, core-0 alarms (16 slots; 32 us rearm margin; maximum delay 2^31-1 us), SIO spinlocks (claimed pool 16–30, resource guard 31), critical sections and mutexes. This is not full upstream SDK/CMake or cycle-exact silicon. Historical limitations below/above apply unless explicitly superseded here; current ledger: docs/PICO_SUPPORT.md.
+
+## v0.91 — SDK containers and MicroPython PIO/Timer
+
+C: queues (1024 payload bytes each), semaphores (shared spinlock 15), timed mutex entry, repeating timers on the existing core-0 alarm service. Python: cooperative Timer, ticks, IRQ masking, duty_ns and terminal UART readline; rp2.asm_pio and native StateMachine/FIFO/cooperative per-SM IRQ. PIO programs share 32 instruction slots per unit; no unload/compaction. FIFO waits stop with an error after 10000 simulated us. Eight SMs on RP2040; twelve on RP2350. Basic instruction groups, labels, delay and sideset; special PIO-v1/bank/advanced management and rp2.DMA APIs are not implemented. Python Timer accepts 1 us..10 s; overdue periodic events coalesce at the next cooperative poll. unique_id is a stable simulated board profile identity.
+
+Full SDK/CMake, native RP2 MicroPython firmware, Python hard IRQ/_thread, real network and ROM work remain outside this profile. See docs/PICO_SUPPORT.md; historical limitations are superseded only by features explicitly added here.

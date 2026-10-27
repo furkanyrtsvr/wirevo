@@ -1,3 +1,4 @@
+import {repeatingHeader} from './pico-sdk-containers.js';
 export const timeSDKHeader=`
 #ifndef WIREVO_PICO_TIME_TYPES
 #define WIREVO_PICO_TIME_TYPES
@@ -5,6 +6,7 @@ typedef struct {uint64_t _private_us_since_boot;} absolute_time_t;
 typedef int32_t alarm_id_t;typedef int64_t (*alarm_callback_t)(alarm_id_t,void*);
 uint64_t time_us_64(void);absolute_time_t get_absolute_time(void);uint64_t to_us_since_boot(absolute_time_t);int64_t absolute_time_diff_us(absolute_time_t,absolute_time_t);absolute_time_t delayed_by_us(absolute_time_t,uint64_t);absolute_time_t make_timeout_time_ms(uint32_t);bool time_reached(absolute_time_t);void sleep_until(absolute_time_t);
 alarm_id_t add_alarm_in_us(int64_t,alarm_callback_t,void*,bool);alarm_id_t add_alarm_in_ms(uint32_t,alarm_callback_t,void*,bool);alarm_id_t add_alarm_at(absolute_time_t,alarm_callback_t,void*,bool);bool cancel_alarm(alarm_id_t);
+${repeatingHeader}
 #endif
 `;
 export const syncSDKHeader=`
@@ -20,7 +22,7 @@ void critical_section_init(critical_section_t*);void critical_section_init_with_
  'pico/mutex.h':`#pragma once
 #include <hardware/sync.h>
 typedef struct{spin_lock_t*spin_lock;volatile uint32_t owner;}mutex_t;
-void mutex_init(mutex_t*);void mutex_enter_blocking(mutex_t*);bool mutex_try_enter(mutex_t*,uint32_t*);void mutex_exit(mutex_t*);
+void mutex_init(mutex_t*);void mutex_enter_blocking(mutex_t*);bool mutex_try_enter(mutex_t*,uint32_t*);void mutex_exit(mutex_t*);bool mutex_enter_timeout_ms(mutex_t*,uint32_t);bool mutex_enter_until(mutex_t*,absolute_time_t);
 `};
 export function extraSDKRuntimeC(board){return`
 #include <pico/critical_section.h>

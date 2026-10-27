@@ -1,3 +1,4 @@
+import {picoRP2Source} from './pico-python-pio.js';
 import {picoNetworkSource} from './pico-python-network.js';
 import {PicoPythonCircuit,picoMachineSource,picoPythonBindings} from './pico-python.js';
 import {PICO_BOARDS} from './pico-boards.js';
@@ -29,11 +30,11 @@ function tick(){if(!running||!runtime)return;try{const start=performance.now();d
 async function pythonInit(){
  const {loadMicroPython}=await import('./micropython/micropython.mjs');
  mp=await loadMicroPython({url:new URL('./micropython/micropython.wasm',import.meta.url).href,stdout:s=>emit(s+'\n'),stderr:s=>emit(s+'\n')});
- if(runtime.pico)mp.FS.writeFile('network.py',picoNetworkSource);mp.FS.writeFile('machine.py',(runtime.pico?picoMachineSource:runtime.stm?stmMachineSource:machineSource)+'\n'+Object.entries(runtime.board.aliases||{}).map(([k,v])=>k+'='+v).join('\n'));
+ if(runtime.pico){mp.FS.writeFile('network.py',picoNetworkSource);mp.FS.writeFile('rp2.py',picoRP2Source);}mp.FS.writeFile('machine.py',(runtime.pico?picoMachineSource:runtime.stm?stmMachineSource:machineSource)+'\n'+Object.entries(runtime.board.aliases||{}).map(([k,v])=>k+'='+v).join('\n'));
  for(const f of project.files||[]){let dir='';for(const part of f.name.split('/').slice(0,-1)){dir+=part+'/';try{mp.FS.mkdir(dir);}catch{}}mp.FS.writeFile(f.name,f.content);}
  mp.registerJsModule('_cf',runtime.pico?picoPythonBindings(runtime):{configure:(p,m,pull,v)=>runtime.configure(p,m,pull,v),write:(p,v)=>runtime.write(p,v),read:p=>runtime.read(p),delay_us:us=>runtime.advance(us),...(runtime.stm?{pin_id:id=>runtime.pinID(id),adc:id=>runtime.adc(id)}:{})});
- globalThis.cf={sleep:async ms=>{if(!Number.isFinite(ms)||ms<0||ms>10000)throw Error('sleep: 0–10000 ms');await new Promise(r=>setTimeout(r,ms));while(paused)await new Promise(r=>setTimeout(r,20));runtime.advance(ms*1000);frame();return null;}};
- mp.runPython('import time, _cf\ntime.sleep_us=_cf.delay_us\ntime.sleep_ms=lambda ms: _cf.delay_us(ms*1000)\ntime.sleep=lambda seconds: _cf.delay_us(seconds*1000000)');
+ globalThis.cf={sleep:async ms=>{if(!Number.isFinite(ms)||ms<0||ms>10000)throw Error('sleep: 0–10000 ms');await new Promise(r=>setTimeout(r,ms));while(paused)await new Promise(r=>setTimeout(r,20));runtime.advance(ms*1000);if(runtime.pico)mp.runPython('import machine; machine._poll()');frame();return null;}};
+ if(!runtime.pico)mp.runPython('import time, _cf\ntime.sleep_us=_cf.delay_us\ntime.sleep_ms=lambda ms: _cf.delay_us(ms*1000)\ntime.sleep=lambda seconds: _cf.delay_us(seconds*1000000)');
 }
 self.onmessage=async({data:d})=>{try{switch(d.type){
  case 'check':{project=d.project;language='micropython';runtime=pythonCircuit(d.chip,d.project);await pythonInit();mp.globals.set('_cf_check_source',d.source);await mp.runPythonAsync('compile(_cf_check_source, "main.py", "exec")');mp.globals.delete('_cf_check_source');postMessage({type:'checked'});break;}
