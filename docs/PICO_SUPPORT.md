@@ -1,4 +1,4 @@
-# Pico support record — v0.94.0
+# Pico support record — v0.95.0
 
 This is the current record, replacing assumptions based on accumulated release requests. Earlier release notes describe historical scopes. A future release should update this record rather than repeatedly present known limitations as newly discovered defects.
 
@@ -54,3 +54,12 @@ The quick browser path now supports bounded function scopes/arguments/PARENT_SCO
 CYW43439 ROM data import: local 640 KiB user image at 0x00800000, immutable through gSPI/backplane, CRC32 metadata, power/reset persistence within the session. Bytes are not bundled, server-uploaded or stored in project JSON. Native SDK/W firmware and native MicroPython generic CPU sessions do not gain a CYW43 CPU. The chip execution/radio flags stay false even with a ROM image. New acceptance uses synthetic data to check memory/bus behavior; it does not validate original ROM execution.
 
 The latest request is therefore only partly fulfilled: original CYW43 ROM/firmware/radio and complete upstream browser SDK/CMake still require work. This release does not label ROM-data access or bounded CMake evaluation as those completed features. Only 20 newly added cases were run; old suites were not run.
+
+
+## v0.95 official SDK button integration
+
+The accepted local SDK workflow is integrated with Compile: authenticated loopback helper → installed official CMake/Ninja/Arm GNU/SDK → streamed build log → board/source/SHA/UF2 verification → automatic paused native firmware load. Run starts the resulting firmware. Sources/targets remain in project JSON/ZIP; machine connection credentials remain tab-local. No per-build manual source export or firmware import is needed. A new official SDK starter uses math/configure_file, a static C library, core-1 LED and USB stdout.
+
+The helper runs trusted project CMake as the user's OS account, binds only loopback and enforces Origin/Host/bearer authentication. Cancellation, timeouts, errors and stale/corrupt results cannot install a new artifact. Eight board profiles map to four official SDK board targets; all four targets were newly compiled and run. Native load remains ARM-only with no SDK source DWARF map. The quick browser compiler remains its bounded profile; original CYW43 execution/radio is unchanged.
+
+New checks: 6 helper protocol/lifecycle, 4 client/project, 4 actual official SDK target builds plus 1 compiler error; browser Compile → paused load → Run and cancellation acceptance. Old test files were not run. Exact setup: dist/notices/PICO-SDK-BRIDGE.md.

@@ -1,3 +1,7 @@
+# v0.95: automatic Compile integration
+
+The local build/import steps below remain available, but per-build manual transfers are no longer required. Use [the SDK helper connection](PICO-SDK-BRIDGE.md) to build with the normal Compile button and load firmware automatically.
+
 # Official Pico SDK / CMake workflow — v0.93.0
 
 The quick browser compiler retains Wirevo's bounded SDK and declarative CMake importer. For actual upstream SDK builds, use the new local build/import workflow. This runs **real CMake**, rather than interpreting selected commands in JavaScript.

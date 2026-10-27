@@ -21,3 +21,6 @@ src/stm32/vendor/zmu_cortex_m/target/
 # QA evidence belongs in docs/qa.
 /QA_*.md
 /docs/QA_*.md
+
+# Local Python helper bytecode
+__pycache__/

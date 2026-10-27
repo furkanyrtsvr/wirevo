@@ -1,3 +1,7 @@
+# v0.95 local SDK integration
+
+Compile can now invoke the installed official SDK through an authenticated loopback helper, stream real CMake/Arm GNU logs and automatically load the resulting ARM firmware into the paused circuit. Run starts it. [Setup and limits](PICO-SDK-BRIDGE.md). This is the real local build workflow, separate from the bounded browser compiler. Original CYW43 execution/radio and native SDK source debug mapping remain unchanged.
+
 # v0.94 additions
 
 Browser CMake now evaluates bounded functions/scopes, conditionals, foreach, template-generated headers and USB stdio settings. [Accepted syntax and limits](PICO-BROWSER-CMAKE.md). User-supplied CYW43439 ROM data can be loaded read-only into the backplane and survives session reset; it does not execute the chip CPU, firmware or radio. Real CYW43 firmware/radio and full upstream browser SDK/CMake remain unfinished.

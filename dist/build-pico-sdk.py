@@ -54,7 +54,7 @@ def build(args):
         command.append('-DCMAKE_MAKE_PROGRAM=' + str(Path(args.ninja).resolve()))
     command.extend(args.cmake_arg)
     subprocess.run(command, env=env, check=True)
-    subprocess.run([args.cmake, '--build', str(output / 'build')], env=env, check=True)
+    subprocess.run([args.cmake, '--build', str(output / 'build')] + (['--target', args.target] if getattr(args, 'target', None) else []), env=env, check=True)
     for binary in (output / 'build').rglob('*.bin'):
         if not binary.with_suffix('.elf').exists():
             continue
@@ -67,7 +67,8 @@ def build(args):
             blocks.append(header + data[number * 256:(number + 1) * 256].ljust(256, b'\xff') + bytes(220) + struct.pack('<I', 0x0ab16f30))
         binary.with_suffix('.uf2').write_bytes(b''.join(blocks))
     print('\nDerlenen dosyalar: ' + str(output / 'build'))
-    print('Wirevo > Pico SDK / CMake > Resmi SDK UF2 yükle ile .uf2 dosyasını açın.')
+    if not getattr(args, 'bridge', False):
+        print('Wirevo > Pico SDK / CMake > Resmi SDK UF2 yükle ile .uf2 dosyasını açın.')
 
 
 if __name__ == '__main__':
@@ -77,6 +78,8 @@ if __name__ == '__main__':
     parser.add_argument('--output', required=True)
     parser.add_argument('--cmake', default='cmake')
     parser.add_argument('--ninja')
+    parser.add_argument('--bridge', action='store_true', help='Return artifacts to the authenticated helper')
+    parser.add_argument('--target', default='', help='Optional CMake executable target')
     parser.add_argument('--toolchain', help='Arm GNU toolchain root (contains bin/)')
     parser.add_argument('--cmake-arg', action='append', default=[])
     build(parser.parse_args())
