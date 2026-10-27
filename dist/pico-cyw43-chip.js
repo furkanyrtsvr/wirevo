@@ -29,10 +29,10 @@ export class CYW43Chip {
   const a=(this.window+(address&0x7fff))>>>0;if(a<this.ram.length){this.ram[a]=value;return;}if(a>=0x18000064&&a<0x1800006c){const key=a<0x18000068?'gpioOut':'gpioEnable',shift=(a&3)*8;this[key]=((this[key]&~(255<<shift))|value<<shift)>>>0;this.onLED(this.led);return;}this.fault(1,'Backplane write unavailable at 0x'+a.toString(16));
  }
  attach(rp){this.rp=rp;const pin=n=>rp.gpio[n],high=n=>pin(n).value===1;this.listeners=[pin(23).addListener(()=>this.power(high(23))),pin(25).addListener(()=>this.select(!high(25))),pin(29).addListener(()=>{if(!this.powered||!this.selected||!this.frame)return;const f=this.frame;if(high(29)){if(f.bit===0){ // Prepare output without consuming a host byte.
-    const index=f.position;f.output=f.command&&!f.write&&!f.delay?(f.response?.[index]||0):0;
+    f.output=this.peek();
    }f.input=(f.input<<1)|+high(24);if(++f.bit===8){this.transfer(f.input);f.input=0;f.bit=0;}}
    else if(pin(24).value>=2){const bit=f.bit===0?7:7-f.bit;pin(24).setInputValue(!!((f.bit===0?this.peek():f.output)&(1<<bit)));}})];this.power(high(23));this.select(!high(25));this.updateIRQ();}
- peek(){const f=this.frame;return f?.command&&!f.write&&!f.delay?(f.response?.[f.position]||0):0;}
+ peek(){const f=this.frame;if(!f?.command||f.delay)return 0;if(f.position<f.length)return f.write?0:(f.response?.[f.position]||0);const i=f.position-((f.length+3)&~3);return (this.bus[2]&1)&&i>=0&&i<4?bytes(this.status)[i]:0;}
  snapshot(){return{powered:this.powered,model:'CYW43439 gSPI / backplane subset',firmwareRunning:false,romAvailable:false,ramBytes:this.ram.length,window:this.window>>>0,interrupts:this.interrupts,irq:this.irq,led:this.led,txPending:this.tx.length,lastError:this.lastError,stats:{...this.stats}};}
  dispose(){for(const remove of this.listeners||[])remove();this.listeners=[];this.rp=null;}
 }
