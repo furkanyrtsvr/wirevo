@@ -67,7 +67,21 @@ void cf_gpio_mode(unsigned p,int m){gpio_init(p);gpio_disable_pulls(p);if(m==CF_
 void cf_gpio_write(unsigned p,int v){gpio_put(p,v!=0);}int cf_gpio_read(unsigned p){return gpio_get(p);}
 void cf_delay_ms(unsigned n){sleep_ms(n);}void cf_delay_us(unsigned n){sleep_us(n);}unsigned cf_millis(void){return time_us_32()/1000;}
 void cf_uart_begin(unsigned baud){unsigned divisor=${board.hz}u/(16u*(baud?baud:115200));gpio_init(0);gpio_init(1);gpio_set_function(0,GPIO_FUNC_UART);gpio_set_function(1,GPIO_FUNC_UART);REG(UART+0x30)=0;REG(UART+0x24)=divisor;REG(UART+0x28)=0;REG(UART+0x2c)=0x60;REG(UART+0x30)=0x301;}
-void stdio_init_all(void){cf_uart_begin(115200);}
+#ifndef PICO_STDIO_UART
+#define PICO_STDIO_UART 1
+#endif
+#ifndef PICO_STDIO_USB
+#define PICO_STDIO_USB 0
+#endif
+extern bool stdio_usb_init(void);
+void stdio_init_all(void){
+#if PICO_STDIO_UART
+cf_uart_begin(115200);
+#endif
+#if PICO_STDIO_USB
+stdio_usb_init();
+#endif
+}
 void cf_uart_write(unsigned char c){if(cf_usb_stdio_enabled){tud_cdc_write_char(c);return;}while(REG(UART+0x18)&32u){}REG(UART)=c;}
 int cf_uart_read(void){if(cf_usb_stdio_enabled)return tud_cdc_read_char();return (REG(UART+0x18)&16u)?-1:(REG(UART)&255);}
 void *memcpy(void*d,const void*s,unsigned n){unsigned char*a=d;const unsigned char*b=s;while(n--)*a++=*b++;return d;}void *memset(void*d,int c,unsigned n){unsigned char*a=d;while(n--)*a++=c;return d;}

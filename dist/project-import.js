@@ -38,7 +38,7 @@ export async function importProjectBytes(input){
  }
  const raw=projectJSON(entries.get('circuit.json'),'circuit.json'),sources=[];
  const originalKey=sourceSnapshot(raw);
- for(const [name,content]of entries){if(['circuit.json','firmware.hex','libraries.json'].includes(name))continue;if(!(/\.(ino|cpp|c|h|hpp|py)$/.test(name)||isPico(raw)&&raw.language==='c'&&/(?:^|\/)(?:CMakeLists\.txt|[\w.-]+\.cmake)$/.test(name)))throw Error('ZIP: desteklenmeyen proje dosyası: '+name);sources.push({name,content});}
+ for(const [name,content]of entries){if(['circuit.json','firmware.hex','libraries.json'].includes(name))continue;if(!(/\.(ino|cpp|c|h|hpp|py)$/.test(name)||isPico(raw)&&raw.language==='c'&&/(?:^|\/)(?:CMakeLists\.txt|[\w.-]+\.cmake|[\w.-]+\.h\.in)$/.test(name)))throw Error('ZIP: desteklenmeyen proje dosyası: '+name);sources.push({name,content});}
  const files=normalizeFiles(sources,{language:raw.language||'arduino',build:isPico(raw)});raw.code=files.find(f=>f.name===mainFile(raw)).content;raw.files=files.filter(f=>f.name!==mainFile(raw));
  if(entries.has('libraries.json')){const libraries=normalizeLibraries(parseJSON(entries.get('libraries.json'),'libraries.json'));if(raw.libraries&&JSON.stringify(normalizeLibraries(raw.libraries))!==JSON.stringify(libraries))throw Error('ZIP: kütüphane manifestleri eşleşmiyor.');raw.libraries=libraries;raw.schemaVersion=5;}
  const project=validateProject(raw),external=entries.get('firmware.hex');if(external!==undefined){if(isESP(project))throw Error('ESP projesinde AVR HEX kullanılamaz.');validHex(external,project);}validFirmware(project);

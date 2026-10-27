@@ -1,3 +1,7 @@
+# v0.94 additions
+
+Browser CMake now evaluates bounded functions/scopes, conditionals, foreach, template-generated headers and USB stdio settings. [Accepted syntax and limits](PICO-BROWSER-CMAKE.md). User-supplied CYW43439 ROM data can be loaded read-only into the backplane and survives session reset; it does not execute the chip CPU, firmware or radio. Real CYW43 firmware/radio and full upstream browser SDK/CMake remain unfinished.
+
 # Pico model — current v0.93 profile
 
 New in v0.93: native RP2 MicroPython 1.29 ARM, real shared-memory _thread on both CPUs, native module/files and time.sleep; verified original RP2040/RP2350 ROM loaded on demand. Separate WASM mode is retained. All eight profiles use generic CPU firmware, with no native W radio.

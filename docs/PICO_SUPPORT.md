@@ -1,4 +1,4 @@
-# Pico support record — v0.93.0
+# Pico support record — v0.94.0
 
 This is the current record, replacing assumptions based on accumulated release requests. Earlier release notes describe historical scopes. A future release should update this record rather than repeatedly present known limitations as newly discovered defects.
 
@@ -45,3 +45,12 @@ The new rp2-native Python option runs unmodified official MicroPython 1.29.0 ARM
 SDK/CMake: the new desktop build tool invokes real CMake and installed official Pico SDK/Arm GNU/Ninja, preserving user CMake scripts, generated files and linked sources. Imported ARM UF2 boots through original ROM/SDK boot2/picobin, drives electrical GPIO from both cores and uses native USB CDC. Native SDK imports lack a source DWARF debug map. The browser quick compiler still has its previous declarative subset. See dist/notices/PICO-SDK-NATIVE.md. Real CMake capability does not mean all SDK peripherals work in the chip model.
 
 Current limits remain explicit: CYW43 internal ROM/firmware/radio, full physical/cycle equivalence, OTP/secure signed boot, arbitrary SDK peripheral completeness. These are not silently completed or reclassified as new defects.
+
+
+## v0.94 current browser additions
+
+The quick browser path now supports bounded function scopes/arguments/PARENT_SCOPE, if/elseif/else with accepted logical/numeric/string predicates, foreach, options, list APPEND, GLOBAL include guards and configure_file with .h.in inputs. Generated C/header files reach Clang WASM, and CMake stdio switches enable USB CDC/disable UART. The new Projects example is available on all eight boards and twelve C architecture profiles. Full upstream CMake/SDK, general generators/FetchContent/host processes and all peripheral libraries remain unsupported in the browser. See dist/notices/PICO-BROWSER-CMAKE.md for exact bounds.
+
+CYW43439 ROM data import: local 640 KiB user image at 0x00800000, immutable through gSPI/backplane, CRC32 metadata, power/reset persistence within the session. Bytes are not bundled, server-uploaded or stored in project JSON. Native SDK/W firmware and native MicroPython generic CPU sessions do not gain a CYW43 CPU. The chip execution/radio flags stay false even with a ROM image. New acceptance uses synthetic data to check memory/bus behavior; it does not validate original ROM execution.
+
+The latest request is therefore only partly fulfilled: original CYW43 ROM/firmware/radio and complete upstream browser SDK/CMake still require work. This release does not label ROM-data access or bounded CMake evaluation as those completed features. Only 20 newly added cases were run; old suites were not run.
