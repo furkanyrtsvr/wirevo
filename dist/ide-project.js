@@ -1,10 +1,11 @@
+import {projectBoard} from './board-hardware.js';
 import {projectFiles,normalizeFiles,mainFile} from './source-files.js';
 export function mergeSourceFiles(project,incoming,{replace=false,prefix=''}={}){
  if(!Array.isArray(incoming)||!incoming.length)throw Error('İçe aktarılacak kaynak seçilmedi.');
  if(prefix&&!/^([A-Za-z_][\w-]*\/)*[A-Za-z_][\w-]*\/?$/.test(prefix))throw Error('Hedef klasör geçersiz.');
  const files=projectFiles(project).map(f=>({...f})),seen=new Set();
  for(const file of incoming){const name=(prefix?prefix.replace(/\/$/,'')+'/':'')+file.name;if(seen.has(name.toLowerCase()))throw Error('İçe aktarmada yinelenen dosya: '+name);seen.add(name.toLowerCase());const at=files.findIndex(f=>f.name.toLowerCase()===name.toLowerCase());if(at>=0&&!replace)throw Error('Dosya zaten var: '+name+'; değiştirme seçeneğiyle tekrar deneyin.');if(at>=0)files[at]={name:files[at].name,content:file.content};else files.push({name,content:file.content});}
- return normalizeFiles(files,{language:project.language||'arduino'});
+ return normalizeFiles(files,{language:project.language||'arduino',build:projectBoard(project).architecture==='pico'});
 }
 export function includeLinks(project,name){
  const files=projectFiles(project),source=files.find(f=>f.name===name)?.content||'',directory=name.includes('/')?name.slice(0,name.lastIndexOf('/')+1):'',out=[];

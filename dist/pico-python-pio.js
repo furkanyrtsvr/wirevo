@@ -1,3 +1,4 @@
+import {picoDMASource} from './pico-python-dma.js';
 // Original PIO assembler and native register adapter; no vendor ROM required.
 export function picoPythonPIO(r,id,op,...args){
  if(!Number.isInteger(id)||id<0||id>=(r.board.mcu==='RP2350'?12:8))throw Error('PIO state machine numarası geçersiz.');
@@ -93,6 +94,7 @@ def asm_pio_encode(instruction,sideset_count,sideset_opt=False):
     return _encoded(asm,options)[0][0]
 _sm_irqs={}
 def _poll_irqs():
+    _poll_dma_irqs()
     for sm,handler in tuple(_sm_irqs.values()):
         if _cf.pio(sm.id,'irq'):handler(sm)
 class StateMachine:
@@ -135,4 +137,4 @@ class StateMachine:
         else:_sm_irqs[self.id]=(self,handler)
     def tx_fifo(self):return int(_cf.pio(self.id,'tx_fifo'))
     def rx_fifo(self):return int(_cf.pio(self.id,'rx_fifo'))
-`;
+`+picoDMASource;

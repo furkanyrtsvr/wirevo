@@ -80,3 +80,11 @@ Four RP2350 boards: real RV32IMAC ELF compilation/execution, Hazard3 CSR machine
 C: queues (1024 payload bytes each), semaphores (shared spinlock 15), timed mutex entry, repeating timers on the existing core-0 alarm service. Python: cooperative Timer, ticks, IRQ masking, duty_ns and terminal UART readline; rp2.asm_pio and native StateMachine/FIFO/cooperative per-SM IRQ. PIO programs share 32 instruction slots per unit; no unload/compaction. FIFO waits stop with an error after 10000 simulated us. Eight SMs on RP2040; twelve on RP2350. Basic instruction groups, labels, delay and sideset; special PIO-v1/bank/advanced management and rp2.DMA APIs are not implemented. Python Timer accepts 1 us..10 s; overdue periodic events coalesce at the next cooperative poll. unique_id is a stable simulated board profile identity.
 
 Full SDK/CMake, native RP2 MicroPython firmware, Python hard IRQ/_thread, real network and ROM work remain outside this profile. See docs/PICO_SUPPORT.md; historical limitations are superseded only by features explicitly added here.
+
+## v0.92 — declaration import and Python DMA
+
+Pico C accepts CMakeLists.txt/.cmake files and interprets a strict single-executable C target declaration subset (local C sources/libraries, include paths, definitions, simple variables and subdirectories). It does not run full CMake or upstream SDK builds; unsupported commands fail explicitly.
+
+Python rp2.DMA executes through native chip DMA registers and DREQ, with buffer staging into SRAM 0x20004000 through RAM end minus 4096 bytes. Max 65536 bytes per buffer, retained until close; 256-byte alignment, staged rings up to 256 bytes. Completion/abort polls copy staged output back. Native addresses and PIO FIFO/register windows are supported; WASM pointers are not native chip pointers. Sniffer/DMATimer, hard Python IRQ and special RP2350 transfer modes are not implemented.
+
+Real _thread is still unavailable in the shipped MicroPython WASM interpreter. Full SDK/CMake, native RP2 firmware and ROM-dependent work remain outside the current profile. Current ledger: docs/PICO_SUPPORT.md.

@@ -1,3 +1,4 @@
+import {picoPythonDMA} from './pico-python-dma.js';
 import {picoTimerSource} from './pico-python-timers.js';
 import {picoPythonPIO} from './pico-python-pio.js';
 import {picoPythonWLAN} from './pico-python-network.js';
@@ -135,4 +136,4 @@ def freq(value=None):
     if value is not None:raise NotImplementedError('Saat değiştirme bu profilde yok')
     return int(_cf.cpu_freq())
 `+picoTimerSource;
-export function picoPythonBindings(r){return{ticks_us:()=>Math.floor(r.native.rp.clock.nanos/1000),unique_id:()=>Array.from(new TextEncoder().encode(r.board.id.padEnd(8,'0').slice(0,8)),b=>b.toString(16).padStart(2,'0')).join(''),pio:(...a)=>picoPythonPIO(r,...a),configure:(...a)=>r.configure(...a),write:(...a)=>r.write(...a),read:p=>r.read(p),delay_us:us=>r.advance(us),pin_id:p=>r.pinID(p),adc:id=>r.adc(id),pwm:(...a)=>r.pwm(...a),pwm_off:p=>r.pwmOff(p),uart:(...a)=>r.uart(...a),mem_read:(a,s)=>r.memory(a,undefined,s),mem_write:(a,v,s)=>r.memory(a,v,s),irq_config:(p,mask)=>r.irqMasks.set(r.pinID(p),mask&12),irq_pop:()=>r.irqQueue.length?r.irqQueue.shift():-1,wlan:(...a)=>picoPythonWLAN(r,...a),cpu_freq:()=>r.board.hz};}
+export function picoPythonBindings(r){return{ram_size:()=>r.board.ram,dma:(...a)=>picoPythonDMA(r,...a),is_rp2350:()=>r.board.mcu==='RP2350',ticks_us:()=>Math.floor(r.native.rp.clock.nanos/1000),unique_id:()=>Array.from(new TextEncoder().encode(r.board.id.padEnd(8,'0').slice(0,8)),b=>b.toString(16).padStart(2,'0')).join(''),pio:(...a)=>picoPythonPIO(r,...a),configure:(...a)=>r.configure(...a),write:(...a)=>r.write(...a),read:p=>r.read(p),delay_us:us=>r.advance(us),pin_id:p=>r.pinID(p),adc:id=>r.adc(id),pwm:(...a)=>r.pwm(...a),pwm_off:p=>r.pwmOff(p),uart:(...a)=>r.uart(...a),mem_read:(a,s)=>r.memory(a,undefined,s),mem_write:(a,v,s)=>r.memory(a,v,s),irq_config:(p,mask)=>r.irqMasks.set(r.pinID(p),mask&12),irq_pop:()=>r.irqQueue.length?r.irqQueue.shift():-1,wlan:(...a)=>picoPythonWLAN(r,...a),cpu_freq:()=>r.board.hz};}
