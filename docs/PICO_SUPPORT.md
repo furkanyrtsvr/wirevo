@@ -1,3 +1,7 @@
+## Güncel ek: 0.100 kaynak paketleri
+
+Varsayılan tarayıcı derlemesine ek olarak isteğe bağlı C/H kaynak paketi eklenebilir. Bu tam resmi SDK/CMake değildir; kurulum veya yardımcı uygulama gerektirmez. [Kapsam ve kullanım](../dist/notices/PICO-SOURCE-PACKAGES.md).
+
 # Güncel kullanım — 0.99
 
 Wirevo yardımcı uygulama gerektirmeden tarayıcı derleyicisini kullanır. 0.95–0.98 dönemindeki yerel SDK bağlantısı, Python yardımcıları ve masaüstü pencere paketleri kaldırıldı. JSON/ZIP projeleri ve kaynak dosyaları korunur; eski sdk-local ayarı tarayıcı moduna geçirilir.

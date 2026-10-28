@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.99.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.100.0**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -18,6 +18,10 @@ Kullanıcıların Python, yerel SDK yardımcısı veya ek masaüstü uygulaması
 Arduino/AVR, ESP32, STM32, TM4C123 ve Pico aileleri; ortak devre bileşenleri, çok dosyalı kod, desteklenen dil/kart eşleşmelerinde C/C++ ve MicroPython, seri terminal ve sanal çevrebirim modelleri içerir. Kartların desteklenen özellikleri birbirinden farklıdır; bütün fiziksel silikon davranışlarının birebir modeli vaat edilmez.
 
 Pico C kodu tarayıcıdaki Clang/WebAssembly derleyicisini ve Wirevo’nun desteklediği SDK uyumluluk katmanını kullanır. **Tam upstream Pico SDK/CMake tarayıcıda çalıştırılmaz.** Desteklenmeyen API veya CMake komutu açık hata verir. [Pico tarayıcı kapsamı](dist/notices/PICO-BROWSER-CMAKE.md), [kart/model belgeleri](dist/notices/). Önceden derlenmiş ARM UF2 içe aktarımı isteğe bağlıdır; normal kullanımın koşulu değildir.
+
+## İsteğe bağlı Pico kaynak paketi
+
+**SDK paketi ekle** ile C kaynakları ve başlıkları klasör veya ZIP olarak tarayıcıya eklenebilir. Paket probe koduyla gerçekten derlenerek denetlenir; istenirse bu tarayıcıda saklanır. JSON yalnız dosya tanımıdır; kaynakların yerini tutmaz. Tam resmi SDK/CMake veya bilgisayarda çalışan derleyici eklenmez. [Paket hazırlama, örnekler, kartlar ve sınırlar](dist/notices/PICO-SOURCE-PACKAGES.md).
 
 ## Yerel yardımcıların kaldırılması
 
@@ -44,3 +48,5 @@ Yerel geliştirme adresi: http://127.0.0.1:4173 . `dist/` web çalışma zamanla
 | docs/ | Kapsam ve sürüm notları |
 
 [0.99 değişiklikleri](docs/RELEASE_0.99.md). Tarihsel değişiklikler Git geçmişinde korunur; eski sürüm açıklamaları güncel kullanım talimatı değildir.
+
+[0.100 değişiklikleri](docs/RELEASE_0.100.md).
