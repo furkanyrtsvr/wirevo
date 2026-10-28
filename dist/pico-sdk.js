@@ -1,3 +1,4 @@
+import {gpioSDKHeader,gpioSDKRuntimeC} from './pico-gpio-sdk.js';
 import {containerHeaders,containersRuntimeC} from './pico-sdk-containers.js';
 import {timeSDKHeader,extraSDKHeaders,extraSDKRuntimeC} from './pico-sdk-extra.js';
 import {irqHeaders,irqRuntimeC,gpioIRQHeader} from './pico-irq-sdk.js';
@@ -30,6 +31,7 @@ ${!board.wireless?'#define PICO_DEFAULT_LED_PIN 25':''}
 #define PICO_ARM ${board.cpuArch==='riscv'?0:1}
 #define PICO_CYW43_SUPPORTED ${board.wireless?1:0}
 ${gpioIRQHeader}
+${gpioSDKHeader}
 ${timeSDKHeader}
 void gpio_init(uint);void gpio_set_dir(uint,bool);void gpio_put(uint,bool);bool gpio_get(uint);
 void gpio_pull_up(uint);void gpio_pull_down(uint);void gpio_disable_pulls(uint);void gpio_set_function(uint,uint);
@@ -93,4 +95,4 @@ extern unsigned _sidata,_sdata,_edata,_sbss,_ebss,_estack;extern int main(void);
 void Default_Handler(void){for(;;){}}
 void Reset_Handler(void){unsigned*s=&_sidata,*d=&_sdata;while(d<&_edata)*d++=*s++;for(d=&_sbss;d<&_ebss;)*d++=0;cf_irq_init();main();for(;;){}}
 __attribute__((section(".vectors"),used))void(*const vectors[16])(void)={[0]=(void*)&_estack,[1]=Reset_Handler,[2]=Default_Handler,[3]=Default_Handler};
-`+peripheralRuntimeC(board)+irqRuntimeC(board)+advancedRuntimeC(board)+usbRuntimeC()+radioRuntimeC(board)+flashRuntimeC+extraSDKRuntimeC(board)+containersRuntimeC;}
+`+gpioSDKRuntimeC(board)+peripheralRuntimeC(board)+irqRuntimeC(board)+advancedRuntimeC(board)+usbRuntimeC()+radioRuntimeC(board)+flashRuntimeC+extraSDKRuntimeC(board)+containersRuntimeC;}

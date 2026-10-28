@@ -1,3 +1,19 @@
+# Güncel destek durumu — 0.104
+
+Bu bölüm güncel özettir. Aşağıdaki eski sürüm kayıtları tarihçedir; özellikle 0.93–0.98 yerel SDK uygulaması kaldırılmıştır. Daha önce kaydedilen sınırlar yeni bulunmuş hata gibi değerlendirilmemelidir.
+
+| Alan | Kullanılabilir kapsam | Tamamlanmış sayılmayan kapsam |
+|---|---|---|
+| Tarayıcı C | Sekiz kartta ARM, dört Pico 2 kartında Hazard3; çok dosya; C/H kaynak paketi; sınırlı CMake değerlendirmesi | Resmi SDK'nın tamamı, gerçek CMake çalıştırma, rastgele native derleme araçları/kütüphaneler |
+| GPIO | Temel giriş/çıkış ve kesmeler; 0.104 toplu pin/yön/fonksiyon, override, pad API'leri ve fiziksel OD/ISO çıkış ayırma | Tüm GPIO API'leri, bus keeper, pad analog geçiş/akım/gürültü ve tam IRQ/izolasyon eşdeğerliği |
+| PWM / ADC / veri yolları | 0.102 SPI 4–16 bit ve UART FIFO/IRQ; 0.103 PWM bölücü/IRQ/sistem saati ve I2C süre sınırı; mevcut ADC/devre modelleri | Tam donanım FIFO/DMA/slave çerçevesi, her çevrebirim modu ve çevrim doğruluğu |
+| PIO / DMA / iki çekirdek | Önceki sürümlerdeki işlevsel motor ve SDK alt kümeleri | SDK'nın tüm API'leri, genel yarış/zamanlama ve birebir silikon eşdeğerliği |
+| MicroPython | WASM adaptörü ve ayrı native RP2 firmware profili | Bütün modüller, her donanım API'si, tam ağ ve kaynak debug |
+| USB / flash / ROM | Önceki sürümlerdeki sınırlı cihaz/flash ve ROM içe aktarma profilleri | Tam TinyUSB/host/composite, OTP/security, tüm açılış modları |
+| CYW43 | Host kayıtçı/taşıma modeli ve ayrı sanal eğitim ağı | Özgün CYW43 CPU/ROM/firmware/radyo yürütümü, gerçek Wi-Fi/Bluetooth/Internet |
+
+Tam Pico SDK ve donanım eşdeğerliği **tamamlanmış değildir**. Son genişleme [0.104 GPIO kapsamı](../dist/notices/PICO-COMPAT104.md); önceki genişleme [0.103 PWM/I2C](../dist/notices/PICO-COMPAT103.md). Kullanıcı için ek uygulama gerekmez. Güncel sürümde yalnız yeni GPIO akışı doğrulanmıştır; eski alanların tümü yeniden test edilmiş sayılmaz.
+
 ## 0.103 — PWM / I2C
 
 Kesirli PWM bölücüsü, wrap IRQ ve I2C timeout/deadline desteği genişletildi. [Doğrulanan kapsam](../dist/notices/PICO-COMPAT103.md).
