@@ -1,3 +1,7 @@
+## 0.102 — SPI/UART ve GPIO genişlemesi
+
+SPI 4–16 bit aktarım, UART FIFO/loopback/alım kesmesi ve doğru GPIO pad seçimi eklendi. Yeni örnekler ve sınırlar [burada](../dist/notices/PICO-COMPAT102.md).
+
 ## Güncel ek: 0.100 kaynak paketleri
 
 Varsayılan tarayıcı derlemesine ek olarak isteğe bağlı C/H kaynak paketi eklenebilir. Bu tam resmi SDK/CMake değildir; kurulum veya yardımcı uygulama gerektirmez. [Kapsam ve kullanım](../dist/notices/PICO-SOURCE-PACKAGES.md).

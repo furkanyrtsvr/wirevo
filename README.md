@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.101.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.102.0**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -18,6 +18,8 @@ Kullanıcıların Python, yerel SDK yardımcısı veya ek masaüstü uygulaması
 Arduino/AVR, ESP32, STM32, TM4C123 ve Pico aileleri; ortak devre bileşenleri, çok dosyalı kod, desteklenen dil/kart eşleşmelerinde C/C++ ve MicroPython, seri terminal ve sanal çevrebirim modelleri içerir. Kartların desteklenen özellikleri birbirinden farklıdır; bütün fiziksel silikon davranışlarının birebir modeli vaat edilmez.
 
 Pico C kodu tarayıcıdaki Clang/WebAssembly derleyicisini ve Wirevo’nun desteklediği SDK uyumluluk katmanını kullanır. **Tam upstream Pico SDK/CMake tarayıcıda çalıştırılmaz.** Desteklenmeyen API veya CMake komutu açık hata verir. [Pico tarayıcı kapsamı](dist/notices/PICO-BROWSER-CMAKE.md), [kart/model belgeleri](dist/notices/). Önceden derlenmiş ARM UF2 içe aktarımı isteğe bağlıdır; normal kullanımın koşulu değildir.
+
+Pico C için hazır **SPI 16 bit** ve **UART FIFO / loopback** örnekleri eklendi. [0.102 uyumluluk kapsamı ve sınırları](dist/notices/PICO-COMPAT102.md).
 
 ## İsteğe bağlı Pico kaynak paketi
 

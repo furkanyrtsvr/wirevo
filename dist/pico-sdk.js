@@ -51,7 +51,7 @@ __attribute__((naked)) void __aeabi_uidivmod(void){__asm__ volatile("push {r4, l
 __attribute__((naked)) void __aeabi_idivmod(void){__asm__ volatile("push {r4, lr}\\n push {r0, r1}\\n bl __aeabi_idiv\\n pop {r2, r3}\\n mov r1, r0\\n muls r1, r3\\n subs r1, r2, r1\\n pop {r4, pc}");}
 int cf_gpio_valid(unsigned p){return p<${gen2?30:30};}
 void cf_bus_mux(uint,uint);
-void gpio_set_function(uint p,uint f){if(cf_gpio_valid(p)){cf_bus_mux(p,f);REG(IO+4+p*8)=f;}}
+void gpio_set_function(uint p,uint f){if(cf_gpio_valid(p)){REG(PADS+4+p*4)=(REG(PADS+4+p*4)&~(128u|256u))|64u;cf_bus_mux(p,f);REG(IO+4+p*8)=f;}}
 void gpio_set_dir(uint p,bool out){if(cf_gpio_valid(p))REG(out?${gen2?'0xd0000038u':'0xd0000024u'}:${gen2?'0xd0000040u':'0xd0000028u'})=1u<<p;}
 void gpio_put(uint p,bool v){if(cf_gpio_valid(p))REG(v?${gen2?'0xd0000018u':'0xd0000014u'}:${gen2?'0xd0000020u':'0xd0000018u'})=1u<<p;}
 bool gpio_get(uint p){return cf_gpio_valid(p)&&!!(REG(0xd0000004u)&(1u<<p));}

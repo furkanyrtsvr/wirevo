@@ -13,11 +13,20 @@ uint pwm_gpio_to_slice_num(uint);uint pwm_gpio_to_channel(uint);pwm_config pwm_g
 void pwm_config_set_wrap(pwm_config*,uint16_t);void pwm_config_set_clkdiv_int(pwm_config*,uint);void pwm_init(uint,pwm_config*,bool);
 void pwm_set_wrap(uint,uint16_t);void pwm_set_chan_level(uint,uint,uint16_t);void pwm_set_gpio_level(uint,uint16_t);void pwm_set_enabled(uint,bool);void pwm_set_clkdiv_int_frac(uint,uint8_t,uint8_t);void pwm_set_counter(uint,uint16_t);uint16_t pwm_get_counter(uint);
 `,
+ 'hardware/structs/uart.h':`#pragma once
+#include <pico/stdlib.h>
+typedef struct {volatile uint32_t dr,rsr;uint32_t reserved0[4];volatile uint32_t fr;uint32_t reserved1;volatile uint32_t ilpr,ibrd,fbrd,lcr_h,cr,ifls,imsc,ris,mis,icr,dmacr;} uart_hw_t;
+#define uart0_hw ((uart_hw_t*)(PICO_RP2350?0x40070000u:0x40034000u))
+#define uart1_hw ((uart_hw_t*)(PICO_RP2350?0x40078000u:0x40038000u))
+`,
  'hardware/uart.h':`#pragma once
 #include <pico/stdlib.h>
+#include <hardware/structs/uart.h>
+typedef enum {UART_PARITY_NONE=0,UART_PARITY_EVEN=1,UART_PARITY_ODD=2} uart_parity_t;
 typedef struct {uint index;} uart_inst_t;extern uart_inst_t cf_uart0,cf_uart1;
 #define uart0 (&cf_uart0)
 #define uart1 (&cf_uart1)
+uart_hw_t* uart_get_hw(uart_inst_t*);uint uart_get_index(uart_inst_t*);bool uart_is_enabled(uart_inst_t*);void uart_deinit(uart_inst_t*);uint uart_set_baudrate(uart_inst_t*,uint);void uart_set_format(uart_inst_t*,uint,uint,uart_parity_t);void uart_set_fifo_enabled(uart_inst_t*,bool);void uart_set_irq_enables(uart_inst_t*,bool,bool);void uart_set_irqs_enabled(uart_inst_t*,bool,bool);void uart_set_translate_crlf(uart_inst_t*,bool);void uart_tx_wait_blocking(uart_inst_t*);bool uart_is_readable_within_us(uart_inst_t*,uint32_t);
 uint uart_init(uart_inst_t*,uint);void uart_putc_raw(uart_inst_t*,char);void uart_putc(uart_inst_t*,char);void uart_puts(uart_inst_t*,const char*);int uart_getc(uart_inst_t*);bool uart_is_readable(uart_inst_t*);bool uart_is_writable(uart_inst_t*);void uart_write_blocking(uart_inst_t*,const uint8_t*,unsigned);void uart_read_blocking(uart_inst_t*,uint8_t*,unsigned);
 `,
  'hardware/i2c.h':`#pragma once
@@ -37,8 +46,9 @@ typedef struct {uint index;} spi_inst_t;extern spi_inst_t cf_spi0,cf_spi1;
 #define SPI_CPOL_1 1
 #define SPI_CPHA_0 0
 #define SPI_CPHA_1 1
-#define SPI_MSB_FIRST 0
-#define SPI_LSB_FIRST 1
+typedef enum {SPI_MSB_FIRST=1,SPI_LSB_FIRST=0} spi_order_t;
+typedef uint spi_cpol_t;typedef uint spi_cpha_t;
+uint spi_get_index(spi_inst_t*);uint spi_set_baudrate(spi_inst_t*,uint);uint spi_get_baudrate(spi_inst_t*);void spi_deinit(spi_inst_t*);int spi_write16_read16_blocking(spi_inst_t*,const uint16_t*,uint16_t*,unsigned);int spi_write16_blocking(spi_inst_t*,const uint16_t*,unsigned);int spi_read16_blocking(spi_inst_t*,uint16_t,uint16_t*,unsigned);
 uint spi_init(spi_inst_t*,uint);void spi_set_format(spi_inst_t*,uint,uint,uint,uint);int spi_write_read_blocking(spi_inst_t*,const uint8_t*,uint8_t*,unsigned);int spi_write_blocking(spi_inst_t*,const uint8_t*,unsigned);int spi_read_blocking(spi_inst_t*,uint8_t,uint8_t*,unsigned);
 `};
 export function peripheralRuntimeC(board){const newer=board.mcu==='RP2350';return`
@@ -52,7 +62,7 @@ export function peripheralRuntimeC(board){const newer=board.mcu==='RP2350';retur
 static unsigned cf_mux[30];
 void cf_bus_mux(uint p,uint f){if(p<30)cf_mux[p]=f;}
 void adc_init(void){REG(ADC)=1;}
-void adc_gpio_init(uint p){gpio_init(p);gpio_disable_pulls(p);REG(PADS+4+p*4)&=~64u;gpio_set_function(p,31);}
+void adc_gpio_init(uint p){gpio_init(p);gpio_disable_pulls(p);gpio_set_function(p,31);REG(PADS+4+p*4)&=~64u;}
 void adc_select_input(uint n){REG(ADC)=(REG(ADC)&~(7u<<12))|((n&7u)<<12);}
 uint adc_get_selected_input(void){return (REG(ADC)>>12)&7;}
 void adc_set_temp_sensor_enabled(bool e){REG(ADC)=(REG(ADC)&~2u)|(e?2u:0);}
@@ -78,14 +88,25 @@ void pwm_set_clkdiv_int_frac(uint s,uint8_t i,uint8_t f){REG(PWM+s*20+4)=((unsig
 void pwm_set_counter(uint s,uint16_t n){REG(PWM+s*20+8)=n;}uint16_t pwm_get_counter(uint s){return REG(PWM+s*20+8);}
 uart_inst_t cf_uart0={0},cf_uart1={1};
 static unsigned cf_ua(uart_inst_t*u){return UART+u->index*${newer?'0x8000u':'0x4000u'};}
-uint uart_init(uart_inst_t*u,uint baud){unsigned a=cf_ua(u),scaled=${board.hz}u*4u/(baud?baud:115200);REG(a+0x30)=0;REG(a+0x24)=scaled>>6;REG(a+0x28)=scaled&63;REG(a+0x2c)=0x60;REG(a+0x30)=0x301;return ${board.hz}u*4u/scaled;}
+static bool cf_crlf[2];
+uart_hw_t* uart_get_hw(uart_inst_t*u){return(uart_hw_t*)cf_ua(u);}uint uart_get_index(uart_inst_t*u){return u->index;}
+bool uart_is_enabled(uart_inst_t*u){return !!(REG(cf_ua(u)+0x30)&1u);}void uart_deinit(uart_inst_t*u){REG(cf_ua(u)+0x30)=0;}
+uint uart_set_baudrate(uart_inst_t*u,uint baud){if(!baud)return 0;unsigned a=cf_ua(u),scaled=(${board.hz}u*4u+baud/2)/baud;if(scaled<64)scaled=64;if(scaled>0x3fffff)scaled=0x3fffff;REG(a+0x24)=scaled>>6;REG(a+0x28)=scaled&63;return ${board.hz}u*4u/scaled;}
+void uart_set_format(uart_inst_t*u,uint bits,uint stop,uart_parity_t parity){if(bits<5||bits>8||stop<1||stop>2||parity>UART_PARITY_ODD)Default_Handler();unsigned a=cf_ua(u)+0x2c;REG(a)=(REG(a)&~0xeeu)|((bits-5)<<5)|(stop==2?8u:0)|(parity?2u:0)|(parity==UART_PARITY_EVEN?4u:0);}
+void uart_set_fifo_enabled(uart_inst_t*u,bool e){unsigned a=cf_ua(u)+0x2c;REG(a)=(REG(a)&~16u)|(e?16u:0);}
+void uart_set_irq_enables(uart_inst_t*u,bool rx,bool tx){REG(cf_ua(u)+0x38)=(rx?0x50u:0)|(tx?0x20u:0);}
+void uart_set_irqs_enabled(uart_inst_t*u,bool rx,bool tx){uart_set_irq_enables(u,rx,tx);}
+void uart_set_translate_crlf(uart_inst_t*u,bool e){cf_crlf[u->index]=e;}
+void uart_tx_wait_blocking(uart_inst_t*u){while(REG(cf_ua(u)+0x18)&8u)tight_loop_contents();}
+bool uart_is_readable_within_us(uart_inst_t*u,uint32_t us){uint32_t start=time_us_32();do{if(uart_is_readable(u))return true;}while((uint32_t)(time_us_32()-start)<us);return false;}
+uint uart_init(uart_inst_t*u,uint baud){unsigned a=cf_ua(u);REG(a+0x30)=0;uint actual=uart_set_baudrate(u,baud);cf_crlf[u->index]=false;REG(a+0x2c)=0x70;REG(a+0x34)=0x12;REG(a+0x38)=0;REG(a+0x30)=0x301;return actual;}
 bool uart_is_readable(uart_inst_t*u){return !(REG(cf_ua(u)+0x18)&16u);}bool uart_is_writable(uart_inst_t*u){return !(REG(cf_ua(u)+0x18)&32u);}
-void uart_putc_raw(uart_inst_t*u,char c){while(!uart_is_writable(u)){}REG(cf_ua(u))=(unsigned char)c;}void uart_putc(uart_inst_t*u,char c){uart_putc_raw(u,c);}
+void uart_putc_raw(uart_inst_t*u,char c){while(!uart_is_writable(u)){}REG(cf_ua(u))=(unsigned char)c;}void uart_putc(uart_inst_t*u,char c){if(cf_crlf[u->index]&&c=='\\n')uart_putc_raw(u,'\\r');uart_putc_raw(u,c);}
 int uart_getc(uart_inst_t*u){while(!uart_is_readable(u)){}return REG(cf_ua(u))&255;}
-void uart_puts(uart_inst_t*u,const char*s){while(*s)uart_putc_raw(u,*s++);}
+void uart_puts(uart_inst_t*u,const char*s){bool cr=false;while(*s){char c=*s++;if(cr)uart_putc_raw(u,c);else uart_putc(u,c);cr=c=='\\r';}}
 void uart_write_blocking(uart_inst_t*u,const uint8_t*s,unsigned n){while(n--)uart_putc_raw(u,*s++);}void uart_read_blocking(uart_inst_t*u,uint8_t*d,unsigned n){while(n--)*d++=uart_getc(u);}
 i2c_inst_t cf_i2c0={0},cf_i2c1={1};spi_inst_t cf_spi0={0},cf_spi1={1};
-static unsigned cf_half_i[2]={5,5},cf_half_s[2]={1,1},cf_cp[2],cf_ph[2],cf_spi_invalid[2];
+static unsigned cf_half_i[2]={5,5},cf_half_s[2]={1,1},cf_cp[2],cf_ph[2],cf_spi_invalid[2],cf_bits_s[2]={8,8};
 static int cf_pin(unsigned bus,unsigned f,unsigned role){for(unsigned p=0;p<30;p++){if(cf_mux[p]!=f)continue;if(f==3&&((p>>1)&1)==bus&&(p&1)==role)return p;if(f==1&&((p>>3)&1)==bus&&(p&3)==role)return p;}return -1;}
 // Open-drain lines: release means input, never actively drive I2C high.
 static void cf_od(unsigned p,bool high){gpio_set_dir(p,!high);gpio_put(p,0);}
@@ -96,8 +117,13 @@ static int cf_i2c(i2c_inst_t*i,uint8_t addr,const uint8_t*src,uint8_t*dst,unsign
  for(unsigned j=0;j<=n;j++){unsigned b=j?(src?src[j-1]:255):((unsigned)addr<<1)|(dst?1u:0),value=0;for(unsigned k=0;k<8;k++){cf_od(s,!!(b&(128u>>k)));sleep_us(t);if(!cf_scl(c,1,t))return -1;value=(value<<1)|gpio_get(s);cf_scl(c,0,t);}if(j&&dst)dst[j-1]=value;cf_od(s,(j&&dst)?j==n:1);sleep_us(t);if(!cf_scl(c,1,t))return -1;bool ack=!gpio_get(s);cf_scl(c,0,t);cf_od(s,1);if((!j||src)&&!ack){cf_od(s,0);cf_scl(c,1,t);cf_od(s,1);return -1;}}
  if(!nostop){cf_od(s,0);sleep_us(t);if(!cf_scl(c,1,t))return -1;cf_od(s,1);sleep_us(t);}return n;}
 int i2c_write_blocking(i2c_inst_t*i,uint8_t a,const uint8_t*s,unsigned n,bool ns){return cf_i2c(i,a,s,0,n,ns);}int i2c_read_blocking(i2c_inst_t*i,uint8_t a,uint8_t*d,unsigned n,bool ns){return cf_i2c(i,a,0,d,n,ns);}
-uint spi_init(spi_inst_t*s,uint baud){cf_half_s[s->index]=500000u/(baud?baud:500000);if(!cf_half_s[s->index])cf_half_s[s->index]=1;return 500000u/cf_half_s[s->index];}
-void spi_set_format(spi_inst_t*s,uint bits,uint cp,uint ph,uint order){cf_cp[s->index]=cp;cf_ph[s->index]=ph;cf_spi_invalid[s->index]=bits!=8||order!=SPI_MSB_FIRST||cp>1||ph>1;}
-static int cf_spi(spi_inst_t*s,const uint8_t*src,uint8_t*dst,unsigned n,uint8_t fill){if(cf_spi_invalid[s->index])return -1;int rx=cf_pin(s->index,1,0),ck=cf_pin(s->index,1,2),tx=cf_pin(s->index,1,3);if(ck<0||tx<0)return -1;cf_bus_pin(ck);cf_bus_pin(tx);gpio_set_dir(ck,1);gpio_set_dir(tx,1);if(rx>=0){cf_bus_pin(rx);gpio_set_dir(rx,0);}unsigned cp=cf_cp[s->index],ph=cf_ph[s->index],t=cf_half_s[s->index];gpio_put(ck,cp);for(unsigned j=0;j<n;j++){unsigned b=src?src[j]:fill,v=0;for(unsigned k=0;k<8;k++){if(!ph)gpio_put(tx,!!(b&(128u>>k)));sleep_us(t);gpio_put(ck,!cp);if(ph)gpio_put(tx,!!(b&(128u>>k)));else v=(v<<1)|(rx>=0?gpio_get(rx):1);sleep_us(t);gpio_put(ck,cp);if(ph)v=(v<<1)|(rx>=0?gpio_get(rx):1);}if(dst)dst[j]=v;}return n;}
-int spi_write_read_blocking(spi_inst_t*s,const uint8_t*a,uint8_t*b,unsigned n){return cf_spi(s,a,b,n,255);}int spi_write_blocking(spi_inst_t*s,const uint8_t*a,unsigned n){return cf_spi(s,a,0,n,255);}int spi_read_blocking(spi_inst_t*s,uint8_t f,uint8_t*b,unsigned n){return cf_spi(s,0,b,n,f);}
+uint spi_get_index(spi_inst_t*s){return s->index;}
+uint spi_set_baudrate(spi_inst_t*s,uint baud){cf_half_s[s->index]=500000u/(baud?baud:500000);if(!cf_half_s[s->index])cf_half_s[s->index]=1;return 500000u/cf_half_s[s->index];}
+uint spi_get_baudrate(spi_inst_t*s){return 500000u/cf_half_s[s->index];}
+uint spi_init(spi_inst_t*s,uint baud){cf_spi_invalid[s->index]=0;cf_cp[s->index]=cf_ph[s->index]=0;cf_bits_s[s->index]=8;return spi_set_baudrate(s,baud);}
+void spi_deinit(spi_inst_t*s){cf_spi_invalid[s->index]=1;}
+void spi_set_format(spi_inst_t*s,uint bits,uint cp,uint ph,uint order){cf_bits_s[s->index]=bits;cf_cp[s->index]=cp;cf_ph[s->index]=ph;cf_spi_invalid[s->index]=bits<4||bits>16||order!=SPI_MSB_FIRST||cp>1||ph>1;}
+static int cf_spi(spi_inst_t*s,const void*src,void*dst,unsigned n,uint16_t fill,bool wide){if(cf_spi_invalid[s->index])return -1;int rx=cf_pin(s->index,1,0),ck=cf_pin(s->index,1,2),tx=cf_pin(s->index,1,3);if(ck<0||tx<0)return -1;cf_bus_pin(ck);cf_bus_pin(tx);gpio_set_dir(ck,1);gpio_set_dir(tx,1);if(rx>=0){cf_bus_pin(rx);gpio_set_dir(rx,0);}unsigned cp=cf_cp[s->index],ph=cf_ph[s->index],t=cf_half_s[s->index],bits=cf_bits_s[s->index];gpio_put(ck,cp);for(unsigned j=0;j<n;j++){unsigned b=src?(wide?((const uint16_t*)src)[j]:((const uint8_t*)src)[j]):fill,v=0;for(unsigned k=0;k<bits;k++){unsigned mask=1u<<(bits-1-k);if(!ph)gpio_put(tx,!!(b&mask));sleep_us(t);gpio_put(ck,!cp);if(ph)gpio_put(tx,!!(b&mask));else v=(v<<1)|(rx>=0?gpio_get(rx):1);sleep_us(t);gpio_put(ck,cp);if(ph)v=(v<<1)|(rx>=0?gpio_get(rx):1);}if(dst){if(wide)((uint16_t*)dst)[j]=v;else((uint8_t*)dst)[j]=v;}}return n;}
+int spi_write_read_blocking(spi_inst_t*s,const uint8_t*a,uint8_t*b,unsigned n){return cf_spi(s,a,b,n,255,false);}int spi_write_blocking(spi_inst_t*s,const uint8_t*a,unsigned n){return cf_spi(s,a,0,n,255,false);}int spi_read_blocking(spi_inst_t*s,uint8_t f,uint8_t*b,unsigned n){return cf_spi(s,0,b,n,f,false);}
+int spi_write16_read16_blocking(spi_inst_t*s,const uint16_t*a,uint16_t*b,unsigned n){return cf_spi(s,a,b,n,65535,true);}int spi_write16_blocking(spi_inst_t*s,const uint16_t*a,unsigned n){return cf_spi(s,a,0,n,65535,true);}int spi_read16_blocking(spi_inst_t*s,uint16_t f,uint16_t*b,unsigned n){return cf_spi(s,0,b,n,f,true);}
 `;}
