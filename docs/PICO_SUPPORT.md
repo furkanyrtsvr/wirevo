@@ -1,3 +1,7 @@
+## 0.105 — Sera projesi düzeltmeleri
+
+MCU resetinde harici EEPROM kaydı/yazma döngüsü korunur. Sabit devrede DC önbelleği ve 20 Hz worker görüntü yayını eklenmiştir. Yalnız sera projesi doğrulanmıştır; SDK kapsamı değişmez. [Sınırlar](../dist/notices/PICO-GREENHOUSE105.md).
+
 # Güncel destek durumu — 0.104
 
 Bu bölüm güncel özettir. Aşağıdaki eski sürüm kayıtları tarihçedir; özellikle 0.93–0.98 yerel SDK uygulaması kaldırılmıştır. Daha önce kaydedilen sınırlar yeni bulunmuş hata gibi değerlendirilmemelidir.
