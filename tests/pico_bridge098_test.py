@@ -26,6 +26,11 @@ class AutoPairing(unittest.TestCase):
    return seen
  def test_helper_opens_wirevo_by_default_and_scrubs_secret_from_terminal(self):self.assertEqual(len(self.launch()),1)
  def test_headless_mode_does_not_launch_a_browser(self):self.assertEqual(self.launch(True),[])
+ def test_real_listener_cannot_be_bound_by_a_second_helper(self):
+  first=b.server_for(Mock(token='x'*43),0)
+  try:
+   with self.assertRaises(OSError):b.server_for(Mock(token='y'*43),first.server_port)
+  finally:first.server_close()
  def test_pairing_url_is_fixed_origin_and_never_a_query_parameter(self):
   c={'port':43210,'token':'x'*43};url=b.pairing_url(c);self.assertTrue(url.startswith('https://wirevo-furka.equalwood4.chatgpt.site/#wirevo-sdk='));self.assertNotIn('?',url)
   for bad in [dict(c,port=0),dict(c,token='bad&url=https://evil.test')]:

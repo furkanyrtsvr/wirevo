@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import socket
 import shutil
 import subprocess
 import sys
@@ -70,7 +71,7 @@ class Bridge:
         self.lock = threading.RLock()
 
     def status(self):
-        return {'protocol': 1, 'version': '0.98.0', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
+        return {'protocol': 1, 'version': '0.98.1', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
 
     def append(self, job, line):
         # Keep user-source diagnostics relative and navigable in the editor.
@@ -308,7 +309,15 @@ def server_for(bridge, port=18765):
                 self.respond(409, {'error': str(error)})
             except (ValueError, TypeError, KeyError) as error:
                 self.respond(400, {'error': str(error)})
-    return ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    class ExclusiveHTTPServer(ThreadingHTTPServer):
+        allow_reuse_address = False
+
+        def server_bind(self):
+            if os.name == 'nt':
+                self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+            super().server_bind()
+
+    return ExclusiveHTTPServer(('127.0.0.1', port), Handler)
 
 
 def automatic_server(bridge, port=None):
