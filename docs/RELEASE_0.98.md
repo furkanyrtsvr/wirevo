@@ -1,0 +1,7 @@
+# Wirevo v0.98.0 — automatic local SDK pairing
+
+Starting the SDK helper opens Wirevo in the default browser and automatically authenticates the tab. Users no longer locate ports, pairing codes or JSON files. A validated launch fragment is removed synchronously before connection; current credentials are reused automatically on page reload. For Pico C/ARM, the official SDK engine is selected after successful pairing. Other projects are preserved and the UI explains the Pico C requirement. Manual fields and the legacy companion method are inside Advanced. A Retry button covers first-use browser permission delays.
+
+The helper opens the browser by default, retains --open compatibility and offers --no-open for headless use. Default port conflicts choose a free loopback port automatically; explicit ports and unrelated failures are not silently replaced. The pairing URL has a fixed HTTPS origin and no secret query parameter; the terminal does not print the session secret. Existing exact Origin/Host/bearer validation remains in place. Browser local-network permission still requires user approval.
+
+New validation only: five frontend launch/validation/retry cases and five helper default-open/headless/port-selection/URL cases. Browser QA used a status-only authenticated fixture to confirm no-click pairing, automatic official-SDK selection, reload reconnection, hidden manual fields and removal of the URL fragment. Existing compiler/emulator suites were not rerun.

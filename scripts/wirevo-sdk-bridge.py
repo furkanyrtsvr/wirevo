@@ -4,6 +4,7 @@ Run your own trusted projects: CMake commands execute as the current OS user.
 No dependencies are downloaded and no LAN/public interface is opened.
 """
 import argparse
+import errno
 import base64
 import hashlib
 import hmac
@@ -69,7 +70,7 @@ class Bridge:
         self.lock = threading.RLock()
 
     def status(self):
-        return {'protocol': 1, 'version': '0.96.0', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
+        return {'protocol': 1, 'version': '0.98.0', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
 
     def append(self, job, line):
         # Keep user-source diagnostics relative and navigable in the editor.
@@ -310,14 +311,34 @@ def server_for(bridge, port=18765):
     return ThreadingHTTPServer(('127.0.0.1', port), Handler)
 
 
+def automatic_server(bridge, port=None):
+    if port is not None:
+        return server_for(bridge, port)
+    try:
+        return server_for(bridge, 18765)
+    except OSError as error:
+        if error.errno != errno.EADDRINUSE and getattr(error, 'winerror', None) != 10048:
+            raise
+        return server_for(bridge, 0)
+
+
+def pairing_url(connection):
+    port, token = connection['port'], connection['token']
+    if not isinstance(port, int) or not 1 <= port <= 65535 or not isinstance(token, str) or not re.fullmatch(r'[A-Za-z0-9_-]{32,100}', token):
+        raise ValueError('Geçersiz yardımcı bağlantısı.')
+    return 'https://wirevo-furka.equalwood4.chatgpt.site/#wirevo-sdk=' + str(port) + ':' + token
+
+
 def main():
     home = Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'WirevoSDK'
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', default=str(home / 'config.json'))
-    parser.add_argument('--port', type=int, default=18765)
+    parser.add_argument('--port', type=int, default=None, help='Advanced: fixed port; otherwise choose automatically.')
     parser.add_argument('--session-file', default=str(home / 'connection.json'))
     parser.add_argument('--setup', action='store_true', help='Configure installed SDK tools on first use.')
-    parser.add_argument('--open', action='store_true', help='Open Wirevo and pair using a URL fragment (not sent to the Site server).')
+    launch = parser.add_mutually_exclusive_group()
+    launch.add_argument('--open', action='store_true', help='Open Wirevo automatically (default).')
+    launch.add_argument('--no-open', action='store_true', help='Advanced: do not launch a browser.')
     args = parser.parse_args()
     config_file = Path(args.config)
     if args.setup and not config_file.is_file():
@@ -346,18 +367,20 @@ def main():
     if not (Path(config['toolchain']) / ('bin/arm-none-eabi-gcc' + suffix)).is_file():
         raise ValueError('Arm GNU toolchain bulunamadı.')
     bridge = Bridge(config, secrets.token_urlsafe(32))
-    server = server_for(bridge, args.port)
+    server = automatic_server(bridge, args.port)
     connection = {'protocol': 1, 'port': server.server_port, 'token': bridge.token}
     session = Path(args.session_file)
     session.parent.mkdir(parents=True, exist_ok=True)
     session.write_text(json.dumps(connection), encoding='utf-8')
     if os.name != 'nt':
         session.chmod(0o600)
-    print('Wirevo SDK yardımcısı hazır: 127.0.0.1:%d' % server.server_port, flush=True)
-    print('Wirevo > Pico SDK / CMake > Bağlantı dosyası: ' + str(session), flush=True)
-    if args.open:
-        webbrowser.open('https://wirevo-furka.equalwood4.chatgpt.site/#wirevo-sdk=' + str(server.server_port) + ':' + bridge.token)
+    print('Wirevo SDK yardımcısı hazır. Bu yardımcıyı derleme boyunca açık tutun.', flush=True)
     try:
+        if not args.no_open:
+            if webbrowser.open(pairing_url(connection)):
+                print('Wirevo açıldı. Bağlantı otomatik kurulacak; tarayıcı izin isterse onaylayın.', flush=True)
+            else:
+                print('Tarayıcı otomatik açılamadı. Yardımcıyı varsayılan tarayıcınız hazırken yeniden başlatın.', flush=True)
         server.serve_forever()
     except KeyboardInterrupt:
         pass
