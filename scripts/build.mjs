@@ -1,7 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {build} from 'esbuild';
 await import('./build-ide-pico.mjs');
-await import('./package-sdk-helper.mjs');
 await import('./generate-pico-art.mjs');
 await build({entryPoints:['src/code-editor.js'],outfile:'dist/code-editor.js',bundle:true,format:'esm',minify:true,sourcemap:false,target:['chrome100','firefox100','safari16']});
 await writeFile('dist/code-editor.js',(await readFile('dist/code-editor.js','utf8')).replace(/[ \t]+$/gm,''));

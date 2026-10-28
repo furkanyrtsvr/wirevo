@@ -1,3 +1,9 @@
+# Güncel kullanım — 0.99
+
+Wirevo yardımcı uygulama gerektirmeden tarayıcı derleyicisini kullanır. 0.95–0.98 dönemindeki yerel SDK bağlantısı, Python yardımcıları ve masaüstü pencere paketleri kaldırıldı. JSON/ZIP projeleri ve kaynak dosyaları korunur; eski sdk-local ayarı tarayıcı moduna geçirilir.
+
+Pico C tarafında desteklenen SDK/CMake alt kümesi için [güncel kapsam](../dist/notices/PICO-BROWSER-CMAKE.md), isteğe bağlı hazır firmware için [UF2 içe aktarımı](../dist/notices/PICO-SDK-NATIVE.md) belgelerine bakın. Aşağıdaki kayıtlar tarihsel geliştirme notlarıdır; kaldırılan yerel yardımcıların hâlâ mevcut olduğu anlamına gelmez.
+
 # Pico support record — v0.95.0
 
 This is the current record, replacing assumptions based on accumulated release requests. Earlier release notes describe historical scopes. A future release should update this record rather than repeatedly present known limitations as newly discovered defects.

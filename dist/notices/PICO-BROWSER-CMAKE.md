@@ -1,3 +1,11 @@
+# Yardımcısız tarayıcı kullanımı — 0.99
+
+Kod derlemesi ve simülasyon web sayfasında çalışır. Python, yerel yardımcı uygulama, port/kod eşleştirmesi veya SDK kurulumu istenmez. İlk derleme için derleyici dosyaları ağdan indirilir; çevrimdışı kullanım için arayüzdeki derleyici önbelleği hazırlanabilir.
+
+Eski JSON projelerindeki yerel SDK seçimi otomatik tarayıcı moduna geçirilir; kaynaklar ve devre korunur. Yalnız upstream SDK'de bulunan bir API veya desteklenmeyen CMake komutu kullanan kaynaklar için açık derleme hatası verilir. Tam upstream SDK/CMake ya da birebir silikon/radyo eşdeğerliği vaat edilmez.
+
+Aşağıdaki bölüm desteklenen tarayıcı CMake alt kümesini ayrıntılandırır.
+
 # Browser CMake profile — v0.94
 
 Select **Projects → Pico C · Tarayıcı CMake / USB** for the working example. Source files compile to ARM or Hazard3 machine code inside the browser. No local compiler is needed for this accepted profile.
