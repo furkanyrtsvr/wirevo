@@ -69,7 +69,7 @@ class Bridge:
         self.lock = threading.RLock()
 
     def status(self):
-        return {'protocol': 1, 'version': '0.95.0', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
+        return {'protocol': 1, 'version': '0.96.0', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
 
     def append(self, job, line):
         # Keep user-source diagnostics relative and navigable in the editor.
@@ -219,12 +219,14 @@ def server_for(bridge, port=18765):
             self.end_headers()
             try:
                 self.wfile.write(raw)
-            except (BrokenPipeError, ConnectionResetError):
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
                 pass
 
         def permitted(self, preflight=False):
             host = self.headers.get('Host')
-            if host != '127.0.0.1:%d' % self.server.server_port or self.headers.get('Origin') not in ORIGINS:
+            local_origin = 'http://127.0.0.1:%d' % self.server.server_port
+            origin_ok = self.headers.get('Origin') in ORIGINS or self.headers.get('Origin') == local_origin or (self.headers.get('Origin') is None and self.headers.get('Sec-Fetch-Site') == 'same-origin')
+            if host != '127.0.0.1:%d' % self.server.server_port or not origin_ok:
                 self.respond(403, {'error': 'Bu kaynak/host SDK yardımcısına erişemez.'})
                 return False
             if not preflight and not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + bridge.token):
@@ -237,6 +239,31 @@ def server_for(bridge, port=18765):
                 self.respond(200, {})
 
         def do_GET(self):
+            if self.path in ('/sdk-connect', '/sdk-relay.js'):
+                if self.headers.get('Host') != '127.0.0.1:%d' % self.server.server_port:
+                    self.respond(403, {'error': 'Geçersiz yerel host.'})
+                    return
+                asset = 'sdk-relay.html' if self.path == '/sdk-connect' else 'sdk-relay.js'
+                asset_path = Path(__file__).with_name(asset)
+                if not asset_path.is_file():
+                    asset_path = Path(__file__).resolve().parent.parent / 'dist' / asset
+                if not asset_path.is_file():
+                    self.respond(503, {'error': 'SDK yardımcısı paketini güncelleyin.'})
+                    return
+                raw = asset_path.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8' if asset.endswith('.html') else 'text/javascript; charset=utf-8')
+                self.send_header('Content-Length', str(len(raw)))
+                self.send_header('Cache-Control', 'no-store')
+                self.send_header('Referrer-Policy', 'no-referrer')
+                self.send_header('X-Frame-Options', 'DENY')
+                self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'")
+                self.end_headers()
+                try:
+                    self.wfile.write(raw)
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+                    pass
+                return
             if not self.permitted():
                 return
             route = urlsplit(self.path)

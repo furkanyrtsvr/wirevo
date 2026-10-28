@@ -63,3 +63,10 @@ The accepted local SDK workflow is integrated with Compile: authenticated loopba
 The helper runs trusted project CMake as the user's OS account, binds only loopback and enforces Origin/Host/bearer authentication. Cancellation, timeouts, errors and stale/corrupt results cannot install a new artifact. Eight board profiles map to four official SDK board targets; all four targets were newly compiled and run. Native load remains ARM-only with no SDK source DWARF map. The quick browser compiler remains its bounded profile; original CYW43 execution/radio is unchanged.
 
 New checks: 6 helper protocol/lifecycle, 4 client/project, 4 actual official SDK target builds plus 1 compiler error; browser Compile → paused load → Run and cancellation acceptance. Old test files were not run. Exact setup: dist/notices/PICO-SDK-BRIDGE.md.
+
+
+## v0.96 hosted SDK connection
+
+The hosted page can pair through an explicitly opened local companion window. Exact peer origin/window/nonce checks, fixed SDK routes and bearer authentication protect the relay; it is not a generic proxy. The window performs same-origin loopback requests and returns SDK progress/artifacts to the hosted page. Direct HTTP is optional with actionable timeouts. Closing/blocked windows require re-pairing. No network security configuration changes.
+
+New checks only: six client/handshake/lifecycle and three local static/auth/origin cases. Hosted Pico 2 W acceptance: real CMake/Arm GNU compile, automatic paused load of 28672 bytes, Run, USB output SDK_DERLE095 73 and a visibly lit GPIO15 LED. Earlier test suites were not executed.

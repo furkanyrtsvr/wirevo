@@ -1,0 +1,7 @@
+# Wirevo v0.96.0 — live Site to local SDK companion
+
+The SDK panel can explicitly open an authenticated local companion window. The user chooses the connection file, clicks Yerel pencereyle bağlan, and keeps that small window open while using the hosted Wirevo page. Requests run on the companion's own loopback origin; the hosted page and companion exchange only whitelisted SDK operations through exact-origin, owned-window and per-opening nonce checks. Bearer authentication and exact Host checks remain mandatory. Neither source nor pairing tokens are sent to a public build service. No browser security flags or OS network settings are changed.
+
+Direct HTTP connection remains optional, no longer forces a potentially unsupported targetAddressSpace enum, and reports an actionable timeout instead of a raw AbortError. The file selection now retains pairing data in the panel and waits for an explicit connection button. Closing or blocking the companion reports a connection error; invalid origin/window/nonce or request paths cannot pair or proxy arbitrary URLs. Helper static pages are no-store and cannot be framed.
+
+Validation is limited to new connection regressions: six JavaScript connection/handshake/lifecycle checks, three helper static/auth/origin checks, and the hosted page's actual Compile → official CMake/Arm GNU → automatic firmware load → Run flow. Earlier test suites were not run. Existing SDK/ARM and simulator coverage limits are unchanged.
