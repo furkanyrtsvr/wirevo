@@ -8,7 +8,12 @@ void adc_init(void);void adc_gpio_init(uint);void adc_select_input(uint);uint ad
  'hardware/pwm.h':`#pragma once
 #include <pico/stdlib.h>
 #define GPIO_FUNC_PWM 4
+enum pwm_chan {PWM_CHAN_A=0,PWM_CHAN_B=1};
+enum pwm_clkdiv_mode {PWM_DIV_FREE_RUNNING=0,PWM_DIV_B_HIGH=1,PWM_DIV_B_RISING=2,PWM_DIV_B_FALLING=3};
 typedef struct {uint32_t csr,div,top;} pwm_config;
+void pwm_config_set_clkdiv(pwm_config*,float);void pwm_config_set_clkdiv_int_frac4(pwm_config*,uint32_t,uint8_t);void pwm_config_set_clkdiv_int_frac(pwm_config*,uint8_t,uint8_t);void pwm_config_set_phase_correct(pwm_config*,bool);void pwm_config_set_clkdiv_mode(pwm_config*,enum pwm_clkdiv_mode);void pwm_config_set_output_polarity(pwm_config*,bool,bool);
+void pwm_set_clkdiv(uint,float);void pwm_set_both_levels(uint,uint16_t,uint16_t);void pwm_set_phase_correct(uint,bool);void pwm_set_output_polarity(uint,bool,bool);void pwm_set_mask_enabled(uint32_t);
+void pwm_set_irq_enabled(uint,bool);void pwm_set_irq_mask_enabled(uint32_t,bool);void pwm_clear_irq(uint);uint32_t pwm_get_irq_status_mask(void);void pwm_force_irq(uint);void pwm_irqn_set_slice_enabled(uint,uint,bool);uint32_t pwm_irqn_get_status_mask(uint);void pwm_irqn_force(uint,uint);
 uint pwm_gpio_to_slice_num(uint);uint pwm_gpio_to_channel(uint);pwm_config pwm_get_default_config(void);
 void pwm_config_set_wrap(pwm_config*,uint16_t);void pwm_config_set_clkdiv_int(pwm_config*,uint);void pwm_init(uint,pwm_config*,bool);
 void pwm_set_wrap(uint,uint16_t);void pwm_set_chan_level(uint,uint,uint16_t);void pwm_set_gpio_level(uint,uint16_t);void pwm_set_enabled(uint,bool);void pwm_set_clkdiv_int_frac(uint,uint8_t,uint8_t);void pwm_set_counter(uint,uint16_t);uint16_t pwm_get_counter(uint);
@@ -29,12 +34,20 @@ typedef struct {uint index;} uart_inst_t;extern uart_inst_t cf_uart0,cf_uart1;
 uart_hw_t* uart_get_hw(uart_inst_t*);uint uart_get_index(uart_inst_t*);bool uart_is_enabled(uart_inst_t*);void uart_deinit(uart_inst_t*);uint uart_set_baudrate(uart_inst_t*,uint);void uart_set_format(uart_inst_t*,uint,uint,uart_parity_t);void uart_set_fifo_enabled(uart_inst_t*,bool);void uart_set_irq_enables(uart_inst_t*,bool,bool);void uart_set_irqs_enabled(uart_inst_t*,bool,bool);void uart_set_translate_crlf(uart_inst_t*,bool);void uart_tx_wait_blocking(uart_inst_t*);bool uart_is_readable_within_us(uart_inst_t*,uint32_t);
 uint uart_init(uart_inst_t*,uint);void uart_putc_raw(uart_inst_t*,char);void uart_putc(uart_inst_t*,char);void uart_puts(uart_inst_t*,const char*);int uart_getc(uart_inst_t*);bool uart_is_readable(uart_inst_t*);bool uart_is_writable(uart_inst_t*);void uart_write_blocking(uart_inst_t*,const uint8_t*,unsigned);void uart_read_blocking(uart_inst_t*,uint8_t*,unsigned);
 `,
+ 'pico/error.h':`#pragma once
+#define PICO_OK 0
+#define PICO_ERROR_GENERIC (-1)
+#define PICO_ERROR_TIMEOUT (-2)
+`,
  'hardware/i2c.h':`#pragma once
 #include <pico/stdlib.h>
 typedef struct {uint index;} i2c_inst_t;extern i2c_inst_t cf_i2c0,cf_i2c1;
 #define i2c0 (&cf_i2c0)
 #define i2c1 (&cf_i2c1)
-#define PICO_ERROR_GENERIC (-1)
+#include <pico/error.h>
+uint i2c_get_index(i2c_inst_t*);uint i2c_set_baudrate(i2c_inst_t*,uint);void i2c_deinit(i2c_inst_t*);
+int i2c_write_timeout_us(i2c_inst_t*,uint8_t,const uint8_t*,unsigned,bool,uint);int i2c_read_timeout_us(i2c_inst_t*,uint8_t,uint8_t*,unsigned,bool,uint);
+int i2c_write_blocking_until(i2c_inst_t*,uint8_t,const uint8_t*,unsigned,bool,absolute_time_t);int i2c_read_blocking_until(i2c_inst_t*,uint8_t,uint8_t*,unsigned,bool,absolute_time_t);
 uint i2c_init(i2c_inst_t*,uint);int i2c_write_blocking(i2c_inst_t*,uint8_t,const uint8_t*,unsigned,bool);int i2c_read_blocking(i2c_inst_t*,uint8_t,uint8_t*,unsigned,bool);
 `,
  'hardware/spi.h':`#pragma once
@@ -78,6 +91,28 @@ uint16_t adc_read(void){REG(ADC)|=4;while(!(REG(ADC)&256)){}return REG(ADC+4)&40
 uint pwm_gpio_to_slice_num(uint p){return(p>>1)&7;}uint pwm_gpio_to_channel(uint p){return p&1;}
 pwm_config pwm_get_default_config(void){pwm_config c={0,16,65535};return c;}
 void pwm_config_set_wrap(pwm_config*c,uint16_t v){c->top=v;}
+static uint32_t cf_pwm_div(float f){union{float f;uint32_t u;}v={f};uint32_t exp=(v.u>>23)&255,mant=(v.u&0x7fffff)|0x800000;int shift=(int)exp-127-19;if((v.u>>31)||exp==255||shift>0||shift< -23)Default_Handler();uint32_t fixed=shift?mant>>(-shift):mant;if(fixed<16||fixed>4095)Default_Handler();return fixed;}
+void pwm_config_set_clkdiv(pwm_config*c,float f){c->div=cf_pwm_div(f);}
+void pwm_config_set_clkdiv_int_frac4(pwm_config*c,uint32_t i,uint8_t f){if(i<1||i>255||f>15)Default_Handler();c->div=(i<<4)|f;}
+void pwm_config_set_clkdiv_int_frac(pwm_config*c,uint8_t i,uint8_t f){pwm_config_set_clkdiv_int_frac4(c,i,f);}
+void pwm_config_set_phase_correct(pwm_config*c,bool e){c->csr=(c->csr&~2u)|(e?2u:0);}
+void pwm_config_set_clkdiv_mode(pwm_config*c,enum pwm_clkdiv_mode m){if(m>3)Default_Handler();c->csr=(c->csr&~48u)|((unsigned)m<<4);}
+void pwm_config_set_output_polarity(pwm_config*c,bool a,bool b){c->csr=(c->csr&~12u)|(a?4u:0)|(b?8u:0);}
+void pwm_set_clkdiv(uint s,float f){REG(PWM+s*20+4)=cf_pwm_div(f);}
+void pwm_set_both_levels(uint s,uint16_t a,uint16_t b){REG(PWM+s*20+12)=a|((unsigned)b<<16);}
+void pwm_set_phase_correct(uint s,bool e){REG(PWM+s*20)=(REG(PWM+s*20)&~2u)|(e?2u:0);}
+void pwm_set_output_polarity(uint s,bool a,bool b){REG(PWM+s*20)=(REG(PWM+s*20)&~12u)|(a?4u:0)|(b?8u:0);}
+#define CF_PWM_GLOBAL ${newer?'0xf0u':'0xa0u'}
+void pwm_set_mask_enabled(uint32_t mask){REG(PWM+CF_PWM_GLOBAL)=mask;}
+void pwm_irqn_set_slice_enabled(uint n,uint s,bool e){if(n>=${newer?2:1}||s>7)Default_Handler();unsigned a=PWM+CF_PWM_GLOBAL+8+n*12;REG(a)=e?REG(a)|(1u<<s):REG(a)&~(1u<<s);}
+uint32_t pwm_irqn_get_status_mask(uint n){if(n>=${newer?2:1})Default_Handler();return REG(PWM+CF_PWM_GLOBAL+16+n*12);}
+void pwm_irqn_force(uint n,uint s){if(n>=${newer?2:1}||s>7)Default_Handler();REG(PWM+CF_PWM_GLOBAL+12+n*12)|=1u<<s;}
+void pwm_set_irq_enabled(uint s,bool e){pwm_irqn_set_slice_enabled(0,s,e);}
+void pwm_set_irq_mask_enabled(uint32_t mask,bool e){unsigned a=PWM+CF_PWM_GLOBAL+8;REG(a)=e?REG(a)|mask:REG(a)&~mask;}
+void pwm_clear_irq(uint s){REG(PWM+CF_PWM_GLOBAL+4)=1u<<s;}
+uint32_t pwm_get_irq_status_mask(void){return pwm_irqn_get_status_mask(0);}
+void pwm_force_irq(uint s){pwm_irqn_force(0,s);}
+
 void pwm_config_set_clkdiv_int(pwm_config*c,uint v){c->div=(v&255)<<4;}
 void pwm_init(uint s,pwm_config*c,bool e){unsigned a=PWM+s*20;REG(a)=0;REG(a+4)=c->div;REG(a+8)=0;REG(a+12)=0;REG(a+16)=c->top;REG(a)=c->csr|(e?1u:0);}
 void pwm_set_wrap(uint s,uint16_t v){REG(PWM+s*20+16)=v;}
@@ -111,12 +146,30 @@ static int cf_pin(unsigned bus,unsigned f,unsigned role){for(unsigned p=0;p<30;p
 // Open-drain lines: release means input, never actively drive I2C high.
 static void cf_od(unsigned p,bool high){gpio_set_dir(p,!high);gpio_put(p,0);}
 static void cf_bus_pin(unsigned p){REG(IO+4+p*8)=5;gpio_put(p,0);}
-uint i2c_init(i2c_inst_t*i,uint baud){cf_half_i[i->index]=500000u/(baud?baud:100000);if(!cf_half_i[i->index])cf_half_i[i->index]=1;return 500000u/cf_half_i[i->index];}
-static bool cf_scl(unsigned p,bool high,unsigned t){cf_od(p,high);unsigned start=time_us_32();while(high&&!gpio_get(p)){if((unsigned)(time_us_32()-start)>10000)return false;}sleep_us(t);return true;}
-static int cf_i2c(i2c_inst_t*i,uint8_t addr,const uint8_t*src,uint8_t*dst,unsigned n,bool nostop){int s=cf_pin(i->index,3,0),c=cf_pin(i->index,3,1);if(s<0||c<0)return -1;unsigned t=cf_half_i[i->index];cf_bus_pin(s);cf_bus_pin(c);cf_od(s,1);if(!cf_scl(c,1,t))return -1;cf_od(s,0);sleep_us(t);cf_scl(c,0,t);
- for(unsigned j=0;j<=n;j++){unsigned b=j?(src?src[j-1]:255):((unsigned)addr<<1)|(dst?1u:0),value=0;for(unsigned k=0;k<8;k++){cf_od(s,!!(b&(128u>>k)));sleep_us(t);if(!cf_scl(c,1,t))return -1;value=(value<<1)|gpio_get(s);cf_scl(c,0,t);}if(j&&dst)dst[j-1]=value;cf_od(s,(j&&dst)?j==n:1);sleep_us(t);if(!cf_scl(c,1,t))return -1;bool ack=!gpio_get(s);cf_scl(c,0,t);cf_od(s,1);if((!j||src)&&!ack){cf_od(s,0);cf_scl(c,1,t);cf_od(s,1);return -1;}}
- if(!nostop){cf_od(s,0);sleep_us(t);if(!cf_scl(c,1,t))return -1;cf_od(s,1);sleep_us(t);}return n;}
-int i2c_write_blocking(i2c_inst_t*i,uint8_t a,const uint8_t*s,unsigned n,bool ns){return cf_i2c(i,a,s,0,n,ns);}int i2c_read_blocking(i2c_inst_t*i,uint8_t a,uint8_t*d,unsigned n,bool ns){return cf_i2c(i,a,0,d,n,ns);}
+static bool cf_i2c_on[2];
+uint i2c_get_index(i2c_inst_t*i){return i->index;}
+uint i2c_set_baudrate(i2c_inst_t*i,uint baud){cf_half_i[i->index]=500000u/(baud?baud:100000);if(!cf_half_i[i->index])cf_half_i[i->index]=1;return 500000u/cf_half_i[i->index];}
+uint i2c_init(i2c_inst_t*i,uint baud){cf_i2c_on[i->index]=true;return i2c_set_baudrate(i,baud);}
+void i2c_deinit(i2c_inst_t*i){cf_i2c_on[i->index]=false;}
+typedef struct {uint half;bool timed,expired;absolute_time_t until;} cf_i2c_transfer;
+static bool cf_i2c_wait(cf_i2c_transfer*t){uint delay=t->half;if(t->timed){if(time_reached(t->until)){t->expired=true;return false;}uint64_t left=to_us_since_boot(t->until)-time_us_64();if(left<delay)delay=(uint)left;}sleep_us(delay);if(t->timed&&time_reached(t->until)){t->expired=true;return false;}return true;}
+static bool cf_scl(unsigned p,bool high,cf_i2c_transfer*t){cf_od(p,high);unsigned start=time_us_32();while(high&&!gpio_get(p)){if(t->timed&&time_reached(t->until)){t->expired=true;return false;}if(!t->timed&&(unsigned)(time_us_32()-start)>10000)return false;}return cf_i2c_wait(t);}
+static int cf_i2c(i2c_inst_t*i,uint8_t addr,const uint8_t*src,uint8_t*dst,unsigned n,bool nostop,bool timed,absolute_time_t until){int s=cf_pin(i->index,3,0),c=cf_pin(i->index,3,1);if(s<0||c<0||addr>127||!n||!cf_i2c_on[i->index])return PICO_ERROR_GENERIC;cf_i2c_transfer t={cf_half_i[i->index],timed,false,until};cf_bus_pin(s);cf_bus_pin(c);cf_od(s,1);
+ if(!cf_scl(c,1,&t))goto fail;cf_od(s,0);if(!cf_i2c_wait(&t)||!cf_scl(c,0,&t))goto fail;
+ for(unsigned j=0;j<=n;j++){unsigned b=j?(src?src[j-1]:255):((unsigned)addr<<1)|(dst?1u:0),value=0;
+  for(unsigned k=0;k<8;k++){cf_od(s,!!(b&(128u>>k)));if(!cf_i2c_wait(&t)||!cf_scl(c,1,&t))goto fail;value=(value<<1)|gpio_get(s);if(!cf_scl(c,0,&t))goto fail;}
+  if(j&&dst)dst[j-1]=value;cf_od(s,(j&&dst)?j==n:1);if(!cf_i2c_wait(&t)||!cf_scl(c,1,&t))goto fail;bool ack=!gpio_get(s);if(!cf_scl(c,0,&t))goto fail;cf_od(s,1);
+  if((!j||src)&&!ack){cf_od(s,0);if(!cf_scl(c,1,&t))goto fail;cf_od(s,1);return PICO_ERROR_GENERIC;}
+ }
+ if(!nostop){cf_od(s,0);if(!cf_i2c_wait(&t)||!cf_scl(c,1,&t))goto fail;cf_od(s,1);if(!cf_i2c_wait(&t))goto fail;}return n;
+ fail:cf_od(s,1);cf_od(c,1);return t.expired?PICO_ERROR_TIMEOUT:PICO_ERROR_GENERIC;
+}
+int i2c_write_blocking(i2c_inst_t*i,uint8_t a,const uint8_t*s,unsigned n,bool ns){return cf_i2c(i,a,s,0,n,ns,false,(absolute_time_t){0});}
+int i2c_read_blocking(i2c_inst_t*i,uint8_t a,uint8_t*d,unsigned n,bool ns){return cf_i2c(i,a,0,d,n,ns,false,(absolute_time_t){0});}
+int i2c_write_blocking_until(i2c_inst_t*i,uint8_t a,const uint8_t*s,unsigned n,bool ns,absolute_time_t until){return cf_i2c(i,a,s,0,n,ns,true,until);}
+int i2c_read_blocking_until(i2c_inst_t*i,uint8_t a,uint8_t*d,unsigned n,bool ns,absolute_time_t until){return cf_i2c(i,a,0,d,n,ns,true,until);}
+int i2c_write_timeout_us(i2c_inst_t*i,uint8_t a,const uint8_t*s,unsigned n,bool ns,uint us){return i2c_write_blocking_until(i,a,s,n,ns,delayed_by_us(get_absolute_time(),us));}
+int i2c_read_timeout_us(i2c_inst_t*i,uint8_t a,uint8_t*d,unsigned n,bool ns,uint us){return i2c_read_blocking_until(i,a,d,n,ns,delayed_by_us(get_absolute_time(),us));}
 uint spi_get_index(spi_inst_t*s){return s->index;}
 uint spi_set_baudrate(spi_inst_t*s,uint baud){cf_half_s[s->index]=500000u/(baud?baud:500000);if(!cf_half_s[s->index])cf_half_s[s->index]=1;return 500000u/cf_half_s[s->index];}
 uint spi_get_baudrate(spi_inst_t*s){return 500000u/cf_half_s[s->index];}

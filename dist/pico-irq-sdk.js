@@ -16,6 +16,9 @@ typedef void (*irq_handler_t)(void);
 ${n?'#define DMA_IRQ_2 12\n#define DMA_IRQ_3 13':''}
 #define IO_IRQ_BANK0 ${n?21:13}
 #define ADC_IRQ_FIFO ${n?35:22}
+#define PWM_IRQ_WRAP ${n?8:4}
+#define PWM_IRQ_WRAP_0 ${n?8:4}
+${n?"#define PWM_IRQ_WRAP_1 9":""}
 #define UART0_IRQ ${n?33:20}
 #define UART1_IRQ ${n?34:21}
 #define PIO0_IRQ_0 ${n?15:7}

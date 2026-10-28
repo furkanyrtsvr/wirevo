@@ -1,3 +1,7 @@
+## 0.103 — PWM / I2C
+
+Kesirli PWM bölücüsü, wrap IRQ ve I2C timeout/deadline desteği genişletildi. [Doğrulanan kapsam](../dist/notices/PICO-COMPAT103.md).
+
 ## 0.102 — SPI/UART ve GPIO genişlemesi
 
 SPI 4–16 bit aktarım, UART FIFO/loopback/alım kesmesi ve doğru GPIO pad seçimi eklendi. Yeni örnekler ve sınırlar [burada](../dist/notices/PICO-COMPAT102.md).
