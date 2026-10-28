@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.100.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.101.0**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -21,7 +21,7 @@ Pico C kodu tarayıcıdaki Clang/WebAssembly derleyicisini ve Wirevo’nun deste
 
 ## İsteğe bağlı Pico kaynak paketi
 
-**SDK paketi ekle** ile C kaynakları ve başlıkları klasör veya ZIP olarak tarayıcıya eklenebilir. Paket probe koduyla gerçekten derlenerek denetlenir; istenirse bu tarayıcıda saklanır. JSON yalnız dosya tanımıdır; kaynakların yerini tutmaz. Tam resmi SDK/CMake veya bilgisayarda çalışan derleyici eklenmez. [Paket hazırlama, örnekler, kartlar ve sınırlar](dist/notices/PICO-SOURCE-PACKAGES.md).
+Panelde derleme yöntemi seçilir; **Kurulum ve kullanım adımları** başlığına tıklanınca adımlar aynı panelin içinde açılır. **SDK paketi ekle** ile C kaynakları ve başlıkları klasör veya ZIP olarak tarayıcıya eklenebilir. Paket probe koduyla gerçekten derlenerek denetlenir; istenirse bu tarayıcıda saklanır. JSON yalnız dosya tanımıdır; kaynakların yerini tutmaz. Tam resmi SDK/CMake veya bilgisayarda çalışan derleyici eklenmez. [Paket hazırlama, örnekler, kartlar ve sınırlar](dist/notices/PICO-SOURCE-PACKAGES.md).
 
 ## Yerel yardımcıların kaldırılması
 
