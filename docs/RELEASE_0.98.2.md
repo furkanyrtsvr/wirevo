@@ -1,0 +1,7 @@
+# Wirevo v0.98.2 — visible, user-controlled SDK helper
+
+The standard Windows launcher now opens a visible Tk SDK application. Existing tool locations are discovered from saved settings, environment and PATH; first-use folder/file selectors explain missing prerequisites instead of leaving a terminal at an unexplained SDK prompt. A configured app starts its loopback listener before opening Wirevo and automatically pairs the browser without port/code/JSON selection.
+
+The window shows helper and authenticated-pairing/build status. Close/X stops the listener and its owned build tree; Stop/Edit stops it and unlocks the tool paths. No hidden service or startup entry is installed. CLI headless mode remains an advanced explicit option; it is not the normal launcher. The browser's own local-network permission still needs user approval. Pending launch credentials survive an initial permission-related reload only in tab session storage, with a ten-minute expiry and cleanup after authentication/disconnect.
+
+Validation is restricted to the newly added startup, pairing and visible-session behavior. GUI controller tests verify listener-before-browser readiness, real owned child cancellation, listener shutdown, session ownership cleanup, saved-path validation and idempotent lifecycle. Native-window QA verified the visible controls and that window close removes the process/listener. Existing compiler and emulator suites were not rerun.

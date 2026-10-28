@@ -68,10 +68,13 @@ class Bridge:
         self.root = Path(config['workspace']).resolve()
         self.root.mkdir(parents=True, exist_ok=True)
         self.jobs, self.early_cancel = {}, set()
+        self.authenticated_status_count = 0
         self.lock = threading.RLock()
 
     def status(self):
-        return {'protocol': 1, 'version': '0.98.1', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
+        with self.lock:
+            self.authenticated_status_count += 1
+        return {'protocol': 1, 'version': '0.98.2', 'engine': 'official-pico-sdk', 'architectures': ['arm'], 'boards': sorted(BOARDS)}
 
     def append(self, job, line):
         # Keep user-source diagnostics relative and navigable in the editor.
