@@ -1,3 +1,7 @@
+# 0.107 fiziksel UART
+
+GPS ve MH-Z19'un önceki bağlantı açıkları giderildi. [Yeni denetim ve sınırlar](../dist/notices/PICO-UART107.md). Yeni SDK eklenmedi.
+
 # 0.106 sera performansı ve sensör denetimi
 
 [Ölçümler, proje ve açık donanımsal UART bağlantıları](../dist/notices/PICO-LABORATORY106.md). Yeni SDK API eklenmedi.

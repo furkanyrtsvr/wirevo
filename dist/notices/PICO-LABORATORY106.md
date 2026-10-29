@@ -1,3 +1,5 @@
+> Güncelleme 0.107: bu tarihsel rapordaki iki UART açığı giderildi. [Yeni proje ve doğrulama](PICO-UART107.md). Aşağıdaki başarısız sonuçlar 0.106 denetimine aittir.
+
 # Pico sera ve sensör laboratuvarı — 0.106.0
 
 ## Açma
