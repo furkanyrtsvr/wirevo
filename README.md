@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.107.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.108.0**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
 
@@ -62,3 +62,5 @@ Yerel geliştirme adresi: http://127.0.0.1:4173 . `dist/` web çalışma zamanla
 Pico 0.104: toplu GPIO, sinyal override ve pad kontrolü; gerçek GP14→GP16 geri okuma örneği. [Kapsam ve sınırlar](dist/notices/PICO-COMPAT104.md), [güncel destek tablosu](docs/PICO_SUPPORT.md).
 
 Pico 0.105: sera projesinde MCU resetiyle EEPROM kaybı düzeltildi; sabit DC çözümleri önbelleğe alındı ve çalışan worker görüntü paketleri 20 Hz ile sınırlandı. SDK API eklenmedi. [Kapsam](dist/notices/PICO-GREENHOUSE105.md).
+
+Pico UART FIFO/CTS/RTS ve zamanlama: [yeni örnek, doğrulanan kapsam ve sınırlar](dist/notices/PICO-UART108.md).

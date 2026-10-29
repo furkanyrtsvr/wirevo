@@ -1,3 +1,5 @@
+Pico UART 0.108: [FIFO, CTS/RTS, kesme ve DMA denetimi](../dist/notices/PICO-UART108.md).
+
 # 0.107 fiziksel UART
 
 GPS ve MH-Z19'un önceki bağlantı açıkları giderildi. [Yeni denetim ve sınırlar](../dist/notices/PICO-UART107.md). Yeni SDK eklenmedi.
