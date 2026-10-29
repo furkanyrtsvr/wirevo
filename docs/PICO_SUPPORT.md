@@ -1,3 +1,7 @@
+# 0.106 sera performansı ve sensör denetimi
+
+[Ölçümler, proje ve açık donanımsal UART bağlantıları](../dist/notices/PICO-LABORATORY106.md). Yeni SDK API eklenmedi.
+
 ## 0.105 — Sera projesi düzeltmeleri
 
 MCU resetinde harici EEPROM kaydı/yazma döngüsü korunur. Sabit devrede DC önbelleği ve 20 Hz worker görüntü yayını eklenmiştir. Yalnız sera projesi doğrulanmıştır; SDK kapsamı değişmez. [Sınırlar](../dist/notices/PICO-GREENHOUSE105.md).

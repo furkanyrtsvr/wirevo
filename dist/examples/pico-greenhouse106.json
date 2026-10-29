@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 3,
+  "name": "Pico 2 · Akıllı sera / entegrasyon denemesi",
+  "model": "custom",
+  "code": "#include \"app.h\"\n#include <hardware/adc.h>\n#include <hardware/pwm.h>\n#include <stdio.h>\n\n// SHT31 0x44, LCD 0x27 and EEPROM 0x50 share GP4/GP5.\n// GP26 selects a candidate threshold; GP14 saves it to EEPROM.\n// GP15 green = healthy; GP16 red and GP17 blue show cooling demand.\nvolatile unsigned samples,errors,save_count;\nvolatile int temperature10,humidity10,threshold=28,candidate,demand,sensor_status,save_status;\nstatic void number(char*s,unsigned v){s[0]='0'+v/10%10;s[1]='0'+v%10;}\nint main(void){\n stdio_init_all();gpio_set_function(4,GPIO_FUNC_I2C);gpio_set_function(5,GPIO_FUNC_I2C);gpio_pull_up(4);gpio_pull_up(5);i2c_init(BUS,100000);\n gpio_init(14);gpio_pull_up(14);adc_init();adc_gpio_init(26);adc_select_input(0);\n for(unsigned p=15;p<=17;p++)gpio_set_function(p,GPIO_FUNC_PWM);\n pwm_config cfg=pwm_get_default_config();pwm_config_set_wrap(&cfg,999);pwm_config_set_clkdiv(&cfg,125.0f);pwm_init(pwm_gpio_to_slice_num(15),&cfg,true);pwm_init(pwm_gpio_to_slice_num(16),&cfg,true);\n int loaded=settings_load((int*)&threshold);puts(loaded==1?\"BOOT settings restored\":\"BOOT default threshold 28C\");\n int display=lcd_init();puts(display?\"LCD missing\":\"LCD ready\");\n bool last_button=false;unsigned last_edge=time_us_32();bool cooling=false;uint32_t next=time_us_32();\n while(1){\n  candidate=15+(adc_read()*25u+2047u)/4095u;\n  bool pressed=!gpio_get(14);unsigned now=time_us_32();\n  if(pressed!=last_button&&(unsigned)(now-last_edge)>30000){last_edge=now;last_button=pressed;if(pressed){save_status=settings_save(candidate);if(!save_status){threshold=candidate;save_count++;puts(\"SAVE verified OK\");}else{errors++;puts(\"SAVE verification failed\");}}}\n  if((int32_t)(now-next)<0){sleep_ms(2);continue;}next=now+500000;\n  sensor_status=sensor_read((int*)&temperature10,(int*)&humidity10);samples++;\n  if(sensor_status){errors++;demand=100;puts(\"FAULT SHT31; cooling fail-safe 100%\");}\n  else{if(temperature10>=threshold*10)cooling=true;else if(temperature10<=(threshold-1)*10)cooling=false;demand=cooling?20+(temperature10-threshold*10)*2:0;if(demand<20&&cooling)demand=20;if(demand>100)demand=100;}\n  pwm_set_gpio_level(15,sensor_status?0:999);pwm_set_gpio_level(16,sensor_status?999:demand*10);pwm_set_gpio_level(17,demand*10);\n  char top[]=\"T:00.0C H:00.0% \",bottom[]=\"SET:00 NEW:00   \";\n  if(sensor_status)lcd_line(0,\"SENSOR ERROR\");else{unsigned t=temperature10<0?-temperature10:temperature10;number(top+2,t/10);top[5]='0'+t%10;number(top+10,humidity10/10);top[13]='0'+humidity10%10;lcd_line(0,top);}\n  number(bottom+4,threshold);number(bottom+11,candidate);lcd_line(1,bottom);\n  printf(\"SAMPLE %u T10=%d H10=%d SET=%d NEW=%d PWM=%d STATUS=%d\\n\",samples,temperature10,humidity10,threshold,candidate,demand,sensor_status);\n }\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 70,
+      "y": 140,
+      "rotation": 0,
+      "params": {
+        "model": "pico-2"
+      }
+    },
+    {
+      "id": "screen",
+      "type": "lcd16",
+      "x": 440,
+      "y": 40,
+      "rotation": 0,
+      "params": {
+        "address": 39
+      }
+    },
+    {
+      "id": "climate",
+      "type": "sht31",
+      "x": 270,
+      "y": 70,
+      "rotation": 0,
+      "params": {
+        "temperature": 25,
+        "humidity": 50
+      }
+    },
+    {
+      "id": "memory",
+      "type": "eeprom",
+      "x": 320,
+      "y": 270,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "dial",
+      "type": "pot",
+      "x": 530,
+      "y": 300,
+      "rotation": 0,
+      "params": {
+        "ohms": 10000,
+        "value": 52
+      }
+    },
+    {
+      "id": "save",
+      "type": "tact6",
+      "x": 730,
+      "y": 320,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    },
+    {
+      "id": "healthy",
+      "type": "led",
+      "x": 360,
+      "y": 500,
+      "rotation": 0,
+      "params": {
+        "color": "green"
+      }
+    },
+    {
+      "id": "r_healthy",
+      "type": "resistor",
+      "x": 360,
+      "y": 420,
+      "rotation": 0,
+      "params": {
+        "ohms": 330
+      }
+    },
+    {
+      "id": "alarm",
+      "type": "led",
+      "x": 520,
+      "y": 500,
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    },
+    {
+      "id": "r_alarm",
+      "type": "resistor",
+      "x": 520,
+      "y": 420,
+      "rotation": 0,
+      "params": {
+        "ohms": 330
+      }
+    },
+    {
+      "id": "cooling",
+      "type": "led",
+      "x": 680,
+      "y": 500,
+      "rotation": 0,
+      "params": {
+        "color": "blue"
+      }
+    },
+    {
+      "id": "r_cooling",
+      "type": "resistor",
+      "x": 680,
+      "y": 420,
+      "rotation": 0,
+      "params": {
+        "ohms": 330
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w0",
+      "from": "climate:VIN",
+      "to": "mcu:3V3",
+      "color": "#ef4444",
+      "points": []
+    },
+    {
+      "id": "w1",
+      "from": "climate:GND",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w2",
+      "from": "climate:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#3b82f6",
+      "points": []
+    },
+    {
+      "id": "w3",
+      "from": "climate:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#f59e0b",
+      "points": []
+    },
+    {
+      "id": "w4",
+      "from": "screen:VCC",
+      "to": "mcu:3V3",
+      "color": "#ef4444",
+      "points": []
+    },
+    {
+      "id": "w5",
+      "from": "screen:GND",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w6",
+      "from": "screen:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#3b82f6",
+      "points": []
+    },
+    {
+      "id": "w7",
+      "from": "screen:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#f59e0b",
+      "points": []
+    },
+    {
+      "id": "w8",
+      "from": "memory:VCC",
+      "to": "mcu:3V3",
+      "color": "#ef4444",
+      "points": []
+    },
+    {
+      "id": "w9",
+      "from": "memory:GND",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w10",
+      "from": "memory:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#3b82f6",
+      "points": []
+    },
+    {
+      "id": "w11",
+      "from": "memory:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#f59e0b",
+      "points": []
+    },
+    {
+      "id": "w12",
+      "from": "memory:A0",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w13",
+      "from": "memory:A1",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w14",
+      "from": "memory:A2",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w15",
+      "from": "memory:WP",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w16",
+      "from": "climate:ADDR",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w17",
+      "from": "dial:VCC",
+      "to": "mcu:3V3",
+      "color": "#ef4444",
+      "points": []
+    },
+    {
+      "id": "w18",
+      "from": "dial:GND",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w19",
+      "from": "dial:OUT",
+      "to": "mcu:GPIO26",
+      "color": "#a855f7",
+      "points": []
+    },
+    {
+      "id": "w20",
+      "from": "save:1",
+      "to": "mcu:GPIO14",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w21",
+      "from": "save:2",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w22",
+      "from": "mcu:GPIO15",
+      "to": "r_healthy:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w23",
+      "from": "r_healthy:2",
+      "to": "healthy:A",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w24",
+      "from": "healthy:K",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w25",
+      "from": "mcu:GPIO16",
+      "to": "r_alarm:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w26",
+      "from": "r_alarm:2",
+      "to": "alarm:A",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w27",
+      "from": "alarm:K",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "w28",
+      "from": "mcu:GPIO17",
+      "to": "r_cooling:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w29",
+      "from": "r_cooling:2",
+      "to": "cooling:A",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "w30",
+      "from": "cooling:K",
+      "to": "mcu:GND",
+      "color": "#64748b",
+      "points": []
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "GPIO15",
+    "picoArchitecture": "arm",
+    "tracePins": [
+      "GPIO14",
+      "GPIO0",
+      "GPIO1"
+    ]
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "app.h",
+      "content": "#ifndef APP_H\n#define APP_H\n#include <pico/stdlib.h>\n#include <hardware/i2c.h>\n#define BUS i2c0\nint bus_write(uint8_t,const uint8_t*,unsigned);\nint bus_read(uint8_t,uint8_t*,unsigned);\nint sensor_read(int*,int*);\nint settings_load(int*);\nint settings_save(int);\nint lcd_init(void);\nint lcd_line(unsigned,const char*);\n#endif\n"
+    },
+    {
+      "name": "bus.c",
+      "content": "#include \"app.h\"\nint bus_write(uint8_t a,const uint8_t*b,unsigned n){return i2c_write_timeout_us(BUS,a,b,n,false,30000);}\nint bus_read(uint8_t a,uint8_t*b,unsigned n){return i2c_read_timeout_us(BUS,a,b,n,false,30000);}\n"
+    },
+    {
+      "name": "devices.c",
+      "content": "#include \"app.h\"\nstatic uint8_t crc(const uint8_t*b){uint8_t c=255;for(int j=0;j<2;j++){c^=b[j];for(int k=0;k<8;k++)c=(c&128)?(c<<1)^0x31:c<<1;}return c;}\nint sensor_read(int*t,int*h){uint8_t command[2]={0x24,0x00},b[6];if(bus_write(0x44,command,2)!=2)return -1;sleep_ms(16);if(bus_read(0x44,b,6)!=6)return -2;if(crc(b)!=b[2]||crc(b+3)!=b[5])return -3;unsigned rawt=(b[0]<<8)|b[1],rawh=(b[3]<<8)|b[4];*t=-450+(1750u*rawt+32767u)/65535u;*h=(1000u*rawh+32767u)/65535u;return 0;}\nint settings_load(int*threshold){uint8_t pointer[2]={0,0},b[4];if(i2c_write_timeout_us(BUS,0x50,pointer,2,true,30000)!=2||bus_read(0x50,b,4)!=4)return -1;if(b[0]!=0x47||b[1]<15||b[1]>40||b[2]!=(uint8_t)~b[1]||b[3]!=0xa5)return 0;*threshold=b[1];return 1;}\nint settings_save(int threshold){uint8_t b[6]={0,0,0x47,threshold,(uint8_t)~threshold,0xa5};if(bus_write(0x50,b,6)!=6)return -1;sleep_ms(6);int readback=0;if(settings_load(&readback)!=1||readback!=threshold)return -2;return 0;}\n"
+    },
+    {
+      "name": "lcd.c",
+      "content": "#include \"app.h\"\nstatic int nibble(uint8_t n,bool data){uint8_t v=(n&0xf0)|8|(data?1:0),b[3]={v,(uint8_t)(v|4),v};return bus_write(0x27,b,3)==3?0:-1;}\nstatic int byte(uint8_t v,bool data){if(nibble(v,data)||nibble(v<<4,data))return -1;sleep_us(50);return 0;}\nint lcd_init(void){sleep_ms(40);if(nibble(0x30,0))return -1;sleep_ms(5);nibble(0x30,0);sleep_us(150);nibble(0x30,0);nibble(0x20,0);byte(0x28,0);byte(0x0c,0);byte(0x06,0);byte(0x01,0);sleep_ms(2);return 0;}\nint lcd_line(unsigned row,const char*s){if(byte(row?0xc0:0x80,0))return -1;for(unsigned i=0;i<16;i++){char c=*s?*s++:' ';if(byte(c,1))return -1;}return 0;}\n"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 3,
+  "name": "Pico 2 - optical and I2S sensor station",
+  "model": "custom",
+  "code": "#include <pico/stdlib.h>\n#include <stdio.h>\nvolatile unsigned done;volatile unsigned word,ir_low,ir_idle,ir_released;\nint main(void){stdio_init_all();gpio_init(16);gpio_init(15);for(int p=18;p<=19;p++){gpio_init(p);gpio_set_dir(p,1);gpio_put(p,0);}gpio_put(19,1);sleep_us(10);gpio_put(19,0);for(int b=0;b<32;b++){gpio_put(18,0);sleep_us(5);gpio_put(18,1);sleep_us(5);if(b>=1&&b<=24)word=(word<<1)|gpio_get(16);}printf(\"I2S sample=%u\\n\",word);gpio_init(14);gpio_set_dir(14,1);ir_idle=gpio_get(15);for(int i=0;i<32;i++){gpio_put(14,1);sleep_us(12);gpio_put(14,0);sleep_us(12);if(!gpio_get(15))ir_low++;}sleep_ms(1);ir_released=gpio_get(15);printf(\"IR idle=%u activeSamples=%u released=%u\\n\",ir_idle,ir_low,ir_released);puts(\"LAB DONE\");done=1;while(1)sleep_ms(100);}\r\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 20,
+      "y": 30,
+      "rotation": 0,
+      "params": {
+        "model": "pico-2"
+      }
+    },
+    {
+      "id": "mic",
+      "type": "i2sMic",
+      "x": 540,
+      "y": 60,
+      "rotation": 0,
+      "params": {
+        "sample": 1048576
+      }
+    },
+    {
+      "id": "ir",
+      "type": "irReceiver",
+      "x": 730,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "emitter",
+      "type": "irEmitter",
+      "x": 920,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "limit",
+      "type": "resistor",
+      "x": 1110,
+      "y": 60,
+      "rotation": 0,
+      "params": {
+        "ohms": 220
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w0",
+      "from": "mic:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w1",
+      "from": "mic:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w2",
+      "from": "mic:BCLK",
+      "to": "mcu:GPIO18",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w3",
+      "from": "mic:WS",
+      "to": "mcu:GPIO19",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w4",
+      "from": "mic:DOUT",
+      "to": "mcu:GPIO16",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w5",
+      "from": "mic:LR",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w6",
+      "from": "ir:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w7",
+      "from": "ir:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w8",
+      "from": "ir:OUT",
+      "to": "mcu:GPIO15",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w9",
+      "from": "mcu:GPIO14",
+      "to": "limit:1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w10",
+      "from": "limit:2",
+      "to": "emitter:A",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w11",
+      "from": "emitter:K",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "GPIO15",
+    "picoArchitecture": "arm",
+    "tracePins": [
+      "GPIO14",
+      "GPIO0",
+      "GPIO1"
+    ]
+  },
+  "language": "c",
+  "files": []
+}

@@ -1,8 +1,10 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.105.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.106.0**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
+
+Pico sera beklemeleri ve GPIO/devre çözümü hızlandırıldı. [56 parçalı yeni sensör laboratuvarı ve açık UART bulguları](dist/notices/PICO-LABORATORY106.md); [0.106 sürüm notları](docs/RELEASE_0.106.md). Tam gerçek zaman ve bütün donanım özellikleri garantisi verilmez.
 
 ## Kullanım
 

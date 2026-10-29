@@ -62,7 +62,7 @@ void gpio_pull_up(uint p){if(cf_gpio_valid(p))REG(PADS+4+p*4)=(REG(PADS+4+p*4)&~
 void gpio_pull_down(uint p){if(cf_gpio_valid(p))REG(PADS+4+p*4)=(REG(PADS+4+p*4)&~8u)|4u;}
 void gpio_init(uint p){if(cf_gpio_valid(p)){REG(PADS+4+p*4)=(REG(PADS+4+p*4)&~(128u|256u))|64u;gpio_set_function(p,GPIO_FUNC_SIO);gpio_set_dir(p,0);gpio_put(p,0);}}
 uint32_t time_us_32(void){return REG(${timer});}
-void sleep_us(uint64_t n){while(n){unsigned part=n>1000000?1000000:(unsigned)n,start=time_us_32();while((unsigned)(time_us_32()-start)<part){}n-=part;}}
+void sleep_us(uint64_t n){while(n){unsigned part=n>1000000?1000000:(unsigned)n,start=time_us_32();unsigned elapsed;while((elapsed=(unsigned)(time_us_32()-start))<part){REG(0x5fffe010u)=part-elapsed;}n-=part;}}
 void sleep_ms(uint32_t n){while(n--)sleep_us(1000);}
 void tight_loop_contents(void){__asm__ volatile("nop");}
 void cf_gpio_mode(unsigned p,int m){gpio_init(p);gpio_disable_pulls(p);if(m==CF_OUTPUT)gpio_set_dir(p,1);else if(m==CF_INPUT_PULLUP)gpio_pull_up(p);else if(m==CF_INPUT_PULLDOWN)gpio_pull_down(p);}
