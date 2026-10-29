@@ -37,3 +37,7 @@ Küçük sera için ölçülen örnek motor koşularında yaklaşık 3 saniye si
 Bekleme hızlanması yeniden derlenen tarayıcı C firmware'i içindir. Kullanıcı C kaynaklarının debug derlemesi korunur; özel çalışma zamanı optimize edilir. Etkin PIO/ikinci çekirdek veya debug durumunda bekleme kısayolu kapanır. Sekiz ARM Pico kartında yeni timer/bekleme senaryosu doğrulandı; bu laboratuvarın tüm sensörleri her kart ve her dilde ayrı ayrı sınanmadı.
 
 Eski testler çalıştırılmadı. Yeni SDK eklenmedi. Bu denetim tam SDK, radyo/ROM, NFC/CAN, USB sınıfları veya tüm donanım modları için eksiksizlik iddiası taşımaz.
+
+## 0.106.1: devam eden LCD aktarımı
+
+Buton/pot/sıcaklık düzenlemesi aynı kablolardaki I2C aktarımını yeniden başlatmaz. LCD yarım baytı gönderilirken kaydetme denemesi eklendi; sonraki LCD satırları ve 35 derece ayarı doğrulandı.

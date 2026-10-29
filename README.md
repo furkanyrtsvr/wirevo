@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.106.0**.
+Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.106.1**.
 
 **[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
 

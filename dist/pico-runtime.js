@@ -24,7 +24,13 @@ import {PicoUSBHost} from './pico-usb-host.js';
 import {CYW43Chip} from './pico-cyw43-chip.js';
 export function solvePicoCircuit(project,pins={},drivers=[],reactive=null){const board=PICO_BOARDS[project.components.find(c=>c.type==='board')?.params.model];const result=solveProjectDC(project,{pins},buildNets(project),{board,pwmAverage:false,drivers,reactive});const fault=result.diagnostics.find(d=>DC_FAILURES.includes(d.code));return{...result,valid:result.valid&&!fault,fault};}
 export class PicoCircuit extends ESPCircuitRuntime{
- update(project){this.inputSolutions=new WeakMap();this.supplySolutions=new WeakMap();this.dcCache=new PicoCircuitCache(project);super.update(project);}
+ update(project){const next=this.runtime.circuitValidate(project);this.inputSolutions=new WeakMap();this.supplySolutions=new WeakMap();this.dcCache=new PicoCircuitCache(next);
+ // Editing a greenhouse input is not disconnecting its I2C wires. Preserve the
+ // address/ACK/bit phase and LCD nibble already in flight on the unchanged bus.
+ const signature=p=>JSON.stringify({w:p.wires.map(w=>[w.from,w.to]),c:p.components.map(c=>{const params={...c.params};if(c.type==='pot')delete params.value;if(c.type==='button'||c.type==='tact6')delete params.pressed;if(c.type==='sht31'){delete params.temperature;delete params.humidity;}return [c.id,c.type,params];})});
+ const liveTypes=new Set(['board','resistor','led','pot','button','tact6','sht31','eeprom','lcd8','lcd16','lcd20']);
+ if(this.project&&next.components.every(c=>liveTypes.has(c.type))&&signature(next)===signature(this.project)){this.project=next;for(const d of this.devices)d.component=next.components.find(c=>c.id===d.id);this.refresh(true);return;}
+ super.update(next);}
  state(){const r=this.runtime;if(this.lastGPIO===r.gpioVersion)return false;this.lastGPIO=r.gpioVersion;this.pins=r.pinStates();return true;}
  cycle(){return this.runtime.referenceCycles;}
  solve(){const drivers=[...this.drivers];for(const[p,s]of Object.entries(this.pins||{}))if(s.mode==='INPUT_PULLDOWN')drivers.push({endpoint:this.board.id+':'+p,voltage:0,ohms:30000});this.solution=this.dcCache.solve(this.pins||{},drivers,this.reactiveStamps,()=>solvePicoCircuit(this.project,this.pins||{},drivers,this.reactiveStamps));if(!this.solution.valid)throw Error(this.solution.fault?.message||'Pico devresi çözülemedi.');let levels=this.inputSolutions.get(this.solution);if(!levels){levels=this.runtime.board.gpio.map(pin=>{const id='GPIO'+pin,voltage=this.solution.voltages.get(this.solution.netlist.net(this.board.id+':'+id));if(Number.isFinite(voltage)&&(voltage>3.6||voltage<-.3))throw Error(id+' Pico 3.3 V GPIO sınırını aşıyor.');return {pin,id,high:Number.isFinite(voltage)?voltage>=2.31:this.pins?.[id]?.mode==='INPUT_PULLUP'};});this.inputSolutions.set(this.solution,levels);}for(const {pin,id,high}of levels){this.runtime.inputs[id]=high;const gpio=this.runtime.rp.gpio[pin];if(gpio.rawInputValue!==!!high)gpio.setInputValue(!!high);}}
