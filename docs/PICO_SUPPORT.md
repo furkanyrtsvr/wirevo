@@ -1,3 +1,5 @@
+Pico UART 0.109: [break, sabit parity ve çevre saati; DHT bağlı örnek](../dist/notices/PICO-UART109.md).
+
 Pico UART 0.108: [FIFO, CTS/RTS, kesme ve DMA denetimi](../dist/notices/PICO-UART108.md).
 
 # 0.107 fiziksel UART

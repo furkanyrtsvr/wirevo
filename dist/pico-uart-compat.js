@@ -1,11 +1,13 @@
+import {PicoUARTBitClock} from './pico-uart-bit-clock.js';
 // PL011 receive-side behavior missing from the upstream peripheral model.
 // The optional pin transport supplies the scheduled electrical TX/RX path.
 export function installPicoUART(runtime){
  for(const uart of runtime.rp.uart){
   const read=uart.readUint32.bind(uart),write=uart.writeUint32.bind(uart);let ifls=0x12,timeout=false,overrun=false,receiveErrors=0,txIRQ=false,ctsIRQ=false,dmacr=0,previousTX=0;
-  const alarm=runtime.rp.clock.createAlarm(()=>{timeout=uart.enabled&&!uart.rxFIFO.empty;uart.checkInterrupts();});
+  const alarm=new PicoUARTBitClock(runtime.rp.clock);let timeoutCycles=0;
   const capacity=()=>uart.fifosEnabled?32:1;
-  const touch=()=>{alarm.cancel();timeout=false;if(uart.enabled&&uart.rxEnabled&&!uart.rxFIFO.empty&&uart.baudRate>0&&Number.isFinite(uart.baudRate))alarm.schedule(512e9*uart.baudDivider/runtime.rp.clkPeri);};
+  const touch=()=>{alarm.cancel();timeout=false;if(uart.enabled&&uart.rxEnabled&&!uart.rxFIFO.empty&&uart.baudDivider>0&&Number.isFinite(uart.baudDivider)){timeoutCycles=16*uart.baudDivider;alarm.start(runtime.rp.clkPeri>0?timeoutCycles*1e9/runtime.rp.clkPeri:Infinity);alarm.at(32,()=>{timeout=uart.enabled&&!uart.rxFIFO.empty;uart.checkInterrupts();});}};
+  uart.periClockChanged=()=>{alarm.setPeriod(runtime.rp.clkPeri>0?timeoutCycles*1e9/runtime.rp.clkPeri:Infinity);};
   uart.txThreshold=()=>uart.fifosEnabled?([4,8,16,24,28][ifls&7]??16):0;
   uart.rxThreshold=()=>uart.fifosEnabled?([4,8,16,24,28][(ifls>>>3)&7]??16):1;
   uart.txEvent=event=>{const count=uart.pinTransport?.count??0,threshold=uart.txThreshold();if(count>threshold||event==='flush')txIRQ=false;else if(event==='shift'&&previousTX>threshold)txIRQ=true;previousTX=count;uart.checkInterrupts();};
@@ -18,8 +20,8 @@ export function installPicoUART(runtime){
    request(uart.dreq.tx,uart.enabled&&uart.txEnabled&&!!(dmacr&2)&&(uart.pinTransport?.count??0)<capacity());
    request(uart.dreq.rx,uart.enabled&&uart.rxEnabled&&!!(dmacr&1)&&!uart.rxFIFO.empty&&(!(dmacr&4)||!receiveErrors&&!overrun));
   };
-  const receive=(value,error=null)=>{if(!uart.enabled||!uart.rxEnabled)return;if(uart.rxFIFO.itemCount>=capacity())overrun=true;else {const flags=error==='parity'?2:error?1:0;receiveErrors|=flags;uart.rxFIFO.push((value&((1<<uart.wordLength)-1))|(flags<<8));}touch();uart.checkInterrupts();};
-  uart.receiveLoopback=value=>receive(value);
+  const receive=(value,error=null)=>{if(!uart.enabled||!uart.rxEnabled)return;if(uart.rxFIFO.itemCount>=capacity())overrun=true;else {const flags=typeof error==='number'?error&7:error==='parity'?2:error?1:0;receiveErrors|=flags;uart.rxFIFO.push((value&((1<<uart.wordLength)-1))|(flags<<8));}touch();uart.checkInterrupts();};
+  uart.receiveLoopback=(value,error)=>receive(value,error);
   uart.feedFrame=(value,error)=>{if(!(uart.ctrlRegister&128))receive(value,error);};
   uart.feedByte=value=>{if(!(uart.ctrlRegister&128))receive(value);};
   uart.readUint32=offset=>{if(offset===4)return (overrun?8:0)|receiveErrors;if(offset===0x34)return ifls;if(offset===0x48)return dmacr;if(offset===0x18)return ((uart.pinTransport?.count??0)===0?128:0)|((uart.pinTransport?.count??0)>=capacity()?32:0)|(uart.pinTransport?.cts?1:0)|(uart.pinTransport?.busy?8:0)|(uart.rxFIFO.empty?16:0)|(uart.rxFIFO.itemCount>=capacity()?64:0);const value=read(offset);if(offset===0){touch();uart.checkInterrupts();}return value;};

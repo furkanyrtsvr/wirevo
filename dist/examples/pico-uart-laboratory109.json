@@ -1,0 +1,2073 @@
+{
+  "schemaVersion": 3,
+  "name": "Pico - DHT connected UART break parity clock laboratory",
+  "model": "custom",
+  "code": "#include \"lab.h\"\nvolatile unsigned done,failures,phase,mark_ok,space_ok,parity_error,parity_clear;\nvolatile unsigned break_word,break_extra,break_clear,break_recovery,dht11_ok,dht22_ok;\nvolatile unsigned clock_word,clock_us,gate_busy,gate_empty,gate_word,gate_us,divider_word;\nvolatile unsigned timeout_paused,timeout_resumed;\nvolatile unsigned dht_stage,dht_raw11[5],dht_raw22[5];\nstatic volatile unsigned *peri_ctrl=(volatile unsigned*)(PICO_RP2350?0x40010048u:0x40008048u);\nstatic void drain(void){while(uart_is_readable(uart0))uart_get_hw(uart0)->dr;uart_get_hw(uart0)->rsr=0;}\nstatic unsigned word(unsigned timeout){unsigned t=time_us_32();while(!uart_is_readable(uart0)){if((unsigned)(time_us_32()-t)>=timeout)return 0xffff;sleep_us(10);}return uart_get_hw(uart0)->dr;}\nstatic void source(unsigned s){*peri_ctrl=0;sleep_us(2);*peri_ctrl=s<<5;*peri_ctrl=0x800|(s<<5);sleep_us(2);}\nstatic void low(int p){gpio_put(p,0);gpio_set_dir(p,1);}\nstatic void release(int p){gpio_set_dir(p,0);}\nstatic int wait_level(int p,int v,unsigned limit){unsigned t=time_us_32();while(gpio_get(p)!=v){if((unsigned)(time_us_32()-t)>limit)return -1;}return time_us_32()-t;}\nstatic int dht(int p,int start,int temperature,int humidity){\n uint8_t b[5]={0};low(p);sleep_ms(start);release(p);\n if(wait_level(p,0,200)<0){dht_stage=1;return 0;}if(wait_level(p,1,200)<0){dht_stage=2;return 0;}if(wait_level(p,0,200)<0){dht_stage=3;return 0;}\n for(int i=0;i<40;i++){if(wait_level(p,1,150)<0){dht_stage=100+i;return 0;}unsigned t=time_us_32();if(wait_level(p,0,150)<0){dht_stage=200+i;return 0;}b[i/8]=(b[i/8]<<1)|((unsigned)(time_us_32()-t)>45);}\n for(int i=0;i<5;i++){if(p==10)dht_raw11[i]=b[i];else dht_raw22[i]=b[i];}\n if((uint8_t)(b[0]+b[1]+b[2]+b[3])!=b[4])return 0;\n return p==10?b[0]==humidity&&b[2]==temperature:(b[0]*256+b[1])==humidity*10&&(b[2]*256+b[3])==temperature*10;\n}\nint main(void){\n stdio_init_all();gpio_set_function(0,GPIO_FUNC_UART);gpio_set_function(1,GPIO_FUNC_SIO);uart_init(uart0,9600);\n gpio_set_function(8,GPIO_FUNC_UART);gpio_set_function(9,GPIO_FUNC_UART);gpio_set_function(17,GPIO_FUNC_UART);uart_init(uart1,9600);\n // Added GP8 -> GP17 wire: TX1 reaches RX0 electrically; sensor wires stay in place.\n uart_get_hw(uart0)->lcr_h=0xf2;uart_get_hw(uart1)->lcr_h=0xf2;\n for(unsigned i=0;i<4;i++){unsigned b=i==0?0:i==1?1:i==2?255:85;uart_putc_raw(uart1,b);mark_ok+=word(20000)==b;}\n uart_tx_wait_blocking(uart1);uart_get_hw(uart0)->lcr_h=0xf6;uart_get_hw(uart1)->lcr_h=0xf6;\n for(unsigned i=0;i<4;i++){unsigned b=i==0?0:i==1?1:i==2?255:85;uart_putc_raw(uart1,b);space_ok+=word(20000)==b;}\n uart_tx_wait_blocking(uart1);uart_get_hw(uart1)->lcr_h=0xf2;uart_putc_raw(uart1,0x55);parity_error=word(20000);uart_get_hw(uart0)->rsr=0;parity_clear=uart_get_hw(uart0)->rsr;\n uart_tx_wait_blocking(uart1);uart_get_hw(uart0)->lcr_h=0x70;uart_get_hw(uart1)->lcr_h=0x70;drain();\n // DHT modules require their power-up settling interval before a request.\n sleep_ms(1100);\n // Hold a real break during both DHT transactions: one BE zero, no repeated bytes.\n gpio_init(10);gpio_pull_up(10);gpio_init(11);gpio_pull_up(11);\n uart_get_hw(uart1)->lcr_h=0x71;phase=1;\n dht11_ok=dht(10,20,26,61);dht22_ok=dht(11,2,27,62);\n break_word=word(20000);sleep_ms(3);break_extra=uart_is_readable(uart0);\n uart_get_hw(uart1)->lcr_h=0x70;sleep_ms(2);uart_get_hw(uart0)->rsr=0;break_clear=uart_get_hw(uart0)->rsr;\n uart_putc_raw(uart1,0xa5);break_recovery=word(20000);uart_tx_wait_blocking(uart1);\n // Safe clock-source change during a frame; TX and RX keep their bit phase.\n drain();unsigned t=time_us_32();uart_putc_raw(uart1,0x55);sleep_us(250);source(2);\n clock_word=word(20000);uart_tx_wait_blocking(uart1);clock_us=time_us_32()-t;\n source(0);drain();\n t=time_us_32();uart_putc_raw(uart1,0x96);sleep_us(250);*peri_ctrl=0;sleep_us(2);phase=2;sleep_ms(3);\n gate_busy=uart_get_hw(uart1)->fr&8;gate_empty=!uart_is_readable(uart0);*peri_ctrl=0x800;sleep_us(2);\n gate_word=word(20000);uart_tx_wait_blocking(uart1);gate_us=time_us_32()-t;\n if(PICO_RP2350){drain();volatile unsigned *div=peri_ctrl+1;uart_putc_raw(uart1,0x69);sleep_us(250);*div=2u<<16;divider_word=word(20000);uart_tx_wait_blocking(uart1);*div=1u<<16;sleep_us(2);}else divider_word=0x69;\n // A receive timeout counts UART clock bits, not wall time while clock-gated.\n drain();uart_putc_raw(uart1,0x6c);sleep_ms(2);uart_get_hw(uart0)->icr=64;*peri_ctrl=0;sleep_us(2);sleep_ms(5);\n timeout_paused=uart_get_hw(uart0)->ris&64;*peri_ctrl=0x800;sleep_ms(4);timeout_resumed=uart_get_hw(uart0)->ris&64;drain();\n failures=mark_ok!=4||space_ok!=4||!(parity_error&512)||parity_clear;\n failures+=!(break_word&1024)||break_extra||break_clear||break_recovery!=0xa5||!dht11_ok||!dht22_ok;\n failures+=clock_word!=0x55||clock_us<1500||!gate_busy||!gate_empty||gate_word!=0x96||gate_us<4000||divider_word!=0x69||timeout_paused||!timeout_resumed;\n // Restore normal sensor UARTs, with both DHT modules still physically wired.\n gpio_set_function(17,GPIO_FUNC_SIO);gpio_set_dir(17,GPIO_IN);gpio_pull_up(17);gpio_set_function(1,GPIO_FUNC_UART);\n uart_init(uart0,9600);uart_init(uart1,9600);gps_window(1200000);uart_tx_wait_blocking(uart0);int co2=co2_read();\n failures+=!(gps_rmc&&gps_gga&&!gps_bad&&reply_crc&&co2==850);\n printf(\"DHT stage=%u 11=%u,%u,%u,%u,%u 22=%u,%u,%u,%u,%u\\n\",dht_stage,dht_raw11[0],dht_raw11[1],dht_raw11[2],dht_raw11[3],dht_raw11[4],dht_raw22[0],dht_raw22[1],dht_raw22[2],dht_raw22[3],dht_raw22[4]);\n printf(\"PARITY mark=%u space=%u mismatch=%u clear=%u\\n\",mark_ok,space_ok,parity_error,parity_clear);\n printf(\"BREAK word=%u extra=%u clear=%u recovery=%u DHT11=%u DHT22=%u\\n\",break_word,break_extra,break_clear,break_recovery,dht11_ok,dht22_ok);\n printf(\"CLOCK word=%u us=%u gate=%u/%u word=%u us=%u divider=%u timeout=%u/%u\\n\",clock_word,clock_us,gate_busy,gate_empty,gate_word,gate_us,divider_word,timeout_paused,timeout_resumed);\n printf(\"GPS valid=%u bad=%u MHZ19 ppm=%d crc=%u\\n\",gps_valid,gps_bad,co2,reply_crc);\n printf(\"UART109 COMPLETE failures=%u\\n\",failures);done=1;\n while(1)sleep_ms(100);\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 20,
+      "y": 30,
+      "rotation": 0,
+      "params": {
+        "model": "pico-2"
+      }
+    },
+    {
+      "id": "sht31",
+      "type": "sht31",
+      "x": 540,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "aht20",
+      "type": "aht20",
+      "x": 730,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "adxl345",
+      "type": "adxl345",
+      "x": 920,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "ads1115",
+      "type": "ads1115",
+      "x": 1110,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "bme280",
+      "type": "bme280",
+      "x": 1300,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "bme680",
+      "type": "bme680",
+      "x": 1490,
+      "y": 60,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "vl53l0x",
+      "type": "vl53l0x",
+      "x": 350,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "ina226",
+      "type": "ina226",
+      "x": 540,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "ina219",
+      "type": "ina219",
+      "x": 730,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "max30102",
+      "type": "max30102",
+      "x": 920,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "bh1750",
+      "type": "bh1750",
+      "x": 1110,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "mpu6050",
+      "type": "mpu6050",
+      "x": 1300,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "ds3231",
+      "type": "ds3231",
+      "x": 1490,
+      "y": 250,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "tcs34725",
+      "type": "tcs34725",
+      "x": 350,
+      "y": 440,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "bmp280",
+      "type": "bmp280",
+      "x": 540,
+      "y": 440,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "rtc",
+      "type": "rtc",
+      "x": 730,
+      "y": 440,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "level",
+      "type": "levelShift",
+      "x": 920,
+      "y": 440,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "pullSDA",
+      "type": "resistor",
+      "x": 1110,
+      "y": 440,
+      "rotation": 0,
+      "params": {
+        "ohms": 4700
+      }
+    },
+    {
+      "id": "pullSCL",
+      "type": "resistor",
+      "x": 1300,
+      "y": 440,
+      "rotation": 0,
+      "params": {
+        "ohms": 4700
+      }
+    },
+    {
+      "id": "dht11",
+      "type": "dht11",
+      "x": 1490,
+      "y": 440,
+      "rotation": 0,
+      "params": {
+        "temperature": 26,
+        "humidity": 61
+      }
+    },
+    {
+      "id": "pull10",
+      "type": "resistor",
+      "x": 350,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "ohms": 4700
+      }
+    },
+    {
+      "id": "dht22",
+      "type": "dht22",
+      "x": 540,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "temperature": 27,
+        "humidity": 62
+      }
+    },
+    {
+      "id": "pull11",
+      "type": "resistor",
+      "x": 730,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "ohms": 4700
+      }
+    },
+    {
+      "id": "ds18b20",
+      "type": "ds18b20",
+      "x": 920,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "temperature": 28
+      }
+    },
+    {
+      "id": "pull12",
+      "type": "resistor",
+      "x": 1110,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "ohms": 4700
+      }
+    },
+    {
+      "id": "hx711",
+      "type": "hx711",
+      "x": 1300,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "rate": 80
+      }
+    },
+    {
+      "id": "load",
+      "type": "loadcell",
+      "x": 1490,
+      "y": 630,
+      "rotation": 0,
+      "params": {
+        "load": 200,
+        "capacity": 1000
+      }
+    },
+    {
+      "id": "distance",
+      "type": "hcSr04",
+      "x": 350,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "distance": 75
+      }
+    },
+    {
+      "id": "echoSeries",
+      "type": "resistor",
+      "x": 540,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "ohms": 10000
+      }
+    },
+    {
+      "id": "echoGround",
+      "type": "resistor",
+      "x": 730,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "ohms": 20000
+      }
+    },
+    {
+      "id": "thermo",
+      "type": "max6675",
+      "x": 920,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "temperature": 125,
+        "ambient": 25
+      }
+    },
+    {
+      "id": "bmp",
+      "type": "bmp280",
+      "x": 1110,
+      "y": 820,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "co2",
+      "type": "mhz19",
+      "x": 1300,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "ppm": 850
+      }
+    },
+    {
+      "id": "gps",
+      "type": "gps",
+      "x": 1490,
+      "y": 820,
+      "rotation": 0,
+      "params": {
+        "latitude": 41.01,
+        "longitude": 28.97
+      }
+    },
+    {
+      "id": "mux",
+      "type": "cd4067",
+      "x": 350,
+      "y": 1010,
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "lm35",
+      "type": "lm35",
+      "x": 540,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "temperature": 25
+      }
+    },
+    {
+      "id": "tmp36",
+      "type": "tmp36",
+      "x": 730,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "temperature": 25
+      }
+    },
+    {
+      "id": "mq2",
+      "type": "mq2",
+      "x": 920,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "rs": 10000
+      }
+    },
+    {
+      "id": "flame",
+      "type": "flame",
+      "x": 1110,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "level": 25
+      }
+    },
+    {
+      "id": "sound",
+      "type": "sound",
+      "x": 1300,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "level": 25
+      }
+    },
+    {
+      "id": "thermistor",
+      "type": "thermistor",
+      "x": 1490,
+      "y": 1010,
+      "rotation": 0,
+      "params": {
+        "temperature": 25
+      }
+    },
+    {
+      "id": "soilCap",
+      "type": "soilCap",
+      "x": 350,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "moisture": 25
+      }
+    },
+    {
+      "id": "water",
+      "type": "water",
+      "x": 540,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "level": 25
+      }
+    },
+    {
+      "id": "rain",
+      "type": "rain",
+      "x": 730,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "level": 25
+      }
+    },
+    {
+      "id": "soilProbe",
+      "type": "soilProbe",
+      "x": 920,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "level": 25
+      }
+    },
+    {
+      "id": "joystick",
+      "type": "joystick",
+      "x": 1110,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "x": 25,
+        "y": 75
+      }
+    },
+    {
+      "id": "ldr",
+      "type": "ldr",
+      "x": 1300,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "lux": 100
+      }
+    },
+    {
+      "id": "ldrBias",
+      "type": "resistor",
+      "x": 1490,
+      "y": 1200,
+      "rotation": 0,
+      "params": {
+        "ohms": 10000
+      }
+    },
+    {
+      "id": "pir",
+      "type": "pir",
+      "x": 350,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "motion": 1,
+        "hold": 1,
+        "inhibit": 0.2
+      }
+    },
+    {
+      "id": "irObstacle",
+      "type": "irObstacle",
+      "x": 540,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "active": 1
+      }
+    },
+    {
+      "id": "tilt",
+      "type": "tilt",
+      "x": 730,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "active": 1
+      }
+    },
+    {
+      "id": "hall",
+      "type": "hall",
+      "x": 920,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "active": 1
+      }
+    },
+    {
+      "id": "hallLimit",
+      "type": "resistor",
+      "x": 1110,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "ohms": 10000
+      }
+    },
+    {
+      "id": "hallDown",
+      "type": "resistor",
+      "x": 1300,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "ohms": 20000
+      }
+    },
+    {
+      "id": "mic",
+      "type": "i2sMic",
+      "x": 1490,
+      "y": 1390,
+      "rotation": 0,
+      "params": {
+        "sample": 1048576
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w0",
+      "from": "sht31:VIN",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w1",
+      "from": "sht31:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w2",
+      "from": "sht31:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w3",
+      "from": "sht31:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w4",
+      "from": "sht31:ADDR",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w5",
+      "from": "aht20:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w6",
+      "from": "aht20:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w7",
+      "from": "aht20:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w8",
+      "from": "aht20:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w9",
+      "from": "adxl345:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w10",
+      "from": "adxl345:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w11",
+      "from": "adxl345:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w12",
+      "from": "adxl345:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w13",
+      "from": "adxl345:SDO",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w14",
+      "from": "adxl345:CS",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w15",
+      "from": "ads1115:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w16",
+      "from": "ads1115:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w17",
+      "from": "ads1115:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w18",
+      "from": "ads1115:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w19",
+      "from": "ads1115:ADDR",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w20",
+      "from": "ads1115:A0",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w21",
+      "from": "ads1115:A1",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w22",
+      "from": "ads1115:A2",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w23",
+      "from": "ads1115:A3",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w24",
+      "from": "bme280:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w25",
+      "from": "bme280:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w26",
+      "from": "bme280:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w27",
+      "from": "bme280:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w28",
+      "from": "bme280:ADDR",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w29",
+      "from": "bme680:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w30",
+      "from": "bme680:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w31",
+      "from": "bme680:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w32",
+      "from": "bme680:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w33",
+      "from": "bme680:ADDR",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w34",
+      "from": "vl53l0x:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w35",
+      "from": "vl53l0x:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w36",
+      "from": "vl53l0x:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w37",
+      "from": "vl53l0x:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w38",
+      "from": "vl53l0x:XSHUT",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w39",
+      "from": "ina226:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w40",
+      "from": "ina226:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w41",
+      "from": "ina226:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w42",
+      "from": "ina226:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w43",
+      "from": "ina226:A0",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w44",
+      "from": "ina226:A1",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w45",
+      "from": "ina226:VIN+",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w46",
+      "from": "ina226:VIN-",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w47",
+      "from": "ina219:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w48",
+      "from": "ina219:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w49",
+      "from": "ina219:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w50",
+      "from": "ina219:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w51",
+      "from": "ina219:A0",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w52",
+      "from": "ina219:A1",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w53",
+      "from": "ina219:VIN+",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w54",
+      "from": "ina219:VIN-",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w55",
+      "from": "max30102:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w56",
+      "from": "max30102:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w57",
+      "from": "max30102:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w58",
+      "from": "max30102:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w59",
+      "from": "bh1750:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w60",
+      "from": "bh1750:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w61",
+      "from": "bh1750:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w62",
+      "from": "bh1750:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w63",
+      "from": "bh1750:ADDR",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w64",
+      "from": "mpu6050:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w65",
+      "from": "mpu6050:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w66",
+      "from": "mpu6050:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w67",
+      "from": "mpu6050:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w68",
+      "from": "mpu6050:AD0",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w69",
+      "from": "ds3231:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w70",
+      "from": "ds3231:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w71",
+      "from": "ds3231:SDA",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w72",
+      "from": "ds3231:SCL",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w73",
+      "from": "tcs34725:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w74",
+      "from": "tcs34725:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w75",
+      "from": "tcs34725:SDA",
+      "to": "mcu:GPIO6",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w76",
+      "from": "tcs34725:SCL",
+      "to": "mcu:GPIO7",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w77",
+      "from": "bmp280:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w78",
+      "from": "bmp280:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w79",
+      "from": "bmp280:SDI",
+      "to": "mcu:GPIO6",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w80",
+      "from": "bmp280:SCK",
+      "to": "mcu:GPIO7",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w81",
+      "from": "bmp280:SDO",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w82",
+      "from": "bmp280:CSB",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w83",
+      "from": "rtc:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w84",
+      "from": "rtc:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w85",
+      "from": "level:LV",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w86",
+      "from": "level:HV",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w87",
+      "from": "level:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w88",
+      "from": "rtc:SDA",
+      "to": "level:H0",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w89",
+      "from": "level:L0",
+      "to": "mcu:GPIO6",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w90",
+      "from": "rtc:SCL",
+      "to": "level:H1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w91",
+      "from": "level:L1",
+      "to": "mcu:GPIO7",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w92",
+      "from": "pullSDA:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w93",
+      "from": "pullSDA:2",
+      "to": "mcu:GPIO4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w94",
+      "from": "pullSCL:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w95",
+      "from": "pullSCL:2",
+      "to": "mcu:GPIO5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w96",
+      "from": "dht11:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w97",
+      "from": "dht11:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w98",
+      "from": "dht11:DATA",
+      "to": "mcu:GPIO10",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w99",
+      "from": "pull10:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w100",
+      "from": "pull10:2",
+      "to": "dht11:DATA",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w101",
+      "from": "dht22:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w102",
+      "from": "dht22:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w103",
+      "from": "dht22:DATA",
+      "to": "mcu:GPIO11",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w104",
+      "from": "pull11:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w105",
+      "from": "pull11:2",
+      "to": "dht22:DATA",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w106",
+      "from": "ds18b20:VDD",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w107",
+      "from": "ds18b20:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w108",
+      "from": "ds18b20:DQ",
+      "to": "mcu:GPIO12",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w109",
+      "from": "pull12:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w110",
+      "from": "pull12:2",
+      "to": "ds18b20:DQ",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w111",
+      "from": "hx711:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w112",
+      "from": "hx711:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w113",
+      "from": "hx711:DT",
+      "to": "mcu:GPIO13",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w114",
+      "from": "hx711:SCK",
+      "to": "mcu:GPIO14",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w115",
+      "from": "load:E+",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w116",
+      "from": "load:E-",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w117",
+      "from": "load:A+",
+      "to": "hx711:A+",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w118",
+      "from": "load:A-",
+      "to": "hx711:A-",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w119",
+      "from": "hx711:E+",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w120",
+      "from": "hx711:E-",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w121",
+      "from": "distance:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w122",
+      "from": "distance:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w123",
+      "from": "distance:TRIG",
+      "to": "mcu:GPIO15",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w124",
+      "from": "distance:ECHO",
+      "to": "echoSeries:1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w125",
+      "from": "echoSeries:2",
+      "to": "mcu:GPIO21",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w126",
+      "from": "echoGround:1",
+      "to": "mcu:GPIO21",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w127",
+      "from": "echoGround:2",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w128",
+      "from": "thermo:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w129",
+      "from": "thermo:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w130",
+      "from": "thermo:SCK",
+      "to": "mcu:GPIO18",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w131",
+      "from": "thermo:SO",
+      "to": "mcu:GPIO16",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w132",
+      "from": "thermo:CS",
+      "to": "mcu:GPIO20",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w133",
+      "from": "thermo:T-",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w134",
+      "from": "bmp:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w135",
+      "from": "bmp:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w136",
+      "from": "bmp:SCK",
+      "to": "mcu:GPIO18",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w137",
+      "from": "bmp:SDO",
+      "to": "mcu:GPIO16",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w138",
+      "from": "bmp:SDI",
+      "to": "mcu:GPIO19",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w139",
+      "from": "bmp:CSB",
+      "to": "mcu:GPIO17",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w140",
+      "from": "co2:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w141",
+      "from": "co2:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w142",
+      "from": "co2:RX",
+      "to": "mcu:GPIO8",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w143",
+      "from": "co2:TX",
+      "to": "mcu:GPIO9",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w144",
+      "from": "gps:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w145",
+      "from": "gps:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w146",
+      "from": "gps:TX",
+      "to": "mcu:GPIO1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w147",
+      "from": "gps:RX",
+      "to": "mcu:GPIO0",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w148",
+      "from": "mux:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w149",
+      "from": "mux:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w150",
+      "from": "mux:EN",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w151",
+      "from": "mux:SIG",
+      "to": "mcu:GPIO28",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w152",
+      "from": "mux:S0",
+      "to": "mcu:GPIO2",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w153",
+      "from": "mux:S1",
+      "to": "mcu:GPIO3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w154",
+      "from": "mux:S2",
+      "to": "mcu:GPIO22",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w155",
+      "from": "mux:S3",
+      "to": "mcu:GPIO26",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w156",
+      "from": "lm35:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w157",
+      "from": "lm35:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w158",
+      "from": "lm35:OUT",
+      "to": "mux:C0",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w159",
+      "from": "tmp36:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w160",
+      "from": "tmp36:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w161",
+      "from": "tmp36:OUT",
+      "to": "mux:C1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w162",
+      "from": "mq2:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w163",
+      "from": "mq2:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w164",
+      "from": "mq2:AO",
+      "to": "mux:C2",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w165",
+      "from": "flame:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w166",
+      "from": "flame:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w167",
+      "from": "flame:AO",
+      "to": "mux:C3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w168",
+      "from": "sound:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w169",
+      "from": "sound:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w170",
+      "from": "sound:AO",
+      "to": "mux:C4",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w171",
+      "from": "thermistor:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w172",
+      "from": "thermistor:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w173",
+      "from": "thermistor:AO",
+      "to": "mux:C5",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w174",
+      "from": "soilCap:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w175",
+      "from": "soilCap:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w176",
+      "from": "soilCap:AO",
+      "to": "mux:C6",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w177",
+      "from": "water:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w178",
+      "from": "water:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w179",
+      "from": "water:AO",
+      "to": "mux:C7",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w180",
+      "from": "rain:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w181",
+      "from": "rain:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w182",
+      "from": "rain:AO",
+      "to": "mux:C8",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w183",
+      "from": "soilProbe:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w184",
+      "from": "soilProbe:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w185",
+      "from": "soilProbe:AO",
+      "to": "mux:C9",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w186",
+      "from": "joystick:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w187",
+      "from": "joystick:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w188",
+      "from": "joystick:VRX",
+      "to": "mux:C10",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w189",
+      "from": "ldr:1",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w190",
+      "from": "ldrBias:1",
+      "to": "ldr:2",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w191",
+      "from": "ldrBias:2",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w192",
+      "from": "ldr:2",
+      "to": "mux:C11",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w193",
+      "from": "pir:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w194",
+      "from": "pir:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w195",
+      "from": "irObstacle:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w196",
+      "from": "irObstacle:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w197",
+      "from": "tilt:VCC",
+      "to": "mcu:3V3",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w198",
+      "from": "tilt:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w199",
+      "from": "hall:VCC",
+      "to": "mcu:VBUS",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w200",
+      "from": "hall:GND",
+      "to": "mcu:GND",
+      "color": "#000000",
+      "points": []
+    },
+    {
+      "id": "w201",
+      "from": "hall:DO",
+      "to": "hallLimit:1",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "w202",
+      "from": "hallDown:2",
+      "to": "mcu:GND",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "pir:OUT",
+      "to": "mcu:GPIO27",
+      "id": "w203",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "irObstacle:OUT",
+      "to": "mux:C12",
+      "id": "w204",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "tilt:DO",
+      "to": "mux:C13",
+      "id": "w205",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "hallLimit:2",
+      "to": "mux:C14",
+      "id": "w206",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "hallDown:1",
+      "to": "mux:C14",
+      "id": "w207",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:VCC",
+      "to": "mcu:3V3",
+      "id": "w208",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:GND",
+      "to": "mcu:GND",
+      "id": "w209",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:BCLK",
+      "to": "mcu:GPIO18",
+      "id": "w210",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:WS",
+      "to": "mcu:GPIO19",
+      "id": "w211",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:LR",
+      "to": "mcu:GND",
+      "id": "w212",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "from": "mic:DOUT",
+      "to": "mux:C15",
+      "id": "w213",
+      "color": "#22c55e",
+      "points": []
+    },
+    {
+      "id": "uart109-loop",
+      "from": "mcu:GPIO8",
+      "to": "mcu:GPIO17",
+      "color": "#a855f7",
+      "points": []
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "GPIO15",
+    "picoArchitecture": "arm",
+    "tracePins": [
+      "GPIO14",
+      "GPIO0",
+      "GPIO1"
+    ]
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "lab.h",
+      "content": "#pragma once\n#include <pico/stdlib.h>\n#include <hardware/uart.h>\n#include <hardware/i2c.h>\n#include <stdio.h>\nextern volatile unsigned gps_valid,gps_bad,gps_rmc,gps_gga,done,round_no,reply_count,reply_crc;\nvoid gps_poll(void);void gps_window(unsigned);int co2_read(void);\n"
+    },
+    {
+      "name": "nmea.c",
+      "content": "#include \"lab.h\"\nvolatile unsigned gps_valid,gps_bad,gps_rmc,gps_gga;\nstatic char line[100];static unsigned used;static char messages[2][100];static unsigned saved;\nstatic unsigned hex(char c){return c>='0'&&c<='9'?c-'0':c>='A'&&c<='F'?c-'A'+10:255;}\nvoid gps_poll(void){while(uart_is_readable(uart0)){char c=uart_getc(uart0);if(c=='$'){used=0;line[used++]=c;continue;}if(!used)continue;if(c=='\\n'){line[used]=0;unsigned crc=0,i=1;while(i<used&&line[i]!='*')crc^=line[i++];if(i+2<used&&crc==(hex(line[i+1])*16+hex(line[i+2]))){gps_valid++;if(saved<2){unsigned k=0;do{messages[saved][k]=line[k];}while(line[k++]);saved++;}if(line[3]=='R'&&line[4]=='M'&&line[5]=='C')gps_rmc++;if(line[3]=='G'&&line[4]=='G'&&line[5]=='A')gps_gga++;}else gps_bad++;used=0;}else if(used<98)line[used++]=c;else used=0;}}\nvoid gps_window(unsigned us){unsigned at=time_us_32();while((unsigned)(time_us_32()-at)<us){gps_poll();sleep_us(100);}for(unsigned k=0;k<saved;k++)printf(\"NMEA %s\\n\",messages[k]);saved=0;}\n"
+    },
+    {
+      "name": "co2.c",
+      "content": "#include \"lab.h\"\nvolatile unsigned reply_count,reply_crc;volatile int ppm;\nint co2_read(void){\n uart_set_baudrate(uart1,9600);uart_set_format(uart1,8,1,UART_PARITY_NONE);\n gpio_set_function(8,GPIO_FUNC_UART);gpio_set_function(9,GPIO_FUNC_UART);uart_get_hw(uart1)->cr=0x301u;\n while(uart_is_readable(uart1))uart_getc(uart1);\n uint8_t query[]={255,1,0x86,0,0,0,0,0,0x79},reply[9]={0};reply_count=0;reply_crc=0;ppm=-1;\n uart_write_blocking(uart1,query,9);unsigned at=time_us_32();while(reply_count<9&&(unsigned)(time_us_32()-at)<120000){gps_poll();if(uart_is_readable(uart1))reply[reply_count++]=uart_getc(uart1);else sleep_us(50);}\n if(reply_count==9){unsigned sum=0;for(int i=1;i<8;i++)sum+=reply[i];reply_crc=((256-sum)&255)==reply[8]&&reply[0]==255&&reply[1]==0x86;if(reply_crc)ppm=reply[2]*256+reply[3];}\n return ppm;\n}\n"
+    }
+  ]
+}
