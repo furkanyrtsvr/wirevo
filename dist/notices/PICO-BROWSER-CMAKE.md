@@ -1,3 +1,5 @@
+> **Güncel başlangıç noktası:** [Pico kapsamı](../pico-support.html) · [Kullanım kılavuzu](../guide.html). Bu teknik belge ayrıntı ve eski sürüm kayıtları içerir; eski yerel yardımcı talimatları geçerli değildir.
+
 # Yardımcısız tarayıcı kullanımı — 0.99
 
 Kod derlemesi ve simülasyon web sayfasında çalışır. Python, yerel yardımcı uygulama, port/kod eşleştirmesi veya SDK kurulumu istenmez. İlk derleme için derleyici dosyaları ağdan indirilir; çevrimdışı kullanım için arayüzdeki derleyici önbelleği hazırlanabilir.

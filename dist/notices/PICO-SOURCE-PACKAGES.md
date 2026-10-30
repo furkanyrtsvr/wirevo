@@ -1,3 +1,5 @@
+> [Uygulama kılavuzu](../guide.html#s26) · [Güncel Pico kapsamı](../pico-support.html). Normal kullanım için paket zorunlu değildir.
+
 # İsteğe bağlı Pico SDK kaynak paketleri
 
 Wirevo varsayılan olarak **Tarayıcı derleyicisi** kullanır. Derle → Çalıştır için kurulum gerekmez. Bu seçenek, ek C kaynakları ve başlıkları mevcut Clang/WebAssembly derleyicisine ekler. Tam resmi Pico SDK veya tam CMake kurulumu değildir. Port, anahtar, Python, yardımcı uygulama ve sunucuda derleme kullanılmaz.

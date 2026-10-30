@@ -1,43 +1,44 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme ve mikrodenetleyici simülasyonu. Kaynak sürümü: **0.109.0**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.110.0**.
 
-**[Wirevo’yu aç](https://wirevo-furka.equalwood4.chatgpt.site/)**
+**[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
-Pico sera beklemeleri ve GPIO/devre çözümü hızlandırıldı. [56 parçalı yeni sensör laboratuvarı ve açık UART bulguları](dist/notices/PICO-LABORATORY106.md); [0.106 sürüm notları](docs/RELEASE_0.106.md). Tam gerçek zaman ve bütün donanım özellikleri garantisi verilmez.
+## Başlangıç
 
-Pico GPS / MH-Z19 fiziksel UART bağlantıları tamamlandı. [Yeni 56 parçalı UART projesi, sonuçlar ve sınırlar](dist/notices/PICO-UART107.md). Yeni SDK API eklenmedi.
+1. Güncel, WebAssembly destekleyen bir masaüstü tarayıcıda Wirevo’yu açın.
+2. Kartı ve örnek projeyi seçin; bileşenleri yerleştirip bağlayın.
+3. Kaynak dosyalarını düzenleyin; **Derle → Çalıştır**.
+4. Çalışmanızı **JSON / ZIP** olarak indirin. Başka bilgisayarda aynı dosyayı içe aktarın.
 
-## Kullanım
+Kullanıcı için ek masaüstü uygulaması, Python yardımcısı, yerel servis, port veya bağlantı anahtarı gerekmez. İlk derlemede derleyici dosyaları indirilir. Çevrimdışı kullanım için derleyici önbelleğini hazırlayın; tarayıcı verileri silinebilir, proje yedeğinizi ayrıca indirin.
 
-1. Siteyi WebAssembly destekleyen güncel bir masaüstü tarayıcıda açın.
-2. Kartınızı ve bir örnek proje seçin; bileşenleri yerleştirip bağlayın.
-3. Kodunuzu yazın, **Derle**, ardından **Çalıştır** düğmesine basın.
-4. Projenizi JSON veya ZIP olarak kaydedip başka bilgisayarda yeniden açın.
+## Kartlar ve çalışma kapsamı
 
-Kullanıcıların Python, yerel SDK yardımcısı veya ek masaüstü uygulaması kurması gerekmez. Port, bağlantı kodu, yerel ağ izni ve yardımcı JSON dosyası istenmez. İlk derlemede derleyici dosyaları internetten alınır; çevrimdışı kullanım için arayüzdeki derleyici önbelleği hazırlanabilir.
+38 kart profili: 6 Arduino/AVR, 14 ESP32, 9 STM32, 1 TM4C123 ve 8 Pico. Ortak devre alanı, çok dosyalı kaynaklar, seri terminal, ölçüm ve desteklenen profillerde hata ayıklama bulunur. Dil ve çevrebirim kapsamı karta göre değişir. Katalogdaki 126 bileşen tanımı, bütün kart/kütüphane birleşimlerinin doğrulandığı anlamına gelmez.
 
-## Kartlar ve kapsam
+- [Uygulama kılavuzu: bağlantılar, kod, debug, kaydetme ve sorun giderme](dist/guide.html)
+- [Güncel Pico kapsamı ve somut sınırlar](docs/PICO_SUPPORT.md)
+- [STM32 kapsamı](dist/notices/STM32-MODEL.md), [ESP32 kapsamı](dist/notices/ESP32-MODEL.md), [Tiva C kapsamı](dist/notices/TIVA-MODEL.md)
+- [Dil/çalışma ortamları](dist/notices/UNIFIED-WORKSPACE.md), [lisanslar ve firmware bilgileri](dist/notices/FIRMWARE-NOTICES.md)
 
-Arduino/AVR, ESP32, STM32, TM4C123 ve Pico aileleri; ortak devre bileşenleri, çok dosyalı kod, desteklenen dil/kart eşleşmelerinde C/C++ ve MicroPython, seri terminal ve sanal çevrebirim modelleri içerir. Kartların desteklenen özellikleri birbirinden farklıdır; bütün fiziksel silikon davranışlarının birebir modeli vaat edilmez.
+Simülasyon eğitim ve uygulama geliştirme içindir. Tam SPICE, tüm fiziksel silikon davranışları, özgün CYW43 radyo yürütümü, tam CPU çevrim doğruluğu veya her devrede gerçek zaman garantisi sunulmaz.
 
-Pico C kodu tarayıcıdaki Clang/WebAssembly derleyicisini ve Wirevo’nun desteklediği SDK uyumluluk katmanını kullanır. **Tam upstream Pico SDK/CMake tarayıcıda çalıştırılmaz.** Desteklenmeyen API veya CMake komutu açık hata verir. [Pico tarayıcı kapsamı](dist/notices/PICO-BROWSER-CMAKE.md), [kart/model belgeleri](dist/notices/). Önceden derlenmiş ARM UF2 içe aktarımı isteğe bağlıdır; normal kullanımın koşulu değildir.
+## Pico: paket eklemeden çalıştırma
 
-Pico C için hazır **SPI 16 bit** ve **UART FIFO / loopback** örnekleri eklendi. [0.102 uyumluluk kapsamı ve sınırları](dist/notices/PICO-COMPAT102.md).
+C kodu mevcut Clang/WebAssembly derleyicisi ve desteklenen SDK uyumluluk katmanı ile derlenir. Tam upstream SDK/CMake çalıştırılmaz. Normal kullanımda SDK indirmeniz gerekmez.
 
-Pico C için **PWM kesirli bölücü / kesme** ve **I2C süre sınırı / EEPROM** örnekleri de bulunur. [0.103 kapsamı](dist/notices/PICO-COMPAT103.md).
+İsteğe bağlı **SDK paketi ekle** seçeneği, uyumlu C kaynakları ve başlıklarını ZIP/klasörden ekleyip probe derlemesiyle denetler. JSON tek başına SDK veya derleyici değildir. Yerel çalıştırılabilir araçlar tarayıcıda çalıştırılamaz. [Paket adımları ve sınırlar](dist/notices/PICO-SOURCE-PACKAGES.md).
 
-## İsteğe bağlı Pico kaynak paketi
+## 0.110 değişikliği
 
-Panelde derleme yöntemi seçilir; **Kurulum ve kullanım adımları** başlığına tıklanınca adımlar aynı panelin içinde açılır. **SDK paketi ekle** ile C kaynakları ve başlıkları klasör veya ZIP olarak tarayıcıya eklenebilir. Paket probe koduyla gerçekten derlenerek denetlenir; istenirse bu tarayıcıda saklanır. JSON yalnız dosya tanımıdır; kaynakların yerini tutmaz. Tam resmi SDK/CMake veya bilgisayarda çalışan derleyici eklenmez. [Paket hazırlama, örnekler, kartlar ve sınırlar](dist/notices/PICO-SOURCE-PACKAGES.md).
+Yeni Pico özelliği eklenmedi. Büyük sensör devresindeki UART beklemeleri, boş CPU döngüsü yerine mevcut olay bekleme mekanizmasını kullanır. Aynı 192 bayt / 9600 baud ölçümünde yürütülen komut 15.003.000’den 55.000’e indi; bir yerel ölçümde süre 2,17 saniyeden 0,36 saniyeye düştü. Bunlar belirli bir UART iş yükünün sonuçlarıdır, bütün devreler için hız garantisi değildir. Eski firmware’i yeniden derleyin.
 
-## Yerel yardımcıların kaldırılması
-
-0.95–0.98 döneminde denenmiş yerel SDK/Python/Tk yardımcıları, bağlantı pencereleri, port/kod eşleştirmesi ve indirilebilir yardımcı paketleri 0.99 ile kaldırılmıştır. Eski JSON projelerindeki yerel SDK tercihi tarayıcı moduna geçirilir; kullanıcı kaynakları ve devreleri korunur. Yalnız tam SDK'ye özgü kaynaklar, desteklenen tarayıcı API'lerine uyarlanmayı gerektirebilir.
+[Yeni doğrulama, proje ve ölçümler](dist/notices/PICO-PERFORMANCE110.md) · [Sürüm notu](docs/RELEASE_0.110.md). Eski testler yeniden çalıştırılmadı; yalnız yeni performans/bekleme düzeltmeleri denetlendi.
 
 ## Geliştiriciler için
 
-Depoyu geliştirmek veya web uygulamasını kendi bilgisayarınızda sunmak için Node.js 24 ve npm kullanılır. Bu bölüm siteyi kullanan kişiler için zorunlu değildir.
+Bu bölüm site kullanıcıları için gerekli değildir. Kaynak geliştirme için Node.js 24 ve npm:
 
 ```sh
 npm ci
@@ -45,24 +46,8 @@ npm run build
 npm start
 ```
 
-Yerel geliştirme adresi: http://127.0.0.1:4173 . `dist/` web çalışma zamanlarını, WASM dosyalarını, görselleri, örnekleri ve lisansları içerdiği için depoda tutulur.
+Yerel geliştirme: http://127.0.0.1:4173 . `src/` kaynakları, `dist/` web çalışma zamanları/WASM/görseller/lisansları, `scripts/` araçları, `tests/` kontrolleri, `docs/` güncel kapsam ve sürüm kayıtlarını içerir. `dist/` dağıtım dosyaları depoda korunur.
 
-| Klasör | İçerik |
-| --- | --- |
-| src/ | Editör, derleyici ve çalışma zamanı kaynakları |
-| dist/ | Web uygulaması, modeller, WASM ve lisanslar |
-| scripts/ | Geliştirme ve sürüm araçları |
-| tests/ | Otomatik kontroller ve örnek girdiler |
-| docs/ | Kapsam ve sürüm notları |
+## Belge düzeni
 
-[0.99 değişiklikleri](docs/RELEASE_0.99.md). Tarihsel değişiklikler Git geçmişinde korunur; eski sürüm açıklamaları güncel kullanım talimatı değildir.
-
-[0.100 değişiklikleri](docs/RELEASE_0.100.md).
-
-Pico 0.104: toplu GPIO, sinyal override ve pad kontrolü; gerçek GP14→GP16 geri okuma örneği. [Kapsam ve sınırlar](dist/notices/PICO-COMPAT104.md), [güncel destek tablosu](docs/PICO_SUPPORT.md).
-
-Pico 0.105: sera projesinde MCU resetiyle EEPROM kaybı düzeltildi; sabit DC çözümleri önbelleğe alındı ve çalışan worker görüntü paketleri 20 Hz ile sınırlandı. SDK API eklenmedi. [Kapsam](dist/notices/PICO-GREENHOUSE105.md).
-
-Pico UART FIFO/CTS/RTS ve zamanlama: [yeni örnek, doğrulanan kapsam ve sınırlar](dist/notices/PICO-UART108.md).
-
-Pico UART break/stick parity ve CLK_PERI: [DHT bağlantıları korunan örnek ve sınırlar](dist/notices/PICO-UART109.md).
+Başlangıç noktası bu README, kullanım kılavuzu ve güncel destek sayfasıdır. Eski sürüm notları tarihçedir; yeni kurulum talimatı veya yeniden bulunmuş eksik listesi değildir. [Eski Pico kayıtları](docs/history/PICO_SUPPORT_TO_0.109.md). 0.95–0.98 dönemindeki yerel SDK yardımcıları kaldırılmıştır.

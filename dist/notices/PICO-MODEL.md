@@ -1,3 +1,5 @@
+> **Güncel başlangıç noktası:** [Pico kapsamı](../pico-support.html) · [Kullanım kılavuzu](../guide.html). Bu teknik belge ayrıntı ve eski sürüm kayıtları içerir; eski yerel yardımcı talimatları geçerli değildir.
+
 # v0.95 local SDK integration
 
 Compile can now invoke the installed official SDK through an authenticated loopback helper, stream real CMake/Arm GNU logs and automatically load the resulting ARM firmware into the paused circuit. Run starts it. [Setup and limits](PICO-SDK-BRIDGE.md). This is the real local build workflow, separate from the bounded browser compiler. Original CYW43 execution/radio and native SDK source debug mapping remain unchanged.

@@ -1,0 +1,3 @@
+
+# Keep PDF streams byte-for-byte; Git must not normalize their line endings.
+*.pdf binary

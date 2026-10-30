@@ -132,12 +132,14 @@ void uart_set_fifo_enabled(uart_inst_t*u,bool e){unsigned a=cf_ua(u)+0x2c;REG(a)
 void uart_set_irq_enables(uart_inst_t*u,bool rx,bool tx){REG(cf_ua(u)+0x38)=(rx?0x50u:0)|(tx?0x20u:0);}
 void uart_set_irqs_enabled(uart_inst_t*u,bool rx,bool tx){uart_set_irq_enables(u,rx,tx);}
 void uart_set_translate_crlf(uart_inst_t*u,bool e){cf_crlf[u->index]=e;}
-void uart_tx_wait_blocking(uart_inst_t*u){while(REG(cf_ua(u)+0x18)&8u)tight_loop_contents();}
-bool uart_is_readable_within_us(uart_inst_t*u,uint32_t us){uint32_t start=time_us_32();do{if(uart_is_readable(u))return true;}while((uint32_t)(time_us_32()-start)<us);return false;}
+// Blocking UART waits yield the existing simulator sleep hint. The event
+// scheduler still visits UART edges, device clocks and IRQs before resuming.
+void uart_tx_wait_blocking(uart_inst_t*u){while(REG(cf_ua(u)+0x18)&8u)REG(0x5fffe010u)=1000;}
+bool uart_is_readable_within_us(uart_inst_t*u,uint32_t us){uint32_t start=time_us_32(),elapsed;do{if(uart_is_readable(u))return true;elapsed=time_us_32()-start;if(elapsed>=us)break;uint32_t left=us-elapsed;REG(0x5fffe010u)=left>1000?1000:left;}while(1);return false;}
 uint uart_init(uart_inst_t*u,uint baud){unsigned a=cf_ua(u);REG(a+0x30)=0;uint actual=uart_set_baudrate(u,baud);cf_crlf[u->index]=false;REG(a+0x2c)=0x70;REG(a+0x34)=0x12;REG(a+0x38)=0;REG(a+0x30)=0x301;return actual;}
 bool uart_is_readable(uart_inst_t*u){return !(REG(cf_ua(u)+0x18)&16u);}bool uart_is_writable(uart_inst_t*u){return !(REG(cf_ua(u)+0x18)&32u);}
-void uart_putc_raw(uart_inst_t*u,char c){while(!uart_is_writable(u)){}REG(cf_ua(u))=(unsigned char)c;}void uart_putc(uart_inst_t*u,char c){if(cf_crlf[u->index]&&c=='\\n')uart_putc_raw(u,'\\r');uart_putc_raw(u,c);}
-int uart_getc(uart_inst_t*u){while(!uart_is_readable(u)){}return REG(cf_ua(u))&255;}
+void uart_putc_raw(uart_inst_t*u,char c){while(!uart_is_writable(u))REG(0x5fffe010u)=1000;REG(cf_ua(u))=(unsigned char)c;}void uart_putc(uart_inst_t*u,char c){if(cf_crlf[u->index]&&c=='\\n')uart_putc_raw(u,'\\r');uart_putc_raw(u,c);}
+int uart_getc(uart_inst_t*u){while(!uart_is_readable(u))REG(0x5fffe010u)=1000;return REG(cf_ua(u))&255;}
 void uart_puts(uart_inst_t*u,const char*s){bool cr=false;while(*s){char c=*s++;if(cr)uart_putc_raw(u,c);else uart_putc(u,c);cr=c=='\\r';}}
 void uart_write_blocking(uart_inst_t*u,const uint8_t*s,unsigned n){while(n--)uart_putc_raw(u,*s++);}void uart_read_blocking(uart_inst_t*u,uint8_t*d,unsigned n){while(n--)*d++=uart_getc(u);}
 i2c_inst_t cf_i2c0={0},cf_i2c1={1};spi_inst_t cf_spi0={0},cf_spi1={1};
