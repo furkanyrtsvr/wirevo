@@ -1,0 +1,32 @@
+{
+  "version": "0.18.0",
+  "source": "https://github.com/hathach/tinyusb/tree/0.18.0/src",
+  "license": "MIT",
+  "hashEncoding": "UTF-8 LF",
+  "files": {
+    "class/hid/hid_device.c": "f5a6f34579f09388a26d52bc4afbca341047ad8fb9c7b1cdc04be7c43d36b9e4",
+    "class/hid/hid_device.h": "e1f44fef1a69a35fb7f6bb1f24c363ffcc88f83bfa1ddfc7e4dce7706cdf9d5f",
+    "class/hid/hid_host.c": "c4f1125c2235dc870b280343df5d4c088824c6d40430ea65cd21cf56f84ddea9",
+    "class/hid/hid_host.h": "cbfc3f56bb0e07d3f9dda7c93be3f9a3728d1362a193fbc08ace5785b59e0718",
+    "class/hid/hid.h": "3b73169a278b793381e2ece8d74d269f66bb5f484755d4ecbe75ff087f3866b8",
+    "common/tusb_common.h": "c0c7b28252306237e743f47cf93b993d1d6748bbf5c0dddc4a15ca5beb670380",
+    "common/tusb_compiler.h": "67c0d328da1fce878e8424345927608f72bd229c75cab004ef870b8337835dfd",
+    "common/tusb_debug.h": "8b7524672bfd66d0074ddebf7580c6c38d1fcc66aab35f7839f55f80de1b0b6f",
+    "common/tusb_fifo.c": "15bc124f43163e9f3edb9d581ab62af05a9b4342522f0712e6b9f4ca694227f5",
+    "common/tusb_fifo.h": "b2ffb668fb6f0dee1bb42684a340b99604440bb9d2ae7df22becf7f53467c4d9",
+    "common/tusb_mcu.h": "16436eb8a980d8695a03cddaed144c90939f07b824a0778e1e7090d42c310a96",
+    "common/tusb_private.h": "cc4506fcc3dfbc7434e7ac480abec7b45adb42ee08c411837a791f6e5a955d12",
+    "common/tusb_types.h": "e1bcf0b177d2ab350432e71b63948690fcde0b2a903ac9919bd421c40441bb4d",
+    "common/tusb_verify.h": "ce951c9250ed0183fa7e5814f5ad13af865d28b8da5bf32efdffc82728252768",
+    "device/dcd.h": "6c1e262648c70347ce37bf086ac48fc428560464162217b808065ddaec5104a1",
+    "device/usbd_control.c": "f22f7a5b833670e2736dbdbffc00d7cd081b934d54e191aafd25375ee2427ee3",
+    "device/usbd_pvt.h": "b64096863ca06f8e10b85e1b4a185485482b3a4e05a898acf77cf5815e7e25ec",
+    "device/usbd.c": "f15a6da11eca127b792bd04d3270e6ea3901b0a29c24f462d5687d63da1df6cb",
+    "device/usbd.h": "ba2b0a19932a9ef3373e343d79a0188b78702500050b265a8b13e770c117784f",
+    "osal/osal_none.h": "565131db716ff4e713f151a7c5ddcd7f760c89eedae4db3b7acc327602720941",
+    "osal/osal.h": "a8c4430e85fa638ad03100d21702ec15d854fbb9bbf342c151500e4b1bbc4af2",
+    "tusb_option.h": "25557fc8407fd5844b67b2cd81a99529e4358940b94c00ca9490b70a69df4f77",
+    "tusb.c": "93dac601cb6976d1f1931109d59e0649d6aa876b7222c58885b77cefa671eb7e",
+    "tusb.h": "dff6fad4682282e13f1a68fcd860099d378dbaf6674a72f8e3786def9a07e7b4"
+  }
+}

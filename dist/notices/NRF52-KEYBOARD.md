@@ -1,3 +1,5 @@
+> 0.113.0: Özgün TinyUSB C17 klavye profili ayrıca eklendi. [Yeni USB yığını, kullanım ve sınırlar](NRF52-TINYUSB.md). Aşağıdaki Wirevo API örneği ayrı sanal servistir; BLE/SoftDevice desteği genişletilmiş değildir.
+
 # nRF52840 C17 — sanal USB HID / Bluetooth LE klavye
 
 Wirevo 0.112.0. Dört kart profili: SuperMini, nice!nano v2, XIAO nRF52840 ve XIAO nRF52840 Sense.
@@ -20,7 +22,7 @@ Bu **Wirevo’ya özgü sanal taşıma API’sidir**. Tam nRF52840 USBD/RADIO, S
 8. BLE bildirim aboneliği kapatılınca BLE rapor kabulü durur; USB çalışmaya devam eder. Yeniden açınca hazır örnek mevcut tuşları tekrar gönderir.
 9. Reset firmware’i ve sanal bağlantıları sıfırlar; tekrar bağlayın. JSON/ZIP kaynak/devre/firmware’i taşır; alıcının oturumu ve yazılan metin kaydedilmez.
 
-Örneğin üç pini: SuperMini/nice!nano A=P0.22, B=P0.24, Shift=P0.11; XIAO/Sense A=P0.03, B=P0.28, Shift=P0.29. Her tact bir tarafta GPIO, diğer tarafta GND; firmware dahili pull-up kullanır. SuperMini’nin kullanıcı fotoğrafı ve diğer kart çizimleri korunur.
+Örneğin üç pini: SuperMini/nice!nano A=P0.22, B=P0.24, Shift=P0.11; XIAO/Sense A=P0.03, B=P0.28, Shift=P0.29. Her tact bir tarafta GPIO, diğer tarafta GND; firmware dahili pull-up kullanır. Kartların referansa göre vektör çizimleri kullanılır.
 
 ## C API
 

@@ -1,5 +1,11652 @@
-var Re=class n{static read_bytes(e,_){let E=new n;return E.buf=e.getUint32(_,!0),E.buf_len=e.getUint32(_+4,!0),E}static read_bytes_array(e,_,E){let d=[];for(let i=0;i<E;i++)d.push(n.read_bytes(e,_+8*i));return d}},re=class n{static read_bytes(e,_){let E=new n;return E.buf=e.getUint32(_,!0),E.buf_len=e.getUint32(_+4,!0),E}static read_bytes_array(e,_,E){let d=[];for(let i=0;i<E;i++)d.push(n.read_bytes(e,_+8*i));return d}},Xe=0,We=1,xe=2;var we=2,G=3,Ie=4;var oe=class{head_length(){return 24}name_length(){return this.dir_name.byteLength}write_head_bytes(e,_){e.setBigUint64(_,this.d_next,!0),e.setBigUint64(_+8,this.d_ino,!0),e.setUint32(_+16,this.dir_name.length,!0),e.setUint8(_+20,this.d_type)}write_name_bytes(e,_,E){e.set(this.dir_name.slice(0,Math.min(this.dir_name.byteLength,E)),_)}constructor(e,_,E,d){let i=new TextEncoder().encode(E);this.d_next=e,this.d_ino=_,this.d_namlen=i.byteLength,this.d_type=d,this.dir_name=i}};var Ke=1;var ee=class{write_bytes(e,_){e.setUint8(_,this.fs_filetype),e.setUint16(_+2,this.fs_flags,!0),e.setBigUint64(_+8,this.fs_rights_base,!0),e.setBigUint64(_+16,this.fs_rights_inherited,!0)}constructor(e,_){this.fs_rights_base=0n,this.fs_rights_inherited=0n,this.fs_filetype=e,this.fs_flags=_}};var me=1,Pe=2,ve=4,he=8,ne=class{write_bytes(e,_){e.setBigUint64(_,this.dev,!0),e.setBigUint64(_+8,this.ino,!0),e.setUint8(_+16,this.filetype),e.setBigUint64(_+24,this.nlink,!0),e.setBigUint64(_+32,this.size,!0),e.setBigUint64(_+38,this.atim,!0),e.setBigUint64(_+46,this.mtim,!0),e.setBigUint64(_+52,this.ctim,!0)}constructor(e,_,E){this.dev=0n,this.nlink=0n,this.atim=0n,this.mtim=0n,this.ctim=0n,this.ino=e,this.filetype=_,this.size=E}},sn=0;var En=1,ce=class n{static read_bytes(e,_){return new n(e.getBigUint64(_,!0),e.getUint8(_+8),e.getUint32(_+16,!0),e.getBigUint64(_+24,!0),e.getUint16(_+36,!0))}constructor(e,_,E,d,i){this.userdata=e,this.eventtype=_,this.clockid=E,this.timeout=d,this.flags=i}},pe=class{write_bytes(e,_){e.setBigUint64(_,this.userdata,!0),e.setUint16(_+8,this.error,!0),e.setUint8(_+10,this.eventtype)}constructor(e,_,E){this.userdata=e,this.error=_,this.eventtype=E}};var xn=0,Ve=class{write_bytes(e,_){e.setUint32(_,this.pr_name.byteLength,!0)}constructor(e){this.pr_name=new TextEncoder().encode(e)}},be=class n{static dir(e){let _=new n;return _.tag=xn,_.inner=new Ve(e),_}write_bytes(e,_){e.setUint32(_,this.tag,!0),this.inner.write_bytes(e,_+4)}};var mn=class{enable(e){this.log=hn(e===void 0?!0:e,this.prefix)}get enabled(){return this.isEnabled}constructor(e){this.isEnabled=e,this.prefix="wasi:",this.enable(e)}};function hn(n,e){return n?console.log.bind(console,"%c%s","color: #265BA0",e):()=>{}}var b=new mn(!1);var Oe=class extends Error{constructor(e){super("exit with exit code "+e),this.code=e}},ze=class{start(e){this.inst=e;try{return e.exports._start(),0}catch(_){if(_ instanceof Oe)return _.code;throw _}}initialize(e){this.inst=e,e.exports._initialize&&e.exports._initialize()}constructor(e,_,E,d={}){this.args=[],this.env=[],this.fds=[],b.enable(d.debug),this.args=e,this.env=_,this.fds=E;let i=this;this.wasiImport={args_sizes_get(t,s){let T=new DataView(i.inst.exports.memory.buffer);T.setUint32(t,i.args.length,!0);let o=0;for(let I of i.args)o+=I.length+1;return T.setUint32(s,o,!0),b.log(T.getUint32(t,!0),T.getUint32(s,!0)),0},args_get(t,s){let T=new DataView(i.inst.exports.memory.buffer),o=new Uint8Array(i.inst.exports.memory.buffer),I=s;for(let a=0;a<i.args.length;a++){T.setUint32(t,s,!0),t+=4;let R=new TextEncoder().encode(i.args[a]);o.set(R,s),T.setUint8(s+R.length,0),s+=R.length+1}return b.enabled&&b.log(new TextDecoder("utf-8").decode(o.slice(I,s))),0},environ_sizes_get(t,s){let T=new DataView(i.inst.exports.memory.buffer);T.setUint32(t,i.env.length,!0);let o=0;for(let I of i.env)o+=new TextEncoder().encode(I).length+1;return T.setUint32(s,o,!0),b.log(T.getUint32(t,!0),T.getUint32(s,!0)),0},environ_get(t,s){let T=new DataView(i.inst.exports.memory.buffer),o=new Uint8Array(i.inst.exports.memory.buffer),I=s;for(let a=0;a<i.env.length;a++){T.setUint32(t,s,!0),t+=4;let R=new TextEncoder().encode(i.env[a]);o.set(R,s),T.setUint8(s+R.length,0),s+=R.length+1}return b.enabled&&b.log(new TextDecoder("utf-8").decode(o.slice(I,s))),0},clock_res_get(t,s){let T;switch(t){case 1:{T=5000n;break}case 0:{T=1000000n;break}default:return 52}return new DataView(i.inst.exports.memory.buffer).setBigUint64(s,T,!0),0},clock_time_get(t,s,T){let o=new DataView(i.inst.exports.memory.buffer);if(t===0)o.setBigUint64(T,BigInt(new Date().getTime())*1000000n,!0);else if(t==1){let I;try{I=BigInt(Math.round(performance.now()*1e6))}catch{I=0n}o.setBigUint64(T,I,!0)}else o.setBigUint64(T,0n,!0);return 0},fd_advise(t,s,T,o){return i.fds[t]!=null?0:8},fd_allocate(t,s,T){return i.fds[t]!=null?i.fds[t].fd_allocate(s,T):8},fd_close(t){if(i.fds[t]!=null){let s=i.fds[t].fd_close();return i.fds[t]=void 0,s}else return 8},fd_datasync(t){return i.fds[t]!=null?i.fds[t].fd_sync():8},fd_fdstat_get(t,s){if(i.fds[t]!=null){let{ret:T,fdstat:o}=i.fds[t].fd_fdstat_get();return o?.write_bytes(new DataView(i.inst.exports.memory.buffer),s),T}else return 8},fd_fdstat_set_flags(t,s){return i.fds[t]!=null?i.fds[t].fd_fdstat_set_flags(s):8},fd_fdstat_set_rights(t,s,T){return i.fds[t]!=null?i.fds[t].fd_fdstat_set_rights(s,T):8},fd_filestat_get(t,s){if(i.fds[t]!=null){let{ret:T,filestat:o}=i.fds[t].fd_filestat_get();return o?.write_bytes(new DataView(i.inst.exports.memory.buffer),s),T}else return 8},fd_filestat_set_size(t,s){return i.fds[t]!=null?i.fds[t].fd_filestat_set_size(s):8},fd_filestat_set_times(t,s,T,o){return i.fds[t]!=null?i.fds[t].fd_filestat_set_times(s,T,o):8},fd_pread(t,s,T,o,I){let a=new DataView(i.inst.exports.memory.buffer),R=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let r=Re.read_bytes_array(a,s,T),N=0;for(let S of r){let{ret:P,data:A}=i.fds[t].fd_pread(S.buf_len,o);if(P!=0)return a.setUint32(I,N,!0),P;if(R.set(A,S.buf),N+=A.length,o+=BigInt(A.length),A.length!=S.buf_len)break}return a.setUint32(I,N,!0),0}else return 8},fd_prestat_get(t,s){let T=new DataView(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let{ret:o,prestat:I}=i.fds[t].fd_prestat_get();return I?.write_bytes(T,s),o}else return 8},fd_prestat_dir_name(t,s,T){if(i.fds[t]!=null){let{ret:o,prestat:I}=i.fds[t].fd_prestat_get();if(I==null)return o;let a=I.inner.pr_name;return new Uint8Array(i.inst.exports.memory.buffer).set(a.slice(0,T),s),a.byteLength>T?37:0}else return 8},fd_pwrite(t,s,T,o,I){let a=new DataView(i.inst.exports.memory.buffer),R=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let r=re.read_bytes_array(a,s,T),N=0;for(let S of r){let P=R.slice(S.buf,S.buf+S.buf_len),{ret:A,nwritten:m}=i.fds[t].fd_pwrite(P,o);if(A!=0)return a.setUint32(I,N,!0),A;if(N+=m,o+=BigInt(m),m!=P.byteLength)break}return a.setUint32(I,N,!0),0}else return 8},fd_read(t,s,T,o){let I=new DataView(i.inst.exports.memory.buffer),a=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let R=Re.read_bytes_array(I,s,T),r=0;for(let N of R){let{ret:S,data:P}=i.fds[t].fd_read(N.buf_len);if(S!=0)return I.setUint32(o,r,!0),S;if(a.set(P,N.buf),r+=P.length,P.length!=N.buf_len)break}return I.setUint32(o,r,!0),0}else return 8},fd_readdir(t,s,T,o,I){let a=new DataView(i.inst.exports.memory.buffer),R=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let r=0;for(;;){let{ret:N,dirent:S}=i.fds[t].fd_readdir_single(o);if(N!=0)return a.setUint32(I,r,!0),N;if(S==null)break;if(T-r<S.head_length()){r=T;break}let P=new ArrayBuffer(S.head_length());if(S.write_head_bytes(new DataView(P),0),R.set(new Uint8Array(P).slice(0,Math.min(P.byteLength,T-r)),s),s+=S.head_length(),r+=S.head_length(),T-r<S.name_length()){r=T;break}S.write_name_bytes(R,s,T-r),s+=S.name_length(),r+=S.name_length(),o=S.d_next}return a.setUint32(I,r,!0),0}else return 8},fd_renumber(t,s){if(i.fds[t]!=null&&i.fds[s]!=null){let T=i.fds[s].fd_close();return T!=0?T:(i.fds[s]=i.fds[t],i.fds[t]=void 0,0)}else return 8},fd_seek(t,s,T,o){let I=new DataView(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let{ret:a,offset:R}=i.fds[t].fd_seek(s,T);return I.setBigInt64(o,R,!0),a}else return 8},fd_sync(t){return i.fds[t]!=null?i.fds[t].fd_sync():8},fd_tell(t,s){let T=new DataView(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let{ret:o,offset:I}=i.fds[t].fd_tell();return T.setBigUint64(s,I,!0),o}else return 8},fd_write(t,s,T,o){let I=new DataView(i.inst.exports.memory.buffer),a=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let R=re.read_bytes_array(I,s,T),r=0;for(let N of R){let S=a.slice(N.buf,N.buf+N.buf_len),{ret:P,nwritten:A}=i.fds[t].fd_write(S);if(P!=0)return I.setUint32(o,r,!0),P;if(r+=A,A!=S.byteLength)break}return I.setUint32(o,r,!0),0}else return 8},path_create_directory(t,s,T){let o=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let I=new TextDecoder("utf-8").decode(o.slice(s,s+T));return i.fds[t].path_create_directory(I)}else return 8},path_filestat_get(t,s,T,o,I){let a=new DataView(i.inst.exports.memory.buffer),R=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let r=new TextDecoder("utf-8").decode(R.slice(T,T+o)),{ret:N,filestat:S}=i.fds[t].path_filestat_get(s,r);return S?.write_bytes(a,I),N}else return 8},path_filestat_set_times(t,s,T,o,I,a,R){let r=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let N=new TextDecoder("utf-8").decode(r.slice(T,T+o));return i.fds[t].path_filestat_set_times(s,N,I,a,R)}else return 8},path_link(t,s,T,o,I,a,R){let r=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null&&i.fds[I]!=null){let N=new TextDecoder("utf-8").decode(r.slice(T,T+o)),S=new TextDecoder("utf-8").decode(r.slice(a,a+R)),{ret:P,inode_obj:A}=i.fds[t].path_lookup(N,s);return A==null?P:i.fds[I].path_link(S,A,!1)}else return 8},path_open(t,s,T,o,I,a,R,r,N){let S=new DataView(i.inst.exports.memory.buffer),P=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let A=new TextDecoder("utf-8").decode(P.slice(T,T+o));b.log(A);let{ret:m,fd_obj:u}=i.fds[t].path_open(s,A,I,a,R,r);if(m!=0)return m;i.fds.push(u);let f=i.fds.length-1;return S.setUint32(N,f,!0),0}else return 8},path_readlink(t,s,T,o,I,a){let R=new DataView(i.inst.exports.memory.buffer),r=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let N=new TextDecoder("utf-8").decode(r.slice(s,s+T));b.log(N);let{ret:S,data:P}=i.fds[t].path_readlink(N);if(P!=null){let A=new TextEncoder().encode(P);if(A.length>I)return R.setUint32(a,0,!0),8;r.set(A,o),R.setUint32(a,A.length,!0)}return S}else return 8},path_remove_directory(t,s,T){let o=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let I=new TextDecoder("utf-8").decode(o.slice(s,s+T));return i.fds[t].path_remove_directory(I)}else return 8},path_rename(t,s,T,o,I,a){let R=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null&&i.fds[o]!=null){let r=new TextDecoder("utf-8").decode(R.slice(s,s+T)),N=new TextDecoder("utf-8").decode(R.slice(I,I+a)),{ret:S,inode_obj:P}=i.fds[t].path_unlink(r);if(P==null)return S;if(S=i.fds[o].path_link(N,P,!0),S!=0&&i.fds[t].path_link(r,P,!0)!=0)throw"path_link should always return success when relinking an inode back to the original place";return S}else return 8},path_symlink(t,s,T,o,I){let a=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[T]!=null){let R=new TextDecoder("utf-8").decode(a.slice(t,t+s)),r=new TextDecoder("utf-8").decode(a.slice(o,o+I));return 58}else return 8},path_unlink_file(t,s,T){let o=new Uint8Array(i.inst.exports.memory.buffer);if(i.fds[t]!=null){let I=new TextDecoder("utf-8").decode(o.slice(s,s+T));return i.fds[t].path_unlink_file(I)}else return 8},poll_oneoff(t,s,T){if(T===0)return 28;if(T>1)return b.log("poll_oneoff: only a single subscription is supported"),58;let o=new DataView(i.inst.exports.memory.buffer),I=ce.read_bytes(o,t),a=I.eventtype,R=I.clockid,r=I.timeout;if(a!==sn)return b.log("poll_oneoff: only clock subscriptions are supported"),58;let N;if(R===1)N=()=>BigInt(Math.round(performance.now()*1e6));else if(R===0)N=()=>BigInt(new Date().getTime())*1000000n;else return 28;let S=(I.flags&En)!==0?r:N()+r;for(;S>N(););return new pe(I.userdata,0,a).write_bytes(o,s),0},proc_exit(t){throw new Oe(t)},proc_raise(t){throw"raised signal "+t},sched_yield(){},random_get(t,s){let T=new Uint8Array(i.inst.exports.memory.buffer).subarray(t,t+s);if("crypto"in globalThis&&(typeof SharedArrayBuffer>"u"||!(i.inst.exports.memory.buffer instanceof SharedArrayBuffer)))for(let o=0;o<s;o+=65536)crypto.getRandomValues(T.subarray(o,o+65536));else for(let o=0;o<s;o++)T[o]=Math.random()*256|0},sock_recv(t,s,T){throw"sockets not supported"},sock_send(t,s,T){throw"sockets not supported"},sock_shutdown(t,s){throw"sockets not supported"},sock_accept(t,s){throw"sockets not supported"}}}};var $=class{fd_allocate(e,_){return 58}fd_close(){return 0}fd_fdstat_get(){return{ret:58,fdstat:null}}fd_fdstat_set_flags(e){return 58}fd_fdstat_set_rights(e,_){return 58}fd_filestat_get(){return{ret:58,filestat:null}}fd_filestat_set_size(e){return 58}fd_filestat_set_times(e,_,E){return 58}fd_pread(e,_){return{ret:58,data:new Uint8Array}}fd_prestat_get(){return{ret:58,prestat:null}}fd_pwrite(e,_){return{ret:58,nwritten:0}}fd_read(e){return{ret:58,data:new Uint8Array}}fd_readdir_single(e){return{ret:58,dirent:null}}fd_seek(e,_){return{ret:58,offset:0n}}fd_sync(){return 0}fd_tell(){return{ret:58,offset:0n}}fd_write(e){return{ret:58,nwritten:0}}path_create_directory(e){return 58}path_filestat_get(e,_){return{ret:58,filestat:null}}path_filestat_set_times(e,_,E,d,i){return 58}path_link(e,_,E){return 58}path_unlink(e){return{ret:58,inode_obj:null}}path_lookup(e,_){return{ret:58,inode_obj:null}}path_open(e,_,E,d,i,t){return{ret:54,fd_obj:null}}path_readlink(e){return{ret:58,data:null}}path_remove_directory(e){return 58}path_rename(e,_,E){return 58}path_unlink_file(e){return 58}},V=class n{static issue_ino(){return n.next_ino++}static root_ino(){return 0n}constructor(){this.ino=n.issue_ino()}};V.next_ino=1n;var ae=class extends ${fd_allocate(e,_){if(!(this.file.size>e+_)){let E=new Uint8Array(Number(e+_));E.set(this.file.data,0),this.file.data=E}return 0}fd_fdstat_get(){return{ret:0,fdstat:new ee(Ie,0)}}fd_filestat_set_size(e){if(this.file.size>e)this.file.data=new Uint8Array(this.file.data.buffer.slice(0,Number(e)));else{let _=new Uint8Array(Number(e));_.set(this.file.data,0),this.file.data=_}return 0}fd_read(e){let _=this.file.data.slice(Number(this.file_pos),Number(this.file_pos+BigInt(e)));return this.file_pos+=BigInt(_.length),{ret:0,data:_}}fd_pread(e,_){return{ret:0,data:this.file.data.slice(Number(_),Number(_+BigInt(e)))}}fd_seek(e,_){let E;switch(_){case Xe:E=e;break;case We:E=this.file_pos+e;break;case xe:E=BigInt(this.file.data.byteLength)+e;break;default:return{ret:28,offset:0n}}return E<0?{ret:28,offset:0n}:(this.file_pos=E,{ret:0,offset:this.file_pos})}fd_tell(){return{ret:0,offset:this.file_pos}}fd_write(e){if(this.file.readonly)return{ret:8,nwritten:0};if(this.file_pos+BigInt(e.byteLength)>this.file.size){let _=this.file.data;this.file.data=new Uint8Array(Number(this.file_pos+BigInt(e.byteLength))),this.file.data.set(_)}return this.file.data.set(e,Number(this.file_pos)),this.file_pos+=BigInt(e.byteLength),{ret:0,nwritten:e.byteLength}}fd_pwrite(e,_){if(this.file.readonly)return{ret:8,nwritten:0};if(_+BigInt(e.byteLength)>this.file.size){let E=this.file.data;this.file.data=new Uint8Array(Number(_+BigInt(e.byteLength))),this.file.data.set(E)}return this.file.data.set(e,Number(_)),{ret:0,nwritten:e.byteLength}}fd_filestat_get(){return{ret:0,filestat:this.file.stat()}}constructor(e){super(),this.file_pos=0n,this.file=e}},le=class extends ${fd_seek(e,_){return{ret:8,offset:0n}}fd_tell(){return{ret:8,offset:0n}}fd_allocate(e,_){return 8}fd_fdstat_get(){return{ret:0,fdstat:new ee(G,0)}}fd_readdir_single(e){if(b.enabled&&(b.log("readdir_single",e),b.log(e,this.dir.contents.keys())),e==0n)return{ret:0,dirent:new oe(1n,this.dir.ino,".",G)};if(e==1n)return{ret:0,dirent:new oe(2n,this.dir.parent_ino(),"..",G)};if(e>=BigInt(this.dir.contents.size)+2n)return{ret:0,dirent:null};let[_,E]=Array.from(this.dir.contents.entries())[Number(e-2n)];return{ret:0,dirent:new oe(e+1n,E.ino,_,E.stat().filetype)}}path_filestat_get(e,_){let{ret:E,path:d}=q.from(_);if(d==null)return{ret:E,filestat:null};let{ret:i,entry:t}=this.dir.get_entry_for_path(d);return t==null?{ret:i,filestat:null}:{ret:0,filestat:t.stat()}}path_lookup(e,_){let{ret:E,path:d}=q.from(e);if(d==null)return{ret:E,inode_obj:null};let{ret:i,entry:t}=this.dir.get_entry_for_path(d);return t==null?{ret:i,inode_obj:null}:{ret:0,inode_obj:t}}path_open(e,_,E,d,i,t){let{ret:s,path:T}=q.from(_);if(T==null)return{ret:s,fd_obj:null};let{ret:o,entry:I}=this.dir.get_entry_for_path(T);if(I==null){if(o!=44)return{ret:o,fd_obj:null};if((E&me)==me){let{ret:a,entry:R}=this.dir.create_entry_for_path(_,(E&Pe)==Pe);if(R==null)return{ret:a,fd_obj:null};I=R}else return{ret:44,fd_obj:null}}else if((E&ve)==ve)return{ret:20,fd_obj:null};return(E&Pe)==Pe&&I.stat().filetype!==G?{ret:54,fd_obj:null}:I.path_open(E,d,t)}path_create_directory(e){return this.path_open(0,e,me|Pe,0n,0n,0).ret}path_link(e,_,E){let{ret:d,path:i}=q.from(e);if(i==null)return d;if(i.is_dir)return 44;let{ret:t,parent_entry:s,filename:T,entry:o}=this.dir.get_parent_dir_and_entry_for_path(i,!0);if(s==null||T==null)return t;if(o!=null){let I=_.stat().filetype==G,a=o.stat().filetype==G;if(I&&a)if(E&&o instanceof w){if(o.contents.size!=0)return 55}else return 20;else{if(I&&!a)return 54;if(!I&&a)return 31;if(!(_.stat().filetype==Ie&&o.stat().filetype==Ie))return 20}}return!E&&_.stat().filetype==G?63:(s.contents.set(T,_),0)}path_unlink(e){let{ret:_,path:E}=q.from(e);if(E==null)return{ret:_,inode_obj:null};let{ret:d,parent_entry:i,filename:t,entry:s}=this.dir.get_parent_dir_and_entry_for_path(E,!0);return i==null||t==null?{ret:d,inode_obj:null}:s==null?{ret:44,inode_obj:null}:(i.contents.delete(t),{ret:0,inode_obj:s})}path_unlink_file(e){let{ret:_,path:E}=q.from(e);if(E==null)return _;let{ret:d,parent_entry:i,filename:t,entry:s}=this.dir.get_parent_dir_and_entry_for_path(E,!1);return i==null||t==null||s==null?d:s.stat().filetype===G?31:(i.contents.delete(t),0)}path_remove_directory(e){let{ret:_,path:E}=q.from(e);if(E==null)return _;let{ret:d,parent_entry:i,filename:t,entry:s}=this.dir.get_parent_dir_and_entry_for_path(E,!1);return i==null||t==null||s==null?d:!(s instanceof w)||s.stat().filetype!==G?54:s.contents.size!==0?55:i.contents.delete(t)?0:44}fd_filestat_get(){return{ret:0,filestat:this.dir.stat()}}fd_filestat_set_size(e){return 8}fd_read(e){return{ret:8,data:new Uint8Array}}fd_pread(e,_){return{ret:8,data:new Uint8Array}}fd_write(e){return{ret:8,nwritten:0}}fd_pwrite(e,_){return{ret:8,nwritten:0}}constructor(e){super(),this.dir=e}},Ce=class extends le{fd_prestat_get(){return{ret:0,prestat:be.dir(this.prestat_name)}}constructor(e,_){super(new w(_)),this.prestat_name=e}},J=class extends V{path_open(e,_,E){if(this.readonly&&(_&BigInt(64))==BigInt(64))return{ret:63,fd_obj:null};if((e&he)==he){if(this.readonly)return{ret:63,fd_obj:null};this.data=new Uint8Array([])}let d=new ae(this);return E&Ke&&d.fd_seek(0n,xe),{ret:0,fd_obj:d}}get size(){return BigInt(this.data.byteLength)}stat(){return new ne(this.ino,Ie,this.size)}constructor(e,_){super(),this.data=new Uint8Array(e),this.readonly=!!_?.readonly}},q=class In{static from(e){let _=new In;if(_.is_dir=e.endsWith("/"),e.startsWith("/"))return{ret:76,path:null};if(e.includes("\0"))return{ret:28,path:null};for(let E of e.split("/"))if(!(E===""||E===".")){if(E===".."){if(_.parts.pop()==null)return{ret:76,path:null};continue}_.parts.push(E)}return{ret:0,path:_}}to_path_string(){let e=this.parts.join("/");return this.is_dir&&(e+="/"),e}constructor(){this.parts=[],this.is_dir=!1}},w=class n extends V{parent_ino(){return this.parent==null?V.root_ino():this.parent.ino}path_open(e,_,E){return{ret:0,fd_obj:new le(this)}}stat(){return new ne(this.ino,G,0n)}get_entry_for_path(e){let _=this;for(let E of e.parts){if(!(_ instanceof n))return{ret:54,entry:null};let d=_.contents.get(E);if(d!==void 0)_=d;else return b.log(E),{ret:44,entry:null}}return e.is_dir&&_.stat().filetype!=G?{ret:54,entry:null}:{ret:0,entry:_}}get_parent_dir_and_entry_for_path(e,_){let E=e.parts.pop();if(E===void 0)return{ret:28,parent_entry:null,filename:null,entry:null};let{ret:d,entry:i}=this.get_entry_for_path(e);if(i==null)return{ret:d,parent_entry:null,filename:null,entry:null};if(!(i instanceof n))return{ret:54,parent_entry:null,filename:null,entry:null};let t=i.contents.get(E);return t===void 0?_?{ret:0,parent_entry:i,filename:E,entry:null}:{ret:44,parent_entry:null,filename:null,entry:null}:e.is_dir&&t.stat().filetype!=G?{ret:54,parent_entry:null,filename:null,entry:null}:{ret:0,parent_entry:i,filename:E,entry:t}}create_entry_for_path(e,_){let{ret:E,path:d}=q.from(e);if(d==null)return{ret:E,entry:null};let{ret:i,parent_entry:t,filename:s,entry:T}=this.get_parent_dir_and_entry_for_path(d,!0);if(t==null||s==null)return{ret:i,entry:null};if(T!=null)return{ret:20,entry:null};b.log("create",d);let o;return _?o=new n(new Map):o=new J(new ArrayBuffer(0)),t.contents.set(s,o),T=o,{ret:0,entry:T}}constructor(e){super(),this.parent=null,e instanceof Array?this.contents=new Map(e):this.contents=e;for(let _ of this.contents.values())_ instanceof n&&(_.parent=this)}},Ae=class n extends ${fd_filestat_get(){return{ret:0,filestat:new ne(this.ino,we,BigInt(0))}}fd_fdstat_get(){let e=new ee(we,0);return e.fs_rights_base=BigInt(64),{ret:0,fdstat:e}}fd_write(e){return this.write(e),{ret:0,nwritten:e.byteLength}}static lineBuffered(e){let _=new TextDecoder("utf-8",{fatal:!1}),E="";return new n(d=>{E+=_.decode(d,{stream:!0});let i=E.split(`
-`);for(let[t,s]of i.entries())t<i.length-1?e(s):E=s})}constructor(e){super(),this.ino=V.issue_ino(),this.write=e}};var fe=(n,e)=>`https://docs.espressif.com/projects/esp-dev-kits/en/latest/${n}/${e}/user_guide.html`,je=[];function K(n,e,_,E,d="rows"){let i=d==="xiao"?84:d==="nano"?210:d==="p4"?460:220,t=d==="xiao"?108:d==="nano"?86:d==="p4"?350:460,s=new Map,T=[];for(let[I,a]of[["left",_],["right",E]])for(let[R,r]of a.entries()){let N=String(r),S=N.match(/^(?:GPIO|TX|RX)?(\d+)$/),P=S?"GPIO"+S[1]:N==="G"?"GND":["VBUS"].includes(N)?"5V":N,A=S?P:N==="G"?"GND":N.startsWith("NC")?"NC":N,m=s.get(A)||0;s.set(A,m+1);let u={id:A+(m?"."+m:""),name:e.aliasLabels?.[P]||N,net:P};S?Object.assign(u,{port:"ESP",bit:Number(S[1])}):P==="GND"?u.voltage=0:P==="3V3"||n==="esp32h2"&&P==="VBAT"?u.voltage=3.3:P==="5V"&&(u.voltage=5),(["RST","RESET","LDO_EN","VUSB"].includes(N)||N.startsWith("NC"))&&(u.connectable=!1),d==="nano"?(u.x=12+R*12.6,u.y=I==="left"?7:79):d==="p4"?(u.x=20+R*21,u.y=I==="left"?296:320):d==="xiao"?(u.x=I==="left"?6:78,u.y=17+R*12):(u.x=I==="left"?17:203,u.y=86+R*311/Math.max(_.length-1,E.length-1)),T.push(u)}let o=[...new Set(T.filter(I=>I.port).map(I=>I.bit))].sort((I,a)=>I-a);je.push({id:n,...e,width:i,height:t,layout:d,pins:T,gpio:o,pads:T.length,asset:n+".svg"})}K("esp32h2",{name:"ESP32-H2",board:"DevKitM-1 \xB7 v1.3 N4",arch:"RISC-V \xB7 RV32IMAC",target:"esp32h2",hz:96e6,flash:4*1024*1024,chipId:16,ram:240*1024,mux:1611202560,muxOffset:4,source:fe("esp32h2","esp32-h2-devkitm-1"),examplePins:{6:11,7:10},reserved:"GPIO13/14: 32 kHz kristal; GPIO6/7: mod\xFCl flash"},["3V3","RST",0,1,2,3,"NC13","NC14",4,5,"NC","VBAT","G","5V","G"],["G","TX24","RX23",10,11,25,12,8,22,"G",9,"G",27,26,"G"]);K("esp32c5",{name:"ESP32-C5",board:"DevKitC-1 \xB7 v1.2 N8R8",arch:"RISC-V \xB7 RV32IMAC",target:"esp32c5",hz:24e7,flash:8*1024*1024,chipId:23,ram:304*1024,mux:1611202560,muxOffset:0,imageOffset:8192,source:fe("esp32c5","esp32-c5-devkitc-1"),reserved:"GPIO15: N8R8 PSRAM; dahili PSRAM modeli yok"},["3V3","RST",2,3,0,1,6,7,8,9,10,26,25,"5V","G","NC"],["G","TX11","RX12",24,23,"NC15",27,4,5,"NC",28,"G",14,13,"G","NC"]);K("esp32p4",{name:"ESP32-P4",board:"Function-EV \xB7 v1.5.2 J1",arch:"RISC-V \xB7 RV32IMAF",target:"esp32p4",hz:4e8,flash:16*1024*1024,chipId:18,ram:560*1024,mux:1343098880,muxOffset:4,imageOffset:8192,source:fe("esp32p4","esp32-p4-function-ev-board"),reserved:"J1: GPIO0/1 kristal, GPIO45 SD_PWRn; kamera/LCD/PSRAM/Ethernet model d\u0131\u015F\u0131"},["5V","5V","G","TX37","RX38",22,"G",5,4,"G","NC1",36,32,"NC","G",54,"G",46,27,"NC45"],["3V3",7,8,23,"G",21,20,6,"3V3",3,2,"NC0","G","NC",33,26,48,53,47,"G"],"p4");for(let[n,e,_]of[["esp32c3",[2,3,4,5,6,7,21,20,8,9,10],"https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/"],["esp32c6",[0,1,2,21,22,23,16,17,19,20,18],"https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/"],["esp32s3",[1,2,3,4,5,6,43,44,7,8,9],"https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/"]]){let E=Object.fromEntries(e.map((i,t)=>["D"+t,i])),d=Object.fromEntries(e.map((i,t)=>["GPIO"+i,"D"+t+" / "+i]));K("xiao-"+n,{name:n==="esp32s3"?"ESP32-S3":n==="esp32c6"?"ESP32-C6":"ESP32-C3",board:"Seeed XIAO",title:"Seeed XIAO "+n.replace("esp32","ESP32-").toUpperCase(),target:n,aliases:E,aliasLabels:d,source:_,flash:n==="esp32s3"?8*1024*1024:4*1024*1024,...n==="esp32c6"?{examplePins:{2:0,3:1,4:22,5:23,6:20,7:2}}:{}},e.slice(0,7),["5V","G","3V3",...e.slice(7).reverse()],"xiao")}var Pn={D0:44,D1:43,D2:5,D3:6,D4:7,D5:8,D6:9,D7:10,D8:17,D9:18,D10:21,D11:38,D12:47,D13:48,A0:1,A1:2,A2:3,A3:4,A4:11,A5:12,A6:13,A7:14,B0:46,B1:0,LED_BUILTIN:48,LEDR:46,LEDG:0,LEDB:45};K("nano-esp32",{name:"ESP32-S3",board:"Arduino Nano ESP32",title:"Arduino Nano ESP32 \xB7 NORA-W106",target:"esp32s3",aliases:Pn,aliasLabels:Object.fromEntries(Object.entries(Pn).filter(([n])=>!n.startsWith("LED")).map(([n,e])=>["GPIO"+e,n+" / "+e])),source:"https://docs.arduino.cc/resources/pinouts/ABX00083-full-pinout.pdf",flash:16*1024*1024,reserved:"VUSB: a\xE7\u0131k lehim k\xF6pr\xFCs\xFC; GPIO45 RGB LED, haric\xEE ba\u015Fl\u0131k yok; native GPIO numaralar\u0131"},[47,38,21,18,17,10,9,8,7,6,5,"G","RESET",44,43],[48,"3V3",46,1,2,3,4,11,12,13,14,"VUSB",0,"G","VIN"],"nano");K("esp32c3-devkitc02",{name:"ESP32-C3",board:"DevKitC-02",target:"esp32c3",source:fe("esp32c3","esp32-c3-devkitc-02")},["G","3V3","3V3","RST","G",4,5,6,7,"G",8,9,"5V","5V","G"],["G",0,1,2,3,"G",10,"G","RX20","TX21","G",18,19,"G","G"]);K("esp32c6-devkitm1",{name:"ESP32-C6",board:"DevKitM-1",target:"esp32c6",flash:4*1024*1024,source:fe("esp32c6","esp32-c6-devkitm-1")},["3V3","RST",2,3,4,5,0,1,8,6,7,14,"G","5V","G"],["G","TX16","RX17",23,22,21,20,19,18,15,9,"G",13,12,"G"]);K("esp32s3-devkitm1",{name:"ESP32-S3",board:"DevKitM-1",target:"esp32s3",source:fe("esp32s3","esp32-s3-devkitm-1")},["3V3",0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,"5V","G"],["G","RST",46,45,"RX44","TX43",42,41,40,39,38,37,36,35,34,33,26,21,20,19,48,47]);K("esp32c3-rust",{name:"ESP32-C3",board:"DevKit-RUST-1",target:"esp32c3",source:"https://github.com/esp-rs/esp-rust-board/blob/master/hardware/esp-rust-board/schematic/esp-rust-board.pdf",reserved:"SHTC3/ICM42670P/WS2812/batarya devresi model d\u0131\u015F\u0131"},["RESET","3V3","NC","G",0,1,2,3,4,5,6,7,8,21,20,9],["VBAT","LDO_EN","VBUS","NC","NC","NC","NC","NC",18,19,8,10]);var an=Object.fromEntries(je.map(n=>[n.id,n.pins]));function fn(n){let e={...n};for(let _ of je){let E=e[_.target]||{};e[_.id]={...E,..._,hz:_.hz||E.hz,chipId:_.chipId??E.chipId,flash:_.flash||E.flash}}return e}var $e=fn({esp32c3:{target:"esp32c3",ram:240*1024,mux:1610649600,muxOffset:4,name:"ESP32-C3",board:"DevKitM-1",arch:"RISC-V \xB7 RV32IMC",hz:16e7,flash:4*1024*1024,chipId:5,asset:"esp32-c3.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,18,19,20,21],pads:30,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c3/esp32-c3-devkitm-1/user_guide.html"},esp32c6:{target:"esp32c6",ram:432*1024,mux:1611202560,muxOffset:4,name:"ESP32-C6",board:"DevKitC-1 \xB7 v1.2",arch:"RISC-V \xB7 RV32IMAC",hz:16e7,flash:8*1024*1024,chipId:13,asset:"esp32-c6.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23],pads:32,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/user_guide.html"},esp32s3:{target:"esp32s3",ram:400*1024,mux:1610649600,muxOffset:4,name:"ESP32-S3",board:"DevKitC-1 \xB7 v1.0",arch:"Xtensa LX7 \xB7 iki \xE7ekirdek",hz:24e7,flash:8*1024*1024,chipId:9,asset:"esp32-s3.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,35,36,37,38,39,40,41,42,43,44,45,46,47,48],pads:44,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.0.html"}});var qe={"cf_hal.h":`#pragma once
+var dn={"class/hid/hid_device.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "tusb_option.h"
+
+#if (CFG_TUD_ENABLED && CFG_TUD_HID)
+
+//--------------------------------------------------------------------+
+// INCLUDE
+//--------------------------------------------------------------------+
+#include "device/usbd.h"
+#include "device/usbd_pvt.h"
+
+#include "hid_device.h"
+
+//--------------------------------------------------------------------+
+// MACRO CONSTANT TYPEDEF
+//--------------------------------------------------------------------+
+typedef struct {
+  uint8_t itf_num;
+  uint8_t ep_in;
+  uint8_t ep_out;       // optional Out endpoint
+  uint8_t itf_protocol; // Boot mouse or keyboard
+
+  uint16_t report_desc_len;
+  uint8_t protocol_mode; // Boot (0) or Report protocol (1)
+  uint8_t idle_rate;     // up to application to handle idle rate
+
+  // TODO save hid descriptor since host can specifically request this after enumeration
+  // Note: HID descriptor may be not available from application after enumeration
+  const tusb_hid_descriptor_hid_t*hid_descriptor;
+} hidd_interface_t;
+
+typedef struct {
+  TUD_EPBUF_DEF(ctrl , CFG_TUD_HID_EP_BUFSIZE);
+  TUD_EPBUF_DEF(epin , CFG_TUD_HID_EP_BUFSIZE);
+  TUD_EPBUF_DEF(epout, CFG_TUD_HID_EP_BUFSIZE);
+} hidd_epbuf_t;
+
+static hidd_interface_t _hidd_itf[CFG_TUD_HID];
+CFG_TUD_MEM_SECTION static hidd_epbuf_t _hidd_epbuf[CFG_TUD_HID];
+
+/*------------- Helpers -------------*/
+TU_ATTR_ALWAYS_INLINE static inline uint8_t get_index_by_itfnum(uint8_t itf_num) {
+  for (uint8_t i = 0; i < CFG_TUD_HID; i++) {
+    if (itf_num == _hidd_itf[i].itf_num) {
+      return i;
+    }
+  }
+  return 0xFF;
+}
+
+//--------------------------------------------------------------------+
+// Weak stubs: invoked if no strong implementation is available
+//--------------------------------------------------------------------+
+TU_ATTR_WEAK void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
+  (void) instance;
+  (void) protocol;
+}
+
+TU_ATTR_WEAK bool tud_hid_set_idle_cb(uint8_t instance, uint8_t idle_rate) {
+  (void) instance;
+  (void) idle_rate;
+  return true;
+}
+
+TU_ATTR_WEAK void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len) {
+  (void) instance;
+  (void) report;
+  (void) len;
+}
+
+// Invoked when a transfer wasn't successful
+TU_ATTR_WEAK void tud_hid_report_failed_cb(uint8_t instance, hid_report_type_t report_type, uint8_t const* report, uint16_t xferred_bytes) {
+  (void) instance;
+  (void) report_type;
+  (void) report;
+  (void) xferred_bytes;
+}
+
+//--------------------------------------------------------------------+
+// APPLICATION API
+//--------------------------------------------------------------------+
+bool tud_hid_n_ready(uint8_t instance) {
+  uint8_t const rhport = 0;
+  uint8_t const ep_in = _hidd_itf[instance].ep_in;
+  return tud_ready() && (ep_in != 0) && !usbd_edpt_busy(rhport, ep_in);
+}
+
+bool tud_hid_n_report(uint8_t instance, uint8_t report_id, void const *report, uint16_t len) {
+  TU_VERIFY(instance < CFG_TUD_HID);
+  const uint8_t rhport = 0;
+  hidd_interface_t *p_hid = &_hidd_itf[instance];
+  hidd_epbuf_t *p_epbuf = &_hidd_epbuf[instance];
+
+  // claim endpoint
+  TU_VERIFY(usbd_edpt_claim(rhport, p_hid->ep_in));
+
+  // prepare data
+  if (report_id) {
+    p_epbuf->epin[0] = report_id;
+    TU_VERIFY(0 == tu_memcpy_s(p_epbuf->epin + 1, CFG_TUD_HID_EP_BUFSIZE - 1, report, len));
+    len++;
+  } else {
+    TU_VERIFY(0 == tu_memcpy_s(p_epbuf->epin, CFG_TUD_HID_EP_BUFSIZE, report, len));
+  }
+
+  return usbd_edpt_xfer(rhport, p_hid->ep_in, p_epbuf->epin, len);
+}
+
+uint8_t tud_hid_n_interface_protocol(uint8_t instance) {
+  return _hidd_itf[instance].itf_protocol;
+}
+
+uint8_t tud_hid_n_get_protocol(uint8_t instance) {
+  return _hidd_itf[instance].protocol_mode;
+}
+
+bool tud_hid_n_keyboard_report(uint8_t instance, uint8_t report_id, uint8_t modifier, const uint8_t keycode[6]) {
+  hid_keyboard_report_t report;
+  report.modifier = modifier;
+  report.reserved = 0;
+
+  if (keycode) {
+    memcpy(report.keycode, keycode, sizeof(report.keycode));
+  } else {
+    tu_memclr(report.keycode, 6);
+  }
+
+  return tud_hid_n_report(instance, report_id, &report, sizeof(report));
+}
+
+bool tud_hid_n_mouse_report(uint8_t instance, uint8_t report_id,
+                            uint8_t buttons, int8_t x, int8_t y, int8_t vertical, int8_t horizontal) {
+  hid_mouse_report_t report = {
+    .buttons = buttons,
+    .x = x,
+    .y = y,
+    .wheel = vertical,
+    .pan = horizontal
+  };
+
+  return tud_hid_n_report(instance, report_id, &report, sizeof(report));
+}
+
+bool tud_hid_n_abs_mouse_report(uint8_t instance, uint8_t report_id,
+                                uint8_t buttons, int16_t x, int16_t y, int8_t vertical, int8_t horizontal) {
+  hid_abs_mouse_report_t report = {
+    .buttons = buttons,
+    .x = x,
+    .y = y,
+    .wheel = vertical,
+    .pan = horizontal
+  };
+  return tud_hid_n_report(instance, report_id, &report, sizeof(report));
+}
+
+bool tud_hid_n_gamepad_report(uint8_t instance, uint8_t report_id,
+                              int8_t x, int8_t y, int8_t z, int8_t rz, int8_t rx, int8_t ry, uint8_t hat, uint32_t buttons) {
+  hid_gamepad_report_t report = {
+      .x = x,
+      .y = y,
+      .z = z,
+      .rz = rz,
+      .rx = rx,
+      .ry = ry,
+      .hat = hat,
+      .buttons = buttons,
+  };
+
+  return tud_hid_n_report(instance, report_id, &report, sizeof(report));
+}
+
+//--------------------------------------------------------------------+
+// USBD-CLASS API
+//--------------------------------------------------------------------+
+void hidd_init(void) {
+  hidd_reset(0);
+}
+
+bool hidd_deinit(void) {
+  return true;
+}
+
+void hidd_reset(uint8_t rhport) {
+  (void)rhport;
+  tu_memclr(_hidd_itf, sizeof(_hidd_itf));
+}
+
+uint16_t hidd_open(uint8_t rhport, tusb_desc_interface_t const *desc_itf, uint16_t max_len) {
+  TU_VERIFY(TUSB_CLASS_HID == desc_itf->bInterfaceClass, 0);
+
+  // len = interface + hid + n*endpoints
+  uint16_t const drv_len = (uint16_t) (sizeof(tusb_desc_interface_t) + sizeof(tusb_hid_descriptor_hid_t) +
+                                       desc_itf->bNumEndpoints * sizeof(tusb_desc_endpoint_t));
+  TU_ASSERT(max_len >= drv_len, 0);
+
+  // Find available interface
+  hidd_interface_t *p_hid;
+  uint8_t hid_id;
+  for (hid_id = 0; hid_id < CFG_TUD_HID; hid_id++) {
+    p_hid = &_hidd_itf[hid_id];
+    if (p_hid->ep_in == 0) {
+      break;
+    }
+  }
+  TU_ASSERT(hid_id < CFG_TUD_HID, 0);
+  hidd_epbuf_t *p_epbuf = &_hidd_epbuf[hid_id];
+
+  uint8_t const *p_desc = (uint8_t const *)desc_itf;
+
+  //------------- HID descriptor -------------//
+  p_desc = tu_desc_next(p_desc);
+  TU_ASSERT(HID_DESC_TYPE_HID == tu_desc_type(p_desc), 0);
+  p_hid->hid_descriptor = (tusb_hid_descriptor_hid_t const *)p_desc;
+
+  //------------- Endpoint Descriptor -------------//
+  p_desc = tu_desc_next(p_desc);
+  TU_ASSERT(usbd_open_edpt_pair(rhport, p_desc, desc_itf->bNumEndpoints, TUSB_XFER_INTERRUPT, &p_hid->ep_out, &p_hid->ep_in), 0);
+
+  if (desc_itf->bInterfaceSubClass == HID_SUBCLASS_BOOT) {
+    p_hid->itf_protocol = desc_itf->bInterfaceProtocol;
+  }
+
+  p_hid->protocol_mode = HID_PROTOCOL_REPORT; // Per Specs: default is report mode
+  p_hid->itf_num = desc_itf->bInterfaceNumber;
+
+  // Use offsetof to avoid pointer to the odd/misaligned address
+  p_hid->report_desc_len = tu_unaligned_read16((uint8_t const *)p_hid->hid_descriptor + offsetof(tusb_hid_descriptor_hid_t, wReportLength));
+
+  // Prepare for output endpoint
+  if (p_hid->ep_out) {
+    TU_ASSERT(usbd_edpt_xfer(rhport, p_hid->ep_out, p_epbuf->epout, CFG_TUD_HID_EP_BUFSIZE), drv_len);
+  }
+
+  return drv_len;
+}
+
+// Invoked when a control transfer occurred on an interface of this class
+// Driver response accordingly to the request and the transfer stage (setup/data/ack)
+// return false to stall control endpoint (e.g unsupported request)
+bool hidd_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const *request) {
+  TU_VERIFY(request->bmRequestType_bit.recipient == TUSB_REQ_RCPT_INTERFACE);
+
+  uint8_t const hid_itf = get_index_by_itfnum((uint8_t)request->wIndex);
+  TU_VERIFY(hid_itf < CFG_TUD_HID);
+  hidd_interface_t *p_hid = &_hidd_itf[hid_itf];
+  hidd_epbuf_t *p_epbuf = &_hidd_epbuf[hid_itf];
+
+  if (request->bmRequestType_bit.type == TUSB_REQ_TYPE_STANDARD) {
+    //------------- STD Request -------------//
+    if (stage == CONTROL_STAGE_SETUP) {
+      uint8_t const desc_type = tu_u16_high(request->wValue);
+      // uint8_t const desc_index = tu_u16_low (request->wValue);
+
+      if (request->bRequest == TUSB_REQ_GET_DESCRIPTOR && desc_type == HID_DESC_TYPE_HID) {
+        TU_VERIFY(p_hid->hid_descriptor);
+        TU_VERIFY(tud_control_xfer(rhport, request, (void *)(uintptr_t)p_hid->hid_descriptor, p_hid->hid_descriptor->bLength));
+      } else if (request->bRequest == TUSB_REQ_GET_DESCRIPTOR && desc_type == HID_DESC_TYPE_REPORT) {
+        uint8_t const *desc_report = tud_hid_descriptor_report_cb(hid_itf);
+        tud_control_xfer(rhport, request, (void *)(uintptr_t)desc_report, p_hid->report_desc_len);
+      } else {
+        return false; // stall unsupported request
+      }
+    }
+  } else if (request->bmRequestType_bit.type == TUSB_REQ_TYPE_CLASS) {
+    //------------- Class Specific Request -------------//
+    switch (request->bRequest) {
+      case HID_REQ_CONTROL_GET_REPORT:
+        if (stage == CONTROL_STAGE_SETUP) {
+          uint8_t const report_type = tu_u16_high(request->wValue);
+          uint8_t const report_id = tu_u16_low(request->wValue);
+
+          uint8_t* report_buf = p_epbuf->ctrl;
+          uint16_t req_len = tu_min16(request->wLength, CFG_TUD_HID_EP_BUFSIZE);
+          uint16_t xferlen = 0;
+
+          // If host request a specific Report ID, add ID to as 1 byte of response
+          if ((report_id != HID_REPORT_TYPE_INVALID) && (req_len > 1)) {
+            *report_buf++ = report_id;
+            req_len--;
+            xferlen++;
+          }
+
+          xferlen += tud_hid_get_report_cb(hid_itf, report_id, (hid_report_type_t) report_type, report_buf, req_len);
+          TU_ASSERT(xferlen > 0);
+
+          tud_control_xfer(rhport, request, p_epbuf->ctrl, xferlen);
+        }
+        break;
+
+      case HID_REQ_CONTROL_SET_REPORT:
+        if (stage == CONTROL_STAGE_SETUP) {
+          TU_VERIFY(request->wLength <= CFG_TUD_HID_EP_BUFSIZE);
+          tud_control_xfer(rhport, request, p_epbuf->ctrl, request->wLength);
+        } else if (stage == CONTROL_STAGE_ACK) {
+          uint8_t const report_type = tu_u16_high(request->wValue);
+          uint8_t const report_id = tu_u16_low(request->wValue);
+
+          uint8_t const* report_buf = p_epbuf->ctrl;
+          uint16_t report_len = tu_min16(request->wLength, CFG_TUD_HID_EP_BUFSIZE);
+
+          // If host request a specific Report ID, extract report ID in buffer before invoking callback
+          if ((report_id != HID_REPORT_TYPE_INVALID) && (report_len > 1) && (report_id == report_buf[0])) {
+            report_buf++;
+            report_len--;
+          }
+
+          tud_hid_set_report_cb(hid_itf, report_id, (hid_report_type_t) report_type, report_buf, report_len);
+        }
+        break;
+
+      case HID_REQ_CONTROL_SET_IDLE:
+        if (stage == CONTROL_STAGE_SETUP) {
+          p_hid->idle_rate = tu_u16_high(request->wValue);
+          TU_VERIFY(tud_hid_set_idle_cb(hid_itf, p_hid->idle_rate)); // stall if false
+          tud_control_status(rhport, request);
+        }
+        break;
+
+      case HID_REQ_CONTROL_GET_IDLE:
+        if (stage == CONTROL_STAGE_SETUP) {
+          // TODO idle rate of report
+          tud_control_xfer(rhport, request, &p_hid->idle_rate, 1);
+        }
+        break;
+
+      case HID_REQ_CONTROL_GET_PROTOCOL:
+        if (stage == CONTROL_STAGE_SETUP) {
+          tud_control_xfer(rhport, request, &p_hid->protocol_mode, 1);
+        }
+        break;
+
+      case HID_REQ_CONTROL_SET_PROTOCOL:
+        if (stage == CONTROL_STAGE_SETUP) {
+          tud_control_status(rhport, request);
+        } else if (stage == CONTROL_STAGE_ACK) {
+          p_hid->protocol_mode = (uint8_t) request->wValue;
+          tud_hid_set_protocol_cb(hid_itf, p_hid->protocol_mode);
+        }
+        break;
+
+      default:
+        return false; // stall unsupported request
+    }
+  } else {
+    return false; // stall unsupported request
+  }
+
+  return true;
+}
+
+bool hidd_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes) {
+  uint8_t instance;
+  hidd_interface_t *p_hid;
+
+  // Identify which interface to use
+  for (instance = 0; instance < CFG_TUD_HID; instance++) {
+    p_hid = &_hidd_itf[instance];
+    if ((ep_addr == p_hid->ep_out) || (ep_addr == p_hid->ep_in)) {
+      break;
+    }
+  }
+  TU_ASSERT(instance < CFG_TUD_HID);
+  hidd_epbuf_t *p_epbuf = &_hidd_epbuf[instance];
+
+  if (ep_addr == p_hid->ep_in) {
+    // Input report
+    if (XFER_RESULT_SUCCESS == result) {
+      tud_hid_report_complete_cb(instance, p_epbuf->epin, (uint16_t) xferred_bytes);
+    } else {
+      tud_hid_report_failed_cb(instance, HID_REPORT_TYPE_INPUT, p_epbuf->epin, (uint16_t) xferred_bytes);
+    }
+  } else {
+    // Output report
+    if (XFER_RESULT_SUCCESS == result) {
+      tud_hid_set_report_cb(instance, 0, HID_REPORT_TYPE_OUTPUT, p_epbuf->epout, (uint16_t)xferred_bytes);
+    } else {
+      tud_hid_report_failed_cb(instance, HID_REPORT_TYPE_OUTPUT, p_epbuf->epout, (uint16_t) xferred_bytes);
+    }
+
+    // prepare for new transfer
+    TU_ASSERT(usbd_edpt_xfer(rhport, p_hid->ep_out, p_epbuf->epout, CFG_TUD_HID_EP_BUFSIZE));
+  }
+
+  return true;
+}
+
+#endif
+`,"class/hid/hid_device.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_HID_DEVICE_H_
+#define TUSB_HID_DEVICE_H_
+
+#include "hid.h"
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Class Driver Default Configure & Validation
+//--------------------------------------------------------------------+
+
+#if !defined(CFG_TUD_HID_EP_BUFSIZE) & defined(CFG_TUD_HID_BUFSIZE)
+  // TODO warn user to use new name later on
+  // #warning CFG_TUD_HID_BUFSIZE is renamed to CFG_TUD_HID_EP_BUFSIZE, please update to use the new name
+  #define CFG_TUD_HID_EP_BUFSIZE  CFG_TUD_HID_BUFSIZE
+#endif
+
+#ifndef CFG_TUD_HID_EP_BUFSIZE
+  #define CFG_TUD_HID_EP_BUFSIZE     64
+#endif
+
+//--------------------------------------------------------------------+
+// Application API (Multiple Instances) i.e. CFG_TUD_HID > 1
+//--------------------------------------------------------------------+
+
+// Check if the interface is ready to use
+bool tud_hid_n_ready(uint8_t instance);
+
+// Get interface supported protocol (bInterfaceProtocol) check out hid_interface_protocol_enum_t for possible values
+uint8_t tud_hid_n_interface_protocol(uint8_t instance);
+
+// Get current active protocol: HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
+uint8_t tud_hid_n_get_protocol(uint8_t instance);
+
+// Send report to host
+bool tud_hid_n_report(uint8_t instance, uint8_t report_id, void const* report, uint16_t len);
+
+// KEYBOARD: convenient helper to send keyboard report if application
+// use template layout report as defined by hid_keyboard_report_t
+bool tud_hid_n_keyboard_report(uint8_t instance, uint8_t report_id, uint8_t modifier, const uint8_t keycode[6]);
+
+// MOUSE: convenient helper to send mouse report if application
+// use template layout report as defined by hid_mouse_report_t
+bool tud_hid_n_mouse_report(uint8_t instance, uint8_t report_id, uint8_t buttons, int8_t x, int8_t y, int8_t vertical, int8_t horizontal);
+
+// ABSOLUTE MOUSE: convenient helper to send absolute mouse report if application
+// use template layout report as defined by hid_abs_mouse_report_t
+bool tud_hid_n_abs_mouse_report(uint8_t instance, uint8_t report_id, uint8_t buttons, int16_t x, int16_t y, int8_t vertical, int8_t horizontal);
+
+// Gamepad: convenient helper to send gamepad report if application
+// use template layout report TUD_HID_REPORT_DESC_GAMEPAD
+bool tud_hid_n_gamepad_report(uint8_t instance, uint8_t report_id, int8_t x, int8_t y, int8_t z, int8_t rz, int8_t rx, int8_t ry, uint8_t hat, uint32_t buttons);
+
+//--------------------------------------------------------------------+
+// Application API (Single Port)
+//--------------------------------------------------------------------+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_ready(void) {
+  return tud_hid_n_ready(0);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tud_hid_interface_protocol(void) {
+  return tud_hid_n_interface_protocol(0);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tud_hid_get_protocol(void) {
+  return tud_hid_n_get_protocol(0);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_report(uint8_t report_id, void const* report, uint16_t len) {
+  return tud_hid_n_report(0, report_id, report, len);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_keyboard_report(uint8_t report_id, uint8_t modifier, const uint8_t keycode[6]) {
+  return tud_hid_n_keyboard_report(0, report_id, modifier, keycode);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_mouse_report(uint8_t report_id, uint8_t buttons, int8_t x, int8_t y, int8_t vertical, int8_t horizontal) {
+  return tud_hid_n_mouse_report(0, report_id, buttons, x, y, vertical, horizontal);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_abs_mouse_report(uint8_t report_id, uint8_t buttons, int16_t x, int16_t y, int8_t vertical, int8_t horizontal) {
+  return tud_hid_n_abs_mouse_report(0, report_id, buttons, x, y, vertical, horizontal);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool tud_hid_gamepad_report(uint8_t report_id, int8_t x, int8_t y, int8_t z, int8_t rz, int8_t rx, int8_t ry, uint8_t hat, uint32_t buttons) {
+  return tud_hid_n_gamepad_report(0, report_id, x, y, z, rz, rx, ry, hat, buttons);
+}
+
+//--------------------------------------------------------------------+
+// Application Callbacks
+//--------------------------------------------------------------------+
+
+// Invoked when received GET HID REPORT DESCRIPTOR request
+// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
+uint8_t const * tud_hid_descriptor_report_cb(uint8_t instance);
+
+// Invoked when received GET_REPORT control request
+// Application must fill buffer report's content and return its length.
+// Return zero will cause the stack to STALL request
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t* buffer, uint16_t reqlen);
+
+// Invoked when received SET_REPORT control request or
+// received data on OUT endpoint (Report ID = 0, Type = OUTPUT)
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize);
+
+// Invoked when received SET_PROTOCOL request
+// protocol is either HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
+void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol);
+
+// Invoked when received SET_IDLE request. return false will stall the request
+// - Idle Rate = 0 : only send report if there is changes, i.e. skip duplication
+// - Idle Rate > 0 : skip duplication, but send at least 1 report every idle rate (in unit of 4 ms).
+bool tud_hid_set_idle_cb(uint8_t instance, uint8_t idle_rate);
+
+// Invoked when sent REPORT successfully to host
+// Application can use this to send the next report
+// Note: For composite reports, report[0] is report ID
+void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len);
+
+// Invoked when a transfer wasn't successful
+void tud_hid_report_failed_cb(uint8_t instance, hid_report_type_t report_type, uint8_t const* report, uint16_t xferred_bytes);
+
+/* --------------------------------------------------------------------+
+ * HID Report Descriptor Template
+ *
+ * Convenient for declaring popular HID device (keyboard, mouse, consumer,
+ * gamepad etc...). Templates take "HID_REPORT_ID(n)" as input, leave
+ * empty if multiple reports is not used
+ *
+ * - Only 1 report: no parameter
+ *      uint8_t const report_desc[] = { TUD_HID_REPORT_DESC_KEYBOARD() };
+ *
+ * - Multiple Reports: "HID_REPORT_ID(ID)" must be passed to template
+ *      uint8_t const report_desc[] =
+ *      {
+ *          TUD_HID_REPORT_DESC_KEYBOARD( HID_REPORT_ID(1) ) ,
+ *          TUD_HID_REPORT_DESC_MOUSE   ( HID_REPORT_ID(2) )
+ *      };
+ *--------------------------------------------------------------------*/
+
+// Keyboard Report Descriptor Template
+#define TUD_HID_REPORT_DESC_KEYBOARD(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP     )                    ,\\
+  HID_USAGE      ( HID_USAGE_DESKTOP_KEYBOARD )                    ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION )                    ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    /* 8 bits Modifier Keys (Shift, Control, Alt) */ \\
+    HID_USAGE_PAGE ( HID_USAGE_PAGE_KEYBOARD )                     ,\\
+      HID_USAGE_MIN    ( 224                                    )  ,\\
+      HID_USAGE_MAX    ( 231                                    )  ,\\
+      HID_LOGICAL_MIN  ( 0                                      )  ,\\
+      HID_LOGICAL_MAX  ( 1                                      )  ,\\
+      HID_REPORT_COUNT ( 8                                      )  ,\\
+      HID_REPORT_SIZE  ( 1                                      )  ,\\
+      HID_INPUT        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE )  ,\\
+      /* 8 bit reserved */ \\
+      HID_REPORT_COUNT ( 1                                      )  ,\\
+      HID_REPORT_SIZE  ( 8                                      )  ,\\
+      HID_INPUT        ( HID_CONSTANT                           )  ,\\
+    /* Output 5-bit LED Indicator Kana | Compose | ScrollLock | CapsLock | NumLock */ \\
+    HID_USAGE_PAGE  ( HID_USAGE_PAGE_LED                   )       ,\\
+      HID_USAGE_MIN    ( 1                                       ) ,\\
+      HID_USAGE_MAX    ( 5                                       ) ,\\
+      HID_REPORT_COUNT ( 5                                       ) ,\\
+      HID_REPORT_SIZE  ( 1                                       ) ,\\
+      HID_OUTPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE  ) ,\\
+      /* led padding */ \\
+      HID_REPORT_COUNT ( 1                                       ) ,\\
+      HID_REPORT_SIZE  ( 3                                       ) ,\\
+      HID_OUTPUT       ( HID_CONSTANT                            ) ,\\
+    /* 6-byte Keycodes */ \\
+    HID_USAGE_PAGE ( HID_USAGE_PAGE_KEYBOARD )                     ,\\
+      HID_USAGE_MIN    ( 0                                   )     ,\\
+      HID_USAGE_MAX_N  ( 255, 2                              )     ,\\
+      HID_LOGICAL_MIN  ( 0                                   )     ,\\
+      HID_LOGICAL_MAX_N( 255, 2                              )     ,\\
+      HID_REPORT_COUNT ( 6                                   )     ,\\
+      HID_REPORT_SIZE  ( 8                                   )     ,\\
+      HID_INPUT        ( HID_DATA | HID_ARRAY | HID_ABSOLUTE )     ,\\
+  HID_COLLECTION_END \\
+
+// Mouse Report Descriptor Template
+#define TUD_HID_REPORT_DESC_MOUSE(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP      )                   ,\\
+  HID_USAGE      ( HID_USAGE_DESKTOP_MOUSE     )                   ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION  )                   ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    HID_USAGE      ( HID_USAGE_DESKTOP_POINTER )                   ,\\
+    HID_COLLECTION ( HID_COLLECTION_PHYSICAL   )                   ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_BUTTON  )                   ,\\
+        HID_USAGE_MIN   ( 1                                      ) ,\\
+        HID_USAGE_MAX   ( 5                                      ) ,\\
+        HID_LOGICAL_MIN ( 0                                      ) ,\\
+        HID_LOGICAL_MAX ( 1                                      ) ,\\
+        /* Left, Right, Middle, Backward, Forward buttons */ \\
+        HID_REPORT_COUNT( 5                                      ) ,\\
+        HID_REPORT_SIZE ( 1                                      ) ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+        /* 3 bit padding */ \\
+        HID_REPORT_COUNT( 1                                      ) ,\\
+        HID_REPORT_SIZE ( 3                                      ) ,\\
+        HID_INPUT       ( HID_CONSTANT                           ) ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_DESKTOP )                   ,\\
+        /* X, Y position [-127, 127] */ \\
+        HID_USAGE       ( HID_USAGE_DESKTOP_X                    ) ,\\
+        HID_USAGE       ( HID_USAGE_DESKTOP_Y                    ) ,\\
+        HID_LOGICAL_MIN ( 0x81                                   ) ,\\
+        HID_LOGICAL_MAX ( 0x7f                                   ) ,\\
+        HID_REPORT_COUNT( 2                                      ) ,\\
+        HID_REPORT_SIZE ( 8                                      ) ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_RELATIVE ) ,\\
+        /* Verital wheel scroll [-127, 127] */ \\
+        HID_USAGE       ( HID_USAGE_DESKTOP_WHEEL                )  ,\\
+        HID_LOGICAL_MIN ( 0x81                                   )  ,\\
+        HID_LOGICAL_MAX ( 0x7f                                   )  ,\\
+        HID_REPORT_COUNT( 1                                      )  ,\\
+        HID_REPORT_SIZE ( 8                                      )  ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_RELATIVE )  ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_CONSUMER ), \\
+       /* Horizontal wheel scroll [-127, 127] */ \\
+        HID_USAGE_N     ( HID_USAGE_CONSUMER_AC_PAN, 2           ), \\
+        HID_LOGICAL_MIN ( 0x81                                   ), \\
+        HID_LOGICAL_MAX ( 0x7f                                   ), \\
+        HID_REPORT_COUNT( 1                                      ), \\
+        HID_REPORT_SIZE ( 8                                      ), \\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_RELATIVE ), \\
+    HID_COLLECTION_END                                            , \\
+  HID_COLLECTION_END \\
+
+// Absolute Mouse Report Descriptor Template
+#define TUD_HID_REPORT_DESC_ABSMOUSE(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP      )                   ,\\
+  HID_USAGE      ( HID_USAGE_DESKTOP_MOUSE     )                   ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION  )                   ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    HID_USAGE      ( HID_USAGE_DESKTOP_POINTER )                   ,\\
+    HID_COLLECTION ( HID_COLLECTION_PHYSICAL   )                   ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_BUTTON  )                   ,\\
+        HID_USAGE_MIN   ( 1                                      ) ,\\
+        HID_USAGE_MAX   ( 5                                      ) ,\\
+        HID_LOGICAL_MIN ( 0                                      ) ,\\
+        HID_LOGICAL_MAX ( 1                                      ) ,\\
+        /* Left, Right, Middle, Backward, Forward buttons */ \\
+        HID_REPORT_COUNT( 5                                      ) ,\\
+        HID_REPORT_SIZE ( 1                                      ) ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+        /* 3 bit padding */ \\
+        HID_REPORT_COUNT( 1                                      ) ,\\
+        HID_REPORT_SIZE ( 3                                      ) ,\\
+        HID_INPUT       ( HID_CONSTANT                           ) ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_DESKTOP )                   ,\\
+        /* X, Y absolute position [0, 32767] */ \\
+        HID_USAGE       ( HID_USAGE_DESKTOP_X                    ) ,\\
+        HID_USAGE       ( HID_USAGE_DESKTOP_Y                    ) ,\\
+        HID_LOGICAL_MIN  ( 0x00                                ) ,\\
+        HID_LOGICAL_MAX_N( 0x7FFF, 2                           ) ,\\
+        HID_REPORT_SIZE  ( 16                                  ) ,\\
+        HID_REPORT_COUNT ( 2                                   ) ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+        /* Vertical wheel scroll [-127, 127] */ \\
+        HID_USAGE       ( HID_USAGE_DESKTOP_WHEEL                )  ,\\
+        HID_LOGICAL_MIN ( 0x81                                   )  ,\\
+        HID_LOGICAL_MAX ( 0x7f                                   )  ,\\
+        HID_REPORT_COUNT( 1                                      )  ,\\
+        HID_REPORT_SIZE ( 8                                      )  ,\\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_RELATIVE )  ,\\
+      HID_USAGE_PAGE  ( HID_USAGE_PAGE_CONSUMER ), \\
+       /* Horizontal wheel scroll [-127, 127] */ \\
+        HID_USAGE_N     ( HID_USAGE_CONSUMER_AC_PAN, 2           ), \\
+        HID_LOGICAL_MIN ( 0x81                                   ), \\
+        HID_LOGICAL_MAX ( 0x7f                                   ), \\
+        HID_REPORT_COUNT( 1                                      ), \\
+        HID_REPORT_SIZE ( 8                                      ), \\
+        HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_RELATIVE ), \\
+    HID_COLLECTION_END                                            , \\
+  HID_COLLECTION_END \\
+
+// Consumer Control Report Descriptor Template
+#define TUD_HID_REPORT_DESC_CONSUMER(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_CONSUMER    )              ,\\
+  HID_USAGE      ( HID_USAGE_CONSUMER_CONTROL )              ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION )              ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    HID_LOGICAL_MIN  ( 0x00                                ) ,\\
+    HID_LOGICAL_MAX_N( 0x03FF, 2                           ) ,\\
+    HID_USAGE_MIN    ( 0x00                                ) ,\\
+    HID_USAGE_MAX_N  ( 0x03FF, 2                           ) ,\\
+    HID_REPORT_COUNT ( 1                                   ) ,\\
+    HID_REPORT_SIZE  ( 16                                  ) ,\\
+    HID_INPUT        ( HID_DATA | HID_ARRAY | HID_ABSOLUTE ) ,\\
+  HID_COLLECTION_END \\
+
+/* System Control Report Descriptor Template
+ * 0x00 - do nothing
+ * 0x01 - Power Off
+ * 0x02 - Standby
+ * 0x03 - Wake Host
+ */
+#define TUD_HID_REPORT_DESC_SYSTEM_CONTROL(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP           )        ,\\
+  HID_USAGE      ( HID_USAGE_DESKTOP_SYSTEM_CONTROL )        ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION       )        ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    /* 2 bit system power control */ \\
+    HID_LOGICAL_MIN  ( 1                                   ) ,\\
+    HID_LOGICAL_MAX  ( 3                                   ) ,\\
+    HID_REPORT_COUNT ( 1                                   ) ,\\
+    HID_REPORT_SIZE  ( 2                                   ) ,\\
+    HID_USAGE        ( HID_USAGE_DESKTOP_SYSTEM_POWER_DOWN ) ,\\
+    HID_USAGE        ( HID_USAGE_DESKTOP_SYSTEM_SLEEP      ) ,\\
+    HID_USAGE        ( HID_USAGE_DESKTOP_SYSTEM_WAKE_UP    ) ,\\
+    HID_INPUT        ( HID_DATA | HID_ARRAY | HID_ABSOLUTE ) ,\\
+    /* 6 bit padding */ \\
+    HID_REPORT_COUNT ( 1                                   ) ,\\
+    HID_REPORT_SIZE  ( 6                                   ) ,\\
+    HID_INPUT        ( HID_CONSTANT                        ) ,\\
+  HID_COLLECTION_END \\
+
+// Gamepad Report Descriptor Template
+// with 32 buttons, 2 joysticks and 1 hat/dpad with following layout
+// | X | Y | Z | Rz | Rx | Ry (1 byte each) | hat/DPAD (1 byte) | Button Map (4 bytes) |
+#define TUD_HID_REPORT_DESC_GAMEPAD(...) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP     )                 ,\\
+  HID_USAGE      ( HID_USAGE_DESKTOP_GAMEPAD  )                 ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION )                 ,\\
+    /* Report ID if any */\\
+    __VA_ARGS__ \\
+    /* 8 bit X, Y, Z, Rz, Rx, Ry (min -127, max 127 ) */ \\
+    HID_USAGE_PAGE     ( HID_USAGE_PAGE_DESKTOP                 ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_X                    ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_Y                    ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_Z                    ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_RZ                   ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_RX                   ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_RY                   ) ,\\
+    HID_LOGICAL_MIN    ( 0x81                                   ) ,\\
+    HID_LOGICAL_MAX    ( 0x7f                                   ) ,\\
+    HID_REPORT_COUNT   ( 6                                      ) ,\\
+    HID_REPORT_SIZE    ( 8                                      ) ,\\
+    HID_INPUT          ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+    /* 8 bit DPad/Hat Button Map  */ \\
+    HID_USAGE_PAGE     ( HID_USAGE_PAGE_DESKTOP                 ) ,\\
+    HID_USAGE          ( HID_USAGE_DESKTOP_HAT_SWITCH           ) ,\\
+    HID_LOGICAL_MIN    ( 1                                      ) ,\\
+    HID_LOGICAL_MAX    ( 8                                      ) ,\\
+    HID_PHYSICAL_MIN   ( 0                                      ) ,\\
+    HID_PHYSICAL_MAX_N ( 315, 2                                 ) ,\\
+    HID_REPORT_COUNT   ( 1                                      ) ,\\
+    HID_REPORT_SIZE    ( 8                                      ) ,\\
+    HID_INPUT          ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+    /* 32 bit Button Map */ \\
+    HID_USAGE_PAGE     ( HID_USAGE_PAGE_BUTTON                  ) ,\\
+    HID_USAGE_MIN      ( 1                                      ) ,\\
+    HID_USAGE_MAX      ( 32                                     ) ,\\
+    HID_LOGICAL_MIN    ( 0                                      ) ,\\
+    HID_LOGICAL_MAX    ( 1                                      ) ,\\
+    HID_REPORT_COUNT   ( 32                                     ) ,\\
+    HID_REPORT_SIZE    ( 1                                      ) ,\\
+    HID_INPUT          ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+  HID_COLLECTION_END \\
+
+// FIDO U2F Authenticator Descriptor Template
+// - 1st parameter is report size, which is 64 bytes maximum in U2F
+// - 2nd parameter is HID_REPORT_ID(n) (optional)
+#define TUD_HID_REPORT_DESC_FIDO_U2F(report_size, ...) \\
+  HID_USAGE_PAGE_N ( HID_USAGE_PAGE_FIDO, 2                    ) ,\\
+  HID_USAGE      ( HID_USAGE_FIDO_U2FHID                       ) ,\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION                  ) ,\\
+    /* Report ID if any */ \\
+    __VA_ARGS__ \\
+    /* Usage Data In */ \\
+    HID_USAGE         ( HID_USAGE_FIDO_DATA_IN                 ) ,\\
+    HID_LOGICAL_MIN   ( 0                                      ) ,\\
+    HID_LOGICAL_MAX_N ( 0xff, 2                                ) ,\\
+    HID_REPORT_SIZE   ( 8                                      ) ,\\
+    HID_REPORT_COUNT  ( report_size                            ) ,\\
+    HID_INPUT         ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+    /* Usage Data Out */ \\
+    HID_USAGE         ( HID_USAGE_FIDO_DATA_OUT                ) ,\\
+    HID_LOGICAL_MIN   ( 0                                      ) ,\\
+    HID_LOGICAL_MAX_N ( 0xff, 2                                ) ,\\
+    HID_REPORT_SIZE   ( 8                                      ) ,\\
+    HID_REPORT_COUNT  ( report_size                            ) ,\\
+    HID_OUTPUT        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\\
+  HID_COLLECTION_END \\
+
+// HID Generic Input & Output
+// - 1st parameter is report size (mandatory)
+// - 2nd parameter is report id HID_REPORT_ID(n) (optional)
+#define TUD_HID_REPORT_DESC_GENERIC_INOUT(report_size, ...) \\
+    HID_USAGE_PAGE_N ( HID_USAGE_PAGE_VENDOR, 2   ),\\
+    HID_USAGE        ( 0x01                       ),\\
+    HID_COLLECTION   ( HID_COLLECTION_APPLICATION ),\\
+      /* Report ID if any */\\
+      __VA_ARGS__ \\
+      /* Input */ \\
+      HID_USAGE       ( 0x02                                   ),\\
+      HID_LOGICAL_MIN ( 0x00                                   ),\\
+      HID_LOGICAL_MAX_N ( 0xff, 2                              ),\\
+      HID_REPORT_SIZE ( 8                                      ),\\
+      HID_REPORT_COUNT( report_size                            ),\\
+      HID_INPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ),\\
+      /* Output */ \\
+      HID_USAGE       ( 0x03                                    ),\\
+      HID_LOGICAL_MIN ( 0x00                                    ),\\
+      HID_LOGICAL_MAX_N ( 0xff, 2                               ),\\
+      HID_REPORT_SIZE ( 8                                       ),\\
+      HID_REPORT_COUNT( report_size                             ),\\
+      HID_OUTPUT      ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE  ),\\
+    HID_COLLECTION_END \\
+
+// HID Lighting and Illumination Report Descriptor Template
+// - 1st parameter is report id (required)
+//   Creates 6 report ids for lighting HID usages in the following order:
+//     report_id+0: HID_USAGE_LIGHTING_LAMP_ARRAY_ATTRIBUTES_REPORT
+//     report_id+1: HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_REQUEST_REPORT
+//     report_id+2: HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_RESPONSE_REPORT
+//     report_id+3: HID_USAGE_LIGHTING_LAMP_MULTI_UPDATE_REPORT
+//     report_id+4: HID_USAGE_LIGHTING_LAMP_RANGE_UPDATE_REPORT
+//     report_id+5: HID_USAGE_LIGHTING_LAMP_ARRAY_CONTROL_REPORT
+#define TUD_HID_REPORT_DESC_LIGHTING(report_id) \\
+  HID_USAGE_PAGE ( HID_USAGE_PAGE_LIGHTING_AND_ILLUMINATION ),\\
+  HID_USAGE      ( HID_USAGE_LIGHTING_LAMP_ARRAY            ),\\
+  HID_COLLECTION ( HID_COLLECTION_APPLICATION               ),\\
+    /* Lamp Array Attributes Report */ \\
+    HID_REPORT_ID (report_id                                    ) \\
+    HID_USAGE ( HID_USAGE_LIGHTING_LAMP_ARRAY_ATTRIBUTES_REPORT ),\\
+    HID_COLLECTION ( HID_COLLECTION_LOGICAL                     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_COUNT                          ),\\
+      HID_LOGICAL_MIN   ( 0                                                      ),\\
+      HID_LOGICAL_MAX_N ( 65535, 3                                               ),\\
+      HID_REPORT_SIZE   ( 16                                                     ),\\
+      HID_REPORT_COUNT  ( 1                                                      ),\\
+      HID_FEATURE       ( HID_CONSTANT | HID_VARIABLE | HID_ABSOLUTE             ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BOUNDING_BOX_WIDTH_IN_MICROMETERS   ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BOUNDING_BOX_HEIGHT_IN_MICROMETERS  ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BOUNDING_BOX_DEPTH_IN_MICROMETERS   ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ARRAY_KIND                     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_MIN_UPDATE_INTERVAL_IN_MICROSECONDS ),\\
+      HID_LOGICAL_MIN   ( 0                                                      ),\\
+      HID_LOGICAL_MAX_N ( 2147483647, 3                                          ),\\
+      HID_REPORT_SIZE   ( 32                                                     ),\\
+      HID_REPORT_COUNT  ( 5                                                      ),\\
+      HID_FEATURE       ( HID_CONSTANT | HID_VARIABLE | HID_ABSOLUTE             ),\\
+    HID_COLLECTION_END ,\\
+    /* Lamp Attributes Request Report */ \\
+    HID_REPORT_ID       ( report_id + 1                                     ) \\
+    HID_USAGE           ( HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_REQUEST_REPORT ),\\
+    HID_COLLECTION      ( HID_COLLECTION_LOGICAL                            ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ID             ),\\
+      HID_LOGICAL_MIN   ( 0                                      ),\\
+      HID_LOGICAL_MAX_N ( 65535, 3                               ),\\
+      HID_REPORT_SIZE   ( 16                                     ),\\
+      HID_REPORT_COUNT  ( 1                                      ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ),\\
+    HID_COLLECTION_END ,\\
+    /* Lamp Attributes Response Report */ \\
+    HID_REPORT_ID       ( report_id + 2                                      ) \\
+    HID_USAGE           ( HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_RESPONSE_REPORT ),\\
+    HID_COLLECTION      ( HID_COLLECTION_LOGICAL                             ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ID                        ),\\
+      HID_LOGICAL_MIN   ( 0                                                 ),\\
+      HID_LOGICAL_MAX_N ( 65535, 3                                          ),\\
+      HID_REPORT_SIZE   ( 16                                                ),\\
+      HID_REPORT_COUNT  ( 1                                                 ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE            ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_POSITION_X_IN_MICROMETERS      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_POSITION_Y_IN_MICROMETERS      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_POSITION_Z_IN_MICROMETERS      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_UPDATE_LATENCY_IN_MICROSECONDS ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_PURPOSES                  ),\\
+      HID_LOGICAL_MIN   ( 0                                                 ),\\
+      HID_LOGICAL_MAX_N ( 2147483647, 3                                     ),\\
+      HID_REPORT_SIZE   ( 32                                                ),\\
+      HID_REPORT_COUNT  ( 5                                                 ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE            ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_LEVEL_COUNT                ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_LEVEL_COUNT              ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_LEVEL_COUNT               ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_LEVEL_COUNT          ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_IS_PROGRAMMABLE                ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INPUT_BINDING                  ),\\
+      HID_LOGICAL_MIN   ( 0                                                 ),\\
+      HID_LOGICAL_MAX_N ( 255, 2                                            ),\\
+      HID_REPORT_SIZE   ( 8                                                 ),\\
+      HID_REPORT_COUNT  ( 6                                                 ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE            ),\\
+    HID_COLLECTION_END ,\\
+    /* Lamp Multi-Update Report */ \\
+    HID_REPORT_ID       ( report_id + 3                               ) \\
+    HID_USAGE           ( HID_USAGE_LIGHTING_LAMP_MULTI_UPDATE_REPORT ),\\
+    HID_COLLECTION      ( HID_COLLECTION_LOGICAL                      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_COUNT               ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_UPDATE_FLAGS        ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX   ( 8                                           ),\\
+      HID_REPORT_SIZE   ( 8                                           ),\\
+      HID_REPORT_COUNT  ( 2                                           ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ID                  ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX_N ( 65535, 3                                    ),\\
+      HID_REPORT_SIZE   ( 16                                          ),\\
+      HID_REPORT_COUNT  ( 8                                           ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX_N ( 255, 2                                      ),\\
+      HID_REPORT_SIZE   ( 8                                           ),\\
+      HID_REPORT_COUNT  ( 32                                          ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+    HID_COLLECTION_END ,\\
+    /* Lamp Range Update Report */ \\
+    HID_REPORT_ID       ( report_id + 4 ) \\
+    HID_USAGE           ( HID_USAGE_LIGHTING_LAMP_RANGE_UPDATE_REPORT ),\\
+    HID_COLLECTION      ( HID_COLLECTION_LOGICAL                      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_UPDATE_FLAGS        ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX   ( 8                                           ),\\
+      HID_REPORT_SIZE   ( 8                                           ),\\
+      HID_REPORT_COUNT  ( 1                                           ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ID_START            ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_LAMP_ID_END              ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX_N ( 65535, 3                                    ),\\
+      HID_REPORT_SIZE   ( 16                                          ),\\
+      HID_REPORT_COUNT  ( 2                                           ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL       ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL     ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL      ),\\
+      HID_USAGE         ( HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL ),\\
+      HID_LOGICAL_MIN   ( 0                                           ),\\
+      HID_LOGICAL_MAX_N ( 255, 2                                      ),\\
+      HID_REPORT_SIZE   ( 8                                           ),\\
+      HID_REPORT_COUNT  ( 4                                           ),\\
+      HID_FEATURE       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE      ),\\
+    HID_COLLECTION_END ,\\
+    /* Lamp Array Control Report */ \\
+    HID_REPORT_ID      ( report_id + 5                                ) \\
+    HID_USAGE          ( HID_USAGE_LIGHTING_LAMP_ARRAY_CONTROL_REPORT ),\\
+    HID_COLLECTION     ( HID_COLLECTION_LOGICAL                       ),\\
+      HID_USAGE        ( HID_USAGE_LIGHTING_AUTONOMOUS_MODE     ),\\
+      HID_LOGICAL_MIN  ( 0                                      ),\\
+      HID_LOGICAL_MAX  ( 1                                      ),\\
+      HID_REPORT_SIZE  ( 8                                      ),\\
+      HID_REPORT_COUNT ( 1                                      ),\\
+      HID_FEATURE      ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ),\\
+    HID_COLLECTION_END ,\\
+  HID_COLLECTION_END \\
+
+//--------------------------------------------------------------------+
+// Internal Class Driver API
+//--------------------------------------------------------------------+
+void     hidd_init            (void);
+bool     hidd_deinit          (void);
+void     hidd_reset           (uint8_t rhport);
+uint16_t hidd_open            (uint8_t rhport, tusb_desc_interface_t const * itf_desc, uint16_t max_len);
+bool     hidd_control_xfer_cb (uint8_t rhport, uint8_t stage, tusb_control_request_t const * request);
+bool     hidd_xfer_cb         (uint8_t rhport, uint8_t ep_addr, xfer_result_t event, uint32_t xferred_bytes);
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif
+`,"class/hid/hid_host.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "tusb_option.h"
+
+#if (CFG_TUH_ENABLED && CFG_TUH_HID)
+
+#include "host/usbh.h"
+#include "host/usbh_pvt.h"
+
+#include "hid_host.h"
+
+// Level where CFG_TUSB_DEBUG must be at least for this driver is logged
+#ifndef CFG_TUH_HID_LOG_LEVEL
+  #define CFG_TUH_HID_LOG_LEVEL   CFG_TUH_LOG_LEVEL
+#endif
+
+#define TU_LOG_DRV(...)   TU_LOG(CFG_TUH_HID_LOG_LEVEL, __VA_ARGS__)
+
+//--------------------------------------------------------------------+
+// MACRO CONSTANT TYPEDEF
+//--------------------------------------------------------------------+
+typedef struct {
+  uint8_t daddr;
+  uint8_t itf_num;
+  uint8_t ep_in;
+  uint8_t ep_out;
+
+  bool mounted;           // Enumeration is complete
+  uint8_t itf_protocol;   // None, Keyboard, Mouse
+  uint8_t protocol_mode;  // Boot (0) or Report protocol (1)
+
+  uint8_t report_desc_type;
+  uint16_t report_desc_len;
+
+  uint16_t epin_size;
+  uint16_t epout_size;
+} hidh_interface_t;
+
+typedef struct {
+  TUH_EPBUF_DEF(epin, CFG_TUH_HID_EPIN_BUFSIZE);
+  TUH_EPBUF_DEF(epout, CFG_TUH_HID_EPOUT_BUFSIZE);
+} hidh_epbuf_t;
+
+static hidh_interface_t _hidh_itf[CFG_TUH_HID];
+CFG_TUH_MEM_SECTION static hidh_epbuf_t _hidh_epbuf[CFG_TUH_HID];
+
+static uint8_t _hidh_default_protocol = HID_PROTOCOL_BOOT;
+
+//--------------------------------------------------------------------+
+// Helper
+//--------------------------------------------------------------------+
+TU_ATTR_ALWAYS_INLINE static inline hidh_interface_t* get_hid_itf(uint8_t daddr, uint8_t idx) {
+  TU_ASSERT(daddr > 0 && idx < CFG_TUH_HID, NULL);
+  hidh_interface_t* p_hid = &_hidh_itf[idx];
+  return (p_hid->daddr == daddr) ? p_hid : NULL;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline hidh_epbuf_t* get_hid_epbuf(uint8_t idx) {
+  return &_hidh_epbuf[idx];
+}
+
+// Get instance ID by endpoint address
+static uint8_t get_idx_by_epaddr(uint8_t daddr, uint8_t ep_addr) {
+  for (uint8_t idx = 0; idx < CFG_TUH_HID; idx++) {
+    hidh_interface_t const* p_hid = &_hidh_itf[idx];
+    if (p_hid->daddr == daddr &&
+        (p_hid->ep_in == ep_addr || p_hid->ep_out == ep_addr)) {
+      return idx;
+    }
+  }
+  return TUSB_INDEX_INVALID_8;
+}
+
+static hidh_interface_t* find_new_itf(void) {
+  for (uint8_t i = 0; i < CFG_TUH_HID; i++) {
+    if (_hidh_itf[i].daddr == 0) return &_hidh_itf[i];
+  }
+  return NULL;
+}
+
+//--------------------------------------------------------------------+
+// Interface API
+//--------------------------------------------------------------------+
+uint8_t tuh_hid_itf_get_count(uint8_t daddr) {
+  uint8_t count = 0;
+  for (uint8_t i = 0; i < CFG_TUH_HID; i++) {
+    if (_hidh_itf[i].daddr == daddr) count++;
+  }
+  return count;
+}
+
+uint8_t tuh_hid_itf_get_total_count(void) {
+  uint8_t count = 0;
+  for (uint8_t i = 0; i < CFG_TUH_HID; i++) {
+    if (_hidh_itf[i].daddr != 0) count++;
+  }
+  return count;
+}
+
+bool tuh_hid_mounted(uint8_t daddr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  return p_hid->mounted;
+}
+
+bool tuh_hid_itf_get_info(uint8_t daddr, uint8_t idx, tuh_itf_info_t* info) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid && info);
+
+  info->daddr = daddr;
+
+  // re-construct descriptor
+  tusb_desc_interface_t* desc = &info->desc;
+  desc->bLength = sizeof(tusb_desc_interface_t);
+  desc->bDescriptorType = TUSB_DESC_INTERFACE;
+
+  desc->bInterfaceNumber = p_hid->itf_num;
+  desc->bAlternateSetting = 0;
+  desc->bNumEndpoints = (uint8_t) ((p_hid->ep_in ? 1u : 0u) + (p_hid->ep_out ? 1u : 0u));
+  desc->bInterfaceClass = TUSB_CLASS_HID;
+  desc->bInterfaceSubClass = (p_hid->itf_protocol ? HID_SUBCLASS_BOOT : HID_SUBCLASS_NONE);
+  desc->bInterfaceProtocol = p_hid->itf_protocol;
+  desc->iInterface = 0; // not used yet
+
+  return true;
+}
+
+uint8_t tuh_hid_itf_get_index(uint8_t daddr, uint8_t itf_num) {
+  for (uint8_t idx = 0; idx < CFG_TUH_HID; idx++) {
+    hidh_interface_t const* p_hid = &_hidh_itf[idx];
+    if (p_hid->daddr == daddr && p_hid->itf_num == itf_num) return idx;
+  }
+
+  return TUSB_INDEX_INVALID_8;
+}
+
+uint8_t tuh_hid_interface_protocol(uint8_t daddr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  return p_hid ? p_hid->itf_protocol : 0;
+}
+
+//--------------------------------------------------------------------+
+// Control Endpoint API
+//--------------------------------------------------------------------+
+uint8_t tuh_hid_get_protocol(uint8_t daddr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  return p_hid ? p_hid->protocol_mode : 0;
+}
+
+static void set_protocol_complete(tuh_xfer_t* xfer) {
+  uint8_t const itf_num = (uint8_t) tu_le16toh(xfer->setup->wIndex);
+  uint8_t const daddr = xfer->daddr;
+  uint8_t const idx = tuh_hid_itf_get_index(daddr, itf_num);
+
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid,);
+
+  if (XFER_RESULT_SUCCESS == xfer->result) {
+    p_hid->protocol_mode = (uint8_t) tu_le16toh(xfer->setup->wValue);
+  }
+
+  if (tuh_hid_set_protocol_complete_cb) {
+    tuh_hid_set_protocol_complete_cb(daddr, idx, p_hid->protocol_mode);
+  }
+}
+
+void tuh_hid_set_default_protocol(uint8_t protocol) {
+  _hidh_default_protocol = protocol;
+}
+
+static bool _hidh_set_protocol(uint8_t daddr, uint8_t itf_num, uint8_t protocol,
+                               tuh_xfer_cb_t complete_cb, uintptr_t user_data) {
+  TU_LOG_DRV("HID Set Protocol = %d\\r\\n", protocol);
+
+  tusb_control_request_t const request = {
+      .bmRequestType_bit = {
+          .recipient = TUSB_REQ_RCPT_INTERFACE,
+          .type      = TUSB_REQ_TYPE_CLASS,
+          .direction = TUSB_DIR_OUT
+      },
+      .bRequest = HID_REQ_CONTROL_SET_PROTOCOL,
+      .wValue   = protocol,
+      .wIndex   = itf_num,
+      .wLength  = 0
+  };
+
+  tuh_xfer_t xfer = {
+      .daddr       = daddr,
+      .ep_addr     = 0,
+      .setup       = &request,
+      .buffer      = NULL,
+      .complete_cb = complete_cb,
+      .user_data   = user_data
+  };
+
+  return tuh_control_xfer(&xfer);
+}
+
+bool tuh_hid_set_protocol(uint8_t daddr, uint8_t idx, uint8_t protocol) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid && p_hid->itf_protocol != HID_ITF_PROTOCOL_NONE);
+
+  return _hidh_set_protocol(daddr, p_hid->itf_num, protocol, set_protocol_complete, 0);
+}
+
+static void get_report_complete(tuh_xfer_t* xfer) {
+  TU_LOG_DRV("HID Get Report complete\\r\\n");
+
+  if (tuh_hid_get_report_complete_cb) {
+    uint8_t const itf_num = (uint8_t) tu_le16toh(xfer->setup->wIndex);
+    uint8_t const idx = tuh_hid_itf_get_index(xfer->daddr, itf_num);
+
+    uint8_t const report_type = tu_u16_high(xfer->setup->wValue);
+    uint8_t const report_id = tu_u16_low(xfer->setup->wValue);
+
+    tuh_hid_get_report_complete_cb(xfer->daddr, idx, report_id, report_type,
+                                   (xfer->result == XFER_RESULT_SUCCESS) ? xfer->setup->wLength : 0);
+  }
+}
+
+bool tuh_hid_get_report(uint8_t daddr, uint8_t idx, uint8_t report_id, uint8_t report_type, void* report, uint16_t len) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  TU_LOG_DRV("HID Get Report: id = %u, type = %u, len = %u\\r\\n", report_id, report_type, len);
+
+  tusb_control_request_t const request = {
+      .bmRequestType_bit = {
+          .recipient = TUSB_REQ_RCPT_INTERFACE,
+          .type      = TUSB_REQ_TYPE_CLASS,
+          .direction = TUSB_DIR_IN
+      },
+      .bRequest = HID_REQ_CONTROL_GET_REPORT,
+      .wValue   = tu_htole16(tu_u16(report_type, report_id)),
+      .wIndex   = tu_htole16((uint16_t) p_hid->itf_num),
+      .wLength  = len
+  };
+
+  tuh_xfer_t xfer = {
+      .daddr       = daddr,
+      .ep_addr     = 0,
+      .setup       = &request,
+      .buffer      = report,
+      .complete_cb = get_report_complete,
+      .user_data   = 0
+  };
+
+  return tuh_control_xfer(&xfer);
+}
+
+static void set_report_complete(tuh_xfer_t* xfer) {
+  TU_LOG_DRV("HID Set Report complete\\r\\n");
+
+  if (tuh_hid_set_report_complete_cb) {
+    uint8_t const itf_num = (uint8_t) tu_le16toh(xfer->setup->wIndex);
+    uint8_t const idx = tuh_hid_itf_get_index(xfer->daddr, itf_num);
+
+    uint8_t const report_type = tu_u16_high(xfer->setup->wValue);
+    uint8_t const report_id = tu_u16_low(xfer->setup->wValue);
+
+    tuh_hid_set_report_complete_cb(xfer->daddr, idx, report_id, report_type,
+                                   (xfer->result == XFER_RESULT_SUCCESS) ? xfer->setup->wLength : 0);
+  }
+}
+
+bool tuh_hid_set_report(uint8_t daddr, uint8_t idx, uint8_t report_id, uint8_t report_type, void* report, uint16_t len) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  TU_LOG_DRV("HID Set Report: id = %u, type = %u, len = %u\\r\\n", report_id, report_type, len);
+
+  tusb_control_request_t const request = {
+      .bmRequestType_bit = {
+          .recipient = TUSB_REQ_RCPT_INTERFACE,
+          .type      = TUSB_REQ_TYPE_CLASS,
+          .direction = TUSB_DIR_OUT
+      },
+      .bRequest = HID_REQ_CONTROL_SET_REPORT,
+      .wValue   = tu_htole16(tu_u16(report_type, report_id)),
+      .wIndex   = tu_htole16((uint16_t) p_hid->itf_num),
+      .wLength  = len
+  };
+
+  tuh_xfer_t xfer = {
+      .daddr       = daddr,
+      .ep_addr     = 0,
+      .setup       = &request,
+      .buffer      = report,
+      .complete_cb = set_report_complete,
+      .user_data   = 0
+  };
+
+  return tuh_control_xfer(&xfer);
+}
+
+static bool _hidh_set_idle(uint8_t daddr, uint8_t itf_num, uint16_t idle_rate,
+                           tuh_xfer_cb_t complete_cb, uintptr_t user_data) {
+  // SET IDLE request, device can stall if not support this request
+  TU_LOG_DRV("HID Set Idle \\r\\n");
+
+  tusb_control_request_t const request = {
+      .bmRequestType_bit = {
+          .recipient = TUSB_REQ_RCPT_INTERFACE,
+          .type      = TUSB_REQ_TYPE_CLASS,
+          .direction = TUSB_DIR_OUT
+      },
+      .bRequest = HID_REQ_CONTROL_SET_IDLE,
+      .wValue   = tu_htole16(idle_rate),
+      .wIndex   = tu_htole16((uint16_t) itf_num),
+      .wLength  = 0
+  };
+
+  tuh_xfer_t xfer = {
+      .daddr       = daddr,
+      .ep_addr     = 0,
+      .setup       = &request,
+      .buffer      = NULL,
+      .complete_cb = complete_cb,
+      .user_data   = user_data
+  };
+
+  return tuh_control_xfer(&xfer);
+}
+
+//--------------------------------------------------------------------+
+// Interrupt Endpoint API
+//--------------------------------------------------------------------+
+
+// Check if HID interface is ready to receive report
+bool tuh_hid_receive_ready(uint8_t dev_addr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(dev_addr, idx);
+  TU_VERIFY(p_hid);
+  return !usbh_edpt_busy(dev_addr, p_hid->ep_in);
+}
+
+bool tuh_hid_receive_report(uint8_t daddr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  hidh_epbuf_t* epbuf = get_hid_epbuf(idx);
+
+  // claim endpoint
+  TU_VERIFY(usbh_edpt_claim(daddr, p_hid->ep_in));
+
+  if (!usbh_edpt_xfer(daddr, p_hid->ep_in, epbuf->epin, p_hid->epin_size)) {
+    usbh_edpt_release(daddr, p_hid->ep_in);
+    return false;
+  }
+
+  return true;
+}
+bool tuh_hid_receive_abort(uint8_t dev_addr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(dev_addr, idx);
+  TU_VERIFY(p_hid);
+  return tuh_edpt_abort_xfer(dev_addr, p_hid->ep_in);
+}
+
+bool tuh_hid_send_ready(uint8_t dev_addr, uint8_t idx) {
+  hidh_interface_t* p_hid = get_hid_itf(dev_addr, idx);
+  TU_VERIFY(p_hid);
+  return !usbh_edpt_busy(dev_addr, p_hid->ep_out);
+}
+
+bool tuh_hid_send_report(uint8_t daddr, uint8_t idx, uint8_t report_id, const void* report, uint16_t len) {
+  TU_LOG_DRV("HID Send Report %d\\r\\n", report_id);
+
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  hidh_epbuf_t* epbuf = get_hid_epbuf(idx);
+
+  if (p_hid->ep_out == 0) {
+    // This HID does not have an out endpoint (other than control)
+    return false;
+  } else if (len > CFG_TUH_HID_EPOUT_BUFSIZE ||
+             (report_id != 0 && len > (CFG_TUH_HID_EPOUT_BUFSIZE - 1))) {
+    // ep_out buffer is not large enough to hold contents
+    return false;
+  }
+
+  // claim endpoint
+  TU_VERIFY(usbh_edpt_claim(daddr, p_hid->ep_out));
+
+  if (report_id == 0) {
+    // No report ID in transmission
+    memcpy(&epbuf->epout[0], report, len);
+  } else {
+    epbuf->epout[0] = report_id;
+    memcpy(&epbuf->epout[1], report, len);
+    ++len; // 1 more byte for report_id
+  }
+
+  TU_LOG3_MEM(p_hid->epout_buf, len, 2);
+
+  if (!usbh_edpt_xfer(daddr, p_hid->ep_out, epbuf->epout, len)) {
+    usbh_edpt_release(daddr, p_hid->ep_out);
+    return false;
+  }
+
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// USBH API
+//--------------------------------------------------------------------+
+bool hidh_init(void) {
+  TU_LOG_DRV("sizeof(hidh_interface_t) = %u\\r\\n", sizeof(hidh_interface_t));
+  tu_memclr(_hidh_itf, sizeof(_hidh_itf));
+  return true;
+}
+
+bool hidh_deinit(void) {
+  return true;
+}
+
+bool hidh_xfer_cb(uint8_t daddr, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes) {
+  (void) result;
+
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+  uint8_t const idx = get_idx_by_epaddr(daddr, ep_addr);
+
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid);
+  hidh_epbuf_t* epbuf = get_hid_epbuf(idx);
+
+  if (dir == TUSB_DIR_IN) {
+    TU_LOG_DRV("  Get Report callback (%u, %u)\\r\\n", daddr, idx);
+    TU_LOG3_MEM(p_hid->epin_buf, xferred_bytes, 2);
+    tuh_hid_report_received_cb(daddr, idx, epbuf->epin, (uint16_t) xferred_bytes);
+  } else {
+    if (tuh_hid_report_sent_cb) {
+      tuh_hid_report_sent_cb(daddr, idx, epbuf->epout, (uint16_t) xferred_bytes);
+    }
+  }
+
+  return true;
+}
+
+void hidh_close(uint8_t daddr) {
+  for (uint8_t i = 0; i < CFG_TUH_HID; i++) {
+    hidh_interface_t* p_hid = &_hidh_itf[i];
+    if (p_hid->daddr == daddr) {
+      TU_LOG_DRV("  HIDh close addr = %u index = %u\\r\\n", daddr, i);
+      if (tuh_hid_umount_cb) tuh_hid_umount_cb(daddr, i);
+      tu_memclr(p_hid, sizeof(hidh_interface_t));
+    }
+  }
+}
+
+//--------------------------------------------------------------------+
+// Enumeration
+//--------------------------------------------------------------------+
+
+bool hidh_open(uint8_t rhport, uint8_t daddr, tusb_desc_interface_t const* desc_itf, uint16_t max_len) {
+  (void) rhport;
+  (void) max_len;
+
+  TU_VERIFY(TUSB_CLASS_HID == desc_itf->bInterfaceClass);
+  TU_LOG_DRV("[%u] HID opening Interface %u\\r\\n", daddr, desc_itf->bInterfaceNumber);
+
+  // len = interface + hid + n*endpoints
+  uint16_t const drv_len = (uint16_t) (sizeof(tusb_desc_interface_t) + sizeof(tusb_hid_descriptor_hid_t) +
+                                       desc_itf->bNumEndpoints * sizeof(tusb_desc_endpoint_t));
+  TU_ASSERT(max_len >= drv_len);
+  uint8_t const* p_desc = (uint8_t const*) desc_itf;
+
+  //------------- HID descriptor -------------//
+  p_desc = tu_desc_next(p_desc);
+  tusb_hid_descriptor_hid_t const* desc_hid = (tusb_hid_descriptor_hid_t const*) p_desc;
+  TU_ASSERT(HID_DESC_TYPE_HID == desc_hid->bDescriptorType);
+
+  hidh_interface_t* p_hid = find_new_itf();
+  TU_ASSERT(p_hid); // not enough interface, try to increase CFG_TUH_HID
+  p_hid->daddr = daddr;
+
+  //------------- Endpoint Descriptors -------------//
+  p_desc = tu_desc_next(p_desc);
+  tusb_desc_endpoint_t const* desc_ep = (tusb_desc_endpoint_t const*) p_desc;
+
+  for (int i = 0; i < desc_itf->bNumEndpoints; i++) {
+    TU_ASSERT(TUSB_DESC_ENDPOINT == desc_ep->bDescriptorType);
+    TU_ASSERT(tuh_edpt_open(daddr, desc_ep));
+
+    if (tu_edpt_dir(desc_ep->bEndpointAddress) == TUSB_DIR_IN) {
+      p_hid->ep_in = desc_ep->bEndpointAddress;
+      p_hid->epin_size = tu_edpt_packet_size(desc_ep);
+    } else {
+      p_hid->ep_out = desc_ep->bEndpointAddress;
+      p_hid->epout_size = tu_edpt_packet_size(desc_ep);
+    }
+
+    p_desc = tu_desc_next(p_desc);
+    desc_ep = (tusb_desc_endpoint_t const*) p_desc;
+  }
+
+  p_hid->itf_num = desc_itf->bInterfaceNumber;
+
+  // Assume bNumDescriptors = 1
+  p_hid->report_desc_type = desc_hid->bReportType;
+  p_hid->report_desc_len = tu_unaligned_read16(&desc_hid->wReportLength);
+
+  // Per HID Specs: default is Report protocol, though we will force Boot protocol when set_config
+  p_hid->protocol_mode = _hidh_default_protocol;
+  if (HID_SUBCLASS_BOOT == desc_itf->bInterfaceSubClass) {
+    p_hid->itf_protocol = desc_itf->bInterfaceProtocol;
+  }
+
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// Set Configure
+//--------------------------------------------------------------------+
+
+enum {
+  CONFG_SET_IDLE,
+  CONFIG_SET_PROTOCOL,
+  CONFIG_GET_REPORT_DESC,
+  CONFIG_COMPLETE
+};
+
+static void config_driver_mount_complete(uint8_t daddr, uint8_t idx, uint8_t const* desc_report, uint16_t desc_len);
+static void process_set_config(tuh_xfer_t* xfer);
+
+bool hidh_set_config(uint8_t daddr, uint8_t itf_num) {
+  tusb_control_request_t request;
+  request.wIndex = tu_htole16((uint16_t) itf_num);
+
+  tuh_xfer_t xfer;
+  xfer.daddr = daddr;
+  xfer.result = XFER_RESULT_SUCCESS;
+  xfer.setup = &request;
+  xfer.user_data = CONFG_SET_IDLE;
+
+  // fake request to kick-off the set config process
+  process_set_config(&xfer);
+
+  return true;
+}
+
+static void process_set_config(tuh_xfer_t* xfer) {
+  // Stall is a valid response for SET_IDLE, sometime SET_PROTOCOL as well
+  // therefore we could ignore its result
+  if (!(xfer->setup->bRequest == HID_REQ_CONTROL_SET_IDLE ||
+        xfer->setup->bRequest == HID_REQ_CONTROL_SET_PROTOCOL)) {
+    TU_ASSERT(xfer->result == XFER_RESULT_SUCCESS,);
+  }
+
+  uintptr_t const state = xfer->user_data;
+  uint8_t const itf_num = (uint8_t) tu_le16toh(xfer->setup->wIndex);
+  uint8_t const daddr = xfer->daddr;
+
+  uint8_t const idx = tuh_hid_itf_get_index(daddr, itf_num);
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid,);
+
+  switch (state) {
+    case CONFG_SET_IDLE: {
+      // Idle rate = 0 mean only report when there is changes
+      const uint16_t idle_rate = 0;
+      const uintptr_t next_state = (p_hid->itf_protocol != HID_ITF_PROTOCOL_NONE)
+                                   ? CONFIG_SET_PROTOCOL : CONFIG_GET_REPORT_DESC;
+      _hidh_set_idle(daddr, itf_num, idle_rate, process_set_config, next_state);
+      break;
+    }
+
+    case CONFIG_SET_PROTOCOL:
+      _hidh_set_protocol(daddr, p_hid->itf_num, _hidh_default_protocol, process_set_config, CONFIG_GET_REPORT_DESC);
+      break;
+
+    case CONFIG_GET_REPORT_DESC:
+      // Get Report Descriptor if possible
+      // using usbh enumeration buffer since report descriptor can be very long
+      if (p_hid->report_desc_len > CFG_TUH_ENUMERATION_BUFSIZE) {
+        TU_LOG_DRV("HID Skip Report Descriptor since it is too large %u bytes\\r\\n", p_hid->report_desc_len);
+
+        // Driver is mounted without report descriptor
+        config_driver_mount_complete(daddr, idx, NULL, 0);
+      } else {
+        tuh_descriptor_get_hid_report(daddr, itf_num, p_hid->report_desc_type, 0,
+                                      usbh_get_enum_buf(), p_hid->report_desc_len,
+                                      process_set_config, CONFIG_COMPLETE);
+      }
+      break;
+
+    case CONFIG_COMPLETE: {
+      uint8_t const* desc_report = usbh_get_enum_buf();
+      uint16_t const desc_len = tu_le16toh(xfer->setup->wLength);
+
+      config_driver_mount_complete(daddr, idx, desc_report, desc_len);
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
+static void config_driver_mount_complete(uint8_t daddr, uint8_t idx, uint8_t const* desc_report, uint16_t desc_len) {
+  hidh_interface_t* p_hid = get_hid_itf(daddr, idx);
+  TU_VERIFY(p_hid,);
+  p_hid->mounted = true;
+
+  // enumeration is complete
+  if (tuh_hid_mount_cb) tuh_hid_mount_cb(daddr, idx, desc_report, desc_len);
+
+  // notify usbh that driver enumeration is complete
+  usbh_driver_set_config_complete(daddr, p_hid->itf_num);
+}
+
+//--------------------------------------------------------------------+
+// Report Descriptor Parser
+//--------------------------------------------------------------------+
+
+uint8_t tuh_hid_parse_report_descriptor(tuh_hid_report_info_t* report_info_arr, uint8_t arr_count,
+                                        uint8_t const* desc_report, uint16_t desc_len) {
+  // Report Item 6.2.2.2 USB HID 1.11
+  union TU_ATTR_PACKED {
+    uint8_t byte;
+    struct TU_ATTR_PACKED {
+      uint8_t size : 2;
+      uint8_t type : 2;
+      uint8_t tag : 4;
+    };
+  } header;
+
+  tu_memclr(report_info_arr, arr_count * sizeof(tuh_hid_report_info_t));
+
+  uint8_t report_num = 0;
+  tuh_hid_report_info_t* info = report_info_arr;
+
+  // current parsed report count & size from descriptor
+//  uint8_t ri_report_count = 0;
+//  uint8_t ri_report_size = 0;
+
+  uint8_t ri_collection_depth = 0;
+  while (desc_len && report_num < arr_count) {
+    header.byte = *desc_report++;
+    desc_len--;
+
+    uint8_t const tag = header.tag;
+    uint8_t const type = header.type;
+    uint8_t const size = header.size;
+
+    uint8_t const data8 = desc_report[0];
+
+    TU_LOG(3, "tag = %d, type = %d, size = %d, data = ", tag, type, size);
+    for (uint32_t i = 0; i < size; i++) {
+      TU_LOG(3, "%02X ", desc_report[i]);
+    }
+    TU_LOG(3, "\\r\\n");
+
+    switch (type) {
+      case RI_TYPE_MAIN:
+        switch (tag) {
+          case RI_MAIN_INPUT: break;
+          case RI_MAIN_OUTPUT: break;
+          case RI_MAIN_FEATURE: break;
+          case RI_MAIN_COLLECTION:
+            ri_collection_depth++;
+            break;
+
+          case RI_MAIN_COLLECTION_END:
+            ri_collection_depth--;
+            if (ri_collection_depth == 0) {
+              info++;
+              report_num++;
+            }
+            break;
+
+          default:break;
+        }
+        break;
+
+      case RI_TYPE_GLOBAL:
+        switch (tag) {
+          case RI_GLOBAL_USAGE_PAGE:
+            // only take in account the "usage page" before REPORT ID
+            if (ri_collection_depth == 0) memcpy(&info->usage_page, desc_report, size);
+            break;
+
+          case RI_GLOBAL_LOGICAL_MIN: break;
+          case RI_GLOBAL_LOGICAL_MAX: break;
+          case RI_GLOBAL_PHYSICAL_MIN: break;
+          case RI_GLOBAL_PHYSICAL_MAX: break;
+
+          case RI_GLOBAL_REPORT_ID:
+            info->report_id = data8;
+            break;
+
+          case RI_GLOBAL_REPORT_SIZE:
+//            ri_report_size = data8;
+            break;
+
+          case RI_GLOBAL_REPORT_COUNT:
+//            ri_report_count = data8;
+            break;
+
+          case RI_GLOBAL_UNIT_EXPONENT: break;
+          case RI_GLOBAL_UNIT: break;
+          case RI_GLOBAL_PUSH: break;
+          case RI_GLOBAL_POP: break;
+
+          default: break;
+        }
+        break;
+
+      case RI_TYPE_LOCAL:
+        switch (tag) {
+          case RI_LOCAL_USAGE:
+            // only take in account the "usage" before starting REPORT ID
+            if (ri_collection_depth == 0) info->usage = data8;
+            break;
+
+          case RI_LOCAL_USAGE_MIN: break;
+          case RI_LOCAL_USAGE_MAX: break;
+          case RI_LOCAL_DESIGNATOR_INDEX: break;
+          case RI_LOCAL_DESIGNATOR_MIN: break;
+          case RI_LOCAL_DESIGNATOR_MAX: break;
+          case RI_LOCAL_STRING_INDEX: break;
+          case RI_LOCAL_STRING_MIN: break;
+          case RI_LOCAL_STRING_MAX: break;
+          case RI_LOCAL_DELIMITER: break;
+          default: break;
+        }
+        break;
+
+        // error
+      default: break;
+    }
+
+    desc_report += size;
+    desc_len -= size;
+  }
+
+  for (uint8_t i = 0; i < report_num; i++) {
+    info = report_info_arr + i;
+    TU_LOG_DRV("%u: id = %u, usage_page = %u, usage = %u\\r\\n", i, info->report_id, info->usage_page, info->usage);
+  }
+
+  return report_num;
+}
+
+#endif
+`,"class/hid/hid_host.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_HID_HOST_H_
+#define _TUSB_HID_HOST_H_
+
+#include "hid.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Class Driver Configuration
+//--------------------------------------------------------------------+
+
+// TODO Highspeed interrupt can be up to 512 bytes
+#ifndef CFG_TUH_HID_EPIN_BUFSIZE
+#define CFG_TUH_HID_EPIN_BUFSIZE 64
+#endif
+
+#ifndef CFG_TUH_HID_EPOUT_BUFSIZE
+#define CFG_TUH_HID_EPOUT_BUFSIZE 64
+#endif
+
+
+typedef struct {
+  uint8_t report_id;
+  uint8_t usage;
+  uint16_t usage_page;
+
+  // TODO still use the endpoint size for now
+//  uint8_t in_len;      // length of IN report
+//  uint8_t out_len;     // length of OUT report
+} tuh_hid_report_info_t;
+
+//--------------------------------------------------------------------+
+// Interface API
+//--------------------------------------------------------------------+
+
+// Get the total number of mounted HID interfaces of a device
+uint8_t tuh_hid_itf_get_count(uint8_t dev_addr);
+
+// Get all mounted interfaces across devices
+uint8_t tuh_hid_itf_get_total_count(void);
+
+// backward compatible rename
+#define tuh_hid_instance_count    tuh_hid_itf_get_count
+
+// Get Interface information
+bool tuh_hid_itf_get_info(uint8_t daddr, uint8_t idx, tuh_itf_info_t* itf_info);
+
+// Get Interface index from device address + interface number
+// return TUSB_INDEX_INVALID_8 (0xFF) if not found
+uint8_t tuh_hid_itf_get_index(uint8_t daddr, uint8_t itf_num);
+
+// Get interface supported protocol (bInterfaceProtocol) check out hid_interface_protocol_enum_t for possible values
+uint8_t tuh_hid_interface_protocol(uint8_t dev_addr, uint8_t idx);
+
+// Check if HID interface is mounted
+bool tuh_hid_mounted(uint8_t dev_addr, uint8_t idx);
+
+// Parse report descriptor into array of report_info struct and return number of reports.
+// For complicated report, application should write its own parser.
+TU_ATTR_UNUSED uint8_t tuh_hid_parse_report_descriptor(tuh_hid_report_info_t* reports_info_arr, uint8_t arr_count,
+                                                       uint8_t const* desc_report, uint16_t desc_len);
+
+//--------------------------------------------------------------------+
+// Control Endpoint API
+//--------------------------------------------------------------------+
+
+// Get current protocol: HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
+// Note: Device will be initialized in Boot protocol for simplicity.
+//       Application can use set_protocol() to switch back to Report protocol.
+uint8_t tuh_hid_get_protocol(uint8_t dev_addr, uint8_t idx);
+
+// Device by default is enumerated in Boot protocol for simplicity. Application
+// can use this to modify the default protocol for next enumeration.
+void tuh_hid_set_default_protocol(uint8_t protocol);
+
+// Set protocol to HID_PROTOCOL_BOOT (0) or HID_PROTOCOL_REPORT (1)
+// This function is only supported by Boot interface (tuh_n_hid_interface_protocol() != NONE)
+bool tuh_hid_set_protocol(uint8_t dev_addr, uint8_t idx, uint8_t protocol);
+
+// Get Report using control endpoint
+// report_type is either Input, Output or Feature, (value from hid_report_type_t)
+bool tuh_hid_get_report(uint8_t dev_addr, uint8_t idx, uint8_t report_id, uint8_t report_type, void* report, uint16_t len);
+
+// Set Report using control endpoint
+// report_type is either Input, Output or Feature, (value from hid_report_type_t)
+bool tuh_hid_set_report(uint8_t dev_addr, uint8_t idx, uint8_t report_id, uint8_t report_type,
+                        void* report, uint16_t len);
+
+//--------------------------------------------------------------------+
+// Interrupt Endpoint API
+//--------------------------------------------------------------------+
+
+// Check if HID interface is ready to receive report
+bool tuh_hid_receive_ready(uint8_t dev_addr, uint8_t idx);
+
+// Try to receive next report on Interrupt Endpoint. Immediately return
+// - true If succeeded, tuh_hid_report_received_cb() callback will be invoked when report is available
+// - false if failed to queue the transfer e.g endpoint is busy
+bool tuh_hid_receive_report(uint8_t dev_addr, uint8_t idx);
+
+// Abort receiving report on Interrupt Endpoint
+bool tuh_hid_receive_abort(uint8_t dev_addr, uint8_t idx);
+
+// Check if HID interface is ready to send report
+bool tuh_hid_send_ready(uint8_t dev_addr, uint8_t idx);
+
+// Send report using interrupt endpoint
+// If report_id > 0 (composite), it will be sent as 1st byte, then report contents. Otherwise only report content is sent.
+bool tuh_hid_send_report(uint8_t dev_addr, uint8_t idx, uint8_t report_id, const void* report, uint16_t len);
+
+//--------------------------------------------------------------------+
+// Callbacks (Weak is optional)
+//--------------------------------------------------------------------+
+
+// Invoked when device with hid interface is mounted
+// Report descriptor is also available for use. tuh_hid_parse_report_descriptor()
+// can be used to parse common/simple enough descriptor.
+// Note: if report descriptor length > CFG_TUH_ENUMERATION_BUFSIZE, it will be skipped
+// therefore report_desc = NULL, desc_len = 0
+TU_ATTR_WEAK void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t idx, uint8_t const* report_desc, uint16_t desc_len);
+
+// Invoked when device with hid interface is un-mounted
+TU_ATTR_WEAK void tuh_hid_umount_cb(uint8_t dev_addr, uint8_t idx);
+
+// Invoked when received report from device via interrupt endpoint
+// Note: if there is report ID (composite), it is 1st byte of report
+void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t idx, uint8_t const* report, uint16_t len);
+
+// Invoked when sent report to device successfully via interrupt endpoint
+TU_ATTR_WEAK void tuh_hid_report_sent_cb(uint8_t dev_addr, uint8_t idx, uint8_t const* report, uint16_t len);
+
+// Invoked when Get Report to device via either control endpoint
+// len = 0 indicate there is error in the transfer e.g stalled response
+TU_ATTR_WEAK void tuh_hid_get_report_complete_cb(uint8_t dev_addr, uint8_t idx, uint8_t report_id, uint8_t report_type, uint16_t len);
+
+// Invoked when Sent Report to device via either control endpoint
+// len = 0 indicate there is error in the transfer e.g stalled response
+TU_ATTR_WEAK void tuh_hid_set_report_complete_cb(uint8_t dev_addr, uint8_t idx, uint8_t report_id, uint8_t report_type, uint16_t len);
+
+// Invoked when Set Protocol request is complete
+TU_ATTR_WEAK void tuh_hid_set_protocol_complete_cb(uint8_t dev_addr, uint8_t idx, uint8_t protocol);
+
+//--------------------------------------------------------------------+
+// Internal Class Driver API
+//--------------------------------------------------------------------+
+bool hidh_init(void);
+bool hidh_deinit(void);
+bool hidh_open(uint8_t rhport, uint8_t dev_addr, tusb_desc_interface_t const* desc_itf, uint16_t max_len);
+bool hidh_set_config(uint8_t dev_addr, uint8_t itf_num);
+bool hidh_xfer_cb(uint8_t dev_addr, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes);
+void hidh_close(uint8_t dev_addr);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _TUSB_HID_HOST_H_ */
+`,"class/hid/hid.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+/** \\ingroup group_class
+ *  \\defgroup ClassDriver_HID Human Interface Device (HID)
+ *  @{ */
+
+#ifndef _TUSB_HID_H_
+#define _TUSB_HID_H_
+
+#include "common/tusb_common.h"
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Common Definitions
+//--------------------------------------------------------------------+
+/** \\defgroup ClassDriver_HID_Common Common Definitions
+ *  @{ */
+
+/// USB HID Descriptor
+typedef struct TU_ATTR_PACKED
+{
+  uint8_t  bLength;         /**< Numeric expression that is the total size of the HID descriptor */
+  uint8_t  bDescriptorType; /**< Constant name specifying type of HID descriptor. */
+
+  uint16_t bcdHID;          /**< Numeric expression identifying the HID Class Specification release */
+  uint8_t  bCountryCode;    /**< Numeric expression identifying country code of the localized hardware.  */
+  uint8_t  bNumDescriptors; /**< Numeric expression specifying the number of class descriptors */
+
+  uint8_t  bReportType;     /**< Type of HID class report. */
+  uint16_t wReportLength;   /**< the total size of the Report descriptor. */
+} tusb_hid_descriptor_hid_t;
+
+/// HID Subclass
+typedef enum
+{
+  HID_SUBCLASS_NONE = 0, ///< No Subclass
+  HID_SUBCLASS_BOOT = 1  ///< Boot Interface Subclass
+}hid_subclass_enum_t;
+
+/// HID Interface Protocol
+typedef enum
+{
+  HID_ITF_PROTOCOL_NONE     = 0, ///< None
+  HID_ITF_PROTOCOL_KEYBOARD = 1, ///< Keyboard
+  HID_ITF_PROTOCOL_MOUSE    = 2  ///< Mouse
+}hid_interface_protocol_enum_t;
+
+/// HID Descriptor Type
+typedef enum
+{
+  HID_DESC_TYPE_HID      = 0x21, ///< HID Descriptor
+  HID_DESC_TYPE_REPORT   = 0x22, ///< Report Descriptor
+  HID_DESC_TYPE_PHYSICAL = 0x23  ///< Physical Descriptor
+}hid_descriptor_enum_t;
+
+/// HID Request Report Type
+typedef enum
+{
+  HID_REPORT_TYPE_INVALID = 0,
+  HID_REPORT_TYPE_INPUT,      ///< Input
+  HID_REPORT_TYPE_OUTPUT,     ///< Output
+  HID_REPORT_TYPE_FEATURE     ///< Feature
+}hid_report_type_t;
+
+/// HID Class Specific Control Request
+typedef enum
+{
+  HID_REQ_CONTROL_GET_REPORT   = 0x01, ///< Get Report
+  HID_REQ_CONTROL_GET_IDLE     = 0x02, ///< Get Idle
+  HID_REQ_CONTROL_GET_PROTOCOL = 0x03, ///< Get Protocol
+  HID_REQ_CONTROL_SET_REPORT   = 0x09, ///< Set Report
+  HID_REQ_CONTROL_SET_IDLE     = 0x0a, ///< Set Idle
+  HID_REQ_CONTROL_SET_PROTOCOL = 0x0b  ///< Set Protocol
+}hid_request_enum_t;
+
+/// HID Local Code
+typedef enum
+{
+  HID_LOCAL_NotSupported = 0   , ///< NotSupported
+  HID_LOCAL_Arabic             , ///< Arabic
+  HID_LOCAL_Belgian            , ///< Belgian
+  HID_LOCAL_Canadian_Bilingual , ///< Canadian_Bilingual
+  HID_LOCAL_Canadian_French    , ///< Canadian_French
+  HID_LOCAL_Czech_Republic     , ///< Czech_Republic
+  HID_LOCAL_Danish             , ///< Danish
+  HID_LOCAL_Finnish            , ///< Finnish
+  HID_LOCAL_French             , ///< French
+  HID_LOCAL_German             , ///< German
+  HID_LOCAL_Greek              , ///< Greek
+  HID_LOCAL_Hebrew             , ///< Hebrew
+  HID_LOCAL_Hungary            , ///< Hungary
+  HID_LOCAL_International      , ///< International
+  HID_LOCAL_Italian            , ///< Italian
+  HID_LOCAL_Japan_Katakana     , ///< Japan_Katakana
+  HID_LOCAL_Korean             , ///< Korean
+  HID_LOCAL_Latin_American     , ///< Latin_American
+  HID_LOCAL_Netherlands_Dutch  , ///< Netherlands/Dutch
+  HID_LOCAL_Norwegian          , ///< Norwegian
+  HID_LOCAL_Persian_Farsi      , ///< Persian (Farsi)
+  HID_LOCAL_Poland             , ///< Poland
+  HID_LOCAL_Portuguese         , ///< Portuguese
+  HID_LOCAL_Russia             , ///< Russia
+  HID_LOCAL_Slovakia           , ///< Slovakia
+  HID_LOCAL_Spanish            , ///< Spanish
+  HID_LOCAL_Swedish            , ///< Swedish
+  HID_LOCAL_Swiss_French       , ///< Swiss/French
+  HID_LOCAL_Swiss_German       , ///< Swiss/German
+  HID_LOCAL_Switzerland        , ///< Switzerland
+  HID_LOCAL_Taiwan             , ///< Taiwan
+  HID_LOCAL_Turkish_Q          , ///< Turkish-Q
+  HID_LOCAL_UK                 , ///< UK
+  HID_LOCAL_US                 , ///< US
+  HID_LOCAL_Yugoslavia         , ///< Yugoslavia
+  HID_LOCAL_Turkish_F            ///< Turkish-F
+} hid_local_enum_t;
+
+// HID protocol value used by GetProtocol / SetProtocol
+typedef enum
+{
+  HID_PROTOCOL_BOOT = 0,
+  HID_PROTOCOL_REPORT = 1
+} hid_protocol_mode_enum_t;
+
+/** @} */
+
+//--------------------------------------------------------------------+
+// GAMEPAD
+//--------------------------------------------------------------------+
+/** \\addtogroup ClassDriver_HID_Gamepad Gamepad
+ *  @{ */
+
+/* From https://www.kernel.org/doc/html/latest/input/gamepad.html
+          ____________________________              __
+         / [__ZL__]          [__ZR__] \\               |
+        / [__ TL __]        [__ TR __] \\              | Front Triggers
+     __/________________________________\\__         __|
+    /                                  _   \\          |
+   /      /\\           __             (N)   \\         |
+  /       ||      __  |MO|  __     _       _ \\        | Main Pad
+ |    <===DP===> |SE|      |ST|   (W) -|- (E) |       |
+  \\       ||    ___          ___       _     /        |
+  /\\      \\/   /   \\        /   \\     (S)   /\\      __|
+ /  \\________ | LS  | ____ |  RS | ________/  \\       |
+|         /  \\ \\___/ /    \\ \\___/ /  \\         |      | Control Sticks
+|        /    \\_____/      \\_____/    \\        |    __|
+|       /                              \\       |
+ \\_____/                                \\_____/
+
+     |________|______|    |______|___________|
+       D-Pad    Left       Right   Action Pad
+               Stick       Stick
+
+                 |_____________|
+                    Menu Pad
+
+  Most gamepads have the following features:
+  - Action-Pad 4 buttons in diamonds-shape (on the right side) NORTH, SOUTH, WEST and EAST.
+  - D-Pad (Direction-pad) 4 buttons (on the left side) that point up, down, left and right.
+  - Menu-Pad Different constellations, but most-times 2 buttons: SELECT - START.
+  - Analog-Sticks provide freely moveable sticks to control directions, Analog-sticks may also
+  provide a digital button if you press them.
+  - Triggers are located on the upper-side of the pad in vertical direction. The upper buttons
+  are normally named Left- and Right-Triggers, the lower buttons Z-Left and Z-Right.
+  - Rumble Many devices provide force-feedback features. But are mostly just simple rumble motors.
+ */
+
+/// HID Gamepad Protocol Report.
+typedef struct TU_ATTR_PACKED
+{
+  int8_t  x;         ///< Delta x  movement of left analog-stick
+  int8_t  y;         ///< Delta y  movement of left analog-stick
+  int8_t  z;         ///< Delta z  movement of right analog-joystick
+  int8_t  rz;        ///< Delta Rz movement of right analog-joystick
+  int8_t  rx;        ///< Delta Rx movement of analog left trigger
+  int8_t  ry;        ///< Delta Ry movement of analog right trigger
+  uint8_t hat;       ///< Buttons mask for currently pressed buttons in the DPad/hat
+  uint32_t buttons;  ///< Buttons mask for currently pressed buttons
+}hid_gamepad_report_t;
+
+/// Standard Gamepad Buttons Bitmap
+typedef enum
+{
+  GAMEPAD_BUTTON_0  = TU_BIT(0),
+  GAMEPAD_BUTTON_1  = TU_BIT(1),
+  GAMEPAD_BUTTON_2  = TU_BIT(2),
+  GAMEPAD_BUTTON_3  = TU_BIT(3),
+  GAMEPAD_BUTTON_4  = TU_BIT(4),
+  GAMEPAD_BUTTON_5  = TU_BIT(5),
+  GAMEPAD_BUTTON_6  = TU_BIT(6),
+  GAMEPAD_BUTTON_7  = TU_BIT(7),
+  GAMEPAD_BUTTON_8  = TU_BIT(8),
+  GAMEPAD_BUTTON_9  = TU_BIT(9),
+  GAMEPAD_BUTTON_10 = TU_BIT(10),
+  GAMEPAD_BUTTON_11 = TU_BIT(11),
+  GAMEPAD_BUTTON_12 = TU_BIT(12),
+  GAMEPAD_BUTTON_13 = TU_BIT(13),
+  GAMEPAD_BUTTON_14 = TU_BIT(14),
+  GAMEPAD_BUTTON_15 = TU_BIT(15),
+  GAMEPAD_BUTTON_16 = TU_BIT(16),
+  GAMEPAD_BUTTON_17 = TU_BIT(17),
+  GAMEPAD_BUTTON_18 = TU_BIT(18),
+  GAMEPAD_BUTTON_19 = TU_BIT(19),
+  GAMEPAD_BUTTON_20 = TU_BIT(20),
+  GAMEPAD_BUTTON_21 = TU_BIT(21),
+  GAMEPAD_BUTTON_22 = TU_BIT(22),
+  GAMEPAD_BUTTON_23 = TU_BIT(23),
+  GAMEPAD_BUTTON_24 = TU_BIT(24),
+  GAMEPAD_BUTTON_25 = TU_BIT(25),
+  GAMEPAD_BUTTON_26 = TU_BIT(26),
+  GAMEPAD_BUTTON_27 = TU_BIT(27),
+  GAMEPAD_BUTTON_28 = TU_BIT(28),
+  GAMEPAD_BUTTON_29 = TU_BIT(29),
+  GAMEPAD_BUTTON_30 = TU_BIT(30),
+  GAMEPAD_BUTTON_31 = TU_BIT(31),
+}hid_gamepad_button_bm_t;
+
+/// Standard Gamepad Buttons Naming from Linux input event codes
+/// https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
+#define GAMEPAD_BUTTON_A       GAMEPAD_BUTTON_0
+#define GAMEPAD_BUTTON_SOUTH   GAMEPAD_BUTTON_0
+
+#define GAMEPAD_BUTTON_B       GAMEPAD_BUTTON_1
+#define GAMEPAD_BUTTON_EAST    GAMEPAD_BUTTON_1
+
+#define GAMEPAD_BUTTON_C       GAMEPAD_BUTTON_2
+
+#define GAMEPAD_BUTTON_X       GAMEPAD_BUTTON_3
+#define GAMEPAD_BUTTON_NORTH   GAMEPAD_BUTTON_3
+
+#define GAMEPAD_BUTTON_Y       GAMEPAD_BUTTON_4
+#define GAMEPAD_BUTTON_WEST    GAMEPAD_BUTTON_4
+
+#define GAMEPAD_BUTTON_Z       GAMEPAD_BUTTON_5
+#define GAMEPAD_BUTTON_TL      GAMEPAD_BUTTON_6
+#define GAMEPAD_BUTTON_TR      GAMEPAD_BUTTON_7
+#define GAMEPAD_BUTTON_TL2     GAMEPAD_BUTTON_8
+#define GAMEPAD_BUTTON_TR2     GAMEPAD_BUTTON_9
+#define GAMEPAD_BUTTON_SELECT  GAMEPAD_BUTTON_10
+#define GAMEPAD_BUTTON_START   GAMEPAD_BUTTON_11
+#define GAMEPAD_BUTTON_MODE    GAMEPAD_BUTTON_12
+#define GAMEPAD_BUTTON_THUMBL  GAMEPAD_BUTTON_13
+#define GAMEPAD_BUTTON_THUMBR  GAMEPAD_BUTTON_14
+
+/// Standard Gamepad HAT/DPAD Buttons (from Linux input event codes)
+typedef enum
+{
+  GAMEPAD_HAT_CENTERED   = 0,  ///< DPAD_CENTERED
+  GAMEPAD_HAT_UP         = 1,  ///< DPAD_UP
+  GAMEPAD_HAT_UP_RIGHT   = 2,  ///< DPAD_UP_RIGHT
+  GAMEPAD_HAT_RIGHT      = 3,  ///< DPAD_RIGHT
+  GAMEPAD_HAT_DOWN_RIGHT = 4,  ///< DPAD_DOWN_RIGHT
+  GAMEPAD_HAT_DOWN       = 5,  ///< DPAD_DOWN
+  GAMEPAD_HAT_DOWN_LEFT  = 6,  ///< DPAD_DOWN_LEFT
+  GAMEPAD_HAT_LEFT       = 7,  ///< DPAD_LEFT
+  GAMEPAD_HAT_UP_LEFT    = 8,  ///< DPAD_UP_LEFT
+}hid_gamepad_hat_t;
+
+/// @}
+
+//--------------------------------------------------------------------+
+// MOUSE
+//--------------------------------------------------------------------+
+/** \\addtogroup ClassDriver_HID_Mouse Mouse
+ *  @{ */
+
+/// Standard HID Boot Protocol Mouse Report.
+typedef struct TU_ATTR_PACKED
+{
+  uint8_t buttons; /**< buttons mask for currently pressed buttons in the mouse. */
+  int8_t  x;       /**< Current delta x movement of the mouse. */
+  int8_t  y;       /**< Current delta y movement on the mouse. */
+  int8_t  wheel;   /**< Current delta wheel movement on the mouse. */
+  int8_t  pan;     // using AC Pan
+} hid_mouse_report_t;
+
+
+// Absolute Mouse: same as the Standard (relative) Mouse Report but
+// with int16_t instead of int8_t for X and Y coordinates.
+typedef struct TU_ATTR_PACKED
+{
+    uint8_t buttons; /**< buttons mask for currently pressed buttons in the mouse. */
+    int16_t x;       /**< Current x position of the mouse. */
+    int16_t y;       /**< Current y position of the mouse. */
+    int8_t wheel;    /**< Current delta wheel movement on the mouse. */
+    int8_t pan;      // using AC Pan
+} hid_abs_mouse_report_t;
+
+
+/// Standard Mouse Buttons Bitmap
+typedef enum
+{
+  MOUSE_BUTTON_LEFT     = TU_BIT(0), ///< Left button
+  MOUSE_BUTTON_RIGHT    = TU_BIT(1), ///< Right button
+  MOUSE_BUTTON_MIDDLE   = TU_BIT(2), ///< Middle button
+  MOUSE_BUTTON_BACKWARD = TU_BIT(3), ///< Backward button,
+  MOUSE_BUTTON_FORWARD  = TU_BIT(4), ///< Forward button,
+}hid_mouse_button_bm_t;
+
+/// @}
+
+//--------------------------------------------------------------------+
+// Keyboard
+//--------------------------------------------------------------------+
+/** \\addtogroup ClassDriver_HID_Keyboard Keyboard
+ *  @{ */
+
+/// Standard HID Boot Protocol Keyboard Report.
+typedef struct TU_ATTR_PACKED
+{
+  uint8_t modifier;   /**< Keyboard modifier (KEYBOARD_MODIFIER_* masks). */
+  uint8_t reserved;   /**< Reserved for OEM use, always set to 0. */
+  uint8_t keycode[6]; /**< Key codes of the currently pressed keys. */
+} hid_keyboard_report_t;
+
+/// Keyboard modifier codes bitmap
+typedef enum
+{
+  KEYBOARD_MODIFIER_LEFTCTRL   = TU_BIT(0), ///< Left Control
+  KEYBOARD_MODIFIER_LEFTSHIFT  = TU_BIT(1), ///< Left Shift
+  KEYBOARD_MODIFIER_LEFTALT    = TU_BIT(2), ///< Left Alt
+  KEYBOARD_MODIFIER_LEFTGUI    = TU_BIT(3), ///< Left Window
+  KEYBOARD_MODIFIER_RIGHTCTRL  = TU_BIT(4), ///< Right Control
+  KEYBOARD_MODIFIER_RIGHTSHIFT = TU_BIT(5), ///< Right Shift
+  KEYBOARD_MODIFIER_RIGHTALT   = TU_BIT(6), ///< Right Alt
+  KEYBOARD_MODIFIER_RIGHTGUI   = TU_BIT(7)  ///< Right Window
+}hid_keyboard_modifier_bm_t;
+
+typedef enum
+{
+  KEYBOARD_LED_NUMLOCK    = TU_BIT(0), ///< Num Lock LED
+  KEYBOARD_LED_CAPSLOCK   = TU_BIT(1), ///< Caps Lock LED
+  KEYBOARD_LED_SCROLLLOCK = TU_BIT(2), ///< Scroll Lock LED
+  KEYBOARD_LED_COMPOSE    = TU_BIT(3), ///< Composition Mode
+  KEYBOARD_LED_KANA       = TU_BIT(4) ///< Kana mode
+}hid_keyboard_led_bm_t;
+
+/// @}
+
+//--------------------------------------------------------------------+
+// HID KEYCODE
+//--------------------------------------------------------------------+
+#define HID_KEY_NONE                        0x00
+#define HID_KEY_A                           0x04
+#define HID_KEY_B                           0x05
+#define HID_KEY_C                           0x06
+#define HID_KEY_D                           0x07
+#define HID_KEY_E                           0x08
+#define HID_KEY_F                           0x09
+#define HID_KEY_G                           0x0A
+#define HID_KEY_H                           0x0B
+#define HID_KEY_I                           0x0C
+#define HID_KEY_J                           0x0D
+#define HID_KEY_K                           0x0E
+#define HID_KEY_L                           0x0F
+#define HID_KEY_M                           0x10
+#define HID_KEY_N                           0x11
+#define HID_KEY_O                           0x12
+#define HID_KEY_P                           0x13
+#define HID_KEY_Q                           0x14
+#define HID_KEY_R                           0x15
+#define HID_KEY_S                           0x16
+#define HID_KEY_T                           0x17
+#define HID_KEY_U                           0x18
+#define HID_KEY_V                           0x19
+#define HID_KEY_W                           0x1A
+#define HID_KEY_X                           0x1B
+#define HID_KEY_Y                           0x1C
+#define HID_KEY_Z                           0x1D
+#define HID_KEY_1                           0x1E
+#define HID_KEY_2                           0x1F
+#define HID_KEY_3                           0x20
+#define HID_KEY_4                           0x21
+#define HID_KEY_5                           0x22
+#define HID_KEY_6                           0x23
+#define HID_KEY_7                           0x24
+#define HID_KEY_8                           0x25
+#define HID_KEY_9                           0x26
+#define HID_KEY_0                           0x27
+#define HID_KEY_ENTER                       0x28
+#define HID_KEY_ESCAPE                      0x29
+#define HID_KEY_BACKSPACE                   0x2A
+#define HID_KEY_TAB                         0x2B
+#define HID_KEY_SPACE                       0x2C
+#define HID_KEY_MINUS                       0x2D
+#define HID_KEY_EQUAL                       0x2E
+#define HID_KEY_BRACKET_LEFT                0x2F
+#define HID_KEY_BRACKET_RIGHT               0x30
+#define HID_KEY_BACKSLASH                   0x31
+#define HID_KEY_EUROPE_1                    0x32
+#define HID_KEY_SEMICOLON                   0x33
+#define HID_KEY_APOSTROPHE                  0x34
+#define HID_KEY_GRAVE                       0x35
+#define HID_KEY_COMMA                       0x36
+#define HID_KEY_PERIOD                      0x37
+#define HID_KEY_SLASH                       0x38
+#define HID_KEY_CAPS_LOCK                   0x39
+#define HID_KEY_F1                          0x3A
+#define HID_KEY_F2                          0x3B
+#define HID_KEY_F3                          0x3C
+#define HID_KEY_F4                          0x3D
+#define HID_KEY_F5                          0x3E
+#define HID_KEY_F6                          0x3F
+#define HID_KEY_F7                          0x40
+#define HID_KEY_F8                          0x41
+#define HID_KEY_F9                          0x42
+#define HID_KEY_F10                         0x43
+#define HID_KEY_F11                         0x44
+#define HID_KEY_F12                         0x45
+#define HID_KEY_PRINT_SCREEN                0x46
+#define HID_KEY_SCROLL_LOCK                 0x47
+#define HID_KEY_PAUSE                       0x48
+#define HID_KEY_INSERT                      0x49
+#define HID_KEY_HOME                        0x4A
+#define HID_KEY_PAGE_UP                     0x4B
+#define HID_KEY_DELETE                      0x4C
+#define HID_KEY_END                         0x4D
+#define HID_KEY_PAGE_DOWN                   0x4E
+#define HID_KEY_ARROW_RIGHT                 0x4F
+#define HID_KEY_ARROW_LEFT                  0x50
+#define HID_KEY_ARROW_DOWN                  0x51
+#define HID_KEY_ARROW_UP                    0x52
+#define HID_KEY_NUM_LOCK                    0x53
+#define HID_KEY_KEYPAD_DIVIDE               0x54
+#define HID_KEY_KEYPAD_MULTIPLY             0x55
+#define HID_KEY_KEYPAD_SUBTRACT             0x56
+#define HID_KEY_KEYPAD_ADD                  0x57
+#define HID_KEY_KEYPAD_ENTER                0x58
+#define HID_KEY_KEYPAD_1                    0x59
+#define HID_KEY_KEYPAD_2                    0x5A
+#define HID_KEY_KEYPAD_3                    0x5B
+#define HID_KEY_KEYPAD_4                    0x5C
+#define HID_KEY_KEYPAD_5                    0x5D
+#define HID_KEY_KEYPAD_6                    0x5E
+#define HID_KEY_KEYPAD_7                    0x5F
+#define HID_KEY_KEYPAD_8                    0x60
+#define HID_KEY_KEYPAD_9                    0x61
+#define HID_KEY_KEYPAD_0                    0x62
+#define HID_KEY_KEYPAD_DECIMAL              0x63
+#define HID_KEY_EUROPE_2                    0x64
+#define HID_KEY_APPLICATION                 0x65
+#define HID_KEY_POWER                       0x66
+#define HID_KEY_KEYPAD_EQUAL                0x67
+#define HID_KEY_F13                         0x68
+#define HID_KEY_F14                         0x69
+#define HID_KEY_F15                         0x6A
+#define HID_KEY_F16                         0x6B
+#define HID_KEY_F17                         0x6C
+#define HID_KEY_F18                         0x6D
+#define HID_KEY_F19                         0x6E
+#define HID_KEY_F20                         0x6F
+#define HID_KEY_F21                         0x70
+#define HID_KEY_F22                         0x71
+#define HID_KEY_F23                         0x72
+#define HID_KEY_F24                         0x73
+#define HID_KEY_EXECUTE                     0x74
+#define HID_KEY_HELP                        0x75
+#define HID_KEY_MENU                        0x76
+#define HID_KEY_SELECT                      0x77
+#define HID_KEY_STOP                        0x78
+#define HID_KEY_AGAIN                       0x79
+#define HID_KEY_UNDO                        0x7A
+#define HID_KEY_CUT                         0x7B
+#define HID_KEY_COPY                        0x7C
+#define HID_KEY_PASTE                       0x7D
+#define HID_KEY_FIND                        0x7E
+#define HID_KEY_MUTE                        0x7F
+#define HID_KEY_VOLUME_UP                   0x80
+#define HID_KEY_VOLUME_DOWN                 0x81
+#define HID_KEY_LOCKING_CAPS_LOCK           0x82
+#define HID_KEY_LOCKING_NUM_LOCK            0x83
+#define HID_KEY_LOCKING_SCROLL_LOCK         0x84
+#define HID_KEY_KEYPAD_COMMA                0x85
+#define HID_KEY_KEYPAD_EQUAL_SIGN           0x86
+#define HID_KEY_KANJI1                      0x87
+#define HID_KEY_KANJI2                      0x88
+#define HID_KEY_KANJI3                      0x89
+#define HID_KEY_KANJI4                      0x8A
+#define HID_KEY_KANJI5                      0x8B
+#define HID_KEY_KANJI6                      0x8C
+#define HID_KEY_KANJI7                      0x8D
+#define HID_KEY_KANJI8                      0x8E
+#define HID_KEY_KANJI9                      0x8F
+#define HID_KEY_LANG1                       0x90
+#define HID_KEY_LANG2                       0x91
+#define HID_KEY_LANG3                       0x92
+#define HID_KEY_LANG4                       0x93
+#define HID_KEY_LANG5                       0x94
+#define HID_KEY_LANG6                       0x95
+#define HID_KEY_LANG7                       0x96
+#define HID_KEY_LANG8                       0x97
+#define HID_KEY_LANG9                       0x98
+#define HID_KEY_ALTERNATE_ERASE             0x99
+#define HID_KEY_SYSREQ_ATTENTION            0x9A
+#define HID_KEY_CANCEL                      0x9B
+#define HID_KEY_CLEAR                       0x9C
+#define HID_KEY_PRIOR                       0x9D
+#define HID_KEY_RETURN                      0x9E
+#define HID_KEY_SEPARATOR                   0x9F
+#define HID_KEY_OUT                         0xA0
+#define HID_KEY_OPER                        0xA1
+#define HID_KEY_CLEAR_AGAIN                 0xA2
+#define HID_KEY_CRSEL_PROPS                 0xA3
+#define HID_KEY_EXSEL                       0xA4
+// RESERVED					                        0xA5-AF
+#define HID_KEY_KEYPAD_00                   0xB0
+#define HID_KEY_KEYPAD_000                  0xB1
+#define HID_KEY_THOUSANDS_SEPARATOR         0xB2
+#define HID_KEY_DECIMAL_SEPARATOR           0xB3
+#define HID_KEY_CURRENCY_UNIT               0xB4
+#define HID_KEY_CURRENCY_SUBUNIT            0xB5
+#define HID_KEY_KEYPAD_LEFT_PARENTHESIS     0xB6
+#define HID_KEY_KEYPAD_RIGHT_PARENTHESIS    0xB7
+#define HID_KEY_KEYPAD_LEFT_BRACE           0xB8
+#define HID_KEY_KEYPAD_RIGHT_BRACE          0xB9
+#define HID_KEY_KEYPAD_TAB                  0xBA
+#define HID_KEY_KEYPAD_BACKSPACE            0xBB
+#define HID_KEY_KEYPAD_A                    0xBC
+#define HID_KEY_KEYPAD_B                    0xBD
+#define HID_KEY_KEYPAD_C                    0xBE
+#define HID_KEY_KEYPAD_D                    0xBF
+#define HID_KEY_KEYPAD_E                    0xC0
+#define HID_KEY_KEYPAD_F                    0xC1
+#define HID_KEY_KEYPAD_XOR                  0xC2
+#define HID_KEY_KEYPAD_CARET                0xC3
+#define HID_KEY_KEYPAD_PERCENT              0xC4
+#define HID_KEY_KEYPAD_LESS_THAN            0xC5
+#define HID_KEY_KEYPAD_GREATER_THAN         0xC6
+#define HID_KEY_KEYPAD_AMPERSAND            0xC7
+#define HID_KEY_KEYPAD_DOUBLE_AMPERSAND     0xC8
+#define HID_KEY_KEYPAD_VERTICAL_BAR         0xC9
+#define HID_KEY_KEYPAD_DOUBLE_VERTICAL_BAR  0xCA
+#define HID_KEY_KEYPAD_COLON                0xCB
+#define HID_KEY_KEYPAD_HASH                 0xCC
+#define HID_KEY_KEYPAD_SPACE                0xCD
+#define HID_KEY_KEYPAD_AT                   0xCE
+#define HID_KEY_KEYPAD_EXCLAMATION          0xCF
+#define HID_KEY_KEYPAD_MEMORY_STORE         0xD0
+#define HID_KEY_KEYPAD_MEMORY_RECALL        0xD1
+#define HID_KEY_KEYPAD_MEMORY_CLEAR         0xD2
+#define HID_KEY_KEYPAD_MEMORY_ADD           0xD3
+#define HID_KEY_KEYPAD_MEMORY_SUBTRACT      0xD4
+#define HID_KEY_KEYPAD_MEMORY_MULTIPLY      0xD5
+#define HID_KEY_KEYPAD_MEMORY_DIVIDE        0xD6
+#define HID_KEY_KEYPAD_PLUS_MINUS           0xD7
+#define HID_KEY_KEYPAD_CLEAR                0xD8
+#define HID_KEY_KEYPAD_CLEAR_ENTRY          0xD9
+#define HID_KEY_KEYPAD_BINARY               0xDA
+#define HID_KEY_KEYPAD_OCTAL                0xDB
+#define HID_KEY_KEYPAD_DECIMAL_2            0xDC
+#define HID_KEY_KEYPAD_HEXADECIMAL          0xDD
+// RESERVED					                        0xDE-DF
+#define HID_KEY_CONTROL_LEFT                0xE0
+#define HID_KEY_SHIFT_LEFT                  0xE1
+#define HID_KEY_ALT_LEFT                    0xE2
+#define HID_KEY_GUI_LEFT                    0xE3
+#define HID_KEY_CONTROL_RIGHT               0xE4
+#define HID_KEY_SHIFT_RIGHT                 0xE5
+#define HID_KEY_ALT_RIGHT                   0xE6
+#define HID_KEY_GUI_RIGHT                   0xE7
+
+
+//--------------------------------------------------------------------+
+// REPORT DESCRIPTOR
+//--------------------------------------------------------------------+
+
+//------------- ITEM & TAG -------------//
+#define HID_REPORT_DATA_0(data)
+#define HID_REPORT_DATA_1(data) , data
+#define HID_REPORT_DATA_2(data) , U16_TO_U8S_LE(data)
+#define HID_REPORT_DATA_3(data) , U32_TO_U8S_LE(data)
+
+#define HID_REPORT_ITEM(data, tag, type, size) \\
+  (((tag) << 4) | ((type) << 2) | (size)) HID_REPORT_DATA_##size(data)
+
+// Report Item Types
+enum {
+  RI_TYPE_MAIN   = 0,
+  RI_TYPE_GLOBAL = 1,
+  RI_TYPE_LOCAL  = 2
+};
+
+//------------- Main Items - HID 1.11 section 6.2.2.4 -------------//
+
+// Report Item Main group
+enum {
+  RI_MAIN_INPUT          = 8,
+  RI_MAIN_OUTPUT         = 9,
+  RI_MAIN_COLLECTION     = 10,
+  RI_MAIN_FEATURE        = 11,
+  RI_MAIN_COLLECTION_END = 12
+};
+
+#define HID_INPUT(x)           HID_REPORT_ITEM(x, RI_MAIN_INPUT         , RI_TYPE_MAIN, 1)
+#define HID_OUTPUT(x)          HID_REPORT_ITEM(x, RI_MAIN_OUTPUT        , RI_TYPE_MAIN, 1)
+#define HID_COLLECTION(x)      HID_REPORT_ITEM(x, RI_MAIN_COLLECTION    , RI_TYPE_MAIN, 1)
+#define HID_FEATURE(x)         HID_REPORT_ITEM(x, RI_MAIN_FEATURE       , RI_TYPE_MAIN, 1)
+#define HID_COLLECTION_END     HID_REPORT_ITEM(x, RI_MAIN_COLLECTION_END, RI_TYPE_MAIN, 0)
+
+//------------- Input, Output, Feature - HID 1.11 section 6.2.2.5 -------------//
+#define HID_DATA             (0<<0)
+#define HID_CONSTANT         (1<<0)
+
+#define HID_ARRAY            (0<<1)
+#define HID_VARIABLE         (1<<1)
+
+#define HID_ABSOLUTE         (0<<2)
+#define HID_RELATIVE         (1<<2)
+
+#define HID_WRAP_NO          (0<<3)
+#define HID_WRAP             (1<<3)
+
+#define HID_LINEAR           (0<<4)
+#define HID_NONLINEAR        (1<<4)
+
+#define HID_PREFERRED_STATE  (0<<5)
+#define HID_PREFERRED_NO     (1<<5)
+
+#define HID_NO_NULL_POSITION (0<<6)
+#define HID_NULL_STATE       (1<<6)
+
+#define HID_NON_VOLATILE     (0<<7)
+#define HID_VOLATILE         (1<<7)
+
+#define HID_BITFIELD         (0<<8)
+#define HID_BUFFERED_BYTES   (1<<8)
+
+//------------- Collection Item - HID 1.11 section 6.2.2.6 -------------//
+enum {
+  HID_COLLECTION_PHYSICAL = 0,
+  HID_COLLECTION_APPLICATION,
+  HID_COLLECTION_LOGICAL,
+  HID_COLLECTION_REPORT,
+  HID_COLLECTION_NAMED_ARRAY,
+  HID_COLLECTION_USAGE_SWITCH,
+  HID_COLLECTION_USAGE_MODIFIER
+};
+
+//------------- Global Items - HID 1.11 section 6.2.2.7 -------------//
+
+// Report Item Global group
+enum {
+  RI_GLOBAL_USAGE_PAGE    = 0,
+  RI_GLOBAL_LOGICAL_MIN   = 1,
+  RI_GLOBAL_LOGICAL_MAX   = 2,
+  RI_GLOBAL_PHYSICAL_MIN  = 3,
+  RI_GLOBAL_PHYSICAL_MAX  = 4,
+  RI_GLOBAL_UNIT_EXPONENT = 5,
+  RI_GLOBAL_UNIT          = 6,
+  RI_GLOBAL_REPORT_SIZE   = 7,
+  RI_GLOBAL_REPORT_ID     = 8,
+  RI_GLOBAL_REPORT_COUNT  = 9,
+  RI_GLOBAL_PUSH          = 10,
+  RI_GLOBAL_POP           = 11
+};
+
+#define HID_USAGE_PAGE(x)         HID_REPORT_ITEM(x, RI_GLOBAL_USAGE_PAGE, RI_TYPE_GLOBAL, 1)
+#define HID_USAGE_PAGE_N(x, n)    HID_REPORT_ITEM(x, RI_GLOBAL_USAGE_PAGE, RI_TYPE_GLOBAL, n)
+
+#define HID_LOGICAL_MIN(x)        HID_REPORT_ITEM(x, RI_GLOBAL_LOGICAL_MIN, RI_TYPE_GLOBAL, 1)
+#define HID_LOGICAL_MIN_N(x, n)   HID_REPORT_ITEM(x, RI_GLOBAL_LOGICAL_MIN, RI_TYPE_GLOBAL, n)
+
+#define HID_LOGICAL_MAX(x)        HID_REPORT_ITEM(x, RI_GLOBAL_LOGICAL_MAX, RI_TYPE_GLOBAL, 1)
+#define HID_LOGICAL_MAX_N(x, n)   HID_REPORT_ITEM(x, RI_GLOBAL_LOGICAL_MAX, RI_TYPE_GLOBAL, n)
+
+#define HID_PHYSICAL_MIN(x)       HID_REPORT_ITEM(x, RI_GLOBAL_PHYSICAL_MIN, RI_TYPE_GLOBAL, 1)
+#define HID_PHYSICAL_MIN_N(x, n)  HID_REPORT_ITEM(x, RI_GLOBAL_PHYSICAL_MIN, RI_TYPE_GLOBAL, n)
+
+#define HID_PHYSICAL_MAX(x)       HID_REPORT_ITEM(x, RI_GLOBAL_PHYSICAL_MAX, RI_TYPE_GLOBAL, 1)
+#define HID_PHYSICAL_MAX_N(x, n)  HID_REPORT_ITEM(x, RI_GLOBAL_PHYSICAL_MAX, RI_TYPE_GLOBAL, n)
+
+#define HID_UNIT_EXPONENT(x)      HID_REPORT_ITEM(x, RI_GLOBAL_UNIT_EXPONENT, RI_TYPE_GLOBAL, 1)
+#define HID_UNIT_EXPONENT_N(x, n) HID_REPORT_ITEM(x, RI_GLOBAL_UNIT_EXPONENT, RI_TYPE_GLOBAL, n)
+
+#define HID_UNIT(x)               HID_REPORT_ITEM(x, RI_GLOBAL_UNIT, RI_TYPE_GLOBAL, 1)
+#define HID_UNIT_N(x, n)          HID_REPORT_ITEM(x, RI_GLOBAL_UNIT, RI_TYPE_GLOBAL, n)
+
+#define HID_REPORT_SIZE(x)        HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_SIZE, RI_TYPE_GLOBAL, 1)
+#define HID_REPORT_SIZE_N(x, n)   HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_SIZE, RI_TYPE_GLOBAL, n)
+
+#define HID_REPORT_ID(x)          HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_ID, RI_TYPE_GLOBAL, 1),
+#define HID_REPORT_ID_N(x, n)     HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_ID, RI_TYPE_GLOBAL, n),
+
+#define HID_REPORT_COUNT(x)       HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_COUNT, RI_TYPE_GLOBAL, 1)
+#define HID_REPORT_COUNT_N(x, n)  HID_REPORT_ITEM(x, RI_GLOBAL_REPORT_COUNT, RI_TYPE_GLOBAL, n)
+
+#define HID_PUSH                  HID_REPORT_ITEM(x, RI_GLOBAL_PUSH, RI_TYPE_GLOBAL, 0)
+#define HID_POP                   HID_REPORT_ITEM(x, RI_GLOBAL_POP, RI_TYPE_GLOBAL, 0)
+
+//------------- LOCAL ITEMS 6.2.2.8 -------------//
+
+enum {
+  RI_LOCAL_USAGE            = 0,
+  RI_LOCAL_USAGE_MIN        = 1,
+  RI_LOCAL_USAGE_MAX        = 2,
+  RI_LOCAL_DESIGNATOR_INDEX = 3,
+  RI_LOCAL_DESIGNATOR_MIN   = 4,
+  RI_LOCAL_DESIGNATOR_MAX   = 5,
+  // 6 is reserved
+  RI_LOCAL_STRING_INDEX     = 7,
+  RI_LOCAL_STRING_MIN       = 8,
+  RI_LOCAL_STRING_MAX       = 9,
+  RI_LOCAL_DELIMITER        = 10,
+};
+
+#define HID_USAGE(x)              HID_REPORT_ITEM(x, RI_LOCAL_USAGE, RI_TYPE_LOCAL, 1)
+#define HID_USAGE_N(x, n)         HID_REPORT_ITEM(x, RI_LOCAL_USAGE, RI_TYPE_LOCAL, n)
+
+#define HID_USAGE_MIN(x)          HID_REPORT_ITEM(x, RI_LOCAL_USAGE_MIN, RI_TYPE_LOCAL, 1)
+#define HID_USAGE_MIN_N(x, n)     HID_REPORT_ITEM(x, RI_LOCAL_USAGE_MIN, RI_TYPE_LOCAL, n)
+
+#define HID_USAGE_MAX(x)          HID_REPORT_ITEM(x, RI_LOCAL_USAGE_MAX, RI_TYPE_LOCAL, 1)
+#define HID_USAGE_MAX_N(x, n)     HID_REPORT_ITEM(x, RI_LOCAL_USAGE_MAX, RI_TYPE_LOCAL, n)
+
+//--------------------------------------------------------------------+
+// Usage Table
+//--------------------------------------------------------------------+
+
+/// HID Usage Table - Table 1: Usage Page Summary
+enum {
+  HID_USAGE_PAGE_DESKTOP                   = 0x01,
+  HID_USAGE_PAGE_SIMULATE                  = 0x02,
+  HID_USAGE_PAGE_VIRTUAL_REALITY           = 0x03,
+  HID_USAGE_PAGE_SPORT                     = 0x04,
+  HID_USAGE_PAGE_GAME                      = 0x05,
+  HID_USAGE_PAGE_GENERIC_DEVICE            = 0x06,
+  HID_USAGE_PAGE_KEYBOARD                  = 0x07,
+  HID_USAGE_PAGE_LED                       = 0x08,
+  HID_USAGE_PAGE_BUTTON                    = 0x09,
+  HID_USAGE_PAGE_ORDINAL                   = 0x0a,
+  HID_USAGE_PAGE_TELEPHONY                 = 0x0b,
+  HID_USAGE_PAGE_CONSUMER                  = 0x0c,
+  HID_USAGE_PAGE_DIGITIZER                 = 0x0d,
+  HID_USAGE_PAGE_PID                       = 0x0f,
+  HID_USAGE_PAGE_UNICODE                   = 0x10,
+  HID_USAGE_PAGE_ALPHA_DISPLAY             = 0x14,
+  HID_USAGE_PAGE_MEDICAL                   = 0x40,
+  HID_USAGE_PAGE_LIGHTING_AND_ILLUMINATION = 0x59,
+  HID_USAGE_PAGE_MONITOR                   = 0x80, // 0x80 - 0x83
+  HID_USAGE_PAGE_POWER                     = 0x84, // 0x084 - 0x87
+  HID_USAGE_PAGE_BARCODE_SCANNER           = 0x8c,
+  HID_USAGE_PAGE_SCALE                     = 0x8d,
+  HID_USAGE_PAGE_MSR                       = 0x8e,
+  HID_USAGE_PAGE_CAMERA                    = 0x90,
+  HID_USAGE_PAGE_ARCADE                    = 0x91,
+  HID_USAGE_PAGE_FIDO                      = 0xF1D0, // FIDO alliance HID usage page
+  HID_USAGE_PAGE_VENDOR                    = 0xFF00  // 0xFF00 - 0xFFFF
+};
+
+/// HID Usage Table - Table 6: Generic Desktop Page
+enum {
+  HID_USAGE_DESKTOP_POINTER                               = 0x01,
+  HID_USAGE_DESKTOP_MOUSE                                 = 0x02,
+  HID_USAGE_DESKTOP_JOYSTICK                              = 0x04,
+  HID_USAGE_DESKTOP_GAMEPAD                               = 0x05,
+  HID_USAGE_DESKTOP_KEYBOARD                              = 0x06,
+  HID_USAGE_DESKTOP_KEYPAD                                = 0x07,
+  HID_USAGE_DESKTOP_MULTI_AXIS_CONTROLLER                 = 0x08,
+  HID_USAGE_DESKTOP_TABLET_PC_SYSTEM                      = 0x09,
+  HID_USAGE_DESKTOP_X                                     = 0x30,
+  HID_USAGE_DESKTOP_Y                                     = 0x31,
+  HID_USAGE_DESKTOP_Z                                     = 0x32,
+  HID_USAGE_DESKTOP_RX                                    = 0x33,
+  HID_USAGE_DESKTOP_RY                                    = 0x34,
+  HID_USAGE_DESKTOP_RZ                                    = 0x35,
+  HID_USAGE_DESKTOP_SLIDER                                = 0x36,
+  HID_USAGE_DESKTOP_DIAL                                  = 0x37,
+  HID_USAGE_DESKTOP_WHEEL                                 = 0x38,
+  HID_USAGE_DESKTOP_HAT_SWITCH                            = 0x39,
+  HID_USAGE_DESKTOP_COUNTED_BUFFER                        = 0x3a,
+  HID_USAGE_DESKTOP_BYTE_COUNT                            = 0x3b,
+  HID_USAGE_DESKTOP_MOTION_WAKEUP                         = 0x3c,
+  HID_USAGE_DESKTOP_START                                 = 0x3d,
+  HID_USAGE_DESKTOP_SELECT                                = 0x3e,
+  HID_USAGE_DESKTOP_VX                                    = 0x40,
+  HID_USAGE_DESKTOP_VY                                    = 0x41,
+  HID_USAGE_DESKTOP_VZ                                    = 0x42,
+  HID_USAGE_DESKTOP_VBRX                                  = 0x43,
+  HID_USAGE_DESKTOP_VBRY                                  = 0x44,
+  HID_USAGE_DESKTOP_VBRZ                                  = 0x45,
+  HID_USAGE_DESKTOP_VNO                                   = 0x46,
+  HID_USAGE_DESKTOP_FEATURE_NOTIFICATION                  = 0x47,
+  HID_USAGE_DESKTOP_RESOLUTION_MULTIPLIER                 = 0x48,
+  HID_USAGE_DESKTOP_SYSTEM_CONTROL                        = 0x80,
+  HID_USAGE_DESKTOP_SYSTEM_POWER_DOWN                     = 0x81,
+  HID_USAGE_DESKTOP_SYSTEM_SLEEP                          = 0x82,
+  HID_USAGE_DESKTOP_SYSTEM_WAKE_UP                        = 0x83,
+  HID_USAGE_DESKTOP_SYSTEM_CONTEXT_MENU                   = 0x84,
+  HID_USAGE_DESKTOP_SYSTEM_MAIN_MENU                      = 0x85,
+  HID_USAGE_DESKTOP_SYSTEM_APP_MENU                       = 0x86,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_HELP                      = 0x87,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_EXIT                      = 0x88,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_SELECT                    = 0x89,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_RIGHT                     = 0x8A,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_LEFT                      = 0x8B,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_UP                        = 0x8C,
+  HID_USAGE_DESKTOP_SYSTEM_MENU_DOWN                      = 0x8D,
+  HID_USAGE_DESKTOP_SYSTEM_COLD_RESTART                   = 0x8E,
+  HID_USAGE_DESKTOP_SYSTEM_WARM_RESTART                   = 0x8F,
+  HID_USAGE_DESKTOP_DPAD_UP                               = 0x90,
+  HID_USAGE_DESKTOP_DPAD_DOWN                             = 0x91,
+  HID_USAGE_DESKTOP_DPAD_RIGHT                            = 0x92,
+  HID_USAGE_DESKTOP_DPAD_LEFT                             = 0x93,
+  HID_USAGE_DESKTOP_SYSTEM_DOCK                           = 0xA0,
+  HID_USAGE_DESKTOP_SYSTEM_UNDOCK                         = 0xA1,
+  HID_USAGE_DESKTOP_SYSTEM_SETUP                          = 0xA2,
+  HID_USAGE_DESKTOP_SYSTEM_BREAK                          = 0xA3,
+  HID_USAGE_DESKTOP_SYSTEM_DEBUGGER_BREAK                 = 0xA4,
+  HID_USAGE_DESKTOP_APPLICATION_BREAK                     = 0xA5,
+  HID_USAGE_DESKTOP_APPLICATION_DEBUGGER_BREAK            = 0xA6,
+  HID_USAGE_DESKTOP_SYSTEM_SPEAKER_MUTE                   = 0xA7,
+  HID_USAGE_DESKTOP_SYSTEM_HIBERNATE                      = 0xA8,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_INVERT                 = 0xB0,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_INTERNAL               = 0xB1,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_EXTERNAL               = 0xB2,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_BOTH                   = 0xB3,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_DUAL                   = 0xB4,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_TOGGLE_INT_EXT         = 0xB5,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_SWAP_PRIMARY_SECONDARY = 0xB6,
+  HID_USAGE_DESKTOP_SYSTEM_DISPLAY_LCD_AUTOSCALE          = 0xB7
+};
+
+
+/// HID Usage Table: Consumer Page (0x0C)
+/// Only contains controls that supported by Windows (whole list is too long)
+enum {
+  // Generic Control
+  HID_USAGE_CONSUMER_CONTROL                           = 0x0001,
+
+  // Power Control
+  HID_USAGE_CONSUMER_POWER                             = 0x0030,
+  HID_USAGE_CONSUMER_RESET                             = 0x0031,
+  HID_USAGE_CONSUMER_SLEEP                             = 0x0032,
+
+  // Screen Brightness
+  HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT              = 0x006F,
+  HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT              = 0x0070,
+
+  // These HID usages operate only on mobile systems (battery powered) and
+  // require Windows 8 (build 8302 or greater).
+  HID_USAGE_CONSUMER_WIRELESS_RADIO_CONTROLS           = 0x000C,
+  HID_USAGE_CONSUMER_WIRELESS_RADIO_BUTTONS            = 0x00C6,
+  HID_USAGE_CONSUMER_WIRELESS_RADIO_LED                = 0x00C7,
+  HID_USAGE_CONSUMER_WIRELESS_RADIO_SLIDER_SWITCH      = 0x00C8,
+
+  // Media Control
+  HID_USAGE_CONSUMER_PLAY_PAUSE                        = 0x00CD,
+  HID_USAGE_CONSUMER_SCAN_NEXT                         = 0x00B5,
+  HID_USAGE_CONSUMER_SCAN_PREVIOUS                     = 0x00B6,
+  HID_USAGE_CONSUMER_STOP                              = 0x00B7,
+  HID_USAGE_CONSUMER_VOLUME                            = 0x00E0,
+  HID_USAGE_CONSUMER_MUTE                              = 0x00E2,
+  HID_USAGE_CONSUMER_BASS                              = 0x00E3,
+  HID_USAGE_CONSUMER_TREBLE                            = 0x00E4,
+  HID_USAGE_CONSUMER_BASS_BOOST                        = 0x00E5,
+  HID_USAGE_CONSUMER_VOLUME_INCREMENT                  = 0x00E9,
+  HID_USAGE_CONSUMER_VOLUME_DECREMENT                  = 0x00EA,
+  HID_USAGE_CONSUMER_BASS_INCREMENT                    = 0x0152,
+  HID_USAGE_CONSUMER_BASS_DECREMENT                    = 0x0153,
+  HID_USAGE_CONSUMER_TREBLE_INCREMENT                  = 0x0154,
+  HID_USAGE_CONSUMER_TREBLE_DECREMENT                  = 0x0155,
+
+  // Application Launcher
+  HID_USAGE_CONSUMER_AL_CONSUMER_CONTROL_CONFIGURATION = 0x0183,
+  HID_USAGE_CONSUMER_AL_EMAIL_READER                   = 0x018A,
+  HID_USAGE_CONSUMER_AL_CALCULATOR                     = 0x0192,
+  HID_USAGE_CONSUMER_AL_LOCAL_BROWSER                  = 0x0194,
+
+  // Browser/Explorer Specific
+  HID_USAGE_CONSUMER_AC_SEARCH                         = 0x0221,
+  HID_USAGE_CONSUMER_AC_HOME                           = 0x0223,
+  HID_USAGE_CONSUMER_AC_BACK                           = 0x0224,
+  HID_USAGE_CONSUMER_AC_FORWARD                        = 0x0225,
+  HID_USAGE_CONSUMER_AC_STOP                           = 0x0226,
+  HID_USAGE_CONSUMER_AC_REFRESH                        = 0x0227,
+  HID_USAGE_CONSUMER_AC_BOOKMARKS                      = 0x022A,
+
+  // Mouse Horizontal scroll
+  HID_USAGE_CONSUMER_AC_PAN                            = 0x0238,
+};
+
+/// HID Usage Table - Lighting And Illumination Page (0x59)
+enum {
+  HID_USAGE_LIGHTING_LAMP_ARRAY                          = 0x01,
+  HID_USAGE_LIGHTING_LAMP_ARRAY_ATTRIBUTES_REPORT        = 0x02,
+  HID_USAGE_LIGHTING_LAMP_COUNT                          = 0x03,
+  HID_USAGE_LIGHTING_BOUNDING_BOX_WIDTH_IN_MICROMETERS   = 0x04,
+  HID_USAGE_LIGHTING_BOUNDING_BOX_HEIGHT_IN_MICROMETERS  = 0x05,
+  HID_USAGE_LIGHTING_BOUNDING_BOX_DEPTH_IN_MICROMETERS   = 0x06,
+  HID_USAGE_LIGHTING_LAMP_ARRAY_KIND                     = 0x07,
+  HID_USAGE_LIGHTING_MIN_UPDATE_INTERVAL_IN_MICROSECONDS = 0x08,
+  HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_REQUEST_REPORT      = 0x20,
+  HID_USAGE_LIGHTING_LAMP_ID                             = 0x21,
+  HID_USAGE_LIGHTING_LAMP_ATTRIBUTES_RESPONSE_REPORT     = 0x22,
+  HID_USAGE_LIGHTING_POSITION_X_IN_MICROMETERS           = 0x23,
+  HID_USAGE_LIGHTING_POSITION_Y_IN_MICROMETERS           = 0x24,
+  HID_USAGE_LIGHTING_POSITION_Z_IN_MICROMETERS           = 0x25,
+  HID_USAGE_LIGHTING_LAMP_PURPOSES                       = 0x26,
+  HID_USAGE_LIGHTING_UPDATE_LATENCY_IN_MICROSECONDS      = 0x27,
+  HID_USAGE_LIGHTING_RED_LEVEL_COUNT                     = 0x28,
+  HID_USAGE_LIGHTING_GREEN_LEVEL_COUNT                   = 0x29,
+  HID_USAGE_LIGHTING_BLUE_LEVEL_COUNT                    = 0x2A,
+  HID_USAGE_LIGHTING_INTENSITY_LEVEL_COUNT               = 0x2B,
+  HID_USAGE_LIGHTING_IS_PROGRAMMABLE                     = 0x2C,
+  HID_USAGE_LIGHTING_INPUT_BINDING                       = 0x2D,
+  HID_USAGE_LIGHTING_LAMP_MULTI_UPDATE_REPORT            = 0x50,
+  HID_USAGE_LIGHTING_RED_UPDATE_CHANNEL                  = 0x51,
+  HID_USAGE_LIGHTING_GREEN_UPDATE_CHANNEL                = 0x52,
+  HID_USAGE_LIGHTING_BLUE_UPDATE_CHANNEL                 = 0x53,
+  HID_USAGE_LIGHTING_INTENSITY_UPDATE_CHANNEL            = 0x54,
+  HID_USAGE_LIGHTING_LAMP_UPDATE_FLAGS                   = 0x55,
+  HID_USAGE_LIGHTING_LAMP_RANGE_UPDATE_REPORT            = 0x60,
+  HID_USAGE_LIGHTING_LAMP_ID_START                       = 0x61,
+  HID_USAGE_LIGHTING_LAMP_ID_END                         = 0x62,
+  HID_USAGE_LIGHTING_LAMP_ARRAY_CONTROL_REPORT           = 0x70,
+  HID_USAGE_LIGHTING_AUTONOMOUS_MODE                     = 0x71,
+};
+
+/// HID Usage Table: FIDO Alliance Page (0xF1D0)
+enum {
+  HID_USAGE_FIDO_U2FHID   = 0x01, // U2FHID usage for top-level collection
+  HID_USAGE_FIDO_DATA_IN  = 0x20, // Raw IN data report
+  HID_USAGE_FIDO_DATA_OUT = 0x21  // Raw OUT data report
+};
+
+/// HID Usage Table: Physical Input Device Page (0x0F)
+enum {
+  HID_USAGE_PID_UNDEFINED                                = 0x00,
+  HID_USAGE_PID_PHYSICAL_INPUT_DEVICE                    = 0x01,
+  HID_USAGE_PID_NORMAL                                   = 0x20,
+  HID_USAGE_PID_SET_EFFECT_REPORT                        = 0x21,
+  HID_USAGE_PID_EFFECT_PARAMETER_BLOCK_INDEX             = 0x22,
+  HID_USAGE_PID_PARAMETER_BLOCK_OFFSET                   = 0x23,
+  HID_USAGE_PID_ROM_FLAG                                 = 0x24,
+  HID_USAGE_PID_EFFECT_TYPE                              = 0x25,
+  HID_USAGE_PID_ET_CONSTANTFORCE                         = 0x26,
+  HID_USAGE_PID_ET_RAMP                                  = 0x27,
+  HID_USAGE_PID_ET_CUSTOMFORCE                           = 0x28,
+  HID_USAGE_PID_ET_SQUARE                                = 0x30,
+  HID_USAGE_PID_ET_SINE                                  = 0x31,
+  HID_USAGE_PID_ET_TRIANGLE                              = 0x32,
+  HID_USAGE_PID_ET_SAWTOOTH_UP                           = 0x33,
+  HID_USAGE_PID_ET_SAWTOOTH_DOWN                         = 0x34,
+  HID_USAGE_PID_ET_SPRING                                = 0x40,
+  HID_USAGE_PID_ET_DAMPER                                = 0x41,
+  HID_USAGE_PID_ET_INERTIA                               = 0x42,
+  HID_USAGE_PID_ET_FRICTION                              = 0x43,
+  HID_USAGE_PID_DURATION                                 = 0x50,
+  HID_USAGE_PID_SAMPLE_PERIOD                            = 0x51,
+  HID_USAGE_PID_GAIN                                     = 0x52,
+  HID_USAGE_PID_TRIGGER_BUTTON                           = 0x53,
+  HID_USAGE_PID_TRIGGER_REPEAT_INTERVAL                  = 0x54,
+  HID_USAGE_PID_AXES_ENABLE                              = 0x55,
+  HID_USAGE_PID_DIRECTION_ENABLE                         = 0x56,
+  HID_USAGE_PID_DIRECTION                                = 0x57,
+  HID_USAGE_PID_TYPE_SPECIFIC_BLOCK_OFFSET               = 0x58,
+  HID_USAGE_PID_BLOCK_TYPE                               = 0x59,
+  HID_USAGE_PID_SET_ENVELOPE_REPORT                      = 0x5a,
+  HID_USAGE_PID_ATTACK_LEVEL                             = 0x5b,
+  HID_USAGE_PID_ATTACK_TIME                              = 0x5c,
+  HID_USAGE_PID_FADE_LEVEL                               = 0x5d,
+  HID_USAGE_PID_FADE_TIME                                = 0x5e,
+  HID_USAGE_PID_SET_CONDITION_REPORT                     = 0x5f,
+  HID_USAGE_PID_CENTERPOINT_OFFSET                       = 0x60,
+  HID_USAGE_PID_POSITIVE_COEFFICIENT                     = 0x61,
+  HID_USAGE_PID_NEGATIVE_COEFFICIENT                     = 0x62,
+  HID_USAGE_PID_POSITIVE_SATURATION                      = 0x63,
+  HID_USAGE_PID_NEGATIVE_SATURATION                      = 0x64,
+  HID_USAGE_PID_DEAD_BAND                                = 0x65,
+  HID_USAGE_PID_DOWNLOAD_FORCE_SAMPLE                    = 0x66,
+  HID_USAGE_PID_ISOCH_CUSTOMFORCE_ENABLE                 = 0x67,
+  HID_USAGE_PID_CUSTOMFORCE_DATA_REPORT                  = 0x68,
+  HID_USAGE_PID_CUSTOMFORCE_DATA                         = 0x69,
+  HID_USAGE_PID_CUSTOMFORCE_VENDOR_DEFINED_DATA          = 0x6a,
+  HID_USAGE_PID_SET_CUSTOMFORCE_REPORT                   = 0x6b,
+  HID_USAGE_PID_CUSTOMFORCE_DATA_OFFSET                  = 0x6c,
+  HID_USAGE_PID_SAMPLE_COUNT                             = 0x6d,
+  HID_USAGE_PID_SET_PERIODIC_REPORT                      = 0x6e,
+  HID_USAGE_PID_OFFSET                                   = 0x6f,
+  HID_USAGE_PID_MAGNITUDE                                = 0x70,
+  HID_USAGE_PID_PHASE                                    = 0x71,
+  HID_USAGE_PID_PERIOD                                   = 0x72,
+  HID_USAGE_PID_SET_CONSTANTFORCE_REPORT                 = 0x73,
+  HID_USAGE_PID_SET_RAMPFORCE_REPORT                     = 0x74,
+  HID_USAGE_PID_RAMP_START                               = 0x75,
+  HID_USAGE_PID_RAMP_END                                 = 0x76,
+  HID_USAGE_PID_EFFECT_OPERATION_REPORT                  = 0x77,
+  HID_USAGE_PID_EFFECT_OPERATION                         = 0x78,
+  HID_USAGE_PID_OP_EFFECT_START                          = 0x79,
+  HID_USAGE_PID_OP_EFFECT_START_SOLO                     = 0x7a,
+  HID_USAGE_PID_OP_EFFECT_STOP                           = 0x7b,
+  HID_USAGE_PID_LOOP_COUNT                               = 0x7c,
+  HID_USAGE_PID_DEVICE_GAIN_REPORT                       = 0x7d,
+  HID_USAGE_PID_DEVICE_GAIN                              = 0x7e,
+  HID_USAGE_PID_PARAMETER_BLOCK_POOLS_REPORT             = 0x7f,
+  HID_USAGE_PID_RAM_POOL_SIZE                            = 0x80,
+  HID_USAGE_PID_ROM_POOL_SIZE                            = 0x81,
+  HID_USAGE_PID_ROM_EFFECT_BLOCK_COUNT                   = 0x82,
+  HID_USAGE_PID_SIMULTANEOUS_EFFECTS_MAX                 = 0x83,
+  HID_USAGE_PID_POOL_ALIGNMENT                           = 0x84,
+  HID_USAGE_PID_PARAMETER_BLOCK_MOVE_REPORT              = 0x85,
+  HID_USAGE_PID_MOVE_SOURCE                              = 0x86,
+  HID_USAGE_PID_MOVE_DESTINATION                         = 0x87,
+  HID_USAGE_PID_MOVE_LENGTH                              = 0x88,
+  HID_USAGE_PID_EFFECT_PARAMETER_BLOCK_LOAD_REPORT       = 0x89,
+  HID_USAGE_PID_EFFECT_PARAMETER_BLOCK_LOAD_STATUS       = 0x8b,
+  HID_USAGE_PID_BLOCK_LOAD_SUCCESS                       = 0x8c,
+  HID_USAGE_PID_BLOCK_LOAD_FULL                          = 0x8d,
+  HID_USAGE_PID_BLOCK_LOAD_ERROR                         = 0x8e,
+  HID_USAGE_PID_BLOCK_HANDLE                             = 0x8f,
+  HID_USAGE_PID_EFFECT_PARAMETER_BLOCK_FREE_REPORT       = 0x90,
+  HID_USAGE_PID_TYPE_SPECIFIC_BLOCK_HANDLE               = 0x91,
+  HID_USAGE_PID_PID_STATE_REPORT                         = 0x92,
+  HID_USAGE_PID_EFFECT_PLAYING                           = 0x94,
+  HID_USAGE_PID_PID_DEVICE_CONTROL_REPORT                = 0x95,
+  HID_USAGE_PID_PID_DEVICE_CONTROL                       = 0x96,
+  HID_USAGE_PID_DC_ENABLE_ACTUATORS                      = 0x97,
+  HID_USAGE_PID_DC_DISABLE_ACTUATORS                     = 0x98,
+  HID_USAGE_PID_DC_STOP_ALL_EFFECTS                      = 0x99,
+  HID_USAGE_PID_DC_RESET                                 = 0x9a,
+  HID_USAGE_PID_DC_PAUSE                                 = 0x9b,
+  HID_USAGE_PID_DC_CONTINUE                              = 0x9c,
+  HID_USAGE_PID_DEVICE_PAUSED                            = 0x9f,
+  HID_USAGE_PID_ACTUATORS_ENABLED                        = 0xa0,
+  HID_USAGE_PID_SAFETY_SWITCH                            = 0xa4,
+  HID_USAGE_PID_ACTUATOR_OVERRIDE_SWITCH                 = 0xa5,
+  HID_USAGE_PID_ACTUATOR_POWER                           = 0xa6,
+  HID_USAGE_PID_START_DELAY                              = 0xa7,
+  HID_USAGE_PID_PARAMETER_BLOCK_SIZE                     = 0xa8,
+  HID_USAGE_PID_DEVICEMANAGED_POOL                       = 0xa9,
+  HID_USAGE_PID_SHARED_PARAMETER_BLOCKS                  = 0xaa,
+  HID_USAGE_PID_CREATE_NEW_EFFECT_PARAMETER_BLOCK_REPORT = 0xab,
+  HID_USAGE_PID_RAM_POOL_AVAILABLE                       = 0xac,
+};
+
+/*--------------------------------------------------------------------
+ * ASCII to KEYCODE Conversion
+ *  Expand to array of [128][2] (shift, keycode)
+ *
+ * Usage: example to convert input chr into keyboard report (modifier + keycode)
+ *
+ *  uint8_t const conv_table[128][2] =  { HID_ASCII_TO_KEYCODE };
+ *
+ *  uint8_t keycode[6] = { 0 };
+ *  uint8_t modifier   = 0;
+ *
+ *  if ( conv_table[chr][0] ) modifier = KEYBOARD_MODIFIER_LEFTSHIFT;
+ *  keycode[0] = conv_table[chr][1];
+ *  tud_hid_keyboard_report(report_id, modifier, keycode);
+ *
+ *--------------------------------------------------------------------*/
+#define HID_ASCII_TO_KEYCODE \\
+    {0, 0                     }, /* 0x00 Null      */ \\
+    {0, 0                     }, /* 0x01           */ \\
+    {0, 0                     }, /* 0x02           */ \\
+    {0, 0                     }, /* 0x03           */ \\
+    {0, 0                     }, /* 0x04           */ \\
+    {0, 0                     }, /* 0x05           */ \\
+    {0, 0                     }, /* 0x06           */ \\
+    {0, 0                     }, /* 0x07           */ \\
+    {0, HID_KEY_BACKSPACE     }, /* 0x08 Backspace */ \\
+    {0, HID_KEY_TAB           }, /* 0x09 Tab       */ \\
+    {0, HID_KEY_ENTER         }, /* 0x0A Line Feed */ \\
+    {0, 0                     }, /* 0x0B           */ \\
+    {0, 0                     }, /* 0x0C           */ \\
+    {0, HID_KEY_ENTER         }, /* 0x0D CR        */ \\
+    {0, 0                     }, /* 0x0E           */ \\
+    {0, 0                     }, /* 0x0F           */ \\
+    {0, 0                     }, /* 0x10           */ \\
+    {0, 0                     }, /* 0x11           */ \\
+    {0, 0                     }, /* 0x12           */ \\
+    {0, 0                     }, /* 0x13           */ \\
+    {0, 0                     }, /* 0x14           */ \\
+    {0, 0                     }, /* 0x15           */ \\
+    {0, 0                     }, /* 0x16           */ \\
+    {0, 0                     }, /* 0x17           */ \\
+    {0, 0                     }, /* 0x18           */ \\
+    {0, 0                     }, /* 0x19           */ \\
+    {0, 0                     }, /* 0x1A           */ \\
+    {0, HID_KEY_ESCAPE        }, /* 0x1B Escape    */ \\
+    {0, 0                     }, /* 0x1C           */ \\
+    {0, 0                     }, /* 0x1D           */ \\
+    {0, 0                     }, /* 0x1E           */ \\
+    {0, 0                     }, /* 0x1F           */ \\
+                                                      \\
+    {0, HID_KEY_SPACE         }, /* 0x20           */ \\
+    {1, HID_KEY_1             }, /* 0x21 !         */ \\
+    {1, HID_KEY_APOSTROPHE    }, /* 0x22 "         */ \\
+    {1, HID_KEY_3             }, /* 0x23 #         */ \\
+    {1, HID_KEY_4             }, /* 0x24 $         */ \\
+    {1, HID_KEY_5             }, /* 0x25 %         */ \\
+    {1, HID_KEY_7             }, /* 0x26 &         */ \\
+    {0, HID_KEY_APOSTROPHE    }, /* 0x27 '         */ \\
+    {1, HID_KEY_9             }, /* 0x28 (         */ \\
+    {1, HID_KEY_0             }, /* 0x29 )         */ \\
+    {1, HID_KEY_8             }, /* 0x2A *         */ \\
+    {1, HID_KEY_EQUAL         }, /* 0x2B +         */ \\
+    {0, HID_KEY_COMMA         }, /* 0x2C ,         */ \\
+    {0, HID_KEY_MINUS         }, /* 0x2D -         */ \\
+    {0, HID_KEY_PERIOD        }, /* 0x2E .         */ \\
+    {0, HID_KEY_SLASH         }, /* 0x2F /         */ \\
+    {0, HID_KEY_0             }, /* 0x30 0         */ \\
+    {0, HID_KEY_1             }, /* 0x31 1         */ \\
+    {0, HID_KEY_2             }, /* 0x32 2         */ \\
+    {0, HID_KEY_3             }, /* 0x33 3         */ \\
+    {0, HID_KEY_4             }, /* 0x34 4         */ \\
+    {0, HID_KEY_5             }, /* 0x35 5         */ \\
+    {0, HID_KEY_6             }, /* 0x36 6         */ \\
+    {0, HID_KEY_7             }, /* 0x37 7         */ \\
+    {0, HID_KEY_8             }, /* 0x38 8         */ \\
+    {0, HID_KEY_9             }, /* 0x39 9         */ \\
+    {1, HID_KEY_SEMICOLON     }, /* 0x3A :         */ \\
+    {0, HID_KEY_SEMICOLON     }, /* 0x3B ;         */ \\
+    {1, HID_KEY_COMMA         }, /* 0x3C <         */ \\
+    {0, HID_KEY_EQUAL         }, /* 0x3D =         */ \\
+    {1, HID_KEY_PERIOD        }, /* 0x3E >         */ \\
+    {1, HID_KEY_SLASH         }, /* 0x3F ?         */ \\
+                                                      \\
+    {1, HID_KEY_2             }, /* 0x40 @         */ \\
+    {1, HID_KEY_A             }, /* 0x41 A         */ \\
+    {1, HID_KEY_B             }, /* 0x42 B         */ \\
+    {1, HID_KEY_C             }, /* 0x43 C         */ \\
+    {1, HID_KEY_D             }, /* 0x44 D         */ \\
+    {1, HID_KEY_E             }, /* 0x45 E         */ \\
+    {1, HID_KEY_F             }, /* 0x46 F         */ \\
+    {1, HID_KEY_G             }, /* 0x47 G         */ \\
+    {1, HID_KEY_H             }, /* 0x48 H         */ \\
+    {1, HID_KEY_I             }, /* 0x49 I         */ \\
+    {1, HID_KEY_J             }, /* 0x4A J         */ \\
+    {1, HID_KEY_K             }, /* 0x4B K         */ \\
+    {1, HID_KEY_L             }, /* 0x4C L         */ \\
+    {1, HID_KEY_M             }, /* 0x4D M         */ \\
+    {1, HID_KEY_N             }, /* 0x4E N         */ \\
+    {1, HID_KEY_O             }, /* 0x4F O         */ \\
+    {1, HID_KEY_P             }, /* 0x50 P         */ \\
+    {1, HID_KEY_Q             }, /* 0x51 Q         */ \\
+    {1, HID_KEY_R             }, /* 0x52 R         */ \\
+    {1, HID_KEY_S             }, /* 0x53 S         */ \\
+    {1, HID_KEY_T             }, /* 0x55 T         */ \\
+    {1, HID_KEY_U             }, /* 0x55 U         */ \\
+    {1, HID_KEY_V             }, /* 0x56 V         */ \\
+    {1, HID_KEY_W             }, /* 0x57 W         */ \\
+    {1, HID_KEY_X             }, /* 0x58 X         */ \\
+    {1, HID_KEY_Y             }, /* 0x59 Y         */ \\
+    {1, HID_KEY_Z             }, /* 0x5A Z         */ \\
+    {0, HID_KEY_BRACKET_LEFT  }, /* 0x5B [         */ \\
+    {0, HID_KEY_BACKSLASH     }, /* 0x5C '\\'       */ \\
+    {0, HID_KEY_BRACKET_RIGHT }, /* 0x5D ]         */ \\
+    {1, HID_KEY_6             }, /* 0x5E ^         */ \\
+    {1, HID_KEY_MINUS         }, /* 0x5F _         */ \\
+                                                      \\
+    {0, HID_KEY_GRAVE         }, /* 0x60 \`         */ \\
+    {0, HID_KEY_A             }, /* 0x61 a         */ \\
+    {0, HID_KEY_B             }, /* 0x62 b         */ \\
+    {0, HID_KEY_C             }, /* 0x63 c         */ \\
+    {0, HID_KEY_D             }, /* 0x66 d         */ \\
+    {0, HID_KEY_E             }, /* 0x65 e         */ \\
+    {0, HID_KEY_F             }, /* 0x66 f         */ \\
+    {0, HID_KEY_G             }, /* 0x67 g         */ \\
+    {0, HID_KEY_H             }, /* 0x68 h         */ \\
+    {0, HID_KEY_I             }, /* 0x69 i         */ \\
+    {0, HID_KEY_J             }, /* 0x6A j         */ \\
+    {0, HID_KEY_K             }, /* 0x6B k         */ \\
+    {0, HID_KEY_L             }, /* 0x6C l         */ \\
+    {0, HID_KEY_M             }, /* 0x6D m         */ \\
+    {0, HID_KEY_N             }, /* 0x6E n         */ \\
+    {0, HID_KEY_O             }, /* 0x6F o         */ \\
+    {0, HID_KEY_P             }, /* 0x70 p         */ \\
+    {0, HID_KEY_Q             }, /* 0x71 q         */ \\
+    {0, HID_KEY_R             }, /* 0x72 r         */ \\
+    {0, HID_KEY_S             }, /* 0x73 s         */ \\
+    {0, HID_KEY_T             }, /* 0x75 t         */ \\
+    {0, HID_KEY_U             }, /* 0x75 u         */ \\
+    {0, HID_KEY_V             }, /* 0x76 v         */ \\
+    {0, HID_KEY_W             }, /* 0x77 w         */ \\
+    {0, HID_KEY_X             }, /* 0x78 x         */ \\
+    {0, HID_KEY_Y             }, /* 0x79 y         */ \\
+    {0, HID_KEY_Z             }, /* 0x7A z         */ \\
+    {1, HID_KEY_BRACKET_LEFT  }, /* 0x7B {         */ \\
+    {1, HID_KEY_BACKSLASH     }, /* 0x7C |         */ \\
+    {1, HID_KEY_BRACKET_RIGHT }, /* 0x7D }         */ \\
+    {1, HID_KEY_GRAVE         }, /* 0x7E ~         */ \\
+    {0, HID_KEY_DELETE        }  /* 0x7F Delete    */ \\
+
+/*--------------------------------------------------------------------
+ * KEYCODE to Ascii Conversion
+ *  Expand to array of [128][2] (ascii without shift, ascii with shift)
+ *
+ * Usage: example to convert ascii from keycode (key) and shift modifier (shift).
+ * Here we assume key < 128 ( printable )
+ *
+ *  uint8_t const conv_table[128][2] =  { HID_KEYCODE_TO_ASCII };
+ *  char ch = shift ? conv_table[chr][1] : conv_table[chr][0];
+ *
+ *--------------------------------------------------------------------*/
+#define HID_KEYCODE_TO_ASCII    \\
+    {0     , 0      }, /* 0x00 */ \\
+    {0     , 0      }, /* 0x01 */ \\
+    {0     , 0      }, /* 0x02 */ \\
+    {0     , 0      }, /* 0x03 */ \\
+    {'a'   , 'A'    }, /* 0x04 */ \\
+    {'b'   , 'B'    }, /* 0x05 */ \\
+    {'c'   , 'C'    }, /* 0x06 */ \\
+    {'d'   , 'D'    }, /* 0x07 */ \\
+    {'e'   , 'E'    }, /* 0x08 */ \\
+    {'f'   , 'F'    }, /* 0x09 */ \\
+    {'g'   , 'G'    }, /* 0x0a */ \\
+    {'h'   , 'H'    }, /* 0x0b */ \\
+    {'i'   , 'I'    }, /* 0x0c */ \\
+    {'j'   , 'J'    }, /* 0x0d */ \\
+    {'k'   , 'K'    }, /* 0x0e */ \\
+    {'l'   , 'L'    }, /* 0x0f */ \\
+    {'m'   , 'M'    }, /* 0x10 */ \\
+    {'n'   , 'N'    }, /* 0x11 */ \\
+    {'o'   , 'O'    }, /* 0x12 */ \\
+    {'p'   , 'P'    }, /* 0x13 */ \\
+    {'q'   , 'Q'    }, /* 0x14 */ \\
+    {'r'   , 'R'    }, /* 0x15 */ \\
+    {'s'   , 'S'    }, /* 0x16 */ \\
+    {'t'   , 'T'    }, /* 0x17 */ \\
+    {'u'   , 'U'    }, /* 0x18 */ \\
+    {'v'   , 'V'    }, /* 0x19 */ \\
+    {'w'   , 'W'    }, /* 0x1a */ \\
+    {'x'   , 'X'    }, /* 0x1b */ \\
+    {'y'   , 'Y'    }, /* 0x1c */ \\
+    {'z'   , 'Z'    }, /* 0x1d */ \\
+    {'1'   , '!'    }, /* 0x1e */ \\
+    {'2'   , '@'    }, /* 0x1f */ \\
+    {'3'   , '#'    }, /* 0x20 */ \\
+    {'4'   , '$'    }, /* 0x21 */ \\
+    {'5'   , '%'    }, /* 0x22 */ \\
+    {'6'   , '^'    }, /* 0x23 */ \\
+    {'7'   , '&'    }, /* 0x24 */ \\
+    {'8'   , '*'    }, /* 0x25 */ \\
+    {'9'   , '('    }, /* 0x26 */ \\
+    {'0'   , ')'    }, /* 0x27 */ \\
+    {'\\r'  , '\\r'   }, /* 0x28 */ \\
+    {'\\x1b', '\\x1b' }, /* 0x29 */ \\
+    {'\\b'  , '\\b'   }, /* 0x2a */ \\
+    {'\\t'  , '\\t'   }, /* 0x2b */ \\
+    {' '   , ' '    }, /* 0x2c */ \\
+    {'-'   , '_'    }, /* 0x2d */ \\
+    {'='   , '+'    }, /* 0x2e */ \\
+    {'['   , '{'    }, /* 0x2f */ \\
+    {']'   , '}'    }, /* 0x30 */ \\
+    {'\\\\'  , '|'    }, /* 0x31 */ \\
+    {'#'   , '~'    }, /* 0x32 */ \\
+    {';'   , ':'    }, /* 0x33 */ \\
+    {'\\''  , '\\"'   }, /* 0x34 */ \\
+    {'\`'   , '~'    }, /* 0x35 */ \\
+    {','   , '<'    }, /* 0x36 */ \\
+    {'.'   , '>'    }, /* 0x37 */ \\
+    {'/'   , '?'    }, /* 0x38 */ \\
+                                  \\
+    {0     , 0      }, /* 0x39 */ \\
+    {0     , 0      }, /* 0x3a */ \\
+    {0     , 0      }, /* 0x3b */ \\
+    {0     , 0      }, /* 0x3c */ \\
+    {0     , 0      }, /* 0x3d */ \\
+    {0     , 0      }, /* 0x3e */ \\
+    {0     , 0      }, /* 0x3f */ \\
+    {0     , 0      }, /* 0x40 */ \\
+    {0     , 0      }, /* 0x41 */ \\
+    {0     , 0      }, /* 0x42 */ \\
+    {0     , 0      }, /* 0x43 */ \\
+    {0     , 0      }, /* 0x44 */ \\
+    {0     , 0      }, /* 0x45 */ \\
+    {0     , 0      }, /* 0x46 */ \\
+    {0     , 0      }, /* 0x47 */ \\
+    {0     , 0      }, /* 0x48 */ \\
+    {0     , 0      }, /* 0x49 */ \\
+    {0     , 0      }, /* 0x4a */ \\
+    {0     , 0      }, /* 0x4b */ \\
+    {0     , 0      }, /* 0x4c */ \\
+    {0     , 0      }, /* 0x4d */ \\
+    {0     , 0      }, /* 0x4e */ \\
+    {0     , 0      }, /* 0x4f */ \\
+    {0     , 0      }, /* 0x50 */ \\
+    {0     , 0      }, /* 0x51 */ \\
+    {0     , 0      }, /* 0x52 */ \\
+    {0     , 0      }, /* 0x53 */ \\
+                                  \\
+    {'/'   , '/'    }, /* 0x54 */ \\
+    {'*'   , '*'    }, /* 0x55 */ \\
+    {'-'   , '-'    }, /* 0x56 */ \\
+    {'+'   , '+'    }, /* 0x57 */ \\
+    {'\\r'  , '\\r'   }, /* 0x58 */ \\
+    {'1'   , 0      }, /* 0x59 */ \\
+    {'2'   , 0      }, /* 0x5a */ \\
+    {'3'   , 0      }, /* 0x5b */ \\
+    {'4'   , 0      }, /* 0x5c */ \\
+    {'5'   , '5'    }, /* 0x5d */ \\
+    {'6'   , 0      }, /* 0x5e */ \\
+    {'7'   , 0      }, /* 0x5f */ \\
+    {'8'   , 0      }, /* 0x60 */ \\
+    {'9'   , 0      }, /* 0x61 */ \\
+    {'0'   , 0      }, /* 0x62 */ \\
+    {'.'   , 0      }, /* 0x63 */ \\
+    {0     , 0      }, /* 0x64 */ \\
+    {0     , 0      }, /* 0x65 */ \\
+    {0     , 0      }, /* 0x66 */ \\
+    {'='   , '='    }, /* 0x67 */ \\
+
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif /* _TUSB_HID_H__ */
+
+/// @}
+`,"common/tusb_common.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_COMMON_H_
+#define _TUSB_COMMON_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Macros Helper
+//--------------------------------------------------------------------+
+#define TU_ARRAY_SIZE(_arr)   ( sizeof(_arr) / sizeof(_arr[0]) )
+#define TU_MIN(_x, _y)        ( ( (_x) < (_y) ) ? (_x) : (_y) )
+#define TU_MAX(_x, _y)        ( ( (_x) > (_y) ) ? (_x) : (_y) )
+#define TU_DIV_CEIL(n, d)     (((n) + (d) - 1) / (d))
+
+#define TU_U16(_high, _low)   ((uint16_t) (((_high) << 8) | (_low)))
+#define TU_U16_HIGH(_u16)     ((uint8_t) (((_u16) >> 8) & 0x00ff))
+#define TU_U16_LOW(_u16)      ((uint8_t) ((_u16)       & 0x00ff))
+#define U16_TO_U8S_BE(_u16)   TU_U16_HIGH(_u16), TU_U16_LOW(_u16)
+#define U16_TO_U8S_LE(_u16)   TU_U16_LOW(_u16), TU_U16_HIGH(_u16)
+
+#define TU_U32_BYTE3(_u32)    ((uint8_t) ((((uint32_t) _u32) >> 24) & 0x000000ff)) // MSB
+#define TU_U32_BYTE2(_u32)    ((uint8_t) ((((uint32_t) _u32) >> 16) & 0x000000ff))
+#define TU_U32_BYTE1(_u32)    ((uint8_t) ((((uint32_t) _u32) >>  8) & 0x000000ff))
+#define TU_U32_BYTE0(_u32)    ((uint8_t) (((uint32_t)  _u32)        & 0x000000ff)) // LSB
+
+#define U32_TO_U8S_BE(_u32)   TU_U32_BYTE3(_u32), TU_U32_BYTE2(_u32), TU_U32_BYTE1(_u32), TU_U32_BYTE0(_u32)
+#define U32_TO_U8S_LE(_u32)   TU_U32_BYTE0(_u32), TU_U32_BYTE1(_u32), TU_U32_BYTE2(_u32), TU_U32_BYTE3(_u32)
+
+#define TU_BIT(n)             (1UL << (n))
+
+// Generate a mask with bit from high (31) to low (0) set, e.g TU_GENMASK(3, 0) = 0b1111
+#define TU_GENMASK(h, l)      ( (UINT32_MAX << (l)) & (UINT32_MAX >> (31 - (h))) )
+
+//--------------------------------------------------------------------+
+// Includes
+//--------------------------------------------------------------------+
+
+// Standard Headers
+#include <stdbool.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdio.h>
+
+// Tinyusb Common Headers
+#include "tusb_option.h"
+#include "tusb_compiler.h"
+#include "tusb_verify.h"
+#include "tusb_types.h"
+#include "tusb_debug.h"
+
+//--------------------------------------------------------------------+
+// Optional API implemented by application if needed
+// TODO move to a more obvious place/file
+//--------------------------------------------------------------------+
+
+// flush data cache
+TU_ATTR_WEAK extern void tusb_app_dcache_flush(uintptr_t addr, uint32_t data_size);
+
+// invalidate data cache
+TU_ATTR_WEAK extern void tusb_app_dcache_invalidate(uintptr_t addr, uint32_t data_size);
+
+// Optional physical <-> virtual address translation
+TU_ATTR_WEAK extern void* tusb_app_virt_to_phys(void *virt_addr);
+TU_ATTR_WEAK extern void* tusb_app_phys_to_virt(void *phys_addr);
+
+//--------------------------------------------------------------------+
+// Internal Inline Functions
+//--------------------------------------------------------------------+
+
+//------------- Mem -------------//
+#define tu_memclr(buffer, size)  memset((buffer), 0, (size))
+#define tu_varclr(_var)          tu_memclr(_var, sizeof(*(_var)))
+
+// This is a backport of memset_s from c11
+TU_ATTR_ALWAYS_INLINE static inline int tu_memset_s(void *dest, size_t destsz, int ch, size_t count) {
+  // TODO may check if desst and src is not NULL
+  if ( count > destsz ) {
+    return -1;
+  }
+  memset(dest, ch, count);
+  return 0;
+}
+
+// This is a backport of memcpy_s from c11
+TU_ATTR_ALWAYS_INLINE static inline int tu_memcpy_s(void *dest, size_t destsz, const void *src, size_t count) {
+  // TODO may check if desst and src is not NULL
+  if ( count > destsz ) {
+    return -1;
+  }
+  memcpy(dest, src, count);
+  return 0;
+}
+
+
+//------------- Bytes -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_u32(uint8_t b3, uint8_t b2, uint8_t b1, uint8_t b0) {
+  return (((uint32_t)b3) << 24) | (((uint32_t)b2) << 16) | (((uint32_t)b1) << 8) | b0;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_u32_from_u16(uint16_t high, uint16_t low) {
+  return (((uint32_t)high) << 16) | low;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_u16(uint8_t high, uint8_t low) {
+  return (uint16_t)((((uint16_t)high) << 8) | low);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u32_byte3(uint32_t ui32) { return TU_U32_BYTE3(ui32); }
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u32_byte2(uint32_t ui32) { return TU_U32_BYTE2(ui32); }
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u32_byte1(uint32_t ui32) { return TU_U32_BYTE1(ui32); }
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u32_byte0(uint32_t ui32) { return TU_U32_BYTE0(ui32); }
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_u32_high16(uint32_t ui32) { return (uint16_t) (ui32 >> 16); }
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_u32_low16 (uint32_t ui32) { return (uint16_t) (ui32 & 0x0000ffffu); }
+
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u16_high(uint16_t ui16) { return TU_U16_HIGH(ui16); }
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_u16_low (uint16_t ui16) { return TU_U16_LOW(ui16); }
+
+//------------- Bits -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_bit_set  (uint32_t value, uint8_t pos) { return value | TU_BIT(pos);                  }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_bit_clear(uint32_t value, uint8_t pos) { return value & (~TU_BIT(pos));               }
+TU_ATTR_ALWAYS_INLINE static inline bool     tu_bit_test (uint32_t value, uint8_t pos) { return (value & TU_BIT(pos)) ? true : false; }
+
+//------------- Min -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint8_t  tu_min8  (uint8_t  x, uint8_t y ) { return (x < y) ? x : y; }
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_min16 (uint16_t x, uint16_t y) { return (x < y) ? x : y; }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_min32 (uint32_t x, uint32_t y) { return (x < y) ? x : y; }
+
+//------------- Max -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint8_t  tu_max8  (uint8_t  x, uint8_t y ) { return (x > y) ? x : y; }
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_max16 (uint16_t x, uint16_t y) { return (x > y) ? x : y; }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_max32 (uint32_t x, uint32_t y) { return (x > y) ? x : y; }
+
+//------------- Align -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align(uint32_t value, uint32_t alignment) {
+  return value & ((uint32_t) ~(alignment-1));
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align4  (uint32_t value) { return (value & 0xFFFFFFFCUL); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align8  (uint32_t value) { return (value & 0xFFFFFFF8UL); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align16 (uint32_t value) { return (value & 0xFFFFFFF0UL); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align32 (uint32_t value) { return (value & 0xFFFFFFE0UL); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_align4k (uint32_t value) { return (value & 0xFFFFF000UL); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_offset4k(uint32_t value) { return (value & 0xFFFUL); }
+
+TU_ATTR_ALWAYS_INLINE static inline bool tu_is_aligned32(uint32_t value) { return (value & 0x1FUL) == 0; }
+TU_ATTR_ALWAYS_INLINE static inline bool tu_is_aligned64(uint64_t value) { return (value & 0x3FUL) == 0; }
+
+//------------- Mathematics -------------//
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_div_ceil(uint32_t v, uint32_t d) { return TU_DIV_CEIL(v, d); }
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_round_up(uint32_t v, uint32_t f) { return tu_div_ceil(v, f) * f; }
+
+// log2 of a value is its MSB's position
+// TODO use clz TODO remove
+static inline uint8_t tu_log2(uint32_t value)
+{
+  uint8_t result = 0;
+  while (value >>= 1) { result++; }
+  return result;
+}
+
+//static inline uint8_t tu_log2(uint32_t value)
+//{
+//   return sizeof(uint32_t) * CHAR_BIT - __builtin_clz(x) - 1;
+//}
+
+static inline bool tu_is_power_of_two(uint32_t value)
+{
+   return (value != 0) && ((value & (value - 1)) == 0);
+}
+
+//------------- Unaligned Access -------------//
+#if TUP_ARCH_STRICT_ALIGN
+
+// Rely on compiler to generate correct code for unaligned access
+typedef struct { uint16_t val; } TU_ATTR_PACKED tu_unaligned_uint16_t;
+typedef struct { uint32_t val; } TU_ATTR_PACKED tu_unaligned_uint32_t;
+
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_unaligned_read32(const void* mem)
+{
+  tu_unaligned_uint32_t const* ua32 = (tu_unaligned_uint32_t const*) mem;
+  return ua32->val;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write32(void* mem, uint32_t value)
+{
+  tu_unaligned_uint32_t* ua32 = (tu_unaligned_uint32_t*) mem;
+  ua32->val = value;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_unaligned_read16(const void* mem)
+{
+  tu_unaligned_uint16_t const* ua16 = (tu_unaligned_uint16_t const*) mem;
+  return ua16->val;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write16(void* mem, uint16_t value)
+{
+  tu_unaligned_uint16_t* ua16 = (tu_unaligned_uint16_t*) mem;
+  ua16->val = value;
+}
+
+#elif TUP_MCU_STRICT_ALIGN
+
+// MCU such as LPC_IP3511 Highspeed cannot access unaligned memory on USB_RAM although it is ARM M4.
+// We have to manually pick up bytes since tu_unaligned_uint32_t will still generate unaligned code
+// NOTE: volatile cast to memory to prevent compiler to optimize and generate unaligned code
+// TODO Big Endian may need minor changes
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_unaligned_read32(const void* mem)
+{
+  volatile uint8_t const* buf8 = (uint8_t const*) mem;
+  return tu_u32(buf8[3], buf8[2], buf8[1], buf8[0]);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write32(void* mem, uint32_t value)
+{
+  volatile uint8_t* buf8 = (uint8_t*) mem;
+  buf8[0] = tu_u32_byte0(value);
+  buf8[1] = tu_u32_byte1(value);
+  buf8[2] = tu_u32_byte2(value);
+  buf8[3] = tu_u32_byte3(value);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_unaligned_read16(const void* mem)
+{
+  volatile uint8_t const* buf8 = (uint8_t const*) mem;
+  return tu_u16(buf8[1], buf8[0]);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write16(void* mem, uint16_t value)
+{
+  volatile uint8_t* buf8 = (uint8_t*) mem;
+  buf8[0] = tu_u16_low(value);
+  buf8[1] = tu_u16_high(value);
+}
+
+
+#else
+
+// MCU that could access unaligned memory natively
+TU_ATTR_ALWAYS_INLINE static inline uint32_t tu_unaligned_read32(const void *mem) {
+  return *((uint32_t const *) mem);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_unaligned_read16(const void *mem) {
+  return *((uint16_t const *) mem);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write32(void *mem, uint32_t value) {
+  *((uint32_t *) mem) = value;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void tu_unaligned_write16(void *mem, uint16_t value) {
+  *((uint16_t *) mem) = value;
+}
+
+#endif
+
+// To be removed
+//------------- Binary constant -------------//
+#if defined(__GNUC__) && !defined(__CC_ARM)
+
+#define TU_BIN8(x)               ((uint8_t)  (0b##x))
+#define TU_BIN16(b1, b2)         ((uint16_t) (0b##b1##b2))
+#define TU_BIN32(b1, b2, b3, b4) ((uint32_t) (0b##b1##b2##b3##b4))
+
+#else
+
+//  internal macro of B8, B16, B32
+#define _B8__(x) (((x&0x0000000FUL)?1:0) \\
+                +((x&0x000000F0UL)?2:0) \\
+                +((x&0x00000F00UL)?4:0) \\
+                +((x&0x0000F000UL)?8:0) \\
+                +((x&0x000F0000UL)?16:0) \\
+                +((x&0x00F00000UL)?32:0) \\
+                +((x&0x0F000000UL)?64:0) \\
+                +((x&0xF0000000UL)?128:0))
+
+#define TU_BIN8(d) ((uint8_t) _B8__(0x##d##UL))
+#define TU_BIN16(dmsb,dlsb) (((uint16_t)TU_BIN8(dmsb)<<8) + TU_BIN8(dlsb))
+#define TU_BIN32(dmsb,db2,db3,dlsb) \\
+            (((uint32_t)TU_BIN8(dmsb)<<24) \\
+            + ((uint32_t)TU_BIN8(db2)<<16) \\
+            + ((uint32_t)TU_BIN8(db3)<<8) \\
+            + TU_BIN8(dlsb))
+#endif
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif /* _TUSB_COMMON_H_ */
+`,"common/tusb_compiler.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+/** \\ingroup Group_Common
+ *  \\defgroup Group_Compiler Compiler
+ *  \\brief Group_Compiler brief
+ *  @{ */
+
+#ifndef _TUSB_COMPILER_H_
+#define _TUSB_COMPILER_H_
+
+#define TU_TOKEN(x)           x
+#define TU_STRING(x)          #x                  ///< stringify without expand
+#define TU_XSTRING(x)         TU_STRING(x)        ///< expand then stringify
+
+#define TU_STRCAT(a, b)       a##b                ///< concat without expand
+#define TU_STRCAT3(a, b, c)   a##b##c             ///< concat without expand
+
+#define TU_XSTRCAT(a, b)      TU_STRCAT(a, b)     ///< expand then concat
+#define TU_XSTRCAT3(a, b, c)  TU_STRCAT3(a, b, c) ///< expand then concat 3 tokens
+
+#define TU_INCLUDE_PATH(_dir,_file) TU_XSTRING( TU_TOKEN(_dir)TU_TOKEN(_file) )
+
+#if defined __COUNTER__ && __COUNTER__ != __COUNTER__
+  #define _TU_COUNTER_ __COUNTER__
+#else
+  #define _TU_COUNTER_ __LINE__
+#endif
+
+// Compile-time Assert
+#if defined (__cplusplus) && __cplusplus >= 201103L
+  #define TU_VERIFY_STATIC   static_assert
+#elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+  #define TU_VERIFY_STATIC   _Static_assert
+#elif defined(__CCRX__)
+  #define TU_VERIFY_STATIC(const_expr, _mess) typedef char TU_XSTRCAT(_verify_static_, _TU_COUNTER_)[(const_expr) ? 1 : 0];
+#else
+  #define TU_VERIFY_STATIC(const_expr, _mess) enum { TU_XSTRCAT(_verify_static_, _TU_COUNTER_) = 1/(!!(const_expr)) }
+#endif
+
+/* --------------------- Fuzzing types -------------------------------------- */
+#ifdef _FUZZ
+  #define tu_static static __thread
+#else
+  #define tu_static static
+#endif
+
+// for declaration of reserved field, make use of _TU_COUNTER_
+#define TU_RESERVED           TU_XSTRCAT(reserved, _TU_COUNTER_)
+
+#define TU_LITTLE_ENDIAN (0x12u)
+#define TU_BIG_ENDIAN (0x21u)
+
+/*------------------------------------------------------------------*/
+/* Count number of arguments of __VA_ARGS__
+ * - reference https://stackoverflow.com/questions/2124339/c-preprocessor-va-args-number-of-arguments
+ * - _GET_NTH_ARG() takes args >= N (64) but only expand to Nth one (64th)
+ * - _RSEQ_N() is reverse sequential to N to add padding to have
+ * Nth position is the same as the number of arguments
+ * - ##__VA_ARGS__ is used to deal with 0 paramerter (swallows comma)
+ *------------------------------------------------------------------*/
+#if !defined(__CCRX__)
+#define TU_ARGS_NUM(...)   _TU_NARG(_0, ##__VA_ARGS__, _RSEQ_N())
+#else
+#define TU_ARGS_NUM(...)   _TU_NARG(_0, __VA_ARGS__, _RSEQ_N())
+#endif
+
+#define _TU_NARG(...)      _GET_NTH_ARG(__VA_ARGS__)
+#define _GET_NTH_ARG( \\
+          _1, _2, _3, _4, _5, _6, _7, _8, _9,_10, \\
+         _11,_12,_13,_14,_15,_16,_17,_18,_19,_20, \\
+         _21,_22,_23,_24,_25,_26,_27,_28,_29,_30, \\
+         _31,_32,_33,_34,_35,_36,_37,_38,_39,_40, \\
+         _41,_42,_43,_44,_45,_46,_47,_48,_49,_50, \\
+         _51,_52,_53,_54,_55,_56,_57,_58,_59,_60, \\
+         _61,_62,_63,N,...) N
+#define _RSEQ_N() \\
+         62,61,60,                      \\
+         59,58,57,56,55,54,53,52,51,50, \\
+         49,48,47,46,45,44,43,42,41,40, \\
+         39,38,37,36,35,34,33,32,31,30, \\
+         29,28,27,26,25,24,23,22,21,20, \\
+         19,18,17,16,15,14,13,12,11,10, \\
+         9,8,7,6,5,4,3,2,1,0
+
+// Apply an macro X to each of the arguments with an separated of choice
+#define TU_ARGS_APPLY(_X, _s, ...)   TU_XSTRCAT(_TU_ARGS_APPLY_, TU_ARGS_NUM(__VA_ARGS__))(_X, _s, __VA_ARGS__)
+
+#define _TU_ARGS_APPLY_1(_X, _s, _a1)                                    _X(_a1)
+#define _TU_ARGS_APPLY_2(_X, _s, _a1, _a2)                               _X(_a1) _s _X(_a2)
+#define _TU_ARGS_APPLY_3(_X, _s, _a1, _a2, _a3)                          _X(_a1) _s _TU_ARGS_APPLY_2(_X, _s, _a2, _a3)
+#define _TU_ARGS_APPLY_4(_X, _s, _a1, _a2, _a3, _a4)                     _X(_a1) _s _TU_ARGS_APPLY_3(_X, _s, _a2, _a3, _a4)
+#define _TU_ARGS_APPLY_5(_X, _s, _a1, _a2, _a3, _a4, _a5)                _X(_a1) _s _TU_ARGS_APPLY_4(_X, _s, _a2, _a3, _a4, _a5)
+#define _TU_ARGS_APPLY_6(_X, _s, _a1, _a2, _a3, _a4, _a5, _a6)           _X(_a1) _s _TU_ARGS_APPLY_5(_X, _s, _a2, _a3, _a4, _a5, _a6)
+#define _TU_ARGS_APPLY_7(_X, _s, _a1, _a2, _a3, _a4, _a5, _a6, _a7)      _X(_a1) _s _TU_ARGS_APPLY_6(_X, _s, _a2, _a3, _a4, _a5, _a6, _a7)
+#define _TU_ARGS_APPLY_8(_X, _s, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8) _X(_a1) _s _TU_ARGS_APPLY_7(_X, _s, _a2, _a3, _a4, _a5, _a6, _a7, _a8)
+
+//--------------------------------------------------------------------+
+// Macro for function default arguments
+//--------------------------------------------------------------------+
+#define TU_GET_3RD_ARG(arg1, arg2, arg3, ...)        arg3
+
+// function expand with number of arguments
+#define TU_FUNC_OPTIONAL_ARG(func, ...)   TU_XSTRCAT(func##_arg, TU_ARGS_NUM(__VA_ARGS__))(__VA_ARGS__)
+
+//--------------------------------------------------------------------+
+// Compiler porting with Attribute and Endian
+//--------------------------------------------------------------------+
+
+// TODO refactor since __attribute__ is supported across many compiler
+#if defined(__GNUC__)
+  #define TU_ATTR_ALIGNED(Bytes)        __attribute__ ((aligned(Bytes)))
+  #define TU_ATTR_SECTION(sec_name)     __attribute__ ((section(#sec_name)))
+  #define TU_ATTR_PACKED                __attribute__ ((packed))
+  #define TU_ATTR_WEAK                  __attribute__ ((weak))
+  // #define TU_ATTR_WEAK_ALIAS(f)         __attribute__ ((weak, alias(#f)))
+  #ifndef TU_ATTR_ALWAYS_INLINE // allow to override for debug
+    #define TU_ATTR_ALWAYS_INLINE       __attribute__ ((always_inline))
+  #endif
+  #define TU_ATTR_DEPRECATED(mess)      __attribute__ ((deprecated(mess))) // warn if function with this attribute is used
+  #define TU_ATTR_UNUSED                __attribute__ ((unused))           // Function/Variable is meant to be possibly unused
+  #define TU_ATTR_USED                  __attribute__ ((used))             // Function/Variable is meant to be used
+
+  #define TU_ATTR_PACKED_BEGIN
+  #define TU_ATTR_PACKED_END
+  #define TU_ATTR_BIT_FIELD_ORDER_BEGIN
+  #define TU_ATTR_BIT_FIELD_ORDER_END
+
+  #if __GNUC__ < 5
+    #define TU_ATTR_FALLTHROUGH         do {} while (0)  /* fallthrough */
+  #else
+    #if __has_attribute(__fallthrough__)
+      #define TU_ATTR_FALLTHROUGH         __attribute__((fallthrough))
+    #else
+      #define TU_ATTR_FALLTHROUGH         do {} while (0)  /* fallthrough */
+    #endif
+  #endif
+
+  // Endian conversion use well-known host to network (big endian) naming
+  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    #define TU_BYTE_ORDER TU_LITTLE_ENDIAN
+  #else
+    #define TU_BYTE_ORDER TU_BIG_ENDIAN
+  #endif
+
+  // Unfortunately XC16 doesn't provide builtins for 32bit endian conversion
+  #if defined(__XC16)
+    #define TU_BSWAP16(u16) (__builtin_swap(u16))
+    #define TU_BSWAP32(u32) ((((u32) & 0xff000000) >> 24) |  \\
+                            (((u32) & 0x00ff0000) >> 8)  |  \\
+                            (((u32) & 0x0000ff00) << 8)  |  \\
+                            (((u32) & 0x000000ff) << 24))
+  #else
+    #define TU_BSWAP16(u16) (__builtin_bswap16(u16))
+    #define TU_BSWAP32(u32) (__builtin_bswap32(u32))
+  #endif
+
+	#ifndef __ARMCC_VERSION
+  // List of obsolete callback function that is renamed and should not be defined.
+  // Put it here since only gcc support this pragma
+		#pragma GCC poison tud_vendor_control_request_cb
+	#endif
+
+#elif defined(__TI_COMPILER_VERSION__)
+  #define TU_ATTR_ALIGNED(Bytes)        __attribute__ ((aligned(Bytes)))
+  #define TU_ATTR_SECTION(sec_name)     __attribute__ ((section(#sec_name)))
+  #define TU_ATTR_PACKED                __attribute__ ((packed))
+  #define TU_ATTR_WEAK                  __attribute__ ((weak))
+  // #define TU_ATTR_WEAK_ALIAS(f)         __attribute__ ((weak, alias(#f)))
+  #define TU_ATTR_ALWAYS_INLINE         __attribute__ ((always_inline))
+  #define TU_ATTR_DEPRECATED(mess)      __attribute__ ((deprecated(mess))) // warn if function with this attribute is used
+  #define TU_ATTR_UNUSED                __attribute__ ((unused))           // Function/Variable is meant to be possibly unused
+  #define TU_ATTR_USED                  __attribute__ ((used))
+  #define TU_ATTR_FALLTHROUGH           __attribute__((fallthrough))
+
+  #define TU_ATTR_PACKED_BEGIN
+  #define TU_ATTR_PACKED_END
+  #define TU_ATTR_BIT_FIELD_ORDER_BEGIN
+  #define TU_ATTR_BIT_FIELD_ORDER_END
+
+  // __BYTE_ORDER is defined in the TI ARM compiler, but not MSP430 (which is little endian)
+  #if ((__BYTE_ORDER__) == (__ORDER_LITTLE_ENDIAN__)) || defined(__MSP430__)
+    #define TU_BYTE_ORDER TU_LITTLE_ENDIAN
+  #else
+    #define TU_BYTE_ORDER TU_BIG_ENDIAN
+  #endif
+
+  #define TU_BSWAP16(u16) (__builtin_bswap16(u16))
+  #define TU_BSWAP32(u32) (__builtin_bswap32(u32))
+
+#elif defined(__ICCARM__)
+  #include <intrinsics.h>
+  #define TU_ATTR_ALIGNED(Bytes)        __attribute__ ((aligned(Bytes)))
+  #define TU_ATTR_SECTION(sec_name)     __attribute__ ((section(#sec_name)))
+  #define TU_ATTR_PACKED                __attribute__ ((packed))
+  #define TU_ATTR_WEAK                  __attribute__ ((weak))
+  // #define TU_ATTR_WEAK_ALIAS(f)         __attribute__ ((weak, alias(#f)))
+  #ifndef TU_ATTR_ALWAYS_INLINE // allow to override for debug
+    #define TU_ATTR_ALWAYS_INLINE         __attribute__ ((always_inline))
+  #endif
+  #define TU_ATTR_DEPRECATED(mess)      __attribute__ ((deprecated(mess))) // warn if function with this attribute is used
+  #define TU_ATTR_UNUSED                __attribute__ ((unused))           // Function/Variable is meant to be possibly unused
+  #define TU_ATTR_USED                  __attribute__ ((used))             // Function/Variable is meant to be used
+  #define TU_ATTR_FALLTHROUGH           do {} while (0)  /* fallthrough */
+
+  #define TU_ATTR_PACKED_BEGIN
+  #define TU_ATTR_PACKED_END
+  #define TU_ATTR_BIT_FIELD_ORDER_BEGIN
+  #define TU_ATTR_BIT_FIELD_ORDER_END
+
+  // Endian conversion use well-known host to network (big endian) naming
+  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    #define TU_BYTE_ORDER TU_LITTLE_ENDIAN
+  #else
+    #define TU_BYTE_ORDER TU_BIG_ENDIAN
+  #endif
+
+  #define TU_BSWAP16(u16) (__iar_builtin_REV16(u16))
+  #define TU_BSWAP32(u32) (__iar_builtin_REV(u32))
+
+#elif defined(__CCRX__)
+  #define TU_ATTR_ALIGNED(Bytes)
+  #define TU_ATTR_SECTION(sec_name)
+  #define TU_ATTR_PACKED
+  #define TU_ATTR_WEAK
+  // #define TU_ATTR_WEAK_ALIAS(f)
+  #define TU_ATTR_ALWAYS_INLINE
+  #define TU_ATTR_DEPRECATED(mess)
+  #define TU_ATTR_UNUSED
+  #define TU_ATTR_USED
+  #define TU_ATTR_FALLTHROUGH           do {} while (0)  /* fallthrough */
+
+  #define TU_ATTR_PACKED_BEGIN          _Pragma("pack")
+  #define TU_ATTR_PACKED_END            _Pragma("packoption")
+  #define TU_ATTR_BIT_FIELD_ORDER_BEGIN _Pragma("bit_order right")
+  #define TU_ATTR_BIT_FIELD_ORDER_END   _Pragma("bit_order")
+
+  // Endian conversion use well-known host to network (big endian) naming
+  #if defined(__LIT)
+    #define TU_BYTE_ORDER TU_LITTLE_ENDIAN
+  #else
+    #define TU_BYTE_ORDER TU_BIG_ENDIAN
+  #endif
+
+  #define TU_BSWAP16(u16) ((unsigned short)_builtin_revw((unsigned long)u16))
+  #define TU_BSWAP32(u32) (_builtin_revl(u32))
+
+#else
+  #error "Compiler attribute porting is required"
+#endif
+
+
+#if (TU_BYTE_ORDER == TU_LITTLE_ENDIAN)
+
+  #define tu_htons(u16)  (TU_BSWAP16(u16))
+  #define tu_ntohs(u16)  (TU_BSWAP16(u16))
+
+  #define tu_htonl(u32)  (TU_BSWAP32(u32))
+  #define tu_ntohl(u32)  (TU_BSWAP32(u32))
+
+  #define tu_htole16(u16) (u16)
+  #define tu_le16toh(u16) (u16)
+
+  #define tu_htole32(u32) (u32)
+  #define tu_le32toh(u32) (u32)
+
+#elif (TU_BYTE_ORDER == TU_BIG_ENDIAN)
+
+  #define tu_htons(u16)  (u16)
+  #define tu_ntohs(u16)  (u16)
+
+  #define tu_htonl(u32)  (u32)
+  #define tu_ntohl(u32)  (u32)
+
+  #define tu_htole16(u16) (TU_BSWAP16(u16))
+  #define tu_le16toh(u16) (TU_BSWAP16(u16))
+
+  #define tu_htole32(u32) (TU_BSWAP32(u32))
+  #define tu_le32toh(u32) (TU_BSWAP32(u32))
+
+#else
+  #error Byte order is undefined
+#endif
+
+#endif /* _TUSB_COMPILER_H_ */
+
+/// @}
+`,"common/tusb_debug.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2022, Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_DEBUG_H_
+#define _TUSB_DEBUG_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Debug
+//--------------------------------------------------------------------+
+
+// CFG_TUSB_DEBUG for debugging
+// 0 : no debug
+// 1 : print error
+// 2 : print warning
+// 3 : print info
+#if CFG_TUSB_DEBUG
+
+// Enum to String for debugging purposes
+#if CFG_TUSB_DEBUG >= CFG_TUH_LOG_LEVEL || CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+extern char const* const tu_str_speed[];
+extern char const* const tu_str_std_request[];
+extern char const* const tu_str_xfer_result[];
+#endif
+
+void tu_print_mem(void const *buf, uint32_t count, uint8_t indent);
+
+#ifdef CFG_TUSB_DEBUG_PRINTF
+  extern int CFG_TUSB_DEBUG_PRINTF(const char *format, ...);
+  #define tu_printf    CFG_TUSB_DEBUG_PRINTF
+#else
+  #define tu_printf    printf
+#endif
+
+static inline void tu_print_buf(uint8_t const* buf, uint32_t bufsize) {
+  for(uint32_t i=0; i<bufsize; i++) tu_printf("%02X ", buf[i]);
+  tu_printf("\\r\\n");
+}
+
+// Log with Level
+#define TU_LOG(n, ...)        TU_XSTRCAT(TU_LOG, n)(__VA_ARGS__)
+#define TU_LOG_MEM(n, ...)    TU_XSTRCAT3(TU_LOG, n, _MEM)(__VA_ARGS__)
+#define TU_LOG_BUF(n, ...)    TU_XSTRCAT3(TU_LOG, n, _BUF)(__VA_ARGS__)
+#define TU_LOG_INT(n, ...)    TU_XSTRCAT3(TU_LOG, n, _INT)(__VA_ARGS__)
+#define TU_LOG_HEX(n, ...)    TU_XSTRCAT3(TU_LOG, n, _HEX)(__VA_ARGS__)
+#define TU_LOG_LOCATION()     tu_printf("%s: %d:\\r\\n", __PRETTY_FUNCTION__, __LINE__)
+#define TU_LOG_FAILED()       tu_printf("%s: %d: Failed\\r\\n", __PRETTY_FUNCTION__, __LINE__)
+
+// Log Level 1: Error
+#define TU_LOG1               tu_printf
+#define TU_LOG1_MEM           tu_print_mem
+#define TU_LOG1_BUF(_x, _n)   tu_print_buf((uint8_t const*)(_x), _n)
+#define TU_LOG1_INT(_x)       tu_printf(#_x " = %ld\\r\\n", (unsigned long) (_x) )
+#define TU_LOG1_HEX(_x)       tu_printf(#_x " = 0x%lX\\r\\n", (unsigned long) (_x) )
+
+// Log Level 2: Warn
+#if CFG_TUSB_DEBUG >= 2
+  #define TU_LOG2             TU_LOG1
+  #define TU_LOG2_MEM         TU_LOG1_MEM
+  #define TU_LOG2_BUF         TU_LOG1_BUF
+  #define TU_LOG2_INT         TU_LOG1_INT
+  #define TU_LOG2_HEX         TU_LOG1_HEX
+#endif
+
+// Log Level 3: Info
+#if CFG_TUSB_DEBUG >= 3
+  #define TU_LOG3             TU_LOG1
+  #define TU_LOG3_MEM         TU_LOG1_MEM
+  #define TU_LOG3_BUF         TU_LOG1_BUF
+  #define TU_LOG3_INT         TU_LOG1_INT
+  #define TU_LOG3_HEX         TU_LOG1_HEX
+#endif
+
+typedef struct {
+  uint32_t key;
+  const char* data;
+} tu_lookup_entry_t;
+
+typedef struct {
+  uint16_t count;
+  tu_lookup_entry_t const* items;
+} tu_lookup_table_t;
+
+static inline const char* tu_lookup_find(tu_lookup_table_t const* p_table, uint32_t key) {
+  tu_static char not_found[11];
+
+  for(uint16_t i=0; i<p_table->count; i++) {
+    if (p_table->items[i].key == key) return p_table->items[i].data;
+  }
+
+  // not found return the key value in hex
+  snprintf(not_found, sizeof(not_found), "0x%08lX", (unsigned long) key);
+
+  return not_found;
+}
+
+#endif // CFG_TUSB_DEBUG
+
+#ifndef TU_LOG
+  #define TU_LOG(n, ...)
+  #define TU_LOG_MEM(n, ...)
+  #define TU_LOG_BUF(n, ...)
+  #define TU_LOG_INT(n, ...)
+  #define TU_LOG_HEX(n, ...)
+  #define TU_LOG_LOCATION()
+  #define TU_LOG_FAILED()
+#endif
+
+// TODO replace all TU_LOGn with TU_LOG(n)
+
+#define TU_LOG0(...)
+#define TU_LOG0_MEM(...)
+#define TU_LOG0_BUF(...)
+#define TU_LOG0_INT(...)
+#define TU_LOG0_HEX(...)
+
+#ifndef TU_LOG1
+  #define TU_LOG1(...)
+  #define TU_LOG1_MEM(...)
+  #define TU_LOG1_BUF(...)
+  #define TU_LOG1_INT(...)
+  #define TU_LOG1_HEX(...)
+#endif
+
+#ifndef TU_LOG2
+  #define TU_LOG2(...)
+  #define TU_LOG2_MEM(...)
+  #define TU_LOG2_BUF(...)
+  #define TU_LOG2_INT(...)
+  #define TU_LOG2_HEX(...)
+#endif
+
+#ifndef TU_LOG3
+  #define TU_LOG3(...)
+  #define TU_LOG3_MEM(...)
+  #define TU_LOG3_BUF(...)
+  #define TU_LOG3_INT(...)
+  #define TU_LOG3_HEX(...)
+#endif
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif /* _TUSB_DEBUG_H_ */
+`,"common/tusb_fifo.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ * Copyright (c) 2020 Reinhard Panhuber - rework to unmasked pointers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "osal/osal.h"
+#include "tusb_fifo.h"
+
+#define TU_FIFO_DBG   0
+
+// Suppress IAR warning
+// Warning[Pa082]: undefined behavior: the order of volatile accesses is undefined in this statement
+#if defined(__ICCARM__)
+#pragma diag_suppress = Pa082
+#endif
+
+#if OSAL_MUTEX_REQUIRED
+
+TU_ATTR_ALWAYS_INLINE static inline void _ff_lock(osal_mutex_t mutex)
+{
+  if (mutex) osal_mutex_lock(mutex, OSAL_TIMEOUT_WAIT_FOREVER);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void _ff_unlock(osal_mutex_t mutex)
+{
+  if (mutex) osal_mutex_unlock(mutex);
+}
+
+#else
+
+#define _ff_lock(_mutex)
+#define _ff_unlock(_mutex)
+
+#endif
+
+/** \\enum tu_fifo_copy_mode_t
+ * \\brief Write modes intended to allow special read and write functions to be able to
+ *        copy data to and from USB hardware FIFOs as needed for e.g. STM32s and others
+ */
+typedef enum
+{
+  TU_FIFO_COPY_INC,            ///< Copy from/to an increasing source/destination address - default mode
+#ifdef TUP_MEM_CONST_ADDR
+  TU_FIFO_COPY_CST_FULL_WORDS, ///< Copy from/to a constant source/destination address - required for e.g. STM32 to write into USB hardware FIFO
+#endif
+} tu_fifo_copy_mode_t;
+
+bool tu_fifo_config(tu_fifo_t *f, void* buffer, uint16_t depth, uint16_t item_size, bool overwritable)
+{
+  // Limit index space to 2*depth - this allows for a fast "modulo" calculation
+  // but limits the maximum depth to 2^16/2 = 2^15 and buffer overflows are detectable
+  // only if overflow happens once (important for unsupervised DMA applications)
+  if (depth > 0x8000) return false;
+
+  _ff_lock(f->mutex_wr);
+  _ff_lock(f->mutex_rd);
+
+  f->buffer       = (uint8_t*) buffer;
+  f->depth        = depth;
+  f->item_size    = (uint16_t) (item_size & 0x7FFF);
+  f->overwritable = overwritable;
+  f->rd_idx       = 0;
+  f->wr_idx       = 0;
+
+  _ff_unlock(f->mutex_wr);
+  _ff_unlock(f->mutex_rd);
+
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// Pull & Push
+//--------------------------------------------------------------------+
+
+#ifdef TUP_MEM_CONST_ADDR
+// Intended to be used to read from hardware USB FIFO in e.g. STM32 where all data is read from a constant address
+// Code adapted from dcd_synopsys.c
+// TODO generalize with configurable 1 byte or 4 byte each read
+static void _ff_push_const_addr(uint8_t * ff_buf, const void * app_buf, uint16_t len)
+{
+  volatile const uint32_t * reg_rx = (volatile const uint32_t *) app_buf;
+
+  // Reading full available 32 bit words from const app address
+  uint16_t full_words = len >> 2;
+  while(full_words--)
+  {
+    tu_unaligned_write32(ff_buf, *reg_rx);
+    ff_buf += 4;
+  }
+
+  // Read the remaining 1-3 bytes from const app address
+  uint8_t const bytes_rem = len & 0x03;
+  if ( bytes_rem )
+  {
+    uint32_t tmp32 = *reg_rx;
+    memcpy(ff_buf, &tmp32, bytes_rem);
+  }
+}
+
+// Intended to be used to write to hardware USB FIFO in e.g. STM32
+// where all data is written to a constant address in full word copies
+static void _ff_pull_const_addr(void * app_buf, const uint8_t * ff_buf, uint16_t len)
+{
+  volatile uint32_t * reg_tx = (volatile uint32_t *) app_buf;
+
+  // Write full available 32 bit words to const address
+  uint16_t full_words = len >> 2;
+  while(full_words--)
+  {
+    *reg_tx = tu_unaligned_read32(ff_buf);
+    ff_buf += 4;
+  }
+
+  // Write the remaining 1-3 bytes into const address
+  uint8_t const bytes_rem = len & 0x03;
+  if ( bytes_rem )
+  {
+    uint32_t tmp32 = 0;
+    memcpy(&tmp32, ff_buf, bytes_rem);
+
+    *reg_tx = tmp32;
+  }
+}
+#endif
+
+// send one item to fifo WITHOUT updating write pointer
+static inline void _ff_push(tu_fifo_t* f, void const * app_buf, uint16_t rel)
+{
+  memcpy(f->buffer + (rel * f->item_size), app_buf, f->item_size);
+}
+
+// send n items to fifo WITHOUT updating write pointer
+static void _ff_push_n(tu_fifo_t* f, void const * app_buf, uint16_t n, uint16_t wr_ptr, tu_fifo_copy_mode_t copy_mode)
+{
+  uint16_t const lin_count = f->depth - wr_ptr;
+  uint16_t const wrap_count = n - lin_count;
+
+  uint16_t lin_bytes = lin_count * f->item_size;
+  uint16_t wrap_bytes = wrap_count * f->item_size;
+
+  // current buffer of fifo
+  uint8_t* ff_buf = f->buffer + (wr_ptr * f->item_size);
+
+  switch (copy_mode)
+  {
+    case TU_FIFO_COPY_INC:
+      if(n <= lin_count)
+      {
+        // Linear only
+        memcpy(ff_buf, app_buf, n*f->item_size);
+      }
+      else
+      {
+        // Wrap around
+
+        // Write data to linear part of buffer
+        memcpy(ff_buf, app_buf, lin_bytes);
+
+        // Write data wrapped around
+        // TU_ASSERT(nWrap_bytes <= f->depth, );
+        memcpy(f->buffer, ((uint8_t const*) app_buf) + lin_bytes, wrap_bytes);
+      }
+      break;
+#ifdef TUP_MEM_CONST_ADDR
+    case TU_FIFO_COPY_CST_FULL_WORDS:
+      // Intended for hardware buffers from which it can be read word by word only
+      if(n <= lin_count)
+      {
+        // Linear only
+        _ff_push_const_addr(ff_buf, app_buf, n*f->item_size);
+      }
+      else
+      {
+        // Wrap around case
+
+        // Write full words to linear part of buffer
+        uint16_t nLin_4n_bytes = lin_bytes & 0xFFFC;
+        _ff_push_const_addr(ff_buf, app_buf, nLin_4n_bytes);
+        ff_buf += nLin_4n_bytes;
+
+        // There could be odd 1-3 bytes before the wrap-around boundary
+        uint8_t rem = lin_bytes & 0x03;
+        if (rem > 0)
+        {
+          volatile const uint32_t * rx_fifo = (volatile const uint32_t *) app_buf;
+
+          uint8_t remrem = (uint8_t) tu_min16(wrap_bytes, 4-rem);
+          wrap_bytes -= remrem;
+
+          uint32_t tmp32 = *rx_fifo;
+          uint8_t * src_u8 = ((uint8_t *) &tmp32);
+
+          // Write 1-3 bytes before wrapped boundary
+          while(rem--) *ff_buf++ = *src_u8++;
+
+          // Read more bytes to beginning to complete a word
+          ff_buf = f->buffer;
+          while(remrem--) *ff_buf++ = *src_u8++;
+        }
+        else
+        {
+          ff_buf = f->buffer; // wrap around to beginning
+        }
+
+        // Write data wrapped part
+        if (wrap_bytes > 0) _ff_push_const_addr(ff_buf, app_buf, wrap_bytes);
+      }
+      break;
+#endif
+    default: break;
+  }
+}
+
+// get one item from fifo WITHOUT updating read pointer
+static inline void _ff_pull(tu_fifo_t* f, void * app_buf, uint16_t rel)
+{
+  memcpy(app_buf, f->buffer + (rel * f->item_size), f->item_size);
+}
+
+// get n items from fifo WITHOUT updating read pointer
+static void _ff_pull_n(tu_fifo_t* f, void* app_buf, uint16_t n, uint16_t rd_ptr, tu_fifo_copy_mode_t copy_mode)
+{
+  uint16_t const lin_count = f->depth - rd_ptr;
+  uint16_t const wrap_count = n - lin_count; // only used if wrapped
+
+  uint16_t lin_bytes = lin_count * f->item_size;
+  uint16_t wrap_bytes = wrap_count * f->item_size;
+
+  // current buffer of fifo
+  uint8_t* ff_buf = f->buffer + (rd_ptr * f->item_size);
+
+  switch (copy_mode)
+  {
+    case TU_FIFO_COPY_INC:
+      if ( n <= lin_count )
+      {
+        // Linear only
+        memcpy(app_buf, ff_buf, n*f->item_size);
+      }
+      else
+      {
+        // Wrap around
+
+        // Read data from linear part of buffer
+        memcpy(app_buf, ff_buf, lin_bytes);
+
+        // Read data wrapped part
+        memcpy((uint8_t*) app_buf + lin_bytes, f->buffer, wrap_bytes);
+      }
+    break;
+#ifdef TUP_MEM_CONST_ADDR
+    case TU_FIFO_COPY_CST_FULL_WORDS:
+      if ( n <= lin_count )
+      {
+        // Linear only
+        _ff_pull_const_addr(app_buf, ff_buf, n*f->item_size);
+      }
+      else
+      {
+        // Wrap around case
+
+        // Read full words from linear part of buffer
+        uint16_t lin_4n_bytes = lin_bytes & 0xFFFC;
+        _ff_pull_const_addr(app_buf, ff_buf, lin_4n_bytes);
+        ff_buf += lin_4n_bytes;
+
+        // There could be odd 1-3 bytes before the wrap-around boundary
+        uint8_t rem = lin_bytes & 0x03;
+        if (rem > 0)
+        {
+          volatile uint32_t * reg_tx = (volatile uint32_t *) app_buf;
+
+          uint8_t remrem = (uint8_t) tu_min16(wrap_bytes, 4-rem);
+          wrap_bytes -= remrem;
+
+          uint32_t tmp32=0;
+          uint8_t * dst_u8 = (uint8_t *)&tmp32;
+
+          // Read 1-3 bytes before wrapped boundary
+          while(rem--) *dst_u8++ = *ff_buf++;
+
+          // Read more bytes from beginning to complete a word
+          ff_buf = f->buffer;
+          while(remrem--) *dst_u8++ = *ff_buf++;
+
+          *reg_tx = tmp32;
+        }
+        else
+        {
+          ff_buf = f->buffer; // wrap around to beginning
+        }
+
+        // Read data wrapped part
+        if (wrap_bytes > 0) _ff_pull_const_addr(app_buf, ff_buf, wrap_bytes);
+      }
+    break;
+#endif
+    default: break;
+  }
+}
+
+//--------------------------------------------------------------------+
+// Helper
+//--------------------------------------------------------------------+
+
+// return only the index difference and as such can be used to determine an overflow i.e overflowable count
+TU_ATTR_ALWAYS_INLINE static inline
+uint16_t _ff_count(uint16_t depth, uint16_t wr_idx, uint16_t rd_idx)
+{
+  // In case we have non-power of two depth we need a further modification
+  if (wr_idx >= rd_idx)
+  {
+    return (uint16_t) (wr_idx - rd_idx);
+  } else
+  {
+    return (uint16_t) (2*depth - (rd_idx - wr_idx));
+  }
+}
+
+// return remaining slot in fifo
+TU_ATTR_ALWAYS_INLINE static inline
+uint16_t _ff_remaining(uint16_t depth, uint16_t wr_idx, uint16_t rd_idx)
+{
+  uint16_t const count = _ff_count(depth, wr_idx, rd_idx);
+  return (depth > count) ? (depth - count) : 0;
+}
+
+//--------------------------------------------------------------------+
+// Index Helper
+//--------------------------------------------------------------------+
+
+// Advance an absolute index
+// "absolute" index is only in the range of [0..2*depth)
+static uint16_t advance_index(uint16_t depth, uint16_t idx, uint16_t offset)
+{
+  // We limit the index space of p such that a correct wrap around happens
+  // Check for a wrap around or if we are in unused index space - This has to be checked first!!
+  // We are exploiting the wrap around to the correct index
+  uint16_t new_idx = (uint16_t) (idx + offset);
+  if ( (idx > new_idx) || (new_idx >= 2*depth) )
+  {
+    uint16_t const non_used_index_space = (uint16_t) (UINT16_MAX - (2*depth-1));
+    new_idx = (uint16_t) (new_idx + non_used_index_space);
+  }
+
+  return new_idx;
+}
+
+#if 0 // not used but
+// Backward an absolute index
+static uint16_t backward_index(uint16_t depth, uint16_t idx, uint16_t offset)
+{
+  // We limit the index space of p such that a correct wrap around happens
+  // Check for a wrap around or if we are in unused index space - This has to be checked first!!
+  // We are exploiting the wrap around to the correct index
+  uint16_t new_idx = (uint16_t) (idx - offset);
+  if ( (idx < new_idx) || (new_idx >= 2*depth) )
+  {
+    uint16_t const non_used_index_space = (uint16_t) (UINT16_MAX - (2*depth-1));
+    new_idx = (uint16_t) (new_idx - non_used_index_space);
+  }
+
+  return new_idx;
+}
+#endif
+
+// index to pointer, simply an modulo with minus.
+TU_ATTR_ALWAYS_INLINE static inline
+uint16_t idx2ptr(uint16_t depth, uint16_t idx)
+{
+  // Only run at most 3 times since index is limit in the range of [0..2*depth)
+  while ( idx >= depth ) idx -= depth;
+  return idx;
+}
+
+// Works on local copies of w
+// When an overwritable fifo is overflowed, rd_idx will be re-index so that it forms
+// an full fifo i.e _ff_count() = depth
+TU_ATTR_ALWAYS_INLINE static inline
+uint16_t _ff_correct_read_index(tu_fifo_t* f, uint16_t wr_idx)
+{
+  uint16_t rd_idx;
+  if ( wr_idx >= f->depth )
+  {
+    rd_idx = wr_idx - f->depth;
+  }else
+  {
+    rd_idx = wr_idx + f->depth;
+  }
+
+  f->rd_idx = rd_idx;
+
+  return rd_idx;
+}
+
+// Works on local copies of w and r
+// Must be protected by mutexes since in case of an overflow read pointer gets modified
+static bool _tu_fifo_peek(tu_fifo_t* f, void * p_buffer, uint16_t wr_idx, uint16_t rd_idx)
+{
+  uint16_t cnt = _ff_count(f->depth, wr_idx, rd_idx);
+
+  // nothing to peek
+  if ( cnt == 0 ) return false;
+
+  // Check overflow and correct if required
+  if ( cnt > f->depth )
+  {
+    rd_idx = _ff_correct_read_index(f, wr_idx);
+    cnt = f->depth;
+  }
+
+  uint16_t rd_ptr = idx2ptr(f->depth, rd_idx);
+
+  // Peek data
+  _ff_pull(f, p_buffer, rd_ptr);
+
+  return true;
+}
+
+// Works on local copies of w and r
+// Must be protected by mutexes since in case of an overflow read pointer gets modified
+static uint16_t _tu_fifo_peek_n(tu_fifo_t* f, void * p_buffer, uint16_t n, uint16_t wr_idx, uint16_t rd_idx, tu_fifo_copy_mode_t copy_mode)
+{
+  uint16_t cnt = _ff_count(f->depth, wr_idx, rd_idx);
+
+  // nothing to peek
+  if ( cnt == 0 ) return 0;
+
+  // Check overflow and correct if required
+  if ( cnt > f->depth )
+  {
+    rd_idx = _ff_correct_read_index(f, wr_idx);
+    cnt = f->depth;
+  }
+
+  // Check if we can read something at and after offset - if too less is available we read what remains
+  if ( cnt < n ) n = cnt;
+
+  uint16_t rd_ptr = idx2ptr(f->depth, rd_idx);
+
+  // Peek data
+  _ff_pull_n(f, p_buffer, n, rd_ptr, copy_mode);
+
+  return n;
+}
+
+static uint16_t _tu_fifo_write_n(tu_fifo_t* f, const void * data, uint16_t n, tu_fifo_copy_mode_t copy_mode)
+{
+  if ( n == 0 ) return 0;
+
+  _ff_lock(f->mutex_wr);
+
+  uint16_t wr_idx = f->wr_idx;
+  uint16_t rd_idx = f->rd_idx;
+
+  uint8_t const* buf8 = (uint8_t const*) data;
+
+  TU_LOG(TU_FIFO_DBG, "rd = %3u, wr = %3u, count = %3u, remain = %3u, n = %3u:  ",
+                       rd_idx, wr_idx, _ff_count(f->depth, wr_idx, rd_idx), _ff_remaining(f->depth, wr_idx, rd_idx), n);
+
+  if ( !f->overwritable )
+  {
+    // limit up to full
+    uint16_t const remain = _ff_remaining(f->depth, wr_idx, rd_idx);
+    n = tu_min16(n, remain);
+  }
+  else
+  {
+    // In over-writable mode, fifo_write() is allowed even when fifo is full. In such case,
+    // oldest data in fifo i.e at read pointer data will be overwritten
+    // Note: we can modify read buffer contents but we must not modify the read index itself within a write function!
+    // Since it would end up in a race condition with read functions!
+    if ( n >= f->depth )
+    {
+      // Only copy last part
+      if ( copy_mode == TU_FIFO_COPY_INC )
+      {
+        buf8 += (n - f->depth) * f->item_size;
+      }else
+      {
+        // TODO should read from hw fifo to discard data, however reading an odd number could
+        // accidentally discard data.
+      }
+
+      n = f->depth;
+
+      // We start writing at the read pointer's position since we fill the whole buffer
+      wr_idx = rd_idx;
+    }
+    else
+    {
+      uint16_t const overflowable_count = _ff_count(f->depth, wr_idx, rd_idx);
+      if (overflowable_count + n >= 2*f->depth)
+      {
+        // Double overflowed
+        // Index is bigger than the allowed range [0,2*depth)
+        // re-position write index to have a full fifo after pushed
+        wr_idx = advance_index(f->depth, rd_idx, f->depth - n);
+
+        // TODO we should also shift out n bytes from read index since we avoid changing rd index !!
+        // However memmove() is expensive due to actual copying + wrapping consideration.
+        // Also race condition could happen anyway if read() is invoke while moving result in corrupted memory
+        // currently deliberately not implemented --> result in incorrect data read back
+      }else
+      {
+        // normal + single overflowed:
+        // Index is in the range of [0,2*depth) and thus detect and recoverable. Recovering is handled in read()
+        // Therefore we just increase write index
+        // we will correct (re-position) read index later on in fifo_read() function
+      }
+    }
+  }
+
+  if (n)
+  {
+    uint16_t wr_ptr = idx2ptr(f->depth, wr_idx);
+
+    TU_LOG(TU_FIFO_DBG, "actual_n = %u, wr_ptr = %u", n, wr_ptr);
+
+    // Write data
+    _ff_push_n(f, buf8, n, wr_ptr, copy_mode);
+
+    // Advance index
+    f->wr_idx = advance_index(f->depth, wr_idx, n);
+
+    TU_LOG(TU_FIFO_DBG, "\\tnew_wr = %u\\r\\n", f->wr_idx);
+  }
+
+  _ff_unlock(f->mutex_wr);
+
+  return n;
+}
+
+static uint16_t _tu_fifo_read_n(tu_fifo_t* f, void * buffer, uint16_t n, tu_fifo_copy_mode_t copy_mode)
+{
+  _ff_lock(f->mutex_rd);
+
+  // Peek the data
+  // f->rd_idx might get modified in case of an overflow so we can not use a local variable
+  n = _tu_fifo_peek_n(f, buffer, n, f->wr_idx, f->rd_idx, copy_mode);
+
+  // Advance read pointer
+  f->rd_idx = advance_index(f->depth, f->rd_idx, n);
+
+  _ff_unlock(f->mutex_rd);
+  return n;
+}
+
+//--------------------------------------------------------------------+
+// Application API
+//--------------------------------------------------------------------+
+
+/******************************************************************************/
+/*!
+    @brief Get number of items in FIFO.
+
+    As this function only reads the read and write pointers once, this function is
+    reentrant and thus thread and ISR save without any mutexes. In case an
+    overflow occurred, this function return f.depth at maximum. Overflows are
+    checked and corrected for in the read functions!
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+
+    @returns Number of items in FIFO
+ */
+/******************************************************************************/
+uint16_t tu_fifo_count(tu_fifo_t* f)
+{
+  return tu_min16(_ff_count(f->depth, f->wr_idx, f->rd_idx), f->depth);
+}
+
+/******************************************************************************/
+/*!
+    @brief Check if FIFO is empty.
+
+    As this function only reads the read and write pointers once, this function is
+    reentrant and thus thread and ISR save without any mutexes.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+
+    @returns Number of items in FIFO
+ */
+/******************************************************************************/
+bool tu_fifo_empty(tu_fifo_t* f)
+{
+  return f->wr_idx == f->rd_idx;
+}
+
+/******************************************************************************/
+/*!
+    @brief Check if FIFO is full.
+
+    As this function only reads the read and write pointers once, this function is
+    reentrant and thus thread and ISR save without any mutexes.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+
+    @returns Number of items in FIFO
+ */
+/******************************************************************************/
+bool tu_fifo_full(tu_fifo_t* f)
+{
+  return _ff_count(f->depth, f->wr_idx, f->rd_idx) >= f->depth;
+}
+
+/******************************************************************************/
+/*!
+    @brief Get remaining space in FIFO.
+
+    As this function only reads the read and write pointers once, this function is
+    reentrant and thus thread and ISR save without any mutexes.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+
+    @returns Number of items in FIFO
+ */
+/******************************************************************************/
+uint16_t tu_fifo_remaining(tu_fifo_t* f)
+{
+  return _ff_remaining(f->depth, f->wr_idx, f->rd_idx);
+}
+
+/******************************************************************************/
+/*!
+    @brief Check if overflow happened.
+
+     BE AWARE - THIS FUNCTION MIGHT NOT GIVE A CORRECT ANSWERE IN CASE WRITE POINTER "OVERFLOWS"
+     Only one overflow is allowed for this function to work e.g. if depth = 100, you must not
+     write more than 2*depth-1 items in one rush without updating write pointer. Otherwise
+     write pointer wraps and your pointer states are messed up. This can only happen if you
+     use DMAs, write functions do not allow such an error. Avoid such nasty things!
+
+     All reading functions (read, peek) check for overflows and correct read pointer on their own such
+     that latest items are read.
+     If required (e.g. for DMA use) you can also correct the read pointer by
+     tu_fifo_correct_read_pointer().
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+
+    @returns True if overflow happened
+ */
+/******************************************************************************/
+bool tu_fifo_overflowed(tu_fifo_t* f)
+{
+  return _ff_count(f->depth, f->wr_idx, f->rd_idx) > f->depth;
+}
+
+// Only use in case tu_fifo_overflow() returned true!
+void tu_fifo_correct_read_pointer(tu_fifo_t* f)
+{
+  _ff_lock(f->mutex_rd);
+  _ff_correct_read_index(f, f->wr_idx);
+  _ff_unlock(f->mutex_rd);
+}
+
+/******************************************************************************/
+/*!
+    @brief Read one element out of the buffer.
+
+    This function will return the element located at the array index of the
+    read pointer, and then increment the read pointer index.
+    This function checks for an overflow and corrects read pointer if required.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  buffer
+                Pointer to the place holder for data read from the buffer
+
+    @returns TRUE if the queue is not empty
+ */
+/******************************************************************************/
+bool tu_fifo_read(tu_fifo_t* f, void * buffer)
+{
+  _ff_lock(f->mutex_rd);
+
+  // Peek the data
+  // f->rd_idx might get modified in case of an overflow so we can not use a local variable
+  bool ret = _tu_fifo_peek(f, buffer, f->wr_idx, f->rd_idx);
+
+  // Advance pointer
+  f->rd_idx = advance_index(f->depth, f->rd_idx, ret);
+
+  _ff_unlock(f->mutex_rd);
+  return ret;
+}
+
+/******************************************************************************/
+/*!
+    @brief This function will read n elements from the array index specified by
+    the read pointer and increment the read index.
+    This function checks for an overflow and corrects read pointer if required.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  buffer
+                The pointer to data location
+    @param[in]  n
+                Number of element that buffer can afford
+
+    @returns number of items read from the FIFO
+ */
+/******************************************************************************/
+uint16_t tu_fifo_read_n(tu_fifo_t* f, void * buffer, uint16_t n)
+{
+  return _tu_fifo_read_n(f, buffer, n, TU_FIFO_COPY_INC);
+}
+
+#ifdef TUP_MEM_CONST_ADDR
+/******************************************************************************/
+/*!
+    @brief This function will read n elements from the array index specified by
+    the read pointer and increment the read index.
+    This function checks for an overflow and corrects read pointer if required.
+    The dest address will not be incremented which is useful for writing to registers.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  buffer
+                The pointer to data location
+    @param[in]  n
+                Number of element that buffer can afford
+
+    @returns number of items read from the FIFO
+ */
+/******************************************************************************/
+uint16_t tu_fifo_read_n_const_addr_full_words(tu_fifo_t* f, void * buffer, uint16_t n)
+{
+  return _tu_fifo_read_n(f, buffer, n, TU_FIFO_COPY_CST_FULL_WORDS);
+}
+#endif
+
+/******************************************************************************/
+/*!
+    @brief Read one item without removing it from the FIFO.
+    This function checks for an overflow and corrects read pointer if required.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  p_buffer
+                Pointer to the place holder for data read from the buffer
+
+    @returns TRUE if the queue is not empty
+ */
+/******************************************************************************/
+bool tu_fifo_peek(tu_fifo_t* f, void * p_buffer)
+{
+  _ff_lock(f->mutex_rd);
+  bool ret = _tu_fifo_peek(f, p_buffer, f->wr_idx, f->rd_idx);
+  _ff_unlock(f->mutex_rd);
+  return ret;
+}
+
+/******************************************************************************/
+/*!
+    @brief Read n items without removing it from the FIFO
+    This function checks for an overflow and corrects read pointer if required.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  p_buffer
+                Pointer to the place holder for data read from the buffer
+    @param[in]  n
+                Number of items to peek
+
+    @returns Number of bytes written to p_buffer
+ */
+/******************************************************************************/
+uint16_t tu_fifo_peek_n(tu_fifo_t* f, void * p_buffer, uint16_t n)
+{
+  _ff_lock(f->mutex_rd);
+  uint16_t ret = _tu_fifo_peek_n(f, p_buffer, n, f->wr_idx, f->rd_idx, TU_FIFO_COPY_INC);
+  _ff_unlock(f->mutex_rd);
+  return ret;
+}
+
+/******************************************************************************/
+/*!
+    @brief Write one element into the buffer.
+
+    This function will write one element into the array index specified by
+    the write pointer and increment the write index.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  data
+                The byte to add to the FIFO
+
+    @returns TRUE if the data was written to the FIFO (overwrittable
+             FIFO will always return TRUE)
+ */
+/******************************************************************************/
+bool tu_fifo_write(tu_fifo_t* f, const void * data)
+{
+  _ff_lock(f->mutex_wr);
+
+  bool ret;
+  uint16_t const wr_idx = f->wr_idx;
+
+  if ( tu_fifo_full(f) && !f->overwritable )
+  {
+    ret = false;
+  }else
+  {
+    uint16_t wr_ptr = idx2ptr(f->depth, wr_idx);
+
+    // Write data
+    _ff_push(f, data, wr_ptr);
+
+    // Advance pointer
+    f->wr_idx = advance_index(f->depth, wr_idx, 1);
+
+    ret = true;
+  }
+
+  _ff_unlock(f->mutex_wr);
+
+  return ret;
+}
+
+/******************************************************************************/
+/*!
+    @brief This function will write n elements into the array index specified by
+    the write pointer and increment the write index.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  data
+                The pointer to data to add to the FIFO
+    @param[in]  count
+                Number of element
+    @return Number of written elements
+ */
+/******************************************************************************/
+uint16_t tu_fifo_write_n(tu_fifo_t* f, const void * data, uint16_t n)
+{
+  return _tu_fifo_write_n(f, data, n, TU_FIFO_COPY_INC);
+}
+
+#ifdef TUP_MEM_CONST_ADDR
+/******************************************************************************/
+/*!
+    @brief This function will write n elements into the array index specified by
+    the write pointer and increment the write index. The source address will
+    not be incremented which is useful for reading from registers.
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  data
+                The pointer to data to add to the FIFO
+    @param[in]  count
+                Number of element
+    @return Number of written elements
+ */
+/******************************************************************************/
+uint16_t tu_fifo_write_n_const_addr_full_words(tu_fifo_t* f, const void * data, uint16_t n)
+{
+  return _tu_fifo_write_n(f, data, n, TU_FIFO_COPY_CST_FULL_WORDS);
+}
+#endif
+
+/******************************************************************************/
+/*!
+    @brief Clear the fifo read and write pointers
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+ */
+/******************************************************************************/
+bool tu_fifo_clear(tu_fifo_t *f)
+{
+  _ff_lock(f->mutex_wr);
+  _ff_lock(f->mutex_rd);
+
+  f->rd_idx = 0;
+  f->wr_idx = 0;
+
+  _ff_unlock(f->mutex_wr);
+  _ff_unlock(f->mutex_rd);
+  return true;
+}
+
+/******************************************************************************/
+/*!
+    @brief Change the fifo mode to overwritable or not overwritable
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  overwritable
+                Overwritable mode the fifo is set to
+ */
+/******************************************************************************/
+bool tu_fifo_set_overwritable(tu_fifo_t *f, bool overwritable)
+{
+  _ff_lock(f->mutex_wr);
+  _ff_lock(f->mutex_rd);
+
+  f->overwritable = overwritable;
+
+  _ff_unlock(f->mutex_wr);
+  _ff_unlock(f->mutex_rd);
+
+  return true;
+}
+
+/******************************************************************************/
+/*!
+    @brief Advance write pointer - intended to be used in combination with DMA.
+    It is possible to fill the FIFO by use of a DMA in circular mode. Within
+    DMA ISRs you may update the write pointer to be able to read from the FIFO.
+    As long as the DMA is the only process writing into the FIFO this is safe
+    to use.
+
+    USE WITH CARE - WE DO NOT CONDUCT SAFETY CHECKS HERE!
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  n
+                Number of items the write pointer moves forward
+ */
+/******************************************************************************/
+void tu_fifo_advance_write_pointer(tu_fifo_t *f, uint16_t n)
+{
+  f->wr_idx = advance_index(f->depth, f->wr_idx, n);
+}
+
+/******************************************************************************/
+/*!
+    @brief Advance read pointer - intended to be used in combination with DMA.
+    It is possible to read from the FIFO by use of a DMA in linear mode. Within
+    DMA ISRs you may update the read pointer to be able to again write into the
+    FIFO. As long as the DMA is the only process reading from the FIFO this is
+    safe to use.
+
+    USE WITH CARE - WE DO NOT CONDUCT SAFETY CHECKS HERE!
+
+    @param[in]  f
+                Pointer to the FIFO buffer to manipulate
+    @param[in]  n
+                Number of items the read pointer moves forward
+ */
+/******************************************************************************/
+void tu_fifo_advance_read_pointer(tu_fifo_t *f, uint16_t n)
+{
+  f->rd_idx = advance_index(f->depth, f->rd_idx, n);
+}
+
+/******************************************************************************/
+/*!
+   @brief Get read info
+
+   Returns the length and pointer from which bytes can be read in a linear manner.
+   This is of major interest for DMA transmissions. If returned length is zero the
+   corresponding pointer is invalid.
+   The read pointer does NOT get advanced, use tu_fifo_advance_read_pointer() to
+   do so!
+   @param[in]       f
+                    Pointer to FIFO
+   @param[out]      *info
+                    Pointer to struct which holds the desired infos
+ */
+/******************************************************************************/
+void tu_fifo_get_read_info(tu_fifo_t *f, tu_fifo_buffer_info_t *info)
+{
+  // Operate on temporary values in case they change in between
+  uint16_t wr_idx = f->wr_idx;
+  uint16_t rd_idx = f->rd_idx;
+
+  uint16_t cnt = _ff_count(f->depth, wr_idx, rd_idx);
+
+  // Check overflow and correct if required - may happen in case a DMA wrote too fast
+  if (cnt > f->depth)
+  {
+    _ff_lock(f->mutex_rd);
+    rd_idx = _ff_correct_read_index(f, wr_idx);
+    _ff_unlock(f->mutex_rd);
+
+    cnt = f->depth;
+  }
+
+  // Check if fifo is empty
+  if (cnt == 0)
+  {
+    info->len_lin  = 0;
+    info->len_wrap = 0;
+    info->ptr_lin  = NULL;
+    info->ptr_wrap = NULL;
+    return;
+  }
+
+  // Get relative pointers
+  uint16_t wr_ptr = idx2ptr(f->depth, wr_idx);
+  uint16_t rd_ptr = idx2ptr(f->depth, rd_idx);
+
+  // Copy pointer to buffer to start reading from
+  info->ptr_lin = &f->buffer[rd_ptr];
+
+  // Check if there is a wrap around necessary
+  if (wr_ptr > rd_ptr)
+  {
+    // Non wrapping case
+    info->len_lin  = cnt;
+
+    info->len_wrap = 0;
+    info->ptr_wrap = NULL;
+  }
+  else
+  {
+    info->len_lin  = f->depth - rd_ptr;   // Also the case if FIFO was full
+
+    info->len_wrap = cnt - info->len_lin;
+    info->ptr_wrap = f->buffer;
+  }
+}
+
+/******************************************************************************/
+/*!
+   @brief Get linear write info
+
+   Returns the length and pointer to which bytes can be written into FIFO in a linear manner.
+   This is of major interest for DMA transmissions not using circular mode. If a returned length is zero the
+   corresponding pointer is invalid. The returned lengths summed up are the currently free space in the FIFO.
+   The write pointer does NOT get advanced, use tu_fifo_advance_write_pointer() to do so!
+   TAKE CARE TO NOT OVERFLOW THE BUFFER MORE THAN TWO TIMES THE FIFO DEPTH - IT CAN NOT RECOVERE OTHERWISE!
+   @param[in]       f
+                    Pointer to FIFO
+   @param[out]      *info
+                    Pointer to struct which holds the desired infos
+ */
+/******************************************************************************/
+void tu_fifo_get_write_info(tu_fifo_t *f, tu_fifo_buffer_info_t *info)
+{
+  uint16_t wr_idx = f->wr_idx;
+  uint16_t rd_idx = f->rd_idx;
+  uint16_t remain = _ff_remaining(f->depth, wr_idx, rd_idx);
+
+  if (remain == 0)
+  {
+    info->len_lin  = 0;
+    info->len_wrap = 0;
+    info->ptr_lin  = NULL;
+    info->ptr_wrap = NULL;
+    return;
+  }
+
+  // Get relative pointers
+  uint16_t wr_ptr = idx2ptr(f->depth, wr_idx);
+  uint16_t rd_ptr = idx2ptr(f->depth, rd_idx);
+
+  // Copy pointer to buffer to start writing to
+  info->ptr_lin = &f->buffer[wr_ptr];
+
+  if (wr_ptr < rd_ptr)
+  {
+    // Non wrapping case
+    info->len_lin  = rd_ptr-wr_ptr;
+    info->len_wrap = 0;
+    info->ptr_wrap = NULL;
+  }
+  else
+  {
+    info->len_lin  = f->depth - wr_ptr;
+    info->len_wrap = remain - info->len_lin; // Remaining length - n already was limited to remain or FIFO depth
+    info->ptr_wrap = f->buffer;              // Always start of buffer
+  }
+}
+`,"common/tusb_fifo.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ * Copyright (c) 2020 Reinhard Panhuber - rework to unmasked pointers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_FIFO_H_
+#define _TUSB_FIFO_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Due to the use of unmasked pointers, this FIFO does not suffer from losing
+// one item slice. Furthermore, write and read operations are completely
+// decoupled as write and read functions do not modify a common state. Henceforth,
+// writing or reading from the FIFO within an ISR is safe as long as no other
+// process (thread or ISR) interferes.
+// Also, this FIFO is ready to be used in combination with a DMA as the write and
+// read pointers can be updated from within a DMA ISR. Overflows are detectable
+// within a certain number (see tu_fifo_overflow()).
+
+#include "common/tusb_common.h"
+#include "osal/osal.h"
+
+// mutex is only needed for RTOS
+// for OS None, we don't get preempted
+#define CFG_FIFO_MUTEX      OSAL_MUTEX_REQUIRED
+
+/* Write/Read index is always in the range of:
+ *      0 .. 2*depth-1
+ * The extra window allow us to determine the fifo state of empty or full with only 2 indices
+ * Following are examples with depth = 3
+ *
+ * - empty: W = R
+ *                |
+ *    -------------------------
+ *    | 0 | RW| 2 | 3 | 4 | 5 |
+ *
+ * - full 1: W > R
+ *                |
+ *    -------------------------
+ *    | 0 | R | 2 | 3 | W | 5 |
+ *
+ * - full 2: W < R
+ *                |
+ *    -------------------------
+ *    | 0 | 1 | W | 3 | 4 | R |
+ *
+ * - Number of items in the fifo can be determined in either cases:
+ *    - case W >= R: Count = W - R
+ *    - case W <  R: Count = 2*depth - (R - W)
+ *
+ * In non-overwritable mode, computed Count (in above 2 cases) is at most equal to depth.
+ * However, in over-writable mode, write index can be repeatedly increased and count can be
+ * temporarily larger than depth (overflowed condition) e.g
+ *
+ *  - Overflowed 1: write(3), write(1)
+ *    In this case we will adjust Read index when read()/peek() is called so that count = depth.
+ *                  |
+ *      -------------------------
+ *      | R | 1 | 2 | 3 | W | 5 |
+ *
+ *  - Double Overflowed i.e index is out of allowed range [0,2*depth)
+ *    This occurs when we continue to write after 1st overflowed to 2nd overflowed. e.g:
+ *      write(3), write(1), write(2)
+ *    This must be prevented since it will cause unrecoverable state, in above example
+ *    if not handled the fifo will be empty instead of continue-to-be full. Since we must not modify
+ *    read index in write() function, which cause race condition. We will re-position write index so that
+ *    after data is written it is a full fifo i.e W = depth - R
+ *
+ *      re-position W = 1 before write(2)
+ *      Note: we should also move data from mem[3] to read index as well, but deliberately skipped here
+ *      since it is an expensive operation !!!
+ *                  |
+ *      -------------------------
+ *      | R | W | 2 | 3 | 4 | 5 |
+ *
+ *      perform write(2), result is still a full fifo.
+ *
+ *                  |
+ *      -------------------------
+ *      | R | 1 | 2 | W | 4 | 5 |
+ */
+typedef struct {
+  uint8_t* buffer          ; // buffer pointer
+  uint16_t depth           ; // max items
+
+  struct TU_ATTR_PACKED {
+    uint16_t item_size : 15; // size of each item
+    bool overwritable  : 1 ; // ovwerwritable when full
+  };
+
+  volatile uint16_t wr_idx ; // write index
+  volatile uint16_t rd_idx ; // read index
+
+#if OSAL_MUTEX_REQUIRED
+  osal_mutex_t mutex_wr;
+  osal_mutex_t mutex_rd;
+#endif
+
+} tu_fifo_t;
+
+typedef struct {
+  uint16_t len_lin  ; ///< linear length in item size
+  uint16_t len_wrap ; ///< wrapped length in item size
+  void * ptr_lin    ; ///< linear part start pointer
+  void * ptr_wrap   ; ///< wrapped part start pointer
+} tu_fifo_buffer_info_t;
+
+#define TU_FIFO_INIT(_buffer, _depth, _type, _overwritable){\\
+  .buffer               = _buffer,                          \\
+  .depth                = _depth,                           \\
+  .item_size            = sizeof(_type),                    \\
+  .overwritable         = _overwritable,                    \\
+}
+
+#define TU_FIFO_DEF(_name, _depth, _type, _overwritable)                      \\
+    uint8_t _name##_buf[_depth*sizeof(_type)];                                \\
+    tu_fifo_t _name = TU_FIFO_INIT(_name##_buf, _depth, _type, _overwritable)
+
+bool tu_fifo_set_overwritable(tu_fifo_t *f, bool overwritable);
+bool tu_fifo_clear(tu_fifo_t *f);
+bool tu_fifo_config(tu_fifo_t *f, void* buffer, uint16_t depth, uint16_t item_size, bool overwritable);
+
+#if OSAL_MUTEX_REQUIRED
+TU_ATTR_ALWAYS_INLINE static inline
+void tu_fifo_config_mutex(tu_fifo_t *f, osal_mutex_t wr_mutex, osal_mutex_t rd_mutex) {
+  f->mutex_wr = wr_mutex;
+  f->mutex_rd = rd_mutex;
+}
+#else
+#define tu_fifo_config_mutex(_f, _wr_mutex, _rd_mutex)
+#endif
+
+bool     tu_fifo_write                  (tu_fifo_t* f, void const * data);
+uint16_t tu_fifo_write_n                (tu_fifo_t* f, void const * data, uint16_t n);
+#ifdef TUP_MEM_CONST_ADDR
+uint16_t tu_fifo_write_n_const_addr_full_words    (tu_fifo_t* f, const void * data, uint16_t n);
+#endif
+
+bool     tu_fifo_read                   (tu_fifo_t* f, void * buffer);
+uint16_t tu_fifo_read_n                 (tu_fifo_t* f, void * buffer, uint16_t n);
+#ifdef TUP_MEM_CONST_ADDR
+uint16_t tu_fifo_read_n_const_addr_full_words     (tu_fifo_t* f, void * buffer, uint16_t n);
+#endif
+
+bool     tu_fifo_peek                   (tu_fifo_t* f, void * p_buffer);
+uint16_t tu_fifo_peek_n                 (tu_fifo_t* f, void * p_buffer, uint16_t n);
+
+uint16_t tu_fifo_count                  (tu_fifo_t* f);
+uint16_t tu_fifo_remaining              (tu_fifo_t* f);
+bool     tu_fifo_empty                  (tu_fifo_t* f);
+bool     tu_fifo_full                   (tu_fifo_t* f);
+bool     tu_fifo_overflowed             (tu_fifo_t* f);
+void     tu_fifo_correct_read_pointer   (tu_fifo_t* f);
+
+TU_ATTR_ALWAYS_INLINE static inline
+uint16_t tu_fifo_depth(tu_fifo_t* f) {
+  return f->depth;
+}
+
+// Pointer modifications intended to be used in combinations with DMAs.
+// USE WITH CARE - NO SAFETY CHECKS CONDUCTED HERE! NOT MUTEX PROTECTED!
+void tu_fifo_advance_write_pointer(tu_fifo_t *f, uint16_t n);
+void tu_fifo_advance_read_pointer (tu_fifo_t *f, uint16_t n);
+
+// If you want to read/write from/to the FIFO by use of a DMA, you may need to conduct two copies
+// to handle a possible wrapping part. These functions deliver a pointer to start
+// reading/writing from/to and a valid linear length along which no wrap occurs.
+void tu_fifo_get_read_info (tu_fifo_t *f, tu_fifo_buffer_info_t *info);
+void tu_fifo_get_write_info(tu_fifo_t *f, tu_fifo_buffer_info_t *info);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _TUSB_FIFO_H_ */
+`,"common/tusb_mcu.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021, Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_MCU_H_
+#define TUSB_MCU_H_
+
+//--------------------------------------------------------------------+
+// Port/Platform Specific
+// TUP stand for TinyUSB Port/Platform (can be renamed)
+//--------------------------------------------------------------------+
+
+//------------- Unaligned Memory Access -------------//
+
+#ifdef __ARM_ARCH
+  // ARM Architecture set __ARM_FEATURE_UNALIGNED to 1 for mcu supports unaligned access
+  #if defined(__ARM_FEATURE_UNALIGNED) && __ARM_FEATURE_UNALIGNED == 1
+    #define TUP_ARCH_STRICT_ALIGN   0
+  #else
+    #define TUP_ARCH_STRICT_ALIGN   1
+  #endif
+#else
+  // TODO default to strict align for others
+  // Should investigate other architecture such as risv, xtensa, mips for optimal setting
+  #define TUP_ARCH_STRICT_ALIGN   1
+#endif
+
+/* USB Controller Attributes for Device, Host or MCU (both)
+ * - ENDPOINT_MAX: max (logical) number of endpoint
+ * - ENDPOINT_EXCLUSIVE_NUMBER: endpoint number with different direction IN and OUT aren't allowed,
+ *                              e.g EP1 OUT & EP1 IN cannot exist together
+ * - RHPORT_HIGHSPEED: support highspeed with on-chip PHY
+ */
+
+//--------------------------------------------------------------------+
+// NXP
+//--------------------------------------------------------------------+
+#if   TU_CHECK_MCU(OPT_MCU_LPC11UXX, OPT_MCU_LPC13XX, OPT_MCU_LPC15XX)
+  #define TUP_USBIP_IP3511
+  #define TUP_DCD_ENDPOINT_MAX    5
+
+#elif TU_CHECK_MCU(OPT_MCU_LPC175X_6X, OPT_MCU_LPC177X_8X, OPT_MCU_LPC40XX)
+  #define TUP_DCD_ENDPOINT_MAX    16
+  #define TUP_USBIP_OHCI
+  #define TUP_OHCI_RHPORTS        2
+
+#elif TU_CHECK_MCU(OPT_MCU_LPC51UXX)
+   #define TUP_USBIP_IP3511
+   #define TUP_DCD_ENDPOINT_MAX   5
+
+#elif TU_CHECK_MCU(OPT_MCU_LPC54)
+  // TODO USB0 has 5, USB1 has 6
+  #define TUP_USBIP_IP3511
+  #define TUP_DCD_ENDPOINT_MAX    6
+
+#elif TU_CHECK_MCU(OPT_MCU_LPC55)
+  // TODO USB0 has 5, USB1 has 6
+  #define TUP_USBIP_IP3511
+  #define TUP_DCD_ENDPOINT_MAX    6
+
+#elif TU_CHECK_MCU(OPT_MCU_LPC18XX, OPT_MCU_LPC43XX)
+  // USB0 has 6 with HS PHY, USB1 has 4 only FS
+  #define TUP_USBIP_CHIPIDEA_HS
+  #define TUP_USBIP_EHCI
+
+  #define TUP_DCD_ENDPOINT_MAX    6
+  #define TUP_RHPORT_HIGHSPEED    1
+
+#elif TU_CHECK_MCU(OPT_MCU_MCXN9)
+  // USB0 is chipidea FS
+  #define TUP_USBIP_CHIPIDEA_FS
+  #define TUP_USBIP_CHIPIDEA_FS_MCX
+
+  // USB1 is chipidea HS
+  #define TUP_USBIP_CHIPIDEA_HS
+  #define TUP_USBIP_EHCI
+
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUP_RHPORT_HIGHSPEED    1
+
+#elif TU_CHECK_MCU(OPT_MCU_MCXA15)
+  // USB0 is chipidea FS
+  #define TUP_USBIP_CHIPIDEA_FS
+  #define TUP_USBIP_CHIPIDEA_FS_MCX
+
+  #define TUP_DCD_ENDPOINT_MAX    16
+
+#elif TU_CHECK_MCU(OPT_MCU_MIMXRT1XXX)
+  #include "fsl_device_registers.h"
+
+  #define TUP_USBIP_CHIPIDEA_HS
+  #define TUP_USBIP_EHCI
+
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUP_RHPORT_HIGHSPEED    1
+
+  #if __CORTEX_M == 7
+  #define CFG_TUD_MEM_DCACHE_ENABLE_DEFAULT  1
+  #define CFG_TUH_MEM_DCACHE_ENABLE_DEFAULT  1
+  #define CFG_TUSB_MEM_DCACHE_LINE_SIZE      32
+  #endif
+
+#elif TU_CHECK_MCU(OPT_MCU_KINETIS_KL, OPT_MCU_KINETIS_K32L, OPT_MCU_KINETIS_K)
+  #define TUP_USBIP_CHIPIDEA_FS
+  #define TUP_USBIP_CHIPIDEA_FS_KINETIS
+  #define TUP_DCD_ENDPOINT_MAX    16
+
+#elif TU_CHECK_MCU(OPT_MCU_MM32F327X)
+  #define TUP_DCD_ENDPOINT_MAX    16
+
+//--------------------------------------------------------------------+
+// Nordic
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_NRF5X)
+  // 8 CBI + 1 ISO
+  #define TUP_DCD_ENDPOINT_MAX    9
+
+//--------------------------------------------------------------------+
+// Microchip
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_SAMD21, OPT_MCU_SAMD51, OPT_MCU_SAME5X) || \\
+      TU_CHECK_MCU(OPT_MCU_SAMD11, OPT_MCU_SAML21, OPT_MCU_SAML22)
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_SAMG)
+  #define TUP_DCD_ENDPOINT_MAX    6
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+#elif TU_CHECK_MCU(OPT_MCU_SAMX7X)
+  #define TUP_DCD_ENDPOINT_MAX    10
+  #define TUP_RHPORT_HIGHSPEED    1
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+#elif TU_CHECK_MCU(OPT_MCU_PIC32MZ)
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+#elif TU_CHECK_MCU(OPT_MCU_PIC32MX, OPT_MCU_PIC32MM, OPT_MCU_PIC32MK) || \\
+      TU_CHECK_MCU(OPT_MCU_PIC24, OPT_MCU_DSPIC33)
+  #define TUP_DCD_ENDPOINT_MAX    16
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+//--------------------------------------------------------------------+
+// ST
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F0)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F1)
+  // - F102, F103 use fsdev
+  // - F105, F107 use dwc2
+  #if defined (STM32F105x8) || defined (STM32F105xB) || defined (STM32F105xC) || \\
+      defined (STM32F107xB) || defined (STM32F107xC)
+    #define TUP_USBIP_DWC2
+    #define TUP_USBIP_DWC2_STM32
+    #define CFG_TUH_DWC2_DMA_ENABLE_DEFAULT 0
+
+    #define TUP_DCD_ENDPOINT_MAX  4
+  #elif defined(STM32F102x6) || defined(STM32F102xB) || \\
+        defined(STM32F103x6) || defined(STM32F103xB) || defined(STM32F103xE) || defined(STM32F103xG)
+    #define TUP_USBIP_FSDEV
+    #define TUP_USBIP_FSDEV_STM32
+    #define TUP_DCD_ENDPOINT_MAX  8
+  #else
+    #error "Unsupported STM32F1 mcu"
+  #endif
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F2)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_STM32
+
+  // FS has 4 ep, HS has 5 ep
+  #define TUP_DCD_ENDPOINT_MAX    6
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F3)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F4)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_STM32
+
+  // For most mcu, FS has 4, HS has 6. TODO 446/469/479 HS has 9
+  #define TUP_DCD_ENDPOINT_MAX    6
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32F7)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_STM32
+
+  // FS has 6, HS has 9
+  #define TUP_DCD_ENDPOINT_MAX    9
+
+  // MCU with on-chip HS Phy
+  #if defined(STM32F723xx) || defined(STM32F730xx) || defined(STM32F733xx)
+    #define TUP_RHPORT_HIGHSPEED  1 // Port0: FS, Port1: HS
+  #endif
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32H7)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_STM32
+
+  #define TUP_DCD_ENDPOINT_MAX    9
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32H5)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32G4)
+  // Device controller
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+
+  // TypeC controller
+  #define TUP_USBIP_TYPEC_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUP_TYPEC_RHPORTS_NUM 1
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32G0)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32C0)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32L0, OPT_MCU_STM32L1)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32L4)
+  // - L4x2, L4x3 use fsdev
+  // - L4x4, L4x6, L4x7, L4x9 use dwc2
+  #if defined (STM32L475xx) || defined (STM32L476xx) ||                          \\
+      defined (STM32L485xx) || defined (STM32L486xx) || defined (STM32L496xx) || \\
+      defined (STM32L4A6xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) || \\
+      defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || \\
+      defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
+    #define TUP_USBIP_DWC2
+    #define TUP_USBIP_DWC2_STM32
+
+    #define TUP_DCD_ENDPOINT_MAX  6
+  #elif defined(STM32L412xx) || defined(STM32L422xx) || defined(STM32L432xx) || defined(STM32L433xx) || \\
+        defined(STM32L442xx) || defined(STM32L443xx) || defined(STM32L452xx) || defined(STM32L462xx)
+    #define TUP_USBIP_FSDEV
+    #define TUP_USBIP_FSDEV_STM32
+    #define TUP_DCD_ENDPOINT_MAX  8
+  #else
+    #error "Unsupported STM32L4 mcu"
+  #endif
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32WB)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32U5)
+  #if defined (STM32U535xx) || defined (STM32U545xx)
+    #define TUP_USBIP_FSDEV
+    #define TUP_USBIP_FSDEV_STM32
+    #define TUP_DCD_ENDPOINT_MAX    8
+
+  #else
+    #define TUP_USBIP_DWC2
+    #define TUP_USBIP_DWC2_STM32
+
+    // U59x/5Ax/5Fx/5Gx are highspeed with built-in HS PHY
+    #if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx) || \\
+        defined(STM32U5F7xx) || defined(STM32U5F9xx) || defined(STM32U5G7xx) || defined(STM32U5G9xx)
+      #define TUP_DCD_ENDPOINT_MAX  9
+      #define TUP_RHPORT_HIGHSPEED  1
+    #else
+      #define TUP_DCD_ENDPOINT_MAX  6
+    #endif
+  #endif
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32L5)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32U0)
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_STM32
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_STM32H7RS)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_STM32
+
+  // FS has 6, HS has 9
+  #define TUP_DCD_ENDPOINT_MAX    9
+
+  // MCU with on-chip HS Phy
+  #define TUP_RHPORT_HIGHSPEED    1
+
+//--------------------------------------------------------------------+
+// Sony
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_CXD56)
+  #define TUP_DCD_ENDPOINT_MAX    7
+  #define TUP_RHPORT_HIGHSPEED    1
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+//--------------------------------------------------------------------+
+// TI
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_MSP430x5xx)
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_MSP432E4, OPT_MCU_TM4C123, OPT_MCU_TM4C129)
+  #define TUP_USBIP_MUSB
+  #define TUP_USBIP_MUSB_TI
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+//--------------------------------------------------------------------+
+// ValentyUSB (Litex)
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_VALENTYUSB_EPTRI)
+  #define TUP_DCD_ENDPOINT_MAX    16
+
+//--------------------------------------------------------------------+
+// Nuvoton
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_NUC121, OPT_MCU_NUC126)
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_NUC120)
+  #define TUP_DCD_ENDPOINT_MAX    6
+
+#elif TU_CHECK_MCU(OPT_MCU_NUC505)
+  #define TUP_DCD_ENDPOINT_MAX    12
+  #define TUP_RHPORT_HIGHSPEED    1
+
+//--------------------------------------------------------------------+
+// Espressif
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_ESP32S2, OPT_MCU_ESP32S3)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_ESP32
+  #define TUP_DCD_ENDPOINT_MAX    7 // only 5 TX FIFO for endpoint IN
+  #define CFG_TUSB_OS_INC_PATH_DEFAULT   freertos/
+
+  // Disable slave if DMA is enabled
+  #define CFG_TUD_DWC2_SLAVE_ENABLE_DEFAULT  !CFG_TUD_DWC2_DMA_ENABLE
+  #define CFG_TUH_DWC2_SLAVE_ENABLE_DEFAULT  !CFG_TUH_DWC2_DMA_ENABLE
+
+#elif TU_CHECK_MCU(OPT_MCU_ESP32P4)
+  #define TUP_USBIP_DWC2
+  #define TUP_USBIP_DWC2_ESP32
+  #define TUP_RHPORT_HIGHSPEED    1  // port0 FS, port1 HS
+  #define TUP_DCD_ENDPOINT_MAX    16 // FS 7 ep, HS 16 ep
+
+  #define CFG_TUSB_OS_INC_PATH_DEFAULT   freertos/
+
+  // Disable slave if DMA is enabled
+  #define CFG_TUD_DWC2_SLAVE_ENABLE_DEFAULT  !CFG_TUD_DWC2_DMA_ENABLE
+  #define CFG_TUH_DWC2_SLAVE_ENABLE_DEFAULT  !CFG_TUH_DWC2_DMA_ENABLE
+
+  // Enable dcache if DMA is enabled
+  #define CFG_TUD_MEM_DCACHE_ENABLE_DEFAULT  CFG_TUD_DWC2_DMA_ENABLE
+  #define CFG_TUH_MEM_DCACHE_ENABLE_DEFAULT  CFG_TUH_DWC2_DMA_ENABLE
+  #define CFG_TUSB_MEM_DCACHE_LINE_SIZE_DEFAULT  64
+
+#elif TU_CHECK_MCU(OPT_MCU_ESP32, OPT_MCU_ESP32C2, OPT_MCU_ESP32C3, OPT_MCU_ESP32C6, OPT_MCU_ESP32H2)
+  #if (CFG_TUD_ENABLED || !(defined(CFG_TUH_MAX3421) && CFG_TUH_MAX3421))
+  #error "MCUs are only supported with CFG_TUH_MAX3421 enabled"
+  #endif
+
+  #define TUP_DCD_ENDPOINT_MAX    0
+  #define CFG_TUSB_OS_INC_PATH_DEFAULT   freertos/
+
+//--------------------------------------------------------------------+
+// Dialog
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_DA1469X)
+  #define TUP_DCD_ENDPOINT_MAX    4
+
+//--------------------------------------------------------------------+
+// Raspberry Pi
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_RP2040)
+  #define TUP_DCD_EDPT_ISO_ALLOC
+  #define TUP_DCD_ENDPOINT_MAX    16
+
+  #define TU_ATTR_FAST_FUNC       __attribute__((section(".time_critical.tinyusb")))
+
+//--------------------------------------------------------------------+
+// Silabs
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_EFM32GG)
+  #define TUP_USBIP_DWC2
+  #define TUP_DCD_ENDPOINT_MAX    7
+
+//--------------------------------------------------------------------+
+// Renesas
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_RX63X, OPT_MCU_RX65X, OPT_MCU_RX72N, OPT_MCU_RAXXX)
+  #define TUP_USBIP_RUSB2
+  #define TUP_DCD_ENDPOINT_MAX    10
+
+//--------------------------------------------------------------------+
+// GigaDevice
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_GD32VF103)
+  #define TUP_USBIP_DWC2
+  #define TUP_DCD_ENDPOINT_MAX    4
+
+//--------------------------------------------------------------------+
+// Broadcom
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_BCM2711, OPT_MCU_BCM2835, OPT_MCU_BCM2837)
+  #define TUP_USBIP_DWC2
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUP_RHPORT_HIGHSPEED    1
+
+//--------------------------------------------------------------------+
+// Infineon
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_XMC4000)
+  #define TUP_USBIP_DWC2
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+//--------------------------------------------------------------------+
+// BridgeTek
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_FT90X)
+  #define TUP_DCD_ENDPOINT_MAX    8
+  #define TUP_RHPORT_HIGHSPEED    1
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+#elif TU_CHECK_MCU(OPT_MCU_FT93X)
+  #define TUP_DCD_ENDPOINT_MAX    16
+  #define TUP_RHPORT_HIGHSPEED    1
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+//--------------------------------------------------------------------+
+// Allwinner
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_F1C100S)
+  #define TUP_DCD_ENDPOINT_MAX    4
+
+//--------------------------------------------------------------------+
+// WCH
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_CH32F20X)
+  #define TUP_USBIP_WCH_USBHS
+  #define TUP_USBIP_WCH_USBFS
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBFS)
+  #define CFG_TUD_WCH_USBIP_USBFS 0
+  #endif
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBHS)
+  #define CFG_TUD_WCH_USBIP_USBHS (CFG_TUD_WCH_USBIP_USBFS ? 0 : 1)
+  #endif
+
+  #define TUP_RHPORT_HIGHSPEED    CFG_TUD_WCH_USBIP_USBHS
+  #define TUP_DCD_ENDPOINT_MAX    (CFG_TUD_WCH_USBIP_USBHS ? 16 : 8)
+
+#elif TU_CHECK_MCU(OPT_MCU_CH32V103)
+  #define TUP_USBIP_WCH_USBFS
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBFS)
+  #define CFG_TUD_WCH_USBIP_USBFS 1
+  #endif
+
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_CH32V20X)
+  // v20x support both FSDEV (USBD) and USBFS, default to FSDEV
+  #define TUP_USBIP_WCH_USBFS
+  #define TUP_USBIP_FSDEV
+  #define TUP_USBIP_FSDEV_CH32
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBFS)
+  #define CFG_TUD_WCH_USBIP_USBFS 0
+  #endif
+
+  #if !defined(CFG_TUD_WCH_USBIP_FSDEV)
+  #define CFG_TUD_WCH_USBIP_FSDEV  (CFG_TUD_WCH_USBIP_USBFS ? 0 : 1)
+  #endif
+
+  #define TUP_DCD_ENDPOINT_MAX    8
+
+#elif TU_CHECK_MCU(OPT_MCU_CH32V307)
+  // v307 support both FS and HS, default to HS
+  #define TUP_USBIP_WCH_USBHS
+  #define TUP_USBIP_WCH_USBFS
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBFS)
+  #define CFG_TUD_WCH_USBIP_USBFS 0
+  #endif
+
+  #if !defined(CFG_TUD_WCH_USBIP_USBHS)
+  #define CFG_TUD_WCH_USBIP_USBHS (CFG_TUD_WCH_USBIP_USBFS ? 0 : 1)
+  #endif
+
+  #define TUP_RHPORT_HIGHSPEED    CFG_TUD_WCH_USBIP_USBHS
+  #define TUP_DCD_ENDPOINT_MAX    (CFG_TUD_WCH_USBIP_USBHS ? 16 : 8)
+
+//--------------------------------------------------------------------+
+// Analog Devices
+//--------------------------------------------------------------------+
+#elif TU_CHECK_MCU(OPT_MCU_MAX32650, OPT_MCU_MAX32666, OPT_MCU_MAX32690, OPT_MCU_MAX78002)
+  #define TUP_USBIP_MUSB
+  #define TUP_USBIP_MUSB_ADI
+  #define TUP_DCD_ENDPOINT_MAX    12
+  #define TUP_RHPORT_HIGHSPEED    1
+  #define TUD_ENDPOINT_ONE_DIRECTION_ONLY
+
+#endif
+
+//--------------------------------------------------------------------+
+// External USB controller
+//--------------------------------------------------------------------+
+
+#if defined(CFG_TUH_MAX3421) && CFG_TUH_MAX3421
+  #ifndef CFG_TUH_MAX3421_ENDPOINT_TOTAL
+    #define CFG_TUH_MAX3421_ENDPOINT_TOTAL  (8 + 4*(CFG_TUH_DEVICE_MAX-1))
+  #endif
+#endif
+
+
+//--------------------------------------------------------------------+
+// Default Values
+//--------------------------------------------------------------------+
+
+#ifndef TUP_MCU_MULTIPLE_CORE
+#define TUP_MCU_MULTIPLE_CORE 0
+#endif
+
+#if !defined(TUP_DCD_ENDPOINT_MAX) && defined(CFG_TUD_ENABLED) && CFG_TUD_ENABLED
+  #warning "TUP_DCD_ENDPOINT_MAX is not defined for this MCU, default to 8"
+  #define TUP_DCD_ENDPOINT_MAX    8
+#endif
+
+// Default to fullspeed if not defined
+#ifndef TUP_RHPORT_HIGHSPEED
+  #define TUP_RHPORT_HIGHSPEED    0
+#endif
+
+// fast function, normally mean placing function in SRAM
+#ifndef TU_ATTR_FAST_FUNC
+  #define TU_ATTR_FAST_FUNC
+#endif
+
+// USBIP that support ISO alloc & activate API
+#if defined(TUP_USBIP_DWC2) || defined(TUP_USBIP_FSDEV) || defined(TUP_USBIP_MUSB)
+  #define TUP_DCD_EDPT_ISO_ALLOC
+#endif
+
+#if defined(TUP_USBIP_DWC2) // && CFG_TUD_DWC2_DMA_ENABLE == 0
+  #define TUP_MEM_CONST_ADDR
+#endif
+
+#endif
+`,"common/tusb_private.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2022, Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_PRIVATE_H_
+#define TUSB_PRIVATE_H_
+
+// Internal Helper used by Host and Device Stack
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+#define TUP_USBIP_CONTROLLER_NUM 2
+extern tusb_role_t _tusb_rhport_role[TUP_USBIP_CONTROLLER_NUM];
+
+//--------------------------------------------------------------------+
+// Endpoint
+//--------------------------------------------------------------------+
+
+typedef struct TU_ATTR_PACKED {
+  volatile uint8_t busy    : 1;
+  volatile uint8_t stalled : 1;
+  volatile uint8_t claimed : 1;
+}tu_edpt_state_t;
+
+typedef struct {
+  struct TU_ATTR_PACKED  {
+    uint8_t is_host   : 1; // 1: host, 0: device
+    uint8_t is_mps512 : 1; // 1: 512, 0: 64 since stream is used for Bulk only
+  };
+  uint8_t ep_addr;
+  uint16_t ep_bufsize;
+
+  uint8_t* ep_buf; // TODO xfer_fifo can skip this buffer
+  tu_fifo_t ff;
+
+  // mutex: read if rx, otherwise write
+  OSAL_MUTEX_DEF(ff_mutexdef);
+
+}tu_edpt_stream_t;
+
+//--------------------------------------------------------------------+
+// Endpoint
+//--------------------------------------------------------------------+
+
+// Check if endpoint descriptor is valid per USB specs
+bool tu_edpt_validate(tusb_desc_endpoint_t const * desc_ep, tusb_speed_t speed);
+
+// Bind all endpoint of a interface descriptor to class driver
+void tu_edpt_bind_driver(uint8_t ep2drv[][2], tusb_desc_interface_t const* p_desc, uint16_t desc_len, uint8_t driver_id);
+
+// Calculate total length of n interfaces (depending on IAD)
+uint16_t tu_desc_get_interface_total_len(tusb_desc_interface_t const* desc_itf, uint8_t itf_count, uint16_t max_len);
+
+// Claim an endpoint with provided mutex
+bool tu_edpt_claim(tu_edpt_state_t* ep_state, osal_mutex_t mutex);
+
+// Release an endpoint with provided mutex
+bool tu_edpt_release(tu_edpt_state_t* ep_state, osal_mutex_t mutex);
+
+//--------------------------------------------------------------------+
+// Endpoint Stream
+//--------------------------------------------------------------------+
+
+// Init an endpoint stream
+bool tu_edpt_stream_init(tu_edpt_stream_t* s, bool is_host, bool is_tx, bool overwritable,
+                         void* ff_buf, uint16_t ff_bufsize, uint8_t* ep_buf, uint16_t ep_bufsize);
+
+// Deinit an endpoint stream
+bool tu_edpt_stream_deinit(tu_edpt_stream_t* s);
+
+// Open an stream for an endpoint
+TU_ATTR_ALWAYS_INLINE static inline
+void tu_edpt_stream_open(tu_edpt_stream_t* s, tusb_desc_endpoint_t const *desc_ep) {
+  tu_fifo_clear(&s->ff);
+  s->ep_addr = desc_ep->bEndpointAddress;
+  s->is_mps512 = (tu_edpt_packet_size(desc_ep) == 512) ? 1 : 0;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline
+void tu_edpt_stream_close(tu_edpt_stream_t* s) {
+  s->ep_addr = 0;
+}
+
+// Clear fifo
+TU_ATTR_ALWAYS_INLINE static inline
+bool tu_edpt_stream_clear(tu_edpt_stream_t* s) {
+  return tu_fifo_clear(&s->ff);
+}
+
+//--------------------------------------------------------------------+
+// Stream Write
+//--------------------------------------------------------------------+
+
+// Write to stream
+uint32_t tu_edpt_stream_write(uint8_t hwid, tu_edpt_stream_t* s, void const *buffer, uint32_t bufsize);
+
+// Start an usb transfer if endpoint is not busy
+uint32_t tu_edpt_stream_write_xfer(uint8_t hwid, tu_edpt_stream_t* s);
+
+// Start an zero-length packet if needed
+bool tu_edpt_stream_write_zlp_if_needed(uint8_t hwid, tu_edpt_stream_t* s, uint32_t last_xferred_bytes);
+
+// Get the number of bytes available for writing to FIFO
+// Note: if no fifo, return endpoint size if not busy, 0 otherwise
+uint32_t tu_edpt_stream_write_available(uint8_t hwid, tu_edpt_stream_t* s);
+
+//--------------------------------------------------------------------+
+// Stream Read
+//--------------------------------------------------------------------+
+
+// Read from stream
+uint32_t tu_edpt_stream_read(uint8_t hwid, tu_edpt_stream_t* s, void* buffer, uint32_t bufsize);
+
+// Start an usb transfer if endpoint is not busy
+uint32_t tu_edpt_stream_read_xfer(uint8_t hwid, tu_edpt_stream_t* s);
+
+// Must be called in the transfer complete callback
+TU_ATTR_ALWAYS_INLINE static inline
+void tu_edpt_stream_read_xfer_complete(tu_edpt_stream_t* s, uint32_t xferred_bytes) {
+  if (tu_fifo_depth(&s->ff)) {
+    tu_fifo_write_n(&s->ff, s->ep_buf, (uint16_t) xferred_bytes);
+  }
+}
+
+// Same as tu_edpt_stream_read_xfer_complete but skip the first n bytes
+TU_ATTR_ALWAYS_INLINE static inline
+void tu_edpt_stream_read_xfer_complete_offset(tu_edpt_stream_t* s, uint32_t xferred_bytes, uint32_t skip_offset) {
+  if (tu_fifo_depth(&s->ff) && (skip_offset < xferred_bytes)) {
+    tu_fifo_write_n(&s->ff, s->ep_buf + skip_offset, (uint16_t) (xferred_bytes - skip_offset));
+  }
+}
+
+// Get the number of bytes available for reading
+TU_ATTR_ALWAYS_INLINE static inline
+uint32_t tu_edpt_stream_read_available(tu_edpt_stream_t* s) {
+  return (uint32_t) tu_fifo_count(&s->ff);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline
+bool tu_edpt_stream_peek(tu_edpt_stream_t* s, uint8_t* ch) {
+  return tu_fifo_peek(&s->ff, ch);
+}
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif
+`,"common/tusb_types.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_TYPES_H_
+#define TUSB_TYPES_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include "tusb_compiler.h"
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//------------- Device DCache declaration -------------//
+#define TUD_EPBUF_DCACHE_SIZE(_size) (CFG_TUD_MEM_DCACHE_ENABLE ? \\
+  (TU_DIV_CEIL(_size, CFG_TUD_MEM_DCACHE_LINE_SIZE) * CFG_TUD_MEM_DCACHE_LINE_SIZE) : (_size))
+
+// Declare an endpoint buffer with uint8_t[size]
+#define TUD_EPBUF_DEF(_name, _size) \\
+  union { \\
+    CFG_TUD_MEM_ALIGN uint8_t _name[_size]; \\
+    uint8_t _name##_dcache_padding[TUD_EPBUF_DCACHE_SIZE(_size)]; \\
+  }
+
+// Declare an endpoint buffer with a type
+#define TUD_EPBUF_TYPE_DEF(_type, _name) \\
+  union { \\
+    CFG_TUD_MEM_ALIGN _type _name; \\
+    uint8_t _name##_dcache_padding[TUD_EPBUF_DCACHE_SIZE(sizeof(_type))]; \\
+  }
+
+//------------- Host DCache declaration -------------//
+#define TUH_EPBUF_DCACHE_SIZE(_size) (CFG_TUH_MEM_DCACHE_ENABLE ? \\
+  (TU_DIV_CEIL(_size, CFG_TUH_MEM_DCACHE_LINE_SIZE) * CFG_TUH_MEM_DCACHE_LINE_SIZE) : (_size))
+
+// Declare an endpoint buffer with uint8_t[size]
+#define TUH_EPBUF_DEF(_name, _size) \\
+  union { \\
+    CFG_TUH_MEM_ALIGN uint8_t _name[_size]; \\
+    uint8_t _name##_dcache_padding[TUH_EPBUF_DCACHE_SIZE(_size)]; \\
+  }
+
+// Declare an endpoint buffer with a type
+#define TUH_EPBUF_TYPE_DEF(_type, _name) \\
+  union { \\
+    CFG_TUH_MEM_ALIGN _type _name; \\
+    uint8_t _name##_dcache_padding[TUH_EPBUF_DCACHE_SIZE(sizeof(_type))]; \\
+  }
+
+
+/*------------------------------------------------------------------*/
+/* CONSTANTS
+ *------------------------------------------------------------------*/
+
+typedef enum {
+  TUSB_ROLE_INVALID = 0,
+  TUSB_ROLE_DEVICE  = 0x1,
+  TUSB_ROLE_HOST    = 0x2,
+} tusb_role_t;
+
+/// defined base on EHCI specs value for Endpoint Speed
+typedef enum {
+  TUSB_SPEED_FULL = 0,
+  TUSB_SPEED_LOW  = 1,
+  TUSB_SPEED_HIGH = 2,
+  TUSB_SPEED_AUTO = 0xaa,
+  TUSB_SPEED_INVALID = 0xff,
+} tusb_speed_t;
+
+/// defined base on USB Specs Endpoint's bmAttributes
+typedef enum {
+  TUSB_XFER_CONTROL     = 0,
+  TUSB_XFER_ISOCHRONOUS = 1,
+  TUSB_XFER_BULK        = 2,
+  TUSB_XFER_INTERRUPT   = 3
+} tusb_xfer_type_t;
+
+typedef enum {
+  TUSB_DIR_OUT = 0,
+  TUSB_DIR_IN  = 1,
+
+  TUSB_DIR_IN_MASK = 0x80
+} tusb_dir_t;
+
+enum {
+  TUSB_EPSIZE_BULK_FS = 64,
+  TUSB_EPSIZE_BULK_HS = 512,
+
+  TUSB_EPSIZE_ISO_FS_MAX = 1023,
+  TUSB_EPSIZE_ISO_HS_MAX = 1024,
+};
+
+/// Isochronous Endpoint Attributes
+typedef enum {
+  TUSB_ISO_EP_ATT_NO_SYNC         = 0x00,
+  TUSB_ISO_EP_ATT_ASYNCHRONOUS    = 0x04,
+  TUSB_ISO_EP_ATT_ADAPTIVE        = 0x08,
+  TUSB_ISO_EP_ATT_SYNCHRONOUS     = 0x0C,
+  TUSB_ISO_EP_ATT_DATA            = 0x00, ///< Data End Point
+  TUSB_ISO_EP_ATT_EXPLICIT_FB     = 0x10, ///< Feedback End Point
+  TUSB_ISO_EP_ATT_IMPLICIT_FB     = 0x20, ///< Data endpoint that also serves as an implicit feedback
+} tusb_iso_ep_attribute_t;
+
+/// USB Descriptor Types
+typedef enum {
+  TUSB_DESC_DEVICE                = 0x01,
+  TUSB_DESC_CONFIGURATION         = 0x02,
+  TUSB_DESC_STRING                = 0x03,
+  TUSB_DESC_INTERFACE             = 0x04,
+  TUSB_DESC_ENDPOINT              = 0x05,
+  TUSB_DESC_DEVICE_QUALIFIER      = 0x06,
+  TUSB_DESC_OTHER_SPEED_CONFIG    = 0x07,
+  TUSB_DESC_INTERFACE_POWER       = 0x08,
+  TUSB_DESC_OTG                   = 0x09,
+  TUSB_DESC_DEBUG                 = 0x0A,
+  TUSB_DESC_INTERFACE_ASSOCIATION = 0x0B,
+
+  TUSB_DESC_BOS                   = 0x0F,
+  TUSB_DESC_DEVICE_CAPABILITY     = 0x10,
+
+  TUSB_DESC_FUNCTIONAL            = 0x21,
+
+  // Class Specific Descriptor
+  TUSB_DESC_CS_DEVICE             = 0x21,
+  TUSB_DESC_CS_CONFIGURATION      = 0x22,
+  TUSB_DESC_CS_STRING             = 0x23,
+  TUSB_DESC_CS_INTERFACE          = 0x24,
+  TUSB_DESC_CS_ENDPOINT           = 0x25,
+
+  TUSB_DESC_SUPERSPEED_ENDPOINT_COMPANION     = 0x30,
+  TUSB_DESC_SUPERSPEED_ISO_ENDPOINT_COMPANION = 0x31
+} tusb_desc_type_t;
+
+typedef enum {
+  TUSB_REQ_GET_STATUS        = 0  ,
+  TUSB_REQ_CLEAR_FEATURE     = 1  ,
+  TUSB_REQ_RESERVED          = 2  ,
+  TUSB_REQ_SET_FEATURE       = 3  ,
+  TUSB_REQ_RESERVED2         = 4  ,
+  TUSB_REQ_SET_ADDRESS       = 5  ,
+  TUSB_REQ_GET_DESCRIPTOR    = 6  ,
+  TUSB_REQ_SET_DESCRIPTOR    = 7  ,
+  TUSB_REQ_GET_CONFIGURATION = 8  ,
+  TUSB_REQ_SET_CONFIGURATION = 9  ,
+  TUSB_REQ_GET_INTERFACE     = 10 ,
+  TUSB_REQ_SET_INTERFACE     = 11 ,
+  TUSB_REQ_SYNCH_FRAME       = 12
+} tusb_request_code_t;
+
+typedef enum {
+  TUSB_REQ_FEATURE_EDPT_HALT     = 0,
+  TUSB_REQ_FEATURE_REMOTE_WAKEUP = 1,
+  TUSB_REQ_FEATURE_TEST_MODE     = 2
+} tusb_request_feature_selector_t;
+
+typedef enum {
+  TUSB_REQ_TYPE_STANDARD = 0,
+  TUSB_REQ_TYPE_CLASS,
+  TUSB_REQ_TYPE_VENDOR,
+  TUSB_REQ_TYPE_INVALID
+} tusb_request_type_t;
+
+typedef enum {
+  TUSB_REQ_RCPT_DEVICE =0,
+  TUSB_REQ_RCPT_INTERFACE,
+  TUSB_REQ_RCPT_ENDPOINT,
+  TUSB_REQ_RCPT_OTHER
+} tusb_request_recipient_t;
+
+// https://www.usb.org/defined-class-codes
+typedef enum {
+  TUSB_CLASS_UNSPECIFIED          = 0    ,
+  TUSB_CLASS_AUDIO                = 1    ,
+  TUSB_CLASS_CDC                  = 2    ,
+  TUSB_CLASS_HID                  = 3    ,
+  TUSB_CLASS_RESERVED_4           = 4    ,
+  TUSB_CLASS_PHYSICAL             = 5    ,
+  TUSB_CLASS_IMAGE                = 6    ,
+  TUSB_CLASS_PRINTER              = 7    ,
+  TUSB_CLASS_MSC                  = 8    ,
+  TUSB_CLASS_HUB                  = 9    ,
+  TUSB_CLASS_CDC_DATA             = 10   ,
+  TUSB_CLASS_SMART_CARD           = 11   ,
+  TUSB_CLASS_RESERVED_12          = 12   ,
+  TUSB_CLASS_CONTENT_SECURITY     = 13   ,
+  TUSB_CLASS_VIDEO                = 14   ,
+  TUSB_CLASS_PERSONAL_HEALTHCARE  = 15   ,
+  TUSB_CLASS_AUDIO_VIDEO          = 16   ,
+
+  TUSB_CLASS_DIAGNOSTIC           = 0xDC ,
+  TUSB_CLASS_WIRELESS_CONTROLLER  = 0xE0 ,
+  TUSB_CLASS_MISC                 = 0xEF ,
+  TUSB_CLASS_APPLICATION_SPECIFIC = 0xFE ,
+  TUSB_CLASS_VENDOR_SPECIFIC      = 0xFF
+} tusb_class_code_t;
+
+typedef enum
+{
+  MISC_SUBCLASS_COMMON = 2
+}misc_subclass_type_t;
+
+typedef enum {
+  MISC_PROTOCOL_IAD = 1
+} misc_protocol_type_t;
+
+typedef enum {
+  APP_SUBCLASS_USBTMC = 0x03,
+  APP_SUBCLASS_DFU_RUNTIME = 0x01
+} app_subclass_type_t;
+
+typedef enum {
+  DEVICE_CAPABILITY_WIRELESS_USB               = 0x01,
+  DEVICE_CAPABILITY_USB20_EXTENSION            = 0x02,
+  DEVICE_CAPABILITY_SUPERSPEED_USB             = 0x03,
+  DEVICE_CAPABILITY_CONTAINER_id               = 0x04,
+  DEVICE_CAPABILITY_PLATFORM                   = 0x05,
+  DEVICE_CAPABILITY_POWER_DELIVERY             = 0x06,
+  DEVICE_CAPABILITY_BATTERY_INFO               = 0x07,
+  DEVICE_CAPABILITY_PD_CONSUMER_PORT           = 0x08,
+  DEVICE_CAPABILITY_PD_PROVIDER_PORT           = 0x09,
+  DEVICE_CAPABILITY_SUPERSPEED_PLUS            = 0x0A,
+  DEVICE_CAPABILITY_PRECESION_TIME_MEASUREMENT = 0x0B,
+  DEVICE_CAPABILITY_WIRELESS_USB_EXT           = 0x0C,
+  DEVICE_CAPABILITY_BILLBOARD                  = 0x0D,
+  DEVICE_CAPABILITY_AUTHENTICATION             = 0x0E,
+  DEVICE_CAPABILITY_BILLBOARD_EX               = 0x0F,
+  DEVICE_CAPABILITY_CONFIGURATION_SUMMARY      = 0x10
+} device_capability_type_t;
+
+enum {
+  TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP = 1u << 5,
+  TUSB_DESC_CONFIG_ATT_SELF_POWERED  = 1u << 6,
+};
+
+#define TUSB_DESC_CONFIG_POWER_MA(x)  ((x)/2)
+
+// USB 2.0 Spec Table 9-7: Test Mode Selectors
+typedef enum {
+  TUSB_FEATURE_TEST_J = 1,
+  TUSB_FEATURE_TEST_K = 2,
+  TUSB_FEATURE_TEST_SE0_NAK = 3,
+  TUSB_FEATURE_TEST_PACKET = 4,
+  TUSB_FEATURE_TEST_FORCE_ENABLE = 5,
+} tusb_feature_test_mode_t;
+
+//--------------------------------------------------------------------+
+//
+//--------------------------------------------------------------------+
+typedef enum {
+  XFER_RESULT_SUCCESS = 0,
+  XFER_RESULT_FAILED,
+  XFER_RESULT_STALLED,
+  XFER_RESULT_TIMEOUT,
+  XFER_RESULT_INVALID
+} xfer_result_t;
+
+// TODO remove
+enum {
+  DESC_OFFSET_LEN  = 0,
+  DESC_OFFSET_TYPE = 1
+};
+
+enum {
+  INTERFACE_INVALID_NUMBER = 0xff
+};
+
+typedef enum {
+  MS_OS_20_SET_HEADER_DESCRIPTOR       = 0x00,
+  MS_OS_20_SUBSET_HEADER_CONFIGURATION = 0x01,
+  MS_OS_20_SUBSET_HEADER_FUNCTION      = 0x02,
+  MS_OS_20_FEATURE_COMPATBLE_ID        = 0x03,
+  MS_OS_20_FEATURE_REG_PROPERTY        = 0x04,
+  MS_OS_20_FEATURE_MIN_RESUME_TIME     = 0x05,
+  MS_OS_20_FEATURE_MODEL_ID            = 0x06,
+  MS_OS_20_FEATURE_CCGP_DEVICE         = 0x07,
+  MS_OS_20_FEATURE_VENDOR_REVISION     = 0x08
+} microsoft_os_20_type_t;
+
+enum {
+  CONTROL_STAGE_IDLE = 0,
+  CONTROL_STAGE_SETUP,
+  CONTROL_STAGE_DATA,
+  CONTROL_STAGE_ACK
+};
+
+enum {
+  TUSB_INDEX_INVALID_8 = 0xFFu
+};
+
+//--------------------------------------------------------------------+
+//
+//--------------------------------------------------------------------+
+typedef struct {
+  tusb_role_t role;
+  tusb_speed_t speed;
+} tusb_rhport_init_t;
+
+//--------------------------------------------------------------------+
+// USB Descriptors
+//--------------------------------------------------------------------+
+
+// Start of all packed definitions for compiler without per-type packed
+TU_ATTR_PACKED_BEGIN
+TU_ATTR_BIT_FIELD_ORDER_BEGIN
+
+/// USB Device Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength            ; ///< Size of this descriptor in bytes.
+  uint8_t  bDescriptorType    ; ///< DEVICE Descriptor Type.
+  uint16_t bcdUSB             ; ///< BUSB Specification Release Number in Binary-Coded Decimal (i.e., 2.10 is 210H).
+
+  uint8_t  bDeviceClass       ; ///< Class code (assigned by the USB-IF).
+  uint8_t  bDeviceSubClass    ; ///< Subclass code (assigned by the USB-IF).
+  uint8_t  bDeviceProtocol    ; ///< Protocol code (assigned by the USB-IF).
+  uint8_t  bMaxPacketSize0    ; ///< Maximum packet size for endpoint zero (only 8, 16, 32, or 64 are valid). For HS devices is fixed to 64.
+
+  uint16_t idVendor           ; ///< Vendor ID (assigned by the USB-IF).
+  uint16_t idProduct          ; ///< Product ID (assigned by the manufacturer).
+  uint16_t bcdDevice          ; ///< Device release number in binary-coded decimal.
+  uint8_t  iManufacturer      ; ///< Index of string descriptor describing manufacturer.
+  uint8_t  iProduct           ; ///< Index of string descriptor describing product.
+  uint8_t  iSerialNumber      ; ///< Index of string descriptor describing the device's serial number.
+
+  uint8_t  bNumConfigurations ; ///< Number of possible configurations.
+} tusb_desc_device_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_device_t) == 18, "size is not correct");
+
+// USB Binary Device Object Store (BOS) Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength         ; ///< Size of this descriptor in bytes
+  uint8_t  bDescriptorType ; ///< CONFIGURATION Descriptor Type
+  uint16_t wTotalLength    ; ///< Total length of data returned for this descriptor
+  uint8_t  bNumDeviceCaps  ; ///< Number of device capability descriptors in the BOS
+} tusb_desc_bos_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_bos_t) == 5, "size is not correct");
+
+/// USB Configuration Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength             ; ///< Size of this descriptor in bytes
+  uint8_t  bDescriptorType     ; ///< CONFIGURATION Descriptor Type
+  uint16_t wTotalLength        ; ///< Total length of data returned for this configuration. Includes the combined length of all descriptors (configuration, interface, endpoint, and class- or vendor-specific) returned for this configuration.
+
+  uint8_t  bNumInterfaces      ; ///< Number of interfaces supported by this configuration
+  uint8_t  bConfigurationValue ; ///< Value to use as an argument to the SetConfiguration() request to select this configuration.
+  uint8_t  iConfiguration      ; ///< Index of string descriptor describing this configuration
+  uint8_t  bmAttributes        ; ///< Configuration characteristics \\n D7: Reserved (set to one)\\n D6: Self-powered \\n D5: Remote Wakeup \\n D4...0: Reserved (reset to zero) \\n D7 is reserved and must be set to one for historical reasons. \\n A device configuration that uses power from the bus and a local source reports a non-zero value in bMaxPower to indicate the amount of bus power required and sets D6. The actual power source at runtime may be determined using the GetStatus(DEVICE) request (see USB 2.0 spec Section 9.4.5). \\n If a device configuration supports remote wakeup, D5 is set to one.
+  uint8_t  bMaxPower           ; ///< Maximum power consumption of the USB device from the bus in this specific configuration when the device is fully operational. Expressed in 2 mA units (i.e., 50 = 100 mA).
+} tusb_desc_configuration_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_configuration_t) == 9, "size is not correct");
+
+/// USB Interface Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength            ; ///< Size of this descriptor in bytes
+  uint8_t  bDescriptorType    ; ///< INTERFACE Descriptor Type
+
+  uint8_t  bInterfaceNumber   ; ///< Number of this interface. Zero-based value identifying the index in the array of concurrent interfaces supported by this configuration.
+  uint8_t  bAlternateSetting  ; ///< Value used to select this alternate setting for the interface identified in the prior field
+  uint8_t  bNumEndpoints      ; ///< Number of endpoints used by this interface (excluding endpoint zero). If this value is zero, this interface only uses the Default Control Pipe.
+  uint8_t  bInterfaceClass    ; ///< Class code (assigned by the USB-IF). \\li A value of zero is reserved for future standardization. \\li If this field is set to FFH, the interface class is vendor-specific. \\li All other values are reserved for assignment by the USB-IF.
+  uint8_t  bInterfaceSubClass ; ///< Subclass code (assigned by the USB-IF). \\n These codes are qualified by the value of the bInterfaceClass field. \\li If the bInterfaceClass field is reset to zero, this field must also be reset to zero. \\li If the bInterfaceClass field is not set to FFH, all values are reserved for assignment by the USB-IF.
+  uint8_t  bInterfaceProtocol ; ///< Protocol code (assigned by the USB). \\n These codes are qualified by the value of the bInterfaceClass and the bInterfaceSubClass fields. If an interface supports class-specific requests, this code identifies the protocols that the device uses as defined by the specification of the device class. \\li If this field is reset to zero, the device does not use a class-specific protocol on this interface. \\li If this field is set to FFH, the device uses a vendor-specific protocol for this interface.
+  uint8_t  iInterface         ; ///< Index of string descriptor describing this interface
+} tusb_desc_interface_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_interface_t) == 9, "size is not correct");
+
+/// USB Endpoint Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength          ; // Size of this descriptor in bytes
+  uint8_t  bDescriptorType  ; // ENDPOINT Descriptor Type
+
+  uint8_t  bEndpointAddress ; // The address of the endpoint
+
+  struct TU_ATTR_PACKED {
+    uint8_t xfer  : 2;        // Control, ISO, Bulk, Interrupt
+    uint8_t sync  : 2;        // None, Asynchronous, Adaptive, Synchronous
+    uint8_t usage : 2;        // Data, Feedback, Implicit feedback
+    uint8_t       : 2;
+  } bmAttributes;
+
+  uint16_t wMaxPacketSize   ; // Bit 10..0 : max packet size, bit 12..11 additional transaction per highspeed micro-frame
+  uint8_t  bInterval        ; // Polling interval, in frames or microframes depending on the operating speed
+} tusb_desc_endpoint_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_endpoint_t) == 7, "size is not correct");
+
+/// USB Other Speed Configuration Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength             ; ///< Size of descriptor
+  uint8_t  bDescriptorType     ; ///< Other_speed_Configuration Type
+  uint16_t wTotalLength        ; ///< Total length of data returned
+
+  uint8_t  bNumInterfaces      ; ///< Number of interfaces supported by this speed configuration
+  uint8_t  bConfigurationValue ; ///< Value to use to select configuration
+  uint8_t  iConfiguration      ; ///< Index of string descriptor
+  uint8_t  bmAttributes        ; ///< Same as Configuration descriptor
+  uint8_t  bMaxPower           ; ///< Same as Configuration descriptor
+} tusb_desc_other_speed_t;
+
+/// USB Device Qualifier Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength            ; ///< Size of descriptor
+  uint8_t  bDescriptorType    ; ///< Device Qualifier Type
+  uint16_t bcdUSB             ; ///< USB specification version number (e.g., 0200H for V2.00)
+
+  uint8_t  bDeviceClass       ; ///< Class Code
+  uint8_t  bDeviceSubClass    ; ///< SubClass Code
+  uint8_t  bDeviceProtocol    ; ///< Protocol Code
+
+  uint8_t  bMaxPacketSize0    ; ///< Maximum packet size for other speed
+  uint8_t  bNumConfigurations ; ///< Number of Other-speed Configurations
+  uint8_t  bReserved          ; ///< Reserved for future use, must be zero
+} tusb_desc_device_qualifier_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_device_qualifier_t) == 10, "size is not correct");
+
+/// USB Interface Association Descriptor (IAD ECN)
+typedef struct TU_ATTR_PACKED {
+  uint8_t bLength           ; ///< Size of descriptor
+  uint8_t bDescriptorType   ; ///< Other_speed_Configuration Type
+
+  uint8_t bFirstInterface   ; ///< Index of the first associated interface.
+  uint8_t bInterfaceCount   ; ///< Total number of associated interfaces.
+
+  uint8_t bFunctionClass    ; ///< Interface class ID.
+  uint8_t bFunctionSubClass ; ///< Interface subclass ID.
+  uint8_t bFunctionProtocol ; ///< Interface protocol ID.
+
+  uint8_t iFunction         ; ///< Index of the string descriptor describing the interface association.
+} tusb_desc_interface_assoc_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_desc_interface_assoc_t) == 8, "size is not correct");
+
+// USB String Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength         ; ///< Size of this descriptor in bytes
+  uint8_t  bDescriptorType ; ///< Descriptor Type
+  uint16_t unicode_string[];
+} tusb_desc_string_t;
+
+// USB Binary Device Object Store (BOS)
+typedef struct TU_ATTR_PACKED {
+  uint8_t bLength;
+  uint8_t bDescriptorType ;
+  uint8_t bDevCapabilityType;
+  uint8_t bReserved;
+  uint8_t PlatformCapabilityUUID[16];
+  uint8_t CapabilityData[];
+} tusb_desc_bos_platform_t;
+
+// USB WebUSB URL Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t bLength;
+  uint8_t bDescriptorType;
+  uint8_t bScheme;
+  char    url[];
+} tusb_desc_webusb_url_t;
+
+// DFU Functional Descriptor
+typedef struct TU_ATTR_PACKED {
+  uint8_t  bLength;
+  uint8_t  bDescriptorType;
+
+  union {
+    struct TU_ATTR_PACKED {
+      uint8_t bitCanDnload             : 1;
+      uint8_t bitCanUpload             : 1;
+      uint8_t bitManifestationTolerant : 1;
+      uint8_t bitWillDetach            : 1;
+      uint8_t reserved                 : 4;
+    } bmAttributes;
+
+    uint8_t bAttributes;
+  };
+
+  uint16_t wDetachTimeOut;
+  uint16_t wTransferSize;
+  uint16_t bcdDFUVersion;
+} tusb_desc_dfu_functional_t;
+
+//--------------------------------------------------------------------+
+//
+//--------------------------------------------------------------------+
+
+typedef struct TU_ATTR_PACKED {
+  union {
+    struct TU_ATTR_PACKED {
+      uint8_t recipient :  5; ///< Recipient type tusb_request_recipient_t.
+      uint8_t type      :  2; ///< Request type tusb_request_type_t.
+      uint8_t direction :  1; ///< Direction type. tusb_dir_t
+    } bmRequestType_bit;
+
+    uint8_t bmRequestType;
+  };
+
+  uint8_t  bRequest;
+  uint16_t wValue;
+  uint16_t wIndex;
+  uint16_t wLength;
+} tusb_control_request_t;
+
+TU_VERIFY_STATIC( sizeof(tusb_control_request_t) == 8, "size is not correct");
+
+TU_ATTR_PACKED_END  // End of all packed definitions
+TU_ATTR_BIT_FIELD_ORDER_END
+
+//--------------------------------------------------------------------+
+// Endpoint helper
+//--------------------------------------------------------------------+
+
+// Get direction from Endpoint address
+TU_ATTR_ALWAYS_INLINE static inline tusb_dir_t tu_edpt_dir(uint8_t addr) {
+  return (addr & TUSB_DIR_IN_MASK) ? TUSB_DIR_IN : TUSB_DIR_OUT;
+}
+
+// Get Endpoint number from address
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_edpt_number(uint8_t addr) {
+  return (uint8_t)(addr & (~TUSB_DIR_IN_MASK));
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_edpt_addr(uint8_t num, uint8_t dir) {
+  return (uint8_t)(num | (dir ? TUSB_DIR_IN_MASK : 0));
+}
+
+TU_ATTR_ALWAYS_INLINE static inline uint16_t tu_edpt_packet_size(tusb_desc_endpoint_t const* desc_ep) {
+  return tu_le16toh(desc_ep->wMaxPacketSize) & 0x7FF;
+}
+
+#if CFG_TUSB_DEBUG
+TU_ATTR_ALWAYS_INLINE static inline const char *tu_edpt_type_str(tusb_xfer_type_t t) {
+  tu_static const char *str[] = {"control", "isochronous", "bulk", "interrupt"};
+  return str[t];
+}
+#endif
+
+//--------------------------------------------------------------------+
+// Descriptor helper
+//--------------------------------------------------------------------+
+
+// return next descriptor
+TU_ATTR_ALWAYS_INLINE static inline uint8_t const * tu_desc_next(void const* desc) {
+  uint8_t const* desc8 = (uint8_t const*) desc;
+  return desc8 + desc8[DESC_OFFSET_LEN];
+}
+
+// get descriptor type
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_desc_type(void const* desc) {
+  return ((uint8_t const*) desc)[DESC_OFFSET_TYPE];
+}
+
+// get descriptor length
+TU_ATTR_ALWAYS_INLINE static inline uint8_t tu_desc_len(void const* desc) {
+  return ((uint8_t const*) desc)[DESC_OFFSET_LEN];
+}
+
+// find descriptor that match byte1 (type)
+uint8_t const * tu_desc_find(uint8_t const* desc, uint8_t const* end, uint8_t byte1);
+
+// find descriptor that match byte1 (type) and byte2
+uint8_t const * tu_desc_find2(uint8_t const* desc, uint8_t const* end, uint8_t byte1, uint8_t byte2);
+
+// find descriptor that match byte1 (type) and byte2
+uint8_t const * tu_desc_find3(uint8_t const* desc, uint8_t const* end, uint8_t byte1, uint8_t byte2, uint8_t byte3);
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif // TUSB_TYPES_H_
+`,"common/tusb_verify.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+#ifndef TUSB_VERIFY_H_
+#define TUSB_VERIFY_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include "tusb_option.h"
+#include "tusb_compiler.h"
+
+/*------------------------------------------------------------------*/
+/* This file use an advanced macro technique to mimic the default parameter
+ * as C++ for the sake of code simplicity. Beware of a headache macro
+ * manipulation that you are told to stay away.
+ *
+ * This contains macros for both VERIFY and ASSERT:
+ *
+ *   VERIFY: Used when there is an error condition which is not the
+ *           fault of the MCU. For example, bounds checking on data
+ *           sent to the micro over USB should use this function.
+ *           Another example is checking for buffer overflows, where
+ *           returning from the active function causes a NAK.
+ *
+ *   ASSERT: Used for error conditions that are caused by MCU firmware
+ *           bugs. This is used to discover bugs in the code more
+ *           quickly. One example would be adding assertions in library
+ *           function calls to confirm a function's (untainted)
+ *           parameters are valid.
+ *
+ * The difference in behavior is that ASSERT triggers a breakpoint while
+ * verify does not.
+ *
+ *   #define TU_VERIFY(cond)                  if(cond) return false;
+ *   #define TU_VERIFY(cond,ret)              if(cond) return ret;
+ *
+ *   #define TU_ASSERT(cond)                  if(cond) {TU_MESS_FAILED(); TU_BREAKPOINT(), return false;}
+ *   #define TU_ASSERT(cond,ret)              if(cond) {TU_MESS_FAILED(); TU_BREAKPOINT(), return ret;}
+ *------------------------------------------------------------------*/
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// TU_VERIFY Helper
+//--------------------------------------------------------------------+
+
+#if CFG_TUSB_DEBUG
+  #include <stdio.h>
+  #define TU_MESS_FAILED()    tu_printf("%s %d: ASSERT FAILED\\r\\n", __func__, __LINE__)
+#else
+  #define TU_MESS_FAILED() do {} while (0)
+#endif
+
+// Halt CPU (breakpoint) when hitting error, only apply for Cortex M3, M4, M7, M33. M55
+#if defined(__ARM_ARCH_7M__) || defined (__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__) || defined(__ARM_ARCH_8_1M_MAIN__) || \\
+    defined(__ARM7M__) || defined (__ARM7EM__) || defined(__ARM8M_MAINLINE__) || defined(__ARM8EM_MAINLINE__)
+  #define TU_BREAKPOINT() do {                                                                              \\
+    volatile uint32_t* ARM_CM_DHCSR =  ((volatile uint32_t*) 0xE000EDF0UL); /* Cortex M CoreDebug->DHCSR */ \\
+    if ( (*ARM_CM_DHCSR) & 1UL ) __asm("BKPT #0\\n"); /* Only halt mcu if debugger is attached */            \\
+  } while(0)
+
+#elif defined(__riscv) && !TUSB_MCU_VENDOR_ESPRESSIF
+  #define TU_BREAKPOINT() do { __asm("ebreak\\n"); } while(0)
+
+#elif defined(_mips)
+  #define TU_BREAKPOINT() do { __asm("sdbbp 0"); } while (0)
+
+#else
+  #define TU_BREAKPOINT() do {} while (0)
+#endif
+
+/*------------------------------------------------------------------*/
+/* TU_VERIFY
+ * - TU_VERIFY_1ARGS : return false if failed
+ * - TU_VERIFY_2ARGS : return provided value if failed
+ *------------------------------------------------------------------*/
+#define TU_VERIFY_DEFINE(_cond, _ret)    \\
+  do {                                   \\
+    if ( !(_cond) ) { return _ret; }     \\
+  } while(0)
+
+#define TU_VERIFY_1ARGS(_cond)         TU_VERIFY_DEFINE(_cond, false)
+#define TU_VERIFY_2ARGS(_cond, _ret)   TU_VERIFY_DEFINE(_cond, _ret)
+
+#define TU_VERIFY(...)                 TU_GET_3RD_ARG(__VA_ARGS__, TU_VERIFY_2ARGS, TU_VERIFY_1ARGS, _dummy)(__VA_ARGS__)
+
+/*------------------------------------------------------------------*/
+/* ASSERT
+ * basically TU_VERIFY with TU_BREAKPOINT() as handler
+ * - 1 arg : return false if failed
+ * - 2 arg : return error if failed
+ *------------------------------------------------------------------*/
+#define TU_ASSERT_DEFINE(_cond, _ret)                                 \\
+  do {                                                                \\
+    if ( !(_cond) ) { TU_MESS_FAILED(); TU_BREAKPOINT(); return _ret; } \\
+  } while(0)
+
+#define TU_ASSERT_1ARGS(_cond)         TU_ASSERT_DEFINE(_cond, false)
+#define TU_ASSERT_2ARGS(_cond, _ret)   TU_ASSERT_DEFINE(_cond, _ret)
+
+#ifndef TU_ASSERT
+#define TU_ASSERT(...)                 TU_GET_3RD_ARG(__VA_ARGS__, TU_ASSERT_2ARGS, TU_ASSERT_1ARGS, _dummy)(__VA_ARGS__)
+#endif
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif
+`,"device/dcd.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_DCD_H_
+#define TUSB_DCD_H_
+
+#include "common/tusb_common.h"
+#include "osal/osal.h"
+#include "common/tusb_fifo.h"
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// MACRO CONSTANT TYPEDEF PROTYPES
+//--------------------------------------------------------------------+
+
+typedef enum {
+  DCD_EVENT_INVALID = 0,    // 0
+  DCD_EVENT_BUS_RESET,      // 1
+  DCD_EVENT_UNPLUGGED,      // 2
+  DCD_EVENT_SOF,            // 3
+  DCD_EVENT_SUSPEND,        // 4 TODO LPM Sleep L1 support
+  DCD_EVENT_RESUME,         // 5
+  DCD_EVENT_SETUP_RECEIVED, // 6
+  DCD_EVENT_XFER_COMPLETE,  // 7
+  USBD_EVENT_FUNC_CALL,     // 8 Not an DCD event, just a convenient way to defer ISR function
+  DCD_EVENT_COUNT
+} dcd_eventid_t;
+
+typedef struct TU_ATTR_ALIGNED(4) {
+  uint8_t rhport;
+  uint8_t event_id;
+
+  union {
+    // BUS RESET
+    struct {
+      tusb_speed_t speed;
+    } bus_reset;
+
+    // SOF
+    struct {
+      uint32_t frame_count;
+    }sof;
+
+    // SETUP_RECEIVED
+    tusb_control_request_t setup_received;
+
+    // XFER_COMPLETE
+    struct {
+      uint8_t  ep_addr;
+      uint8_t  result;
+      uint32_t len;
+    }xfer_complete;
+
+    // FUNC_CALL
+    struct {
+      void (*func) (void*);
+      void* param;
+    }func_call;
+  };
+} dcd_event_t;
+
+//TU_VERIFY_STATIC(sizeof(dcd_event_t) <= 12, "size is not correct");
+
+//--------------------------------------------------------------------+
+// Memory API
+//--------------------------------------------------------------------+
+
+// clean/flush data cache: write cache -> memory.
+// Required before an DMA TX transfer to make sure data is in memory
+bool dcd_dcache_clean(const void* addr, uint32_t data_size);
+
+// invalidate data cache: mark cache as invalid, next read will read from memory
+// Required BOTH before and after an DMA RX transfer
+bool dcd_dcache_invalidate(const void* addr, uint32_t data_size);
+
+// clean and invalidate data cache
+// Required before an DMA transfer where memory is both read/write by DMA
+bool dcd_dcache_clean_invalidate(const void* addr, uint32_t data_size);
+
+//--------------------------------------------------------------------+
+// Controller API
+//--------------------------------------------------------------------+
+
+// Initialize controller to device mode
+bool dcd_init(uint8_t rhport, const tusb_rhport_init_t* rh_init);
+
+// Deinitialize controller, unset device mode.
+bool dcd_deinit(uint8_t rhport);
+
+// Interrupt Handler
+void dcd_int_handler(uint8_t rhport);
+
+// Enable device interrupt
+void dcd_int_enable (uint8_t rhport);
+
+// Disable device interrupt
+void dcd_int_disable(uint8_t rhport);
+
+// Receive Set Address request, mcu port must also include status IN response
+void dcd_set_address(uint8_t rhport, uint8_t dev_addr);
+
+// Wake up host
+void dcd_remote_wakeup(uint8_t rhport);
+
+// Connect by enabling internal pull-up resistor on D+/D-
+void dcd_connect(uint8_t rhport);
+
+// Disconnect by disabling internal pull-up resistor on D+/D-
+void dcd_disconnect(uint8_t rhport);
+
+// Enable/Disable Start-of-frame interrupt. Default is disabled
+void dcd_sof_enable(uint8_t rhport, bool en);
+
+#if CFG_TUD_TEST_MODE
+// Put device into a test mode (needs power cycle to quit)
+void dcd_enter_test_mode(uint8_t rhport, tusb_feature_test_mode_t test_selector);
+#endif
+//--------------------------------------------------------------------+
+// Endpoint API
+//--------------------------------------------------------------------+
+
+// Invoked when a control transfer's status stage is complete.
+// May help DCD to prepare for next control transfer, this API is optional.
+void dcd_edpt0_status_complete(uint8_t rhport, tusb_control_request_t const * request);
+
+// Configure endpoint's registers according to descriptor
+bool dcd_edpt_open            (uint8_t rhport, tusb_desc_endpoint_t const * desc_ep);
+
+// Close all non-control endpoints, cancel all pending transfers if any.
+// Invoked when switching from a non-zero Configuration by SET_CONFIGURE therefore
+// required for multiple configuration support.
+void dcd_edpt_close_all       (uint8_t rhport);
+
+// Submit a transfer, When complete dcd_event_xfer_complete() is invoked to notify the stack
+bool dcd_edpt_xfer            (uint8_t rhport, uint8_t ep_addr, uint8_t * buffer, uint16_t total_bytes);
+
+// Submit an transfer using fifo, When complete dcd_event_xfer_complete() is invoked to notify the stack
+// This API is optional, may be useful for register-based for transferring data.
+bool dcd_edpt_xfer_fifo       (uint8_t rhport, uint8_t ep_addr, tu_fifo_t * ff, uint16_t total_bytes) TU_ATTR_WEAK;
+
+// Stall endpoint, any queuing transfer should be removed from endpoint
+void dcd_edpt_stall           (uint8_t rhport, uint8_t ep_addr);
+
+// clear stall, data toggle is also reset to DATA0
+// This API never calls with control endpoints, since it is auto cleared when receiving setup packet
+void dcd_edpt_clear_stall     (uint8_t rhport, uint8_t ep_addr);
+
+#ifdef TUP_DCD_EDPT_ISO_ALLOC
+// Allocate packet buffer used by ISO endpoints
+// Some MCU need manual packet buffer allocation, we allocate the largest size to avoid clustering
+bool dcd_edpt_iso_alloc(uint8_t rhport, uint8_t ep_addr, uint16_t largest_packet_size);
+
+// Configure and enable an ISO endpoint according to descriptor
+bool dcd_edpt_iso_activate(uint8_t rhport, tusb_desc_endpoint_t const * desc_ep);
+
+#else
+// Close an endpoint.
+void dcd_edpt_close(uint8_t rhport, uint8_t ep_addr);
+
+#endif
+
+//--------------------------------------------------------------------+
+// Event API (implemented by stack)
+//--------------------------------------------------------------------+
+
+// Called by DCD to notify device stack
+extern void dcd_event_handler(dcd_event_t const * event, bool in_isr);
+
+// helper to send bus signal event
+TU_ATTR_ALWAYS_INLINE static inline void dcd_event_bus_signal (uint8_t rhport, dcd_eventid_t eid, bool in_isr) {
+  dcd_event_t event;
+  event.rhport = rhport;
+  event.event_id = eid;
+  dcd_event_handler(&event, in_isr);
+}
+
+// helper to send bus reset event
+TU_ATTR_ALWAYS_INLINE static inline  void dcd_event_bus_reset (uint8_t rhport, tusb_speed_t speed, bool in_isr) {
+  dcd_event_t event;
+  event.rhport = rhport;
+  event.event_id = DCD_EVENT_BUS_RESET;
+  event.bus_reset.speed = speed;
+  dcd_event_handler(&event, in_isr);
+}
+
+// helper to send setup received
+TU_ATTR_ALWAYS_INLINE static inline void dcd_event_setup_received(uint8_t rhport, uint8_t const * setup, bool in_isr) {
+  dcd_event_t event;
+  event.rhport = rhport;
+  event.event_id = DCD_EVENT_SETUP_RECEIVED;
+  memcpy(&event.setup_received, setup, sizeof(tusb_control_request_t));
+  dcd_event_handler(&event, in_isr);
+}
+
+// helper to send transfer complete event
+TU_ATTR_ALWAYS_INLINE static inline void dcd_event_xfer_complete (uint8_t rhport, uint8_t ep_addr, uint32_t xferred_bytes, uint8_t result, bool in_isr) {
+  dcd_event_t event;
+  event.rhport = rhport;
+  event.event_id = DCD_EVENT_XFER_COMPLETE;
+  event.xfer_complete.ep_addr = ep_addr;
+  event.xfer_complete.len     = xferred_bytes;
+  event.xfer_complete.result  = result;
+  dcd_event_handler(&event, in_isr);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void dcd_event_sof(uint8_t rhport, uint32_t frame_count, bool in_isr) {
+  dcd_event_t event;
+  event.rhport = rhport;
+  event.event_id = DCD_EVENT_SOF;
+  event.sof.frame_count = frame_count;
+  dcd_event_handler(&event, in_isr);
+}
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif
+`,"device/usbd_control.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "tusb_option.h"
+
+#if CFG_TUD_ENABLED
+
+#include "dcd.h"
+#include "tusb.h"
+#include "device/usbd_pvt.h"
+
+//--------------------------------------------------------------------+
+// Callback weak stubs (called if application does not provide)
+//--------------------------------------------------------------------+
+TU_ATTR_WEAK void dcd_edpt0_status_complete(uint8_t rhport, const tusb_control_request_t* request) {
+  (void) rhport;
+  (void) request;
+}
+
+//--------------------------------------------------------------------+
+// MACRO CONSTANT TYPEDEF
+//--------------------------------------------------------------------+
+
+enum {
+  EDPT_CTRL_OUT = 0x00,
+  EDPT_CTRL_IN = 0x80
+};
+
+typedef struct {
+  tusb_control_request_t request;
+  uint8_t* buffer;
+  uint16_t data_len;
+  uint16_t total_xferred;
+  usbd_control_xfer_cb_t complete_cb;
+} usbd_control_xfer_t;
+
+static usbd_control_xfer_t _ctrl_xfer;
+
+CFG_TUD_MEM_SECTION static struct {
+  TUD_EPBUF_DEF(buf, CFG_TUD_ENDPOINT0_SIZE);
+} _ctrl_epbuf;
+
+//--------------------------------------------------------------------+
+// Application API
+//--------------------------------------------------------------------+
+
+// Queue ZLP status transaction
+static inline bool status_stage_xact(uint8_t rhport, const tusb_control_request_t* request) {
+  // Opposite to endpoint in Data Phase
+  const uint8_t ep_addr = request->bmRequestType_bit.direction ? EDPT_CTRL_OUT : EDPT_CTRL_IN;
+  return usbd_edpt_xfer(rhport, ep_addr, NULL, 0);
+}
+
+// Status phase
+bool tud_control_status(uint8_t rhport, const tusb_control_request_t* request) {
+  _ctrl_xfer.request = (*request);
+  _ctrl_xfer.buffer = NULL;
+  _ctrl_xfer.total_xferred = 0;
+  _ctrl_xfer.data_len = 0;
+
+  return status_stage_xact(rhport, request);
+}
+
+// Queue a transaction in Data Stage
+// Each transaction has up to Endpoint0's max packet size.
+// This function can also transfer an zero-length packet
+static bool data_stage_xact(uint8_t rhport) {
+  const uint16_t xact_len = tu_min16(_ctrl_xfer.data_len - _ctrl_xfer.total_xferred, CFG_TUD_ENDPOINT0_SIZE);
+  uint8_t ep_addr = EDPT_CTRL_OUT;
+
+  if (_ctrl_xfer.request.bmRequestType_bit.direction == TUSB_DIR_IN) {
+    ep_addr = EDPT_CTRL_IN;
+    if (xact_len) {
+      TU_VERIFY(0 == tu_memcpy_s(_ctrl_epbuf.buf, CFG_TUD_ENDPOINT0_SIZE, _ctrl_xfer.buffer, xact_len));
+    }
+  }
+
+  return usbd_edpt_xfer(rhport, ep_addr, xact_len ? _ctrl_epbuf.buf : NULL, xact_len);
+}
+
+// Transmit data to/from the control endpoint.
+// If the request's wLength is zero, a status packet is sent instead.
+bool tud_control_xfer(uint8_t rhport, const tusb_control_request_t* request, void* buffer, uint16_t len) {
+  _ctrl_xfer.request = (*request);
+  _ctrl_xfer.buffer = (uint8_t*) buffer;
+  _ctrl_xfer.total_xferred = 0U;
+  _ctrl_xfer.data_len = tu_min16(len, request->wLength);
+
+  if (request->wLength > 0U) {
+    if (_ctrl_xfer.data_len > 0U) {
+      TU_ASSERT(buffer);
+    }
+    TU_ASSERT(data_stage_xact(rhport));
+  } else {
+    TU_ASSERT(status_stage_xact(rhport, request));
+  }
+
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// USBD API
+//--------------------------------------------------------------------+
+void usbd_control_reset(void);
+void usbd_control_set_request(const tusb_control_request_t* request);
+void usbd_control_set_complete_callback(usbd_control_xfer_cb_t fp);
+bool usbd_control_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes);
+
+void usbd_control_reset(void) {
+  tu_varclr(&_ctrl_xfer);
+}
+
+// Set complete callback
+void usbd_control_set_complete_callback(usbd_control_xfer_cb_t fp) {
+  _ctrl_xfer.complete_cb = fp;
+}
+
+// for dcd_set_address where DCD is responsible for status response
+void usbd_control_set_request(const tusb_control_request_t* request) {
+  _ctrl_xfer.request = (*request);
+  _ctrl_xfer.buffer = NULL;
+  _ctrl_xfer.total_xferred = 0;
+  _ctrl_xfer.data_len = 0;
+}
+
+// callback when a transaction complete on
+// - DATA stage of control endpoint or
+// - Status stage
+bool usbd_control_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes) {
+  (void) result;
+
+  // Endpoint Address is opposite to direction bit, this is Status Stage complete event
+  if (tu_edpt_dir(ep_addr) != _ctrl_xfer.request.bmRequestType_bit.direction) {
+    TU_ASSERT(0 == xferred_bytes);
+
+    // invoke optional dcd hook if available
+    dcd_edpt0_status_complete(rhport, &_ctrl_xfer.request);
+
+    if (_ctrl_xfer.complete_cb) {
+      // TODO refactor with usbd_driver_print_control_complete_name
+      _ctrl_xfer.complete_cb(rhport, CONTROL_STAGE_ACK, &_ctrl_xfer.request);
+    }
+
+    return true;
+  }
+
+  if (_ctrl_xfer.request.bmRequestType_bit.direction == TUSB_DIR_OUT) {
+    TU_VERIFY(_ctrl_xfer.buffer);
+    memcpy(_ctrl_xfer.buffer, _ctrl_epbuf.buf, xferred_bytes);
+    TU_LOG_MEM(CFG_TUD_LOG_LEVEL, _ctrl_xfer.buffer, xferred_bytes, 2);
+  }
+
+  _ctrl_xfer.total_xferred += (uint16_t) xferred_bytes;
+  _ctrl_xfer.buffer += xferred_bytes;
+
+  // Data Stage is complete when all request's length are transferred or
+  // a short packet is sent including zero-length packet.
+  if ((_ctrl_xfer.request.wLength == _ctrl_xfer.total_xferred) ||
+      (xferred_bytes < CFG_TUD_ENDPOINT0_SIZE)) {
+    // DATA stage is complete
+    bool is_ok = true;
+
+    // invoke complete callback if set
+    // callback can still stall control in status phase e.g out data does not make sense
+    if (_ctrl_xfer.complete_cb) {
+      #if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+      usbd_driver_print_control_complete_name(_ctrl_xfer.complete_cb);
+      #endif
+
+      is_ok = _ctrl_xfer.complete_cb(rhport, CONTROL_STAGE_DATA, &_ctrl_xfer.request);
+    }
+
+    if (is_ok) {
+      TU_ASSERT(status_stage_xact(rhport, &_ctrl_xfer.request));
+    } else {
+      // Stall both IN and OUT control endpoint
+      dcd_edpt_stall(rhport, EDPT_CTRL_OUT);
+      dcd_edpt_stall(rhport, EDPT_CTRL_IN);
+    }
+  } else {
+    // More data to transfer
+    TU_ASSERT(data_stage_xact(rhport));
+  }
+
+  return true;
+}
+
+#endif
+`,"device/usbd_pvt.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+#ifndef TUSB_USBD_PVT_H_
+#define TUSB_USBD_PVT_H_
+
+#include "osal/osal.h"
+#include "common/tusb_fifo.h"
+#include "common/tusb_private.h"
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+#define TU_LOG_USBD(...)   TU_LOG(CFG_TUD_LOG_LEVEL, __VA_ARGS__)
+
+//--------------------------------------------------------------------+
+// MACRO CONSTANT TYPEDEF PROTYPES
+//--------------------------------------------------------------------+
+
+typedef enum {
+  SOF_CONSUMER_USER = 0,
+  SOF_CONSUMER_AUDIO,
+} sof_consumer_t;
+
+//--------------------------------------------------------------------+
+// Class Driver API
+//--------------------------------------------------------------------+
+
+typedef struct {
+  char const* name;
+  void     (* init             ) (void);
+  bool     (* deinit           ) (void);
+  void     (* reset            ) (uint8_t rhport);
+  uint16_t (* open             ) (uint8_t rhport, tusb_desc_interface_t const * desc_intf, uint16_t max_len);
+  bool     (* control_xfer_cb  ) (uint8_t rhport, uint8_t stage, tusb_control_request_t const * request);
+  bool     (* xfer_cb          ) (uint8_t rhport, uint8_t ep_addr, xfer_result_t result, uint32_t xferred_bytes);
+  void     (* sof              ) (uint8_t rhport, uint32_t frame_count); // optional
+} usbd_class_driver_t;
+
+// Invoked when initializing device stack to get additional class drivers.
+// Can be implemented by application to extend/overwrite class driver support.
+// Note: The drivers array must be accessible at all time when stack is active
+usbd_class_driver_t const* usbd_app_driver_get_cb(uint8_t* driver_count) TU_ATTR_WEAK;
+
+typedef bool (*usbd_control_xfer_cb_t)(uint8_t rhport, uint8_t stage, tusb_control_request_t const * request);
+
+void usbd_int_set(bool enabled);
+
+//--------------------------------------------------------------------+
+// USBD Endpoint API
+// Note: rhport should be 0 since device stack only support 1 rhport for now
+//--------------------------------------------------------------------+
+
+// Open an endpoint
+bool usbd_edpt_open(uint8_t rhport, tusb_desc_endpoint_t const * desc_ep);
+
+// Close an endpoint
+void usbd_edpt_close(uint8_t rhport, uint8_t ep_addr);
+
+// Submit a usb transfer
+bool usbd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t * buffer, uint16_t total_bytes);
+
+// Submit a usb ISO transfer by use of a FIFO (ring buffer) - all bytes in FIFO get transmitted
+bool usbd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t * ff, uint16_t total_bytes);
+
+// Claim an endpoint before submitting a transfer.
+// If caller does not make any transfer, it must release endpoint for others.
+bool usbd_edpt_claim(uint8_t rhport, uint8_t ep_addr);
+
+// Release claimed endpoint without submitting a transfer
+bool usbd_edpt_release(uint8_t rhport, uint8_t ep_addr);
+
+// Check if endpoint is busy transferring
+bool usbd_edpt_busy(uint8_t rhport, uint8_t ep_addr);
+
+// Stall endpoint
+void usbd_edpt_stall(uint8_t rhport, uint8_t ep_addr);
+
+// Clear stalled endpoint
+void usbd_edpt_clear_stall(uint8_t rhport, uint8_t ep_addr);
+
+// Check if endpoint is stalled
+bool usbd_edpt_stalled(uint8_t rhport, uint8_t ep_addr);
+
+// Allocate packet buffer used by ISO endpoints
+bool usbd_edpt_iso_alloc(uint8_t rhport, uint8_t ep_addr, uint16_t largest_packet_size);
+
+// Configure and enable an ISO endpoint according to descriptor
+bool usbd_edpt_iso_activate(uint8_t rhport,  tusb_desc_endpoint_t const * p_endpoint_desc);
+
+// Check if endpoint is ready (not busy and not stalled)
+TU_ATTR_ALWAYS_INLINE static inline
+bool usbd_edpt_ready(uint8_t rhport, uint8_t ep_addr) {
+  return !usbd_edpt_busy(rhport, ep_addr) && !usbd_edpt_stalled(rhport, ep_addr);
+}
+
+// Enable SOF interrupt
+void usbd_sof_enable(uint8_t rhport, sof_consumer_t consumer, bool en);
+
+/*------------------------------------------------------------------*/
+/* Helper
+ *------------------------------------------------------------------*/
+
+bool usbd_open_edpt_pair(uint8_t rhport, uint8_t const* p_desc, uint8_t ep_count, uint8_t xfer_type, uint8_t* ep_out, uint8_t* ep_in);
+void usbd_defer_func(osal_task_func_t func, void *param, bool in_isr);
+
+
+#if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+void usbd_driver_print_control_complete_name(usbd_control_xfer_cb_t callback);
+#endif
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif
+`,"device/usbd.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "tusb_option.h"
+
+#if CFG_TUD_ENABLED
+
+#include "device/dcd.h"
+#include "tusb.h"
+#include "common/tusb_private.h"
+
+#include "device/usbd.h"
+#include "device/usbd_pvt.h"
+
+//--------------------------------------------------------------------+
+// USBD Configuration
+//--------------------------------------------------------------------+
+#ifndef CFG_TUD_TASK_QUEUE_SZ
+  #define CFG_TUD_TASK_QUEUE_SZ   16
+#endif
+
+//--------------------------------------------------------------------+
+// Weak stubs: invoked if no strong implementation is available
+//--------------------------------------------------------------------+
+TU_ATTR_WEAK void tud_event_hook_cb(uint8_t rhport, uint32_t eventid, bool in_isr) {
+  (void) rhport; (void) eventid; (void) in_isr;
+}
+
+TU_ATTR_WEAK void tud_sof_cb(uint32_t frame_count) {
+  (void) frame_count;
+}
+
+TU_ATTR_WEAK uint8_t const* tud_descriptor_bos_cb(void) {
+  return NULL;
+}
+
+TU_ATTR_WEAK uint8_t const* tud_descriptor_device_qualifier_cb(void) {
+  return NULL;
+}
+
+TU_ATTR_WEAK uint8_t const* tud_descriptor_other_speed_configuration_cb(uint8_t index) {
+  (void) index;
+  return NULL;
+}
+
+TU_ATTR_WEAK void tud_mount_cb(void) {
+}
+
+TU_ATTR_WEAK void tud_umount_cb(void) {
+}
+
+TU_ATTR_WEAK void tud_suspend_cb(bool remote_wakeup_en) {
+  (void) remote_wakeup_en;
+}
+
+TU_ATTR_WEAK void tud_resume_cb(void) {
+}
+
+TU_ATTR_WEAK bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const* request) {
+  (void) rhport; (void) stage; (void) request;
+  return false;
+}
+
+TU_ATTR_WEAK bool dcd_deinit(uint8_t rhport) {
+  (void) rhport;
+  return false;
+}
+
+TU_ATTR_WEAK void dcd_connect(uint8_t rhport) {
+  (void) rhport;
+}
+
+TU_ATTR_WEAK void dcd_disconnect(uint8_t rhport) {
+  (void) rhport;
+}
+
+TU_ATTR_WEAK bool dcd_dcache_clean(const void* addr, uint32_t data_size) {
+  (void) addr; (void) data_size;
+  return true;
+}
+
+TU_ATTR_WEAK bool dcd_dcache_invalidate(const void* addr, uint32_t data_size) {
+  (void) addr; (void) data_size;
+  return true;
+}
+
+TU_ATTR_WEAK bool dcd_dcache_clean_invalidate(const void* addr, uint32_t data_size) {
+  (void) addr; (void) data_size;
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// Device Data
+//--------------------------------------------------------------------+
+
+// Invalid driver ID in itf2drv[] ep2drv[][] mapping
+enum { DRVID_INVALID = 0xFFu };
+
+typedef struct {
+  struct TU_ATTR_PACKED {
+    volatile uint8_t connected    : 1;
+    volatile uint8_t addressed    : 1;
+    volatile uint8_t suspended    : 1;
+
+    uint8_t remote_wakeup_en      : 1; // enable/disable by host
+    uint8_t remote_wakeup_support : 1; // configuration descriptor's attribute
+    uint8_t self_powered          : 1; // configuration descriptor's attribute
+  };
+  volatile uint8_t cfg_num; // current active configuration (0x00 is not configured)
+  uint8_t speed;
+  volatile uint8_t sof_consumer;
+
+  uint8_t itf2drv[CFG_TUD_INTERFACE_MAX];   // map interface number to driver (0xff is invalid)
+  uint8_t ep2drv[CFG_TUD_ENDPPOINT_MAX][2]; // map endpoint to driver ( 0xff is invalid ), can use only 4-bit each
+
+  tu_edpt_state_t ep_status[CFG_TUD_ENDPPOINT_MAX][2];
+
+}usbd_device_t;
+
+tu_static usbd_device_t _usbd_dev;
+static volatile uint8_t _usbd_queued_setup;
+
+//--------------------------------------------------------------------+
+// Class Driver
+//--------------------------------------------------------------------+
+#if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+  #define DRIVER_NAME(_name)  _name
+#else
+  #define DRIVER_NAME(_name)  NULL
+#endif
+
+// Built-in class drivers
+tu_static usbd_class_driver_t const _usbd_driver[] = {
+    #if CFG_TUD_CDC
+    {
+        .name             = DRIVER_NAME("CDC"),
+        .init             = cdcd_init,
+        .deinit           = cdcd_deinit,
+        .reset            = cdcd_reset,
+        .open             = cdcd_open,
+        .control_xfer_cb  = cdcd_control_xfer_cb,
+        .xfer_cb          = cdcd_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_MSC
+    {
+        .name             = DRIVER_NAME("MSC"),
+        .init             = mscd_init,
+        .deinit           = NULL,
+        .reset            = mscd_reset,
+        .open             = mscd_open,
+        .control_xfer_cb  = mscd_control_xfer_cb,
+        .xfer_cb          = mscd_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_HID
+    {
+        .name             = DRIVER_NAME("HID"),
+        .init             = hidd_init,
+        .deinit           = hidd_deinit,
+        .reset            = hidd_reset,
+        .open             = hidd_open,
+        .control_xfer_cb  = hidd_control_xfer_cb,
+        .xfer_cb          = hidd_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_AUDIO
+    {
+        .name             = DRIVER_NAME("AUDIO"),
+        .init             = audiod_init,
+        .deinit           = audiod_deinit,
+        .reset            = audiod_reset,
+        .open             = audiod_open,
+        .control_xfer_cb  = audiod_control_xfer_cb,
+        .xfer_cb          = audiod_xfer_cb,
+        .sof              = audiod_sof_isr
+    },
+    #endif
+
+    #if CFG_TUD_VIDEO
+    {
+        .name             = DRIVER_NAME("VIDEO"),
+        .init             = videod_init,
+        .deinit           = videod_deinit,
+        .reset            = videod_reset,
+        .open             = videod_open,
+        .control_xfer_cb  = videod_control_xfer_cb,
+        .xfer_cb          = videod_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_MIDI
+    {
+        .name             = DRIVER_NAME("MIDI"),
+        .init             = midid_init,
+        .deinit           = midid_deinit,
+        .open             = midid_open,
+        .reset            = midid_reset,
+        .control_xfer_cb  = midid_control_xfer_cb,
+        .xfer_cb          = midid_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_VENDOR
+    {
+        .name             = DRIVER_NAME("VENDOR"),
+        .init             = vendord_init,
+        .deinit           = vendord_deinit,
+        .reset            = vendord_reset,
+        .open             = vendord_open,
+        .control_xfer_cb  = tud_vendor_control_xfer_cb,
+        .xfer_cb          = vendord_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_USBTMC
+    {
+        .name             = DRIVER_NAME("TMC"),
+        .init             = usbtmcd_init_cb,
+        .deinit           = usbtmcd_deinit,
+        .reset            = usbtmcd_reset_cb,
+        .open             = usbtmcd_open_cb,
+        .control_xfer_cb  = usbtmcd_control_xfer_cb,
+        .xfer_cb          = usbtmcd_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_DFU_RUNTIME
+    {
+        .name             = DRIVER_NAME("DFU-RUNTIME"),
+        .init             = dfu_rtd_init,
+        .deinit           = dfu_rtd_deinit,
+        .reset            = dfu_rtd_reset,
+        .open             = dfu_rtd_open,
+        .control_xfer_cb  = dfu_rtd_control_xfer_cb,
+        .xfer_cb          = NULL,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_DFU
+    {
+        .name             = DRIVER_NAME("DFU"),
+        .init             = dfu_moded_init,
+        .deinit           = dfu_moded_deinit,
+        .reset            = dfu_moded_reset,
+        .open             = dfu_moded_open,
+        .control_xfer_cb  = dfu_moded_control_xfer_cb,
+        .xfer_cb          = NULL,
+        .sof              = NULL
+    },
+    #endif
+
+    #if CFG_TUD_ECM_RNDIS || CFG_TUD_NCM
+    {
+        .name             = DRIVER_NAME("NET"),
+        .init             = netd_init,
+        .deinit           = netd_deinit,
+        .reset            = netd_reset,
+        .open             = netd_open,
+        .control_xfer_cb  = netd_control_xfer_cb,
+        .xfer_cb          = netd_xfer_cb,
+        .sof                  = NULL,
+    },
+    #endif
+
+    #if CFG_TUD_BTH
+    {
+        .name             = DRIVER_NAME("BTH"),
+        .init             = btd_init,
+        .deinit           = btd_deinit,
+        .reset            = btd_reset,
+        .open             = btd_open,
+        .control_xfer_cb  = btd_control_xfer_cb,
+        .xfer_cb          = btd_xfer_cb,
+        .sof              = NULL
+    },
+    #endif
+};
+
+enum { BUILTIN_DRIVER_COUNT = TU_ARRAY_SIZE(_usbd_driver) };
+
+// Additional class drivers implemented by application
+tu_static usbd_class_driver_t const * _app_driver = NULL;
+tu_static uint8_t _app_driver_count = 0;
+
+#define TOTAL_DRIVER_COUNT    (_app_driver_count + BUILTIN_DRIVER_COUNT)
+
+// virtually joins built-in and application drivers together.
+// Application is positioned first to allow overwriting built-in ones.
+TU_ATTR_ALWAYS_INLINE static inline usbd_class_driver_t const * get_driver(uint8_t drvid) {
+  usbd_class_driver_t const * driver = NULL;
+  if ( drvid < _app_driver_count ) {
+    // Application drivers
+    driver = &_app_driver[drvid];
+  } else if ( drvid < TOTAL_DRIVER_COUNT && BUILTIN_DRIVER_COUNT > 0 ){
+    driver = &_usbd_driver[drvid - _app_driver_count];
+  }
+  return driver;
+}
+
+
+//--------------------------------------------------------------------+
+// DCD Event
+//--------------------------------------------------------------------+
+
+enum { RHPORT_INVALID = 0xFFu };
+tu_static uint8_t _usbd_rhport = RHPORT_INVALID;
+
+// Event queue
+// usbd_int_set() is used as mutex in OS NONE config
+OSAL_QUEUE_DEF(usbd_int_set, _usbd_qdef, CFG_TUD_TASK_QUEUE_SZ, dcd_event_t);
+tu_static osal_queue_t _usbd_q;
+
+// Mutex for claiming endpoint
+#if OSAL_MUTEX_REQUIRED
+  tu_static osal_mutex_def_t _ubsd_mutexdef;
+  tu_static osal_mutex_t _usbd_mutex;
+#else
+  #define _usbd_mutex   NULL
+#endif
+
+TU_ATTR_ALWAYS_INLINE static inline bool queue_event(dcd_event_t const * event, bool in_isr) {
+  TU_ASSERT(osal_queue_send(_usbd_q, event, in_isr));
+  tud_event_hook_cb(event->rhport, event->event_id, in_isr);
+  return true;
+}
+
+//--------------------------------------------------------------------+
+// Prototypes
+//--------------------------------------------------------------------+
+static bool process_control_request(uint8_t rhport, tusb_control_request_t const * p_request);
+static bool process_set_config(uint8_t rhport, uint8_t cfg_num);
+static bool process_get_descriptor(uint8_t rhport, tusb_control_request_t const * p_request);
+
+#if CFG_TUD_TEST_MODE
+static bool process_test_mode_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const * request) {
+  TU_VERIFY(CONTROL_STAGE_ACK == stage);
+  uint8_t const selector = tu_u16_high(request->wIndex);
+  TU_LOG_USBD("    Enter Test Mode (test selector index: %d)\\r\\n", selector);
+  dcd_enter_test_mode(rhport, (tusb_feature_test_mode_t) selector);
+  return true;
+}
+#endif
+
+// from usbd_control.c
+void usbd_control_reset(void);
+void usbd_control_set_request(tusb_control_request_t const *request);
+void usbd_control_set_complete_callback( usbd_control_xfer_cb_t fp );
+bool usbd_control_xfer_cb (uint8_t rhport, uint8_t ep_addr, xfer_result_t event, uint32_t xferred_bytes);
+
+
+//--------------------------------------------------------------------+
+// Debug
+//--------------------------------------------------------------------+
+#if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+tu_static char const* const _usbd_event_str[DCD_EVENT_COUNT] = {
+    "Invalid",
+    "Bus Reset",
+    "Unplugged",
+    "SOF",
+    "Suspend",
+    "Resume",
+    "Setup Received",
+    "Xfer Complete",
+    "Func Call"
+};
+
+// for usbd_control to print the name of control complete driver
+void usbd_driver_print_control_complete_name(usbd_control_xfer_cb_t callback) {
+  for (uint8_t i = 0; i < TOTAL_DRIVER_COUNT; i++) {
+    usbd_class_driver_t const* driver = get_driver(i);
+    if (driver && driver->control_xfer_cb == callback) {
+      TU_LOG_USBD("%s control complete\\r\\n", driver->name);
+      return;
+    }
+  }
+}
+
+#endif
+
+//--------------------------------------------------------------------+
+// Application API
+//--------------------------------------------------------------------+
+tusb_speed_t tud_speed_get(void) {
+  return (tusb_speed_t) _usbd_dev.speed;
+}
+
+bool tud_connected(void) {
+  return _usbd_dev.connected;
+}
+
+bool tud_mounted(void) {
+  return _usbd_dev.cfg_num ? true : false;
+}
+
+bool tud_suspended(void) {
+  return _usbd_dev.suspended;
+}
+
+bool tud_remote_wakeup(void) {
+  // only wake up host if this feature is supported and enabled and we are suspended
+  TU_VERIFY (_usbd_dev.suspended && _usbd_dev.remote_wakeup_support && _usbd_dev.remote_wakeup_en);
+  dcd_remote_wakeup(_usbd_rhport);
+  return true;
+}
+
+bool tud_disconnect(void) {
+  dcd_disconnect(_usbd_rhport);
+  return true;
+}
+
+bool tud_connect(void) {
+  dcd_connect(_usbd_rhport);
+  return true;
+}
+
+void tud_sof_cb_enable(bool en) {
+  usbd_sof_enable(_usbd_rhport, SOF_CONSUMER_USER, en);
+}
+
+//--------------------------------------------------------------------+
+// USBD Task
+//--------------------------------------------------------------------+
+bool tud_inited(void) {
+  return _usbd_rhport != RHPORT_INVALID;
+}
+
+bool tud_rhport_init(uint8_t rhport, const tusb_rhport_init_t* rh_init) {
+  if (tud_inited()) {
+    return true; // skip if already initialized
+  }
+  TU_ASSERT(rh_init);
+
+  TU_LOG_USBD("USBD init on controller %u, speed = %s\\r\\n", rhport,
+    rh_init->speed == TUSB_SPEED_HIGH ? "High" : "Full");
+  TU_LOG_INT(CFG_TUD_LOG_LEVEL, sizeof(usbd_device_t));
+  TU_LOG_INT(CFG_TUD_LOG_LEVEL, sizeof(dcd_event_t));
+  TU_LOG_INT(CFG_TUD_LOG_LEVEL, sizeof(tu_fifo_t));
+  TU_LOG_INT(CFG_TUD_LOG_LEVEL, sizeof(tu_edpt_stream_t));
+
+  tu_varclr(&_usbd_dev);
+  _usbd_queued_setup = 0;
+
+#if OSAL_MUTEX_REQUIRED
+  // Init device mutex
+  _usbd_mutex = osal_mutex_create(&_ubsd_mutexdef);
+  TU_ASSERT(_usbd_mutex);
+#endif
+
+  // Init device queue & task
+  _usbd_q = osal_queue_create(&_usbd_qdef);
+  TU_ASSERT(_usbd_q);
+
+  // Get application driver if available
+  if (usbd_app_driver_get_cb) {
+    _app_driver = usbd_app_driver_get_cb(&_app_driver_count);
+  }
+
+  // Init class drivers
+  for (uint8_t i = 0; i < TOTAL_DRIVER_COUNT; i++) {
+    usbd_class_driver_t const* driver = get_driver(i);
+    TU_ASSERT(driver && driver->init);
+    TU_LOG_USBD("%s init\\r\\n", driver->name);
+    driver->init();
+  }
+
+  _usbd_rhport = rhport;
+
+  // Init device controller driver
+  TU_ASSERT(dcd_init(rhport, rh_init));
+  dcd_int_enable(rhport);
+
+  return true;
+}
+
+bool tud_deinit(uint8_t rhport) {
+  if (!tud_inited()) {
+    return true; // skip if not initialized
+  }
+
+  TU_LOG_USBD("USBD deinit on controller %u\\r\\n", rhport);
+
+  // Deinit device controller driver
+  dcd_int_disable(rhport);
+  dcd_disconnect(rhport);
+  dcd_deinit(rhport);
+
+  // Deinit class drivers
+  for (uint8_t i = 0; i < TOTAL_DRIVER_COUNT; i++) {
+    usbd_class_driver_t const* driver = get_driver(i);
+    if(driver && driver->deinit) {
+      TU_LOG_USBD("%s deinit\\r\\n", driver->name);
+      driver->deinit();
+    }
+  }
+
+  // Deinit device queue & task
+  osal_queue_delete(_usbd_q);
+  _usbd_q = NULL;
+
+#if OSAL_MUTEX_REQUIRED
+  // TODO make sure there is no task waiting on this mutex
+  osal_mutex_delete(_usbd_mutex);
+  _usbd_mutex = NULL;
+#endif
+
+  _usbd_rhport = RHPORT_INVALID;
+
+  return true;
+}
+
+static void configuration_reset(uint8_t rhport) {
+  for (uint8_t i = 0; i < TOTAL_DRIVER_COUNT; i++) {
+    usbd_class_driver_t const* driver = get_driver(i);
+    TU_ASSERT(driver,);
+    driver->reset(rhport);
+  }
+
+  tu_varclr(&_usbd_dev);
+  memset(_usbd_dev.itf2drv, DRVID_INVALID, sizeof(_usbd_dev.itf2drv)); // invalid mapping
+  memset(_usbd_dev.ep2drv, DRVID_INVALID, sizeof(_usbd_dev.ep2drv)); // invalid mapping
+}
+
+static void usbd_reset(uint8_t rhport) {
+  configuration_reset(rhport);
+  usbd_control_reset();
+}
+
+bool tud_task_event_ready(void) {
+  // Skip if stack is not initialized
+  if (!tud_inited()) return false;
+  return !osal_queue_empty(_usbd_q);
+}
+
+/* USB Device Driver task
+ * This top level thread manages all device controller event and delegates events to class-specific drivers.
+ * This should be called periodically within the mainloop or rtos thread.
+ *
+    int main(void) {
+      application_init();
+      tusb_init(0, TUSB_ROLE_DEVICE);
+
+      while(1) { // the mainloop
+        application_code();
+        tud_task(); // tinyusb device task
+      }
+    }
+ */
+void tud_task_ext(uint32_t timeout_ms, bool in_isr) {
+  (void) in_isr; // not implemented yet
+
+  // Skip if stack is not initialized
+  if (!tud_inited()) return;
+
+  // Loop until there is no more events in the queue
+  while (1) {
+    dcd_event_t event;
+    if (!osal_queue_receive(_usbd_q, &event, timeout_ms)) return;
+
+#if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+    if (event.event_id == DCD_EVENT_SETUP_RECEIVED) TU_LOG_USBD("\\r\\n"); // extra line for setup
+    TU_LOG_USBD("USBD %s ", event.event_id < DCD_EVENT_COUNT ? _usbd_event_str[event.event_id] : "CORRUPTED");
+#endif
+
+    switch (event.event_id) {
+      case DCD_EVENT_BUS_RESET:
+        TU_LOG_USBD(": %s Speed\\r\\n", tu_str_speed[event.bus_reset.speed]);
+        usbd_reset(event.rhport);
+        _usbd_dev.speed = event.bus_reset.speed;
+        break;
+
+      case DCD_EVENT_UNPLUGGED:
+        TU_LOG_USBD("\\r\\n");
+        usbd_reset(event.rhport);
+        tud_umount_cb();
+        break;
+
+      case DCD_EVENT_SETUP_RECEIVED:
+        TU_ASSERT(_usbd_queued_setup > 0,);
+        _usbd_queued_setup--;
+        TU_LOG_BUF(CFG_TUD_LOG_LEVEL, &event.setup_received, 8);
+        if (_usbd_queued_setup) {
+          TU_LOG_USBD("  Skipped since there is other SETUP in queue\\r\\n");
+          break;
+        }
+
+        // Mark as connected after receiving 1st setup packet.
+        // But it is easier to set it every time instead of wasting time to check then set
+        _usbd_dev.connected = 1;
+
+        // mark both in & out control as free
+        _usbd_dev.ep_status[0][TUSB_DIR_OUT].busy = 0;
+        _usbd_dev.ep_status[0][TUSB_DIR_OUT].claimed = 0;
+        _usbd_dev.ep_status[0][TUSB_DIR_IN].busy = 0;
+        _usbd_dev.ep_status[0][TUSB_DIR_IN].claimed = 0;
+
+        // Process control request
+        if (!process_control_request(event.rhport, &event.setup_received)) {
+          TU_LOG_USBD("  Stall EP0\\r\\n");
+          // Failed -> stall both control endpoint IN and OUT
+          dcd_edpt_stall(event.rhport, 0);
+          dcd_edpt_stall(event.rhport, 0 | TUSB_DIR_IN_MASK);
+        }
+        break;
+
+      case DCD_EVENT_XFER_COMPLETE: {
+        // Invoke the class callback associated with the endpoint address
+        uint8_t const ep_addr = event.xfer_complete.ep_addr;
+        uint8_t const epnum = tu_edpt_number(ep_addr);
+        uint8_t const ep_dir = tu_edpt_dir(ep_addr);
+
+        TU_LOG_USBD("on EP %02X with %u bytes\\r\\n", ep_addr, (unsigned int) event.xfer_complete.len);
+
+        _usbd_dev.ep_status[epnum][ep_dir].busy = 0;
+        _usbd_dev.ep_status[epnum][ep_dir].claimed = 0;
+
+        if (0 == epnum) {
+          usbd_control_xfer_cb(event.rhport, ep_addr, (xfer_result_t) event.xfer_complete.result,
+                               event.xfer_complete.len);
+        } else {
+          usbd_class_driver_t const* driver = get_driver(_usbd_dev.ep2drv[epnum][ep_dir]);
+          TU_ASSERT(driver,);
+
+          TU_LOG_USBD("  %s xfer callback\\r\\n", driver->name);
+          driver->xfer_cb(event.rhport, ep_addr, (xfer_result_t) event.xfer_complete.result, event.xfer_complete.len);
+        }
+        break;
+      }
+
+      case DCD_EVENT_SUSPEND:
+        // NOTE: When plugging/unplugging device, the D+/D- state are unstable and
+        // can accidentally meet the SUSPEND condition ( Bus Idle for 3ms ), which result in a series of event
+        // e.g suspend -> resume -> unplug/plug. Skip suspend/resume if not connected
+        if (_usbd_dev.connected) {
+          TU_LOG_USBD(": Remote Wakeup = %u\\r\\n", _usbd_dev.remote_wakeup_en);
+          tud_suspend_cb(_usbd_dev.remote_wakeup_en);
+        } else {
+          TU_LOG_USBD(" Skipped\\r\\n");
+        }
+        break;
+
+      case DCD_EVENT_RESUME:
+        if (_usbd_dev.connected) {
+          TU_LOG_USBD("\\r\\n");
+          tud_resume_cb();
+        } else {
+          TU_LOG_USBD(" Skipped\\r\\n");
+        }
+        break;
+
+      case USBD_EVENT_FUNC_CALL:
+        TU_LOG_USBD("\\r\\n");
+        if (event.func_call.func) event.func_call.func(event.func_call.param);
+        break;
+
+      case DCD_EVENT_SOF:
+        if (tu_bit_test(_usbd_dev.sof_consumer, SOF_CONSUMER_USER)) {
+          TU_LOG_USBD("\\r\\n");
+          tud_sof_cb(event.sof.frame_count);
+        }
+      break;
+
+      default:
+        TU_BREAKPOINT();
+        break;
+    }
+
+#if CFG_TUSB_OS != OPT_OS_NONE && CFG_TUSB_OS != OPT_OS_PICO
+    // return if there is no more events, for application to run other background
+    if (osal_queue_empty(_usbd_q)) return;
+#endif
+  }
+}
+
+//--------------------------------------------------------------------+
+// Control Request Parser & Handling
+//--------------------------------------------------------------------+
+
+// Helper to invoke class driver control request handler
+static bool invoke_class_control(uint8_t rhport, usbd_class_driver_t const * driver, tusb_control_request_t const * request) {
+  usbd_control_set_complete_callback(driver->control_xfer_cb);
+  TU_LOG_USBD("  %s control request\\r\\n", driver->name);
+  return driver->control_xfer_cb(rhport, CONTROL_STAGE_SETUP, request);
+}
+
+// This handles the actual request and its response.
+// Returns false if unable to complete the request, causing caller to stall control endpoints.
+static bool process_control_request(uint8_t rhport, tusb_control_request_t const * p_request) {
+  usbd_control_set_complete_callback(NULL);
+  TU_ASSERT(p_request->bmRequestType_bit.type < TUSB_REQ_TYPE_INVALID);
+
+  // Vendor request
+  if ( p_request->bmRequestType_bit.type == TUSB_REQ_TYPE_VENDOR ) {
+    usbd_control_set_complete_callback(tud_vendor_control_xfer_cb);
+    return tud_vendor_control_xfer_cb(rhport, CONTROL_STAGE_SETUP, p_request);
+  }
+
+#if CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+  if (TUSB_REQ_TYPE_STANDARD == p_request->bmRequestType_bit.type && p_request->bRequest <= TUSB_REQ_SYNCH_FRAME) {
+    TU_LOG_USBD("  %s", tu_str_std_request[p_request->bRequest]);
+    if (TUSB_REQ_GET_DESCRIPTOR != p_request->bRequest) TU_LOG_USBD("\\r\\n");
+  }
+#endif
+
+  switch ( p_request->bmRequestType_bit.recipient ) {
+    //------------- Device Requests e.g in enumeration -------------//
+    case TUSB_REQ_RCPT_DEVICE:
+      if ( TUSB_REQ_TYPE_CLASS == p_request->bmRequestType_bit.type ) {
+        uint8_t const itf = tu_u16_low(p_request->wIndex);
+        TU_VERIFY(itf < TU_ARRAY_SIZE(_usbd_dev.itf2drv));
+
+        usbd_class_driver_t const * driver = get_driver(_usbd_dev.itf2drv[itf]);
+        TU_VERIFY(driver);
+
+        // forward to class driver: "non-STD request to Interface"
+        return invoke_class_control(rhport, driver, p_request);
+      }
+
+      if ( TUSB_REQ_TYPE_STANDARD != p_request->bmRequestType_bit.type ) {
+        // Non-standard request is not supported
+        TU_BREAKPOINT();
+        return false;
+      }
+
+      switch ( p_request->bRequest ) {
+        case TUSB_REQ_SET_ADDRESS:
+          // Depending on mcu, status phase could be sent either before or after changing device address,
+          // or even require stack to not response with status at all
+          // Therefore DCD must take full responsibility to response and include zlp status packet if needed.
+          usbd_control_set_request(p_request); // set request since DCD has no access to tud_control_status() API
+          dcd_set_address(rhport, (uint8_t) p_request->wValue);
+          // skip tud_control_status()
+          _usbd_dev.addressed = 1;
+        break;
+
+        case TUSB_REQ_GET_CONFIGURATION: {
+          uint8_t cfg_num = _usbd_dev.cfg_num;
+          tud_control_xfer(rhport, p_request, &cfg_num, 1);
+        }
+        break;
+
+        case TUSB_REQ_SET_CONFIGURATION: {
+          uint8_t const cfg_num = (uint8_t) p_request->wValue;
+
+          // Only process if new configure is different
+          if (_usbd_dev.cfg_num != cfg_num) {
+            if ( _usbd_dev.cfg_num ) {
+              // already configured: need to clear all endpoints and driver first
+              TU_LOG_USBD("  Clear current Configuration (%u) before switching\\r\\n", _usbd_dev.cfg_num);
+
+              // disable SOF
+              dcd_sof_enable(rhport, false);
+
+              // close all non-control endpoints, cancel all pending transfers if any
+              dcd_edpt_close_all(rhport);
+
+              // close all drivers and current configured state except bus speed
+              uint8_t const speed = _usbd_dev.speed;
+              configuration_reset(rhport);
+
+              _usbd_dev.speed = speed; // restore speed
+            }
+
+            _usbd_dev.cfg_num = cfg_num;
+
+            // Handle the new configuration and execute the corresponding callback
+            if ( cfg_num ) {
+              // switch to new configuration if not zero
+              if (!process_set_config(rhport, cfg_num)) {
+                TU_MESS_FAILED();
+                TU_BREAKPOINT();
+                _usbd_dev.cfg_num = 0;
+                return false;
+              }
+              tud_mount_cb();
+            } else {
+              tud_umount_cb();
+            }
+          }
+
+          tud_control_status(rhport, p_request);
+        }
+        break;
+
+        case TUSB_REQ_GET_DESCRIPTOR:
+          TU_VERIFY( process_get_descriptor(rhport, p_request) );
+        break;
+
+        case TUSB_REQ_SET_FEATURE:
+          switch(p_request->wValue) {
+            case TUSB_REQ_FEATURE_REMOTE_WAKEUP:
+              TU_LOG_USBD("    Enable Remote Wakeup\\r\\n");
+              // Host may enable remote wake up before suspending especially HID device
+              _usbd_dev.remote_wakeup_en = true;
+              tud_control_status(rhport, p_request);
+            break;
+
+            #if CFG_TUD_TEST_MODE
+            case TUSB_REQ_FEATURE_TEST_MODE: {
+              // Only handle the test mode if supported and valid
+              TU_VERIFY(0 == tu_u16_low(p_request->wIndex));
+
+              uint8_t const selector = tu_u16_high(p_request->wIndex);
+              TU_VERIFY(TUSB_FEATURE_TEST_J <= selector && selector <= TUSB_FEATURE_TEST_FORCE_ENABLE);
+
+              usbd_control_set_complete_callback(process_test_mode_cb);
+              tud_control_status(rhport, p_request);
+              break;
+            }
+            #endif /* CFG_TUD_TEST_MODE */
+
+            // Stall unsupported feature selector
+            default: return false;
+          }
+        break;
+
+        case TUSB_REQ_CLEAR_FEATURE:
+          // Only support remote wakeup for device feature
+          TU_VERIFY(TUSB_REQ_FEATURE_REMOTE_WAKEUP == p_request->wValue);
+
+          TU_LOG_USBD("    Disable Remote Wakeup\\r\\n");
+
+          // Host may disable remote wake up after resuming
+          _usbd_dev.remote_wakeup_en = false;
+          tud_control_status(rhport, p_request);
+        break;
+
+        case TUSB_REQ_GET_STATUS: {
+          // Device status bit mask
+          // - Bit 0: Self Powered
+          // - Bit 1: Remote Wakeup enabled
+          uint16_t status = (uint16_t) ((_usbd_dev.self_powered ? 1u : 0u) | (_usbd_dev.remote_wakeup_en ? 2u : 0u));
+          tud_control_xfer(rhport, p_request, &status, 2);
+          break;
+        }
+
+        // Unknown/Unsupported request
+        default: TU_BREAKPOINT(); return false;
+      }
+    break;
+
+    //------------- Class/Interface Specific Request -------------//
+    case TUSB_REQ_RCPT_INTERFACE: {
+      uint8_t const itf = tu_u16_low(p_request->wIndex);
+      TU_VERIFY(itf < TU_ARRAY_SIZE(_usbd_dev.itf2drv));
+
+      usbd_class_driver_t const * driver = get_driver(_usbd_dev.itf2drv[itf]);
+      TU_VERIFY(driver);
+
+      // all requests to Interface (STD or Class) is forwarded to class driver.
+      // notable requests are: GET HID REPORT DESCRIPTOR, SET_INTERFACE, GET_INTERFACE
+      if ( !invoke_class_control(rhport, driver, p_request) ) {
+        // For GET_INTERFACE and SET_INTERFACE, it is mandatory to respond even if the class
+        // driver doesn't use alternate settings or implement this
+        TU_VERIFY(TUSB_REQ_TYPE_STANDARD == p_request->bmRequestType_bit.type);
+
+        switch(p_request->bRequest) {
+          case TUSB_REQ_GET_INTERFACE:
+          case TUSB_REQ_SET_INTERFACE:
+            // Clear complete callback if driver set since it can also stall the request.
+            usbd_control_set_complete_callback(NULL);
+
+            if (TUSB_REQ_GET_INTERFACE == p_request->bRequest) {
+              uint8_t alternate = 0;
+              tud_control_xfer(rhport, p_request, &alternate, 1);
+            }else {
+              tud_control_status(rhport, p_request);
+            }
+          break;
+
+          default: return false;
+        }
+      }
+      break;
+    }
+
+    //------------- Endpoint Request -------------//
+    case TUSB_REQ_RCPT_ENDPOINT: {
+      uint8_t const ep_addr = tu_u16_low(p_request->wIndex);
+      uint8_t const ep_num  = tu_edpt_number(ep_addr);
+      uint8_t const ep_dir  = tu_edpt_dir(ep_addr);
+
+      TU_ASSERT(ep_num < TU_ARRAY_SIZE(_usbd_dev.ep2drv) );
+      usbd_class_driver_t const * driver = get_driver(_usbd_dev.ep2drv[ep_num][ep_dir]);
+
+      if ( TUSB_REQ_TYPE_STANDARD != p_request->bmRequestType_bit.type ) {
+        // Forward class request to its driver
+        TU_VERIFY(driver);
+        return invoke_class_control(rhport, driver, p_request);
+      } else {
+        // Handle STD request to endpoint
+        switch ( p_request->bRequest ) {
+          case TUSB_REQ_GET_STATUS: {
+            uint16_t status = usbd_edpt_stalled(rhport, ep_addr) ? 0x0001 : 0x0000;
+            tud_control_xfer(rhport, p_request, &status, 2);
+          }
+          break;
+
+          case TUSB_REQ_CLEAR_FEATURE:
+          case TUSB_REQ_SET_FEATURE: {
+            if ( TUSB_REQ_FEATURE_EDPT_HALT == p_request->wValue ) {
+              if ( TUSB_REQ_CLEAR_FEATURE ==  p_request->bRequest ) {
+                usbd_edpt_clear_stall(rhport, ep_addr);
+              }else {
+                usbd_edpt_stall(rhport, ep_addr);
+              }
+            }
+
+            if (driver) {
+              // Some classes such as USBTMC needs to clear/re-init its buffer when receiving CLEAR_FEATURE request
+              // We will also forward std request targeted endpoint to class drivers as well
+
+              // STD request must always be ACKed regardless of driver returned value
+              // Also clear complete callback if driver set since it can also stall the request.
+              (void) invoke_class_control(rhport, driver, p_request);
+              usbd_control_set_complete_callback(NULL);
+
+              // skip ZLP status if driver already did that
+              if ( !_usbd_dev.ep_status[0][TUSB_DIR_IN].busy ) tud_control_status(rhport, p_request);
+            }
+          }
+          break;
+
+          // Unknown/Unsupported request
+          default:
+            TU_BREAKPOINT();
+            return false;
+        }
+      }
+    }
+    break;
+
+    // Unknown recipient
+    default:
+      TU_BREAKPOINT();
+      return false;
+  }
+
+  return true;
+}
+
+// Process Set Configure Request
+// This function parse configuration descriptor & open drivers accordingly
+static bool process_set_config(uint8_t rhport, uint8_t cfg_num)
+{
+  // index is cfg_num-1
+  tusb_desc_configuration_t const * desc_cfg = (tusb_desc_configuration_t const *) tud_descriptor_configuration_cb(cfg_num-1);
+  TU_ASSERT(desc_cfg != NULL && desc_cfg->bDescriptorType == TUSB_DESC_CONFIGURATION);
+
+  // Parse configuration descriptor
+  _usbd_dev.remote_wakeup_support = (desc_cfg->bmAttributes & TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP) ? 1u : 0u;
+  _usbd_dev.self_powered          = (desc_cfg->bmAttributes & TUSB_DESC_CONFIG_ATT_SELF_POWERED ) ? 1u : 0u;
+
+  // Parse interface descriptor
+  uint8_t const * p_desc   = ((uint8_t const*) desc_cfg) + sizeof(tusb_desc_configuration_t);
+  uint8_t const * desc_end = ((uint8_t const*) desc_cfg) + tu_le16toh(desc_cfg->wTotalLength);
+
+  while( p_desc < desc_end )
+  {
+    uint8_t assoc_itf_count = 1;
+
+    // Class will always starts with Interface Association (if any) and then Interface descriptor
+    if ( TUSB_DESC_INTERFACE_ASSOCIATION == tu_desc_type(p_desc) )
+    {
+      tusb_desc_interface_assoc_t const * desc_iad = (tusb_desc_interface_assoc_t const *) p_desc;
+      assoc_itf_count = desc_iad->bInterfaceCount;
+
+      p_desc = tu_desc_next(p_desc); // next to Interface
+
+      // IAD's first interface number and class should match with opened interface
+      //TU_ASSERT(desc_iad->bFirstInterface == desc_itf->bInterfaceNumber &&
+      //          desc_iad->bFunctionClass  == desc_itf->bInterfaceClass);
+    }
+
+    TU_ASSERT( TUSB_DESC_INTERFACE == tu_desc_type(p_desc) );
+    tusb_desc_interface_t const * desc_itf = (tusb_desc_interface_t const*) p_desc;
+
+    // Find driver for this interface
+    uint16_t const remaining_len = (uint16_t) (desc_end-p_desc);
+    uint8_t drv_id;
+    for (drv_id = 0; drv_id < TOTAL_DRIVER_COUNT; drv_id++)
+    {
+      usbd_class_driver_t const *driver = get_driver(drv_id);
+      TU_ASSERT(driver);
+      uint16_t const drv_len = driver->open(rhport, desc_itf, remaining_len);
+
+      if ( (sizeof(tusb_desc_interface_t) <= drv_len)  && (drv_len <= remaining_len) )
+      {
+        // Open successfully
+        TU_LOG_USBD("  %s opened\\r\\n", driver->name);
+
+        // Some drivers use 2 or more interfaces but may not have IAD e.g MIDI (always) or
+        // BTH (even CDC) with class in device descriptor (single interface)
+        if ( assoc_itf_count == 1)
+        {
+          #if CFG_TUD_CDC
+          if ( driver->open == cdcd_open ) assoc_itf_count = 2;
+          #endif
+
+          #if CFG_TUD_MIDI
+          if ( driver->open == midid_open ) assoc_itf_count = 2;
+          #endif
+
+          #if CFG_TUD_BTH && CFG_TUD_BTH_ISO_ALT_COUNT
+          if ( driver->open == btd_open ) assoc_itf_count = 2;
+          #endif
+        }
+
+        // bind (associated) interfaces to found driver
+        for(uint8_t i=0; i<assoc_itf_count; i++)
+        {
+          uint8_t const itf_num = desc_itf->bInterfaceNumber+i;
+
+          // Interface number must not be used already
+          TU_ASSERT(DRVID_INVALID == _usbd_dev.itf2drv[itf_num]);
+          _usbd_dev.itf2drv[itf_num] = drv_id;
+        }
+
+        // bind all endpoints to found driver
+        tu_edpt_bind_driver(_usbd_dev.ep2drv, desc_itf, drv_len, drv_id);
+
+        // next Interface
+        p_desc += drv_len;
+
+        break; // exit driver find loop
+      }
+    }
+
+    // Failed if there is no supported drivers
+    TU_ASSERT(drv_id < TOTAL_DRIVER_COUNT);
+  }
+
+  return true;
+}
+
+// return descriptor's buffer and update desc_len
+static bool process_get_descriptor(uint8_t rhport, tusb_control_request_t const * p_request)
+{
+  tusb_desc_type_t const desc_type = (tusb_desc_type_t) tu_u16_high(p_request->wValue);
+  uint8_t const desc_index = tu_u16_low( p_request->wValue );
+
+  switch(desc_type)
+  {
+    case TUSB_DESC_DEVICE: {
+      TU_LOG_USBD(" Device\\r\\n");
+
+      void* desc_device = (void*) (uintptr_t) tud_descriptor_device_cb();
+      TU_ASSERT(desc_device);
+
+      // Only response with exactly 1 Packet if: not addressed and host requested more data than device descriptor has.
+      // This only happens with the very first get device descriptor and EP0 size = 8 or 16.
+      if ((CFG_TUD_ENDPOINT0_SIZE < sizeof(tusb_desc_device_t)) && !_usbd_dev.addressed &&
+          ((tusb_control_request_t const*) p_request)->wLength > sizeof(tusb_desc_device_t)) {
+        // Hack here: we modify the request length to prevent usbd_control response with zlp
+        // since we are responding with 1 packet & less data than wLength.
+        tusb_control_request_t mod_request = *p_request;
+        mod_request.wLength = CFG_TUD_ENDPOINT0_SIZE;
+
+        return tud_control_xfer(rhport, &mod_request, desc_device, CFG_TUD_ENDPOINT0_SIZE);
+      }else {
+        return tud_control_xfer(rhport, p_request, desc_device, sizeof(tusb_desc_device_t));
+      }
+    }
+    // break; // unreachable
+
+    case TUSB_DESC_BOS: {
+      TU_LOG_USBD(" BOS\\r\\n");
+
+      // requested by host if USB > 2.0 ( i.e 2.1 or 3.x )
+      uintptr_t desc_bos = (uintptr_t) tud_descriptor_bos_cb();
+      TU_VERIFY(desc_bos);
+
+      // Use offsetof to avoid pointer to the odd/misaligned address
+      uint16_t const total_len = tu_le16toh( tu_unaligned_read16((const void*) (desc_bos + offsetof(tusb_desc_bos_t, wTotalLength))) );
+
+      return tud_control_xfer(rhport, p_request, (void*) desc_bos, total_len);
+    }
+    // break; // unreachable
+
+    case TUSB_DESC_CONFIGURATION:
+    case TUSB_DESC_OTHER_SPEED_CONFIG: {
+      uintptr_t desc_config;
+
+      if ( desc_type == TUSB_DESC_CONFIGURATION ) {
+        TU_LOG_USBD(" Configuration[%u]\\r\\n", desc_index);
+        desc_config = (uintptr_t) tud_descriptor_configuration_cb(desc_index);
+        TU_ASSERT(desc_config);
+      }else {
+        // Host only request this after getting Device Qualifier descriptor
+        TU_LOG_USBD(" Other Speed Configuration\\r\\n");
+        desc_config = (uintptr_t) tud_descriptor_other_speed_configuration_cb(desc_index);
+        TU_VERIFY(desc_config);
+      }
+
+      // Use offsetof to avoid pointer to the odd/misaligned address
+      uint16_t const total_len = tu_le16toh( tu_unaligned_read16((const void*) (desc_config + offsetof(tusb_desc_configuration_t, wTotalLength))) );
+
+      return tud_control_xfer(rhport, p_request, (void*) desc_config, total_len);
+    }
+    // break; // unreachable
+
+    case TUSB_DESC_STRING:
+    {
+      TU_LOG_USBD(" String[%u]\\r\\n", desc_index);
+
+      // String Descriptor always uses the desc set from user
+      uint8_t const* desc_str = (uint8_t const*) tud_descriptor_string_cb(desc_index, tu_le16toh(p_request->wIndex));
+      TU_VERIFY(desc_str);
+
+      // first byte of descriptor is its size
+      return tud_control_xfer(rhport, p_request, (void*) (uintptr_t) desc_str, tu_desc_len(desc_str));
+    }
+    // break; // unreachable
+
+    case TUSB_DESC_DEVICE_QUALIFIER: {
+      TU_LOG_USBD(" Device Qualifier\\r\\n");
+      uint8_t const* desc_qualifier = tud_descriptor_device_qualifier_cb();
+      TU_VERIFY(desc_qualifier);
+      return tud_control_xfer(rhport, p_request, (void*) (uintptr_t) desc_qualifier, tu_desc_len(desc_qualifier));
+    }
+    // break; // unreachable
+
+    default: return false;
+  }
+}
+
+//--------------------------------------------------------------------+
+// DCD Event Handler
+//--------------------------------------------------------------------+
+TU_ATTR_FAST_FUNC void dcd_event_handler(dcd_event_t const* event, bool in_isr) {
+  bool send = false;
+  switch (event->event_id) {
+    case DCD_EVENT_UNPLUGGED:
+      _usbd_dev.connected = 0;
+      _usbd_dev.addressed = 0;
+      _usbd_dev.cfg_num = 0;
+      _usbd_dev.suspended = 0;
+      send = true;
+      break;
+
+    case DCD_EVENT_SUSPEND:
+      // NOTE: When plugging/unplugging device, the D+/D- state are unstable and
+      // can accidentally meet the SUSPEND condition ( Bus Idle for 3ms ).
+      // In addition, some MCUs such as SAMD or boards that haven no VBUS detection cannot distinguish
+      // suspended vs disconnected. We will skip handling SUSPEND/RESUME event if not currently connected
+      if (_usbd_dev.connected) {
+        _usbd_dev.suspended = 1;
+        send = true;
+      }
+      break;
+
+    case DCD_EVENT_RESUME:
+      // skip event if not connected (especially required for SAMD)
+      if (_usbd_dev.connected) {
+        _usbd_dev.suspended = 0;
+        send = true;
+      }
+      break;
+
+    case DCD_EVENT_SOF:
+      // SOF driver handler in ISR context
+      for (uint8_t i = 0; i < TOTAL_DRIVER_COUNT; i++) {
+        usbd_class_driver_t const* driver = get_driver(i);
+        if (driver && driver->sof) {
+          driver->sof(event->rhport, event->sof.frame_count);
+        }
+      }
+
+      // Some MCUs after running dcd_remote_wakeup() does not have way to detect the end of remote wakeup
+      // which last 1-15 ms. DCD can use SOF as a clear indicator that bus is back to operational
+      if (_usbd_dev.suspended) {
+        _usbd_dev.suspended = 0;
+
+        dcd_event_t const event_resume = {.rhport = event->rhport, .event_id = DCD_EVENT_RESUME};
+        queue_event(&event_resume, in_isr);
+      }
+
+      if (tu_bit_test(_usbd_dev.sof_consumer, SOF_CONSUMER_USER)) {
+        dcd_event_t const event_sof = {.rhport = event->rhport, .event_id = DCD_EVENT_SOF, .sof.frame_count = event->sof.frame_count};
+        queue_event(&event_sof, in_isr);
+      }
+      break;
+
+    case DCD_EVENT_SETUP_RECEIVED:
+      _usbd_queued_setup++;
+      send = true;
+      break;
+
+    default:
+      send = true;
+      break;
+  }
+
+  if (send) {
+    queue_event(event, in_isr);
+  }
+}
+
+//--------------------------------------------------------------------+
+// USBD API For Class Driver
+//--------------------------------------------------------------------+
+
+void usbd_int_set(bool enabled)
+{
+  if (enabled)
+  {
+    dcd_int_enable(_usbd_rhport);
+  }else
+  {
+    dcd_int_disable(_usbd_rhport);
+  }
+}
+
+// Parse consecutive endpoint descriptors (IN & OUT)
+bool usbd_open_edpt_pair(uint8_t rhport, uint8_t const* p_desc, uint8_t ep_count, uint8_t xfer_type, uint8_t* ep_out, uint8_t* ep_in)
+{
+  for(int i=0; i<ep_count; i++)
+  {
+    tusb_desc_endpoint_t const * desc_ep = (tusb_desc_endpoint_t const *) p_desc;
+
+    TU_ASSERT(TUSB_DESC_ENDPOINT == desc_ep->bDescriptorType && xfer_type == desc_ep->bmAttributes.xfer);
+    TU_ASSERT(usbd_edpt_open(rhport, desc_ep));
+
+    if ( tu_edpt_dir(desc_ep->bEndpointAddress) == TUSB_DIR_IN )
+    {
+      (*ep_in) = desc_ep->bEndpointAddress;
+    }else
+    {
+      (*ep_out) = desc_ep->bEndpointAddress;
+    }
+
+    p_desc = tu_desc_next(p_desc);
+  }
+
+  return true;
+}
+
+// Helper to defer an isr function
+void usbd_defer_func(osal_task_func_t func, void* param, bool in_isr) {
+  dcd_event_t event = {
+      .rhport   = 0,
+      .event_id = USBD_EVENT_FUNC_CALL,
+  };
+  event.func_call.func  = func;
+  event.func_call.param = param;
+
+  queue_event(&event, in_isr);
+}
+
+//--------------------------------------------------------------------+
+// USBD Endpoint API
+//--------------------------------------------------------------------+
+
+bool usbd_edpt_open(uint8_t rhport, tusb_desc_endpoint_t const* desc_ep) {
+  rhport = _usbd_rhport;
+
+  TU_ASSERT(tu_edpt_number(desc_ep->bEndpointAddress) < CFG_TUD_ENDPPOINT_MAX);
+  TU_ASSERT(tu_edpt_validate(desc_ep, (tusb_speed_t) _usbd_dev.speed));
+
+  return dcd_edpt_open(rhport, desc_ep);
+}
+
+bool usbd_edpt_claim(uint8_t rhport, uint8_t ep_addr) {
+  (void) rhport;
+
+  // TODO add this check later, also make sure we don't starve an out endpoint while suspending
+  // TU_VERIFY(tud_ready());
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+  tu_edpt_state_t* ep_state = &_usbd_dev.ep_status[epnum][dir];
+
+  return tu_edpt_claim(ep_state, _usbd_mutex);
+}
+
+bool usbd_edpt_release(uint8_t rhport, uint8_t ep_addr) {
+  (void) rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+  tu_edpt_state_t* ep_state = &_usbd_dev.ep_status[epnum][dir];
+
+  return tu_edpt_release(ep_state, _usbd_mutex);
+}
+
+bool usbd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t* buffer, uint16_t total_bytes) {
+  rhport = _usbd_rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  // TODO skip ready() check for now since enumeration also use this API
+  // TU_VERIFY(tud_ready());
+
+  TU_LOG_USBD("  Queue EP %02X with %u bytes ...\\r\\n", ep_addr, total_bytes);
+#if CFG_TUD_LOG_LEVEL >= 3
+  if(dir == TUSB_DIR_IN) {
+    TU_LOG_MEM(CFG_TUD_LOG_LEVEL, buffer, total_bytes, 2);
+  }
+#endif
+
+  // Attempt to transfer on a busy endpoint, sound like an race condition !
+  TU_ASSERT(_usbd_dev.ep_status[epnum][dir].busy == 0);
+
+  // Set busy first since the actual transfer can be complete before dcd_edpt_xfer()
+  // could return and USBD task can preempt and clear the busy
+  _usbd_dev.ep_status[epnum][dir].busy = 1;
+
+  if (dcd_edpt_xfer(rhport, ep_addr, buffer, total_bytes)) {
+    return true;
+  } else {
+    // DCD error, mark endpoint as ready to allow next transfer
+    _usbd_dev.ep_status[epnum][dir].busy = 0;
+    _usbd_dev.ep_status[epnum][dir].claimed = 0;
+    TU_LOG_USBD("FAILED\\r\\n");
+    TU_BREAKPOINT();
+    return false;
+  }
+}
+
+// The number of bytes has to be given explicitly to allow more flexible control of how many
+// bytes should be written and second to keep the return value free to give back a boolean
+// success message. If total_bytes is too big, the FIFO will copy only what is available
+// into the USB buffer!
+bool usbd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t* ff, uint16_t total_bytes) {
+  rhport = _usbd_rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  TU_LOG_USBD("  Queue ISO EP %02X with %u bytes ... ", ep_addr, total_bytes);
+
+  // Attempt to transfer on a busy endpoint, sound like an race condition !
+  TU_ASSERT(_usbd_dev.ep_status[epnum][dir].busy == 0);
+
+  // Set busy first since the actual transfer can be complete before dcd_edpt_xfer() could return
+  // and usbd task can preempt and clear the busy
+  _usbd_dev.ep_status[epnum][dir].busy = 1;
+
+  if (dcd_edpt_xfer_fifo(rhport, ep_addr, ff, total_bytes)) {
+    TU_LOG_USBD("OK\\r\\n");
+    return true;
+  } else {
+    // DCD error, mark endpoint as ready to allow next transfer
+    _usbd_dev.ep_status[epnum][dir].busy = 0;
+    _usbd_dev.ep_status[epnum][dir].claimed = 0;
+    TU_LOG_USBD("failed\\r\\n");
+    TU_BREAKPOINT();
+    return false;
+  }
+}
+
+bool usbd_edpt_busy(uint8_t rhport, uint8_t ep_addr) {
+  (void) rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  return _usbd_dev.ep_status[epnum][dir].busy;
+}
+
+void usbd_edpt_stall(uint8_t rhport, uint8_t ep_addr) {
+  rhport = _usbd_rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  // only stalled if currently cleared
+  TU_LOG_USBD("    Stall EP %02X\\r\\n", ep_addr);
+  dcd_edpt_stall(rhport, ep_addr);
+  _usbd_dev.ep_status[epnum][dir].stalled = 1;
+  _usbd_dev.ep_status[epnum][dir].busy = 1;
+}
+
+void usbd_edpt_clear_stall(uint8_t rhport, uint8_t ep_addr) {
+  rhport = _usbd_rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  // only clear if currently stalled
+  TU_LOG_USBD("    Clear Stall EP %02X\\r\\n", ep_addr);
+  dcd_edpt_clear_stall(rhport, ep_addr);
+  _usbd_dev.ep_status[epnum][dir].stalled = 0;
+  _usbd_dev.ep_status[epnum][dir].busy = 0;
+}
+
+bool usbd_edpt_stalled(uint8_t rhport, uint8_t ep_addr) {
+  (void) rhport;
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  return _usbd_dev.ep_status[epnum][dir].stalled;
+}
+
+/**
+ * usbd_edpt_close will disable an endpoint.
+ * In progress transfers on this EP may be delivered after this call.
+ */
+void usbd_edpt_close(uint8_t rhport, uint8_t ep_addr) {
+#ifdef TUP_DCD_EDPT_ISO_ALLOC
+  (void) rhport; (void) ep_addr;
+  // ISO alloc/activate Should be used instead
+#else
+  rhport = _usbd_rhport;
+
+  TU_LOG_USBD("  CLOSING Endpoint: 0x%02X\\r\\n", ep_addr);
+
+  uint8_t const epnum = tu_edpt_number(ep_addr);
+  uint8_t const dir = tu_edpt_dir(ep_addr);
+
+  dcd_edpt_close(rhport, ep_addr);
+  _usbd_dev.ep_status[epnum][dir].stalled = 0;
+  _usbd_dev.ep_status[epnum][dir].busy = 0;
+  _usbd_dev.ep_status[epnum][dir].claimed = 0;
+#endif
+
+  return;
+}
+
+void usbd_sof_enable(uint8_t rhport, sof_consumer_t consumer, bool en) {
+  rhport = _usbd_rhport;
+
+  uint8_t consumer_old = _usbd_dev.sof_consumer;
+  // Keep track how many class instances need the SOF interrupt
+  if (en) {
+    _usbd_dev.sof_consumer |= (uint8_t)(1 << consumer);
+  } else {
+    _usbd_dev.sof_consumer &= (uint8_t)(~(1 << consumer));
+  }
+
+  // Test logically unequal
+  if(!_usbd_dev.sof_consumer != !consumer_old) {
+    dcd_sof_enable(rhport, _usbd_dev.sof_consumer);
+  }
+}
+
+bool usbd_edpt_iso_alloc(uint8_t rhport, uint8_t ep_addr, uint16_t largest_packet_size) {
+#ifdef TUP_DCD_EDPT_ISO_ALLOC
+  rhport = _usbd_rhport;
+
+  TU_ASSERT(tu_edpt_number(ep_addr) < CFG_TUD_ENDPPOINT_MAX);
+  return dcd_edpt_iso_alloc(rhport, ep_addr, largest_packet_size);
+#else
+  (void) rhport; (void) ep_addr; (void) largest_packet_size;
+  return false;
+#endif
+}
+
+bool usbd_edpt_iso_activate(uint8_t rhport, tusb_desc_endpoint_t const* desc_ep) {
+#ifdef TUP_DCD_EDPT_ISO_ALLOC
+  rhport = _usbd_rhport;
+
+  uint8_t const epnum = tu_edpt_number(desc_ep->bEndpointAddress);
+  uint8_t const dir = tu_edpt_dir(desc_ep->bEndpointAddress);
+
+  TU_ASSERT(epnum < CFG_TUD_ENDPPOINT_MAX);
+  TU_ASSERT(tu_edpt_validate(desc_ep, (tusb_speed_t) _usbd_dev.speed));
+
+  _usbd_dev.ep_status[epnum][dir].stalled = 0;
+  _usbd_dev.ep_status[epnum][dir].busy = 0;
+  _usbd_dev.ep_status[epnum][dir].claimed = 0;
+  return dcd_edpt_iso_activate(rhport, desc_ep);
+#else
+  (void) rhport; (void) desc_ep;
+  return false;
+#endif
+}
+
+#endif
+`,"device/usbd.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_USBD_H_
+#define _TUSB_USBD_H_
+
+#include "common/tusb_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// Application API
+//--------------------------------------------------------------------+
+
+// New API to replace tud_init() to init device stack on specific roothub port
+bool tud_rhport_init(uint8_t rhport, const tusb_rhport_init_t* rh_init);
+
+// Init device stack on roothub port
+#if TUSB_VERSION_NUMBER > 2000  // 0.20.0
+TU_ATTR_DEPRECATED("Please use tusb_init(rhport, rh_init) instead")
+#endif
+TU_ATTR_ALWAYS_INLINE static inline bool tud_init (uint8_t rhport) {
+  const tusb_rhport_init_t rh_init = {
+    .role = TUSB_ROLE_DEVICE,
+    .speed = TUD_OPT_HIGH_SPEED ? TUSB_SPEED_HIGH : TUSB_SPEED_FULL
+  };
+  return tud_rhport_init(rhport, &rh_init);
+}
+
+// Deinit device stack on roothub port
+bool tud_deinit(uint8_t rhport);
+
+// Check if device stack is already initialized
+bool tud_inited(void);
+
+// Task function should be called in main/rtos loop, extended version of tud_task()
+// - timeout_ms: millisecond to wait, zero = no wait, 0xFFFFFFFF = wait forever
+// - in_isr: if function is called in ISR
+void tud_task_ext(uint32_t timeout_ms, bool in_isr);
+
+// Task function should be called in main/rtos loop
+TU_ATTR_ALWAYS_INLINE static inline
+void tud_task (void) {
+  tud_task_ext(UINT32_MAX, false);
+}
+
+// Check if there is pending events need processing by tud_task()
+bool tud_task_event_ready(void);
+
+#ifndef TUSB_DCD_H_
+extern void dcd_int_handler(uint8_t rhport);
+#endif
+
+// Interrupt handler, name alias to DCD
+#define tud_int_handler   dcd_int_handler
+
+// Get current bus speed
+tusb_speed_t tud_speed_get(void);
+
+// Check if device is connected (may not mounted/configured yet)
+// True if just got out of Bus Reset and received the very first data from host
+bool tud_connected(void);
+
+// Check if device is connected and configured
+bool tud_mounted(void);
+
+// Check if device is suspended
+bool tud_suspended(void);
+
+// Check if device is ready to transfer
+TU_ATTR_ALWAYS_INLINE static inline
+bool tud_ready(void) {
+  return tud_mounted() && !tud_suspended();
+}
+
+// Remote wake up host, only if suspended and enabled by host
+bool tud_remote_wakeup(void);
+
+// Enable pull-up resistor on D+ D-
+// Return false on unsupported MCUs
+bool tud_disconnect(void);
+
+// Disable pull-up resistor on D+ D-
+// Return false on unsupported MCUs
+bool tud_connect(void);
+
+// Enable or disable the Start Of Frame callback support
+void tud_sof_cb_enable(bool en);
+
+// Carry out Data and Status stage of control transfer
+// - If len = 0, it is equivalent to sending status only
+// - If len > wLength : it will be truncated
+bool tud_control_xfer(uint8_t rhport, tusb_control_request_t const * request, void* buffer, uint16_t len);
+
+// Send STATUS (zero length) packet
+bool tud_control_status(uint8_t rhport, tusb_control_request_t const * request);
+
+//--------------------------------------------------------------------+
+// Application Callbacks
+//--------------------------------------------------------------------+
+
+// Invoked when received GET DEVICE DESCRIPTOR request
+// Application return pointer to descriptor
+uint8_t const * tud_descriptor_device_cb(void);
+
+// Invoked when received GET CONFIGURATION DESCRIPTOR request
+// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
+uint8_t const * tud_descriptor_configuration_cb(uint8_t index);
+
+// Invoked when received GET STRING DESCRIPTOR request
+// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
+uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid);
+
+// Invoked when received GET BOS DESCRIPTOR request
+// Application return pointer to descriptor
+uint8_t const * tud_descriptor_bos_cb(void);
+
+// Invoked when received GET DEVICE QUALIFIER DESCRIPTOR request
+// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete.
+// device_qualifier descriptor describes information about a high-speed capable device that would
+// change if the device were operating at the other speed. If not highspeed capable stall this request.
+uint8_t const* tud_descriptor_device_qualifier_cb(void);
+
+// Invoked when received GET OTHER SEED CONFIGURATION DESCRIPTOR request
+// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
+// Configuration descriptor in the other speed e.g if high speed then this is for full speed and vice versa
+uint8_t const* tud_descriptor_other_speed_configuration_cb(uint8_t index);
+
+// Invoked when device is mounted (configured)
+void tud_mount_cb(void);
+
+// Invoked when device is unmounted
+void tud_umount_cb(void);
+
+// Invoked when usb bus is suspended
+// Within 7ms, device must draw an average of current less than 2.5 mA from bus
+void tud_suspend_cb(bool remote_wakeup_en);
+
+// Invoked when usb bus is resumed
+void tud_resume_cb(void);
+
+// Invoked when there is a new usb event, which need to be processed by tud_task()/tud_task_ext()
+void tud_event_hook_cb(uint8_t rhport, uint32_t eventid, bool in_isr);
+
+// Invoked when a new (micro) frame started
+void tud_sof_cb(uint32_t frame_count);
+
+// Invoked when received control request with VENDOR TYPE
+bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const * request);
+
+//--------------------------------------------------------------------+
+// Binary Device Object Store (BOS) Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_BOS_DESC_LEN      5
+
+// total length, number of device caps
+#define TUD_BOS_DESCRIPTOR(_total_len, _caps_num) \\
+  5, TUSB_DESC_BOS, U16_TO_U8S_LE(_total_len), _caps_num
+
+// Device Capability Platform 128-bit UUID + Data
+#define TUD_BOS_PLATFORM_DESCRIPTOR(...) \\
+  4+TU_ARGS_NUM(__VA_ARGS__), TUSB_DESC_DEVICE_CAPABILITY, DEVICE_CAPABILITY_PLATFORM, 0x00, __VA_ARGS__
+
+//------------- WebUSB BOS Platform -------------//
+
+// Descriptor Length
+#define TUD_BOS_WEBUSB_DESC_LEN         24
+
+// Vendor Code, iLandingPage
+#define TUD_BOS_WEBUSB_DESCRIPTOR(_vendor_code, _ipage) \\
+  TUD_BOS_PLATFORM_DESCRIPTOR(TUD_BOS_WEBUSB_UUID, U16_TO_U8S_LE(0x0100), _vendor_code, _ipage)
+
+#define TUD_BOS_WEBUSB_UUID   \\
+  0x38, 0xB6, 0x08, 0x34, 0xA9, 0x09, 0xA0, 0x47, \\
+  0x8B, 0xFD, 0xA0, 0x76, 0x88, 0x15, 0xB6, 0x65
+
+//------------- Microsoft OS 2.0 Platform -------------//
+#define TUD_BOS_MICROSOFT_OS_DESC_LEN   28
+
+// Total Length of descriptor set, vendor code
+#define TUD_BOS_MS_OS_20_DESCRIPTOR(_desc_set_len, _vendor_code) \\
+  TUD_BOS_PLATFORM_DESCRIPTOR(TUD_BOS_MS_OS_20_UUID, U32_TO_U8S_LE(0x06030000), U16_TO_U8S_LE(_desc_set_len), _vendor_code, 0)
+
+#define TUD_BOS_MS_OS_20_UUID \\
+    0xDF, 0x60, 0xDD, 0xD8, 0x89, 0x45, 0xC7, 0x4C, \\
+  0x9C, 0xD2, 0x65, 0x9D, 0x9E, 0x64, 0x8A, 0x9F
+
+//--------------------------------------------------------------------+
+// Configuration Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_CONFIG_DESC_LEN   (9)
+
+// Config number, interface count, string index, total length, attribute, power in mA
+#define TUD_CONFIG_DESCRIPTOR(config_num, _itfcount, _stridx, _total_len, _attribute, _power_ma) \\
+  9, TUSB_DESC_CONFIGURATION, U16_TO_U8S_LE(_total_len), _itfcount, config_num, _stridx, TU_BIT(7) | _attribute, (_power_ma)/2
+
+//--------------------------------------------------------------------+
+// CDC Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor: 66 bytes
+#define TUD_CDC_DESC_LEN  (8+9+5+5+4+5+7+9+7+7)
+
+// CDC Descriptor Template
+// Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+#define TUD_CDC_DESCRIPTOR(_itfnum, _stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize) \\
+  /* Interface Associate */\\
+  8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_ABSTRACT_CONTROL_MODEL, CDC_COMM_PROTOCOL_NONE, 0,\\
+  /* CDC Control Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 1, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_ABSTRACT_CONTROL_MODEL, CDC_COMM_PROTOCOL_NONE, _stridx,\\
+  /* CDC Header */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_HEADER, U16_TO_U8S_LE(0x0120),\\
+  /* CDC Call */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_CALL_MANAGEMENT, 0, (uint8_t)((_itfnum) + 1),\\
+  /* CDC ACM: support line request + send break */\\
+  4, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_ABSTRACT_CONTROL_MANAGEMENT, 6,\\
+  /* CDC Union */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_UNION, _itfnum, (uint8_t)((_itfnum) + 1),\\
+  /* Endpoint Notification */\\
+  7, TUSB_DESC_ENDPOINT, _ep_notif, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_notif_size), 16,\\
+  /* CDC Data Interface */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 0, 2, TUSB_CLASS_CDC_DATA, 0, 0, 0,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+//--------------------------------------------------------------------+
+// MSC Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor: 23 bytes
+#define TUD_MSC_DESC_LEN    (9 + 7 + 7)
+
+// Interface number, string index, EP Out & EP In address, EP size
+#define TUD_MSC_DESCRIPTOR(_itfnum, _stridx, _epout, _epin, _epsize) \\
+  /* Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 2, TUSB_CLASS_MSC, MSC_SUBCLASS_SCSI, MSC_PROTOCOL_BOT, _stridx,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+
+//--------------------------------------------------------------------+
+// HID Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor: 25 bytes
+#define TUD_HID_DESC_LEN    (9 + 9 + 7)
+
+// HID Input only descriptor
+// Interface number, string index, protocol, report descriptor len, EP In address, size & polling interval
+#define TUD_HID_DESCRIPTOR(_itfnum, _stridx, _boot_protocol, _report_desc_len, _epin, _epsize, _ep_interval) \\
+  /* Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 1, TUSB_CLASS_HID, (uint8_t)((_boot_protocol) ? (uint8_t)HID_SUBCLASS_BOOT : 0), _boot_protocol, _stridx,\\
+  /* HID descriptor */\\
+  9, HID_DESC_TYPE_HID, U16_TO_U8S_LE(0x0111), 0, 1, HID_DESC_TYPE_REPORT, U16_TO_U8S_LE(_report_desc_len),\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_epsize), _ep_interval
+
+// Length of template descriptor: 32 bytes
+#define TUD_HID_INOUT_DESC_LEN    (9 + 9 + 7 + 7)
+
+// HID Input & Output descriptor
+// Interface number, string index, protocol, report descriptor len, EP OUT & IN address, size & polling interval
+#define TUD_HID_INOUT_DESCRIPTOR(_itfnum, _stridx, _boot_protocol, _report_desc_len, _epout, _epin, _epsize, _ep_interval) \\
+  /* Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 2, TUSB_CLASS_HID, (uint8_t)((_boot_protocol) ? (uint8_t)HID_SUBCLASS_BOOT : 0), _boot_protocol, _stridx,\\
+  /* HID descriptor */\\
+  9, HID_DESC_TYPE_HID, U16_TO_U8S_LE(0x0111), 0, 1, HID_DESC_TYPE_REPORT, U16_TO_U8S_LE(_report_desc_len),\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_epsize), _ep_interval, \\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_epsize), _ep_interval
+
+//--------------------------------------------------------------------+
+// MIDI Descriptor Templates
+// Note: MIDI v1.0 is based on Audio v1.0
+//--------------------------------------------------------------------+
+
+#define TUD_MIDI_DESC_HEAD_LEN (9 + 9 + 9 + 7)
+#define TUD_MIDI_DESC_HEAD(_itfnum,  _stridx, _numcables) \\
+  /* Audio Control (AC) Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 0, TUSB_CLASS_AUDIO, AUDIO_SUBCLASS_CONTROL, AUDIO_FUNC_PROTOCOL_CODE_UNDEF, _stridx,\\
+  /* AC Header */\\
+  9, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_HEADER, U16_TO_U8S_LE(0x0100), U16_TO_U8S_LE(0x0009), 1, (uint8_t)((_itfnum) + 1),\\
+  /* MIDI Streaming (MS) Interface */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum) + 1), 0, 2, TUSB_CLASS_AUDIO, AUDIO_SUBCLASS_MIDI_STREAMING, AUDIO_FUNC_PROTOCOL_CODE_UNDEF, 0,\\
+  /* MS Header */\\
+  7, TUSB_DESC_CS_INTERFACE, MIDI_CS_INTERFACE_HEADER, U16_TO_U8S_LE(0x0100), U16_TO_U8S_LE(7 + (_numcables) * TUD_MIDI_DESC_JACK_LEN + 2 * TUD_MIDI_DESC_EP_LEN(_numcables))
+
+#define TUD_MIDI_JACKID_IN_EMB(_cablenum) \\
+  (uint8_t)(((_cablenum) - 1) * 4 + 1)
+
+#define TUD_MIDI_JACKID_IN_EXT(_cablenum) \\
+  (uint8_t)(((_cablenum) - 1) * 4 + 2)
+
+#define TUD_MIDI_JACKID_OUT_EMB(_cablenum) \\
+  (uint8_t)(((_cablenum) - 1) * 4 + 3)
+
+#define TUD_MIDI_JACKID_OUT_EXT(_cablenum) \\
+  (uint8_t)(((_cablenum) - 1) * 4 + 4)
+
+#define TUD_MIDI_DESC_JACK_LEN (6 + 6 + 9 + 9)
+#define TUD_MIDI_DESC_JACK_DESC(_cablenum, _stridx) \\
+  /* MS In Jack (Embedded) */\\
+  6, TUSB_DESC_CS_INTERFACE, MIDI_CS_INTERFACE_IN_JACK, MIDI_JACK_EMBEDDED, TUD_MIDI_JACKID_IN_EMB(_cablenum), _stridx,\\
+  /* MS In Jack (External) */\\
+  6, TUSB_DESC_CS_INTERFACE, MIDI_CS_INTERFACE_IN_JACK, MIDI_JACK_EXTERNAL, TUD_MIDI_JACKID_IN_EXT(_cablenum), _stridx,\\
+  /* MS Out Jack (Embedded), connected to In Jack External */\\
+  9, TUSB_DESC_CS_INTERFACE, MIDI_CS_INTERFACE_OUT_JACK, MIDI_JACK_EMBEDDED, TUD_MIDI_JACKID_OUT_EMB(_cablenum), 1, TUD_MIDI_JACKID_IN_EXT(_cablenum), 1, _stridx,\\
+  /* MS Out Jack (External), connected to In Jack Embedded */\\
+  9, TUSB_DESC_CS_INTERFACE, MIDI_CS_INTERFACE_OUT_JACK, MIDI_JACK_EXTERNAL, TUD_MIDI_JACKID_OUT_EXT(_cablenum), 1, TUD_MIDI_JACKID_IN_EMB(_cablenum), 1, _stridx
+
+#define TUD_MIDI_DESC_JACK(_cablenum) TUD_MIDI_DESC_JACK_DESC(_cablenum, 0)
+
+#define TUD_MIDI_DESC_EP_LEN(_numcables) (9 + 4 + (_numcables))
+#define TUD_MIDI_DESC_EP(_epout, _epsize, _numcables) \\
+  /* Endpoint: Note Audio v1.0's endpoint has 9 bytes instead of 7 */\\
+  9, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0, 0, 0, \\
+  /* MS Endpoint (connected to embedded jack) */\\
+  (uint8_t)(4 + (_numcables)), TUSB_DESC_CS_ENDPOINT, MIDI_CS_ENDPOINT_GENERAL, _numcables
+
+// Length of template descriptor (88 bytes)
+#define TUD_MIDI_DESC_LEN (TUD_MIDI_DESC_HEAD_LEN + TUD_MIDI_DESC_JACK_LEN + TUD_MIDI_DESC_EP_LEN(1) * 2)
+
+// MIDI simple descriptor
+// - 1 Embedded Jack In connected to 1 External Jack Out
+// - 1 Embedded Jack out connected to 1 External Jack In
+#define TUD_MIDI_DESCRIPTOR(_itfnum, _stridx, _epout, _epin, _epsize) \\
+  TUD_MIDI_DESC_HEAD(_itfnum, _stridx, 1),\\
+  TUD_MIDI_DESC_JACK_DESC(1, 0),\\
+  TUD_MIDI_DESC_EP(_epout, _epsize, 1),\\
+  TUD_MIDI_JACKID_IN_EMB(1),\\
+  TUD_MIDI_DESC_EP(_epin, _epsize, 1),\\
+  TUD_MIDI_JACKID_OUT_EMB(1)
+
+//--------------------------------------------------------------------+
+// Audio v2.0 Descriptor Templates
+//--------------------------------------------------------------------+
+
+/* Standard Interface Association Descriptor (IAD) */
+#define TUD_AUDIO_DESC_IAD_LEN 8
+#define TUD_AUDIO_DESC_IAD(_firstitf, _nitfs, _stridx) \\
+  TUD_AUDIO_DESC_IAD_LEN, TUSB_DESC_INTERFACE_ASSOCIATION, _firstitf, _nitfs, TUSB_CLASS_AUDIO, AUDIO_FUNCTION_SUBCLASS_UNDEFINED, AUDIO_FUNC_PROTOCOL_CODE_V2, _stridx
+
+/* Standard AC Interface Descriptor(4.7.1) */
+#define TUD_AUDIO_DESC_STD_AC_LEN 9
+#define TUD_AUDIO_DESC_STD_AC(_itfnum, _nEPs, _stridx) /* _nEPs is 0 or 1 */\\
+  TUD_AUDIO_DESC_STD_AC_LEN, TUSB_DESC_INTERFACE, _itfnum, /* fixed to zero */ 0x00, _nEPs, TUSB_CLASS_AUDIO, AUDIO_SUBCLASS_CONTROL, AUDIO_INT_PROTOCOL_CODE_V2, _stridx
+
+/* Class-Specific AC Interface Header Descriptor(4.7.2) */
+#define TUD_AUDIO_DESC_CS_AC_LEN 9
+#define TUD_AUDIO_DESC_CS_AC(_bcdADC, _category, _totallen, _ctrl) /* _bcdADC : Audio Device Class Specification Release Number in Binary-Coded Decimal, _category : see audio_function_t, _totallen : Total number of bytes returned for the class-specific AudioControl interface i.e. Clock Source, Unit and Terminal descriptors - Do not include TUD_AUDIO_DESC_CS_AC_LEN, we already do this here*/ \\
+  TUD_AUDIO_DESC_CS_AC_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_HEADER, U16_TO_U8S_LE(_bcdADC), _category, U16_TO_U8S_LE(_totallen + TUD_AUDIO_DESC_CS_AC_LEN), _ctrl
+
+/* Clock Source Descriptor(4.7.2.1) */
+#define TUD_AUDIO_DESC_CLK_SRC_LEN 8
+#define TUD_AUDIO_DESC_CLK_SRC(_clkid, _attr, _ctrl, _assocTerm, _stridx) \\
+  TUD_AUDIO_DESC_CLK_SRC_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_CLOCK_SOURCE, _clkid, _attr, _ctrl, _assocTerm, _stridx
+
+/* Input Terminal Descriptor(4.7.2.4) */
+#define TUD_AUDIO_DESC_INPUT_TERM_LEN 17
+#define TUD_AUDIO_DESC_INPUT_TERM(_termid, _termtype, _assocTerm, _clkid, _nchannelslogical, _channelcfg, _idxchannelnames, _ctrl, _stridx) \\
+  TUD_AUDIO_DESC_INPUT_TERM_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_INPUT_TERMINAL, _termid, U16_TO_U8S_LE(_termtype), _assocTerm, _clkid, _nchannelslogical, U32_TO_U8S_LE(_channelcfg), _idxchannelnames, U16_TO_U8S_LE(_ctrl), _stridx
+
+/* Output Terminal Descriptor(4.7.2.5) */
+#define TUD_AUDIO_DESC_OUTPUT_TERM_LEN 12
+#define TUD_AUDIO_DESC_OUTPUT_TERM(_termid, _termtype, _assocTerm, _srcid, _clkid, _ctrl, _stridx) \\
+  TUD_AUDIO_DESC_OUTPUT_TERM_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_OUTPUT_TERMINAL, _termid, U16_TO_U8S_LE(_termtype), _assocTerm, _srcid, _clkid, U16_TO_U8S_LE(_ctrl), _stridx
+
+/* Feature Unit Descriptor(4.7.2.8) */
+// 1 - Channel
+#define TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN 6+(1+1)*4
+#define TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL(_unitid, _srcid, _ctrlch0master, _ctrlch1, _stridx) \\
+  TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_FEATURE_UNIT, _unitid, _srcid, U32_TO_U8S_LE(_ctrlch0master), U32_TO_U8S_LE(_ctrlch1), _stridx
+
+// 2 - Channels
+#define TUD_AUDIO_DESC_FEATURE_UNIT_TWO_CHANNEL_LEN (6+(2+1)*4)
+#define TUD_AUDIO_DESC_FEATURE_UNIT_TWO_CHANNEL(_unitid, _srcid, _ctrlch0master, _ctrlch1, _ctrlch2, _stridx) \\
+		TUD_AUDIO_DESC_FEATURE_UNIT_TWO_CHANNEL_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_FEATURE_UNIT, _unitid, _srcid, U32_TO_U8S_LE(_ctrlch0master), U32_TO_U8S_LE(_ctrlch1), U32_TO_U8S_LE(_ctrlch2), _stridx
+// 4 - Channels
+#define TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL_LEN (6+(4+1)*4)
+#define TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL(_unitid, _srcid, _ctrlch0master, _ctrlch1, _ctrlch2, _ctrlch3, _ctrlch4, _stridx) \\
+                    TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AC_INTERFACE_FEATURE_UNIT, _unitid, _srcid, U32_TO_U8S_LE(_ctrlch0master), U32_TO_U8S_LE(_ctrlch1), U32_TO_U8S_LE(_ctrlch2), U32_TO_U8S_LE(_ctrlch3), U32_TO_U8S_LE(_ctrlch4), _stridx
+
+// For more channels, add definitions here
+
+/* Standard AC Interrupt Endpoint Descriptor(4.8.2.1) */
+#define TUD_AUDIO_DESC_STD_AC_INT_EP_LEN 7
+#define TUD_AUDIO_DESC_STD_AC_INT_EP(_ep, _interval) \\
+  TUD_AUDIO_DESC_STD_AC_INT_EP_LEN, TUSB_DESC_ENDPOINT, _ep, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(6), _interval
+
+/* Standard AS Interface Descriptor(4.9.1) */
+#define TUD_AUDIO_DESC_STD_AS_INT_LEN 9
+#define TUD_AUDIO_DESC_STD_AS_INT(_itfnum, _altset, _nEPs, _stridx) \\
+  TUD_AUDIO_DESC_STD_AS_INT_LEN, TUSB_DESC_INTERFACE, _itfnum, _altset, _nEPs, TUSB_CLASS_AUDIO, AUDIO_SUBCLASS_STREAMING, AUDIO_INT_PROTOCOL_CODE_V2, _stridx
+
+/* Class-Specific AS Interface Descriptor(4.9.2) */
+#define TUD_AUDIO_DESC_CS_AS_INT_LEN 16
+#define TUD_AUDIO_DESC_CS_AS_INT(_termid, _ctrl, _formattype, _formats, _nchannelsphysical, _channelcfg, _stridx) \\
+  TUD_AUDIO_DESC_CS_AS_INT_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AS_INTERFACE_AS_GENERAL, _termid, _ctrl, _formattype, U32_TO_U8S_LE(_formats), _nchannelsphysical, U32_TO_U8S_LE(_channelcfg), _stridx
+
+/* Type I Format Type Descriptor(2.3.1.6 - Audio Formats) */
+#define TUD_AUDIO_DESC_TYPE_I_FORMAT_LEN 6
+#define TUD_AUDIO_DESC_TYPE_I_FORMAT(_subslotsize, _bitresolution) /* _subslotsize is number of bytes per sample (i.e. subslot) and can be 1,2,3, or 4 */\\
+  TUD_AUDIO_DESC_TYPE_I_FORMAT_LEN, TUSB_DESC_CS_INTERFACE, AUDIO_CS_AS_INTERFACE_FORMAT_TYPE, AUDIO_FORMAT_TYPE_I, _subslotsize, _bitresolution
+
+/* Standard AS Isochronous Audio Data Endpoint Descriptor(4.10.1.1) */
+#define TUD_AUDIO_DESC_STD_AS_ISO_EP_LEN 7
+#define TUD_AUDIO_DESC_STD_AS_ISO_EP(_ep, _attr, _maxEPsize, _interval) \\
+  TUD_AUDIO_DESC_STD_AS_ISO_EP_LEN, TUSB_DESC_ENDPOINT, _ep, _attr, U16_TO_U8S_LE(_maxEPsize), _interval
+
+/* Class-Specific AS Isochronous Audio Data Endpoint Descriptor(4.10.1.2) */
+#define TUD_AUDIO_DESC_CS_AS_ISO_EP_LEN 8
+#define TUD_AUDIO_DESC_CS_AS_ISO_EP(_attr, _ctrl, _lockdelayunit, _lockdelay) \\
+  TUD_AUDIO_DESC_CS_AS_ISO_EP_LEN, TUSB_DESC_CS_ENDPOINT, AUDIO_CS_EP_SUBTYPE_GENERAL, _attr, _ctrl, _lockdelayunit, U16_TO_U8S_LE(_lockdelay)
+
+/* Standard AS Isochronous Feedback Endpoint Descriptor(4.10.2.1) */
+#define TUD_AUDIO_DESC_STD_AS_ISO_FB_EP_LEN 7
+#define TUD_AUDIO_DESC_STD_AS_ISO_FB_EP(_ep, _epsize, _interval) \\
+  TUD_AUDIO_DESC_STD_AS_ISO_FB_EP_LEN, TUSB_DESC_ENDPOINT, _ep, (uint8_t) ((uint8_t)TUSB_XFER_ISOCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_NO_SYNC | (uint8_t)TUSB_ISO_EP_ATT_EXPLICIT_FB), U16_TO_U8S_LE(_epsize), _interval
+
+// AUDIO simple descriptor (UAC2) for 1 microphone input
+// - 1 Input Terminal, 1 Feature Unit (Mute and Volume Control), 1 Output Terminal, 1 Clock Source
+
+#define TUD_AUDIO_MIC_ONE_CH_DESC_LEN (TUD_AUDIO_DESC_IAD_LEN\\
+  + TUD_AUDIO_DESC_STD_AC_LEN\\
+  + TUD_AUDIO_DESC_CS_AC_LEN\\
+  + TUD_AUDIO_DESC_CLK_SRC_LEN\\
+  + TUD_AUDIO_DESC_INPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_OUTPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_TYPE_I_FORMAT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_ISO_EP_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_ISO_EP_LEN)
+
+#define TUD_AUDIO_MIC_ONE_CH_DESC_N_AS_INT 1 	// Number of AS interfaces
+
+#define TUD_AUDIO_MIC_ONE_CH_DESCRIPTOR(_itfnum, _stridx, _nBytesPerSample, _nBitsUsedPerSample, _epin, _epsize) \\
+  /* Standard Interface Association Descriptor (IAD) */\\
+  TUD_AUDIO_DESC_IAD(/*_firstitf*/ _itfnum, /*_nitfs*/ 0x02, /*_stridx*/ 0x00),\\
+  /* Standard AC Interface Descriptor(4.7.1) */\\
+  TUD_AUDIO_DESC_STD_AC(/*_itfnum*/ _itfnum, /*_nEPs*/ 0x00, /*_stridx*/ _stridx),\\
+  /* Class-Specific AC Interface Header Descriptor(4.7.2) */\\
+  TUD_AUDIO_DESC_CS_AC(/*_bcdADC*/ 0x0200, /*_category*/ AUDIO_FUNC_MICROPHONE, /*_totallen*/ TUD_AUDIO_DESC_CLK_SRC_LEN+TUD_AUDIO_DESC_INPUT_TERM_LEN+TUD_AUDIO_DESC_OUTPUT_TERM_LEN+TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN, /*_ctrl*/ AUDIO_CS_AS_INTERFACE_CTRL_LATENCY_POS),\\
+  /* Clock Source Descriptor(4.7.2.1) */\\
+  TUD_AUDIO_DESC_CLK_SRC(/*_clkid*/ 0x04, /*_attr*/ AUDIO_CLOCK_SOURCE_ATT_INT_FIX_CLK, /*_ctrl*/ (AUDIO_CTRL_R << AUDIO_CLOCK_SOURCE_CTRL_CLK_FRQ_POS), /*_assocTerm*/ 0x01,  /*_stridx*/ 0x00),\\
+  /* Input Terminal Descriptor(4.7.2.4) */\\
+  TUD_AUDIO_DESC_INPUT_TERM(/*_termid*/ 0x01, /*_termtype*/ AUDIO_TERM_TYPE_IN_GENERIC_MIC, /*_assocTerm*/ 0x03, /*_clkid*/ 0x04, /*_nchannelslogical*/ 0x01, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_idxchannelnames*/ 0x00, /*_ctrl*/ AUDIO_CTRL_R << AUDIO_IN_TERM_CTRL_CONNECTOR_POS, /*_stridx*/ 0x00),\\
+  /* Output Terminal Descriptor(4.7.2.5) */\\
+  TUD_AUDIO_DESC_OUTPUT_TERM(/*_termid*/ 0x03, /*_termtype*/ AUDIO_TERM_TYPE_USB_STREAMING, /*_assocTerm*/ 0x01, /*_srcid*/ 0x02, /*_clkid*/ 0x04, /*_ctrl*/ 0x0000, /*_stridx*/ 0x00),\\
+  /* Feature Unit Descriptor(4.7.2.8) */\\
+  TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL(/*_unitid*/ 0x02, /*_srcid*/ 0x01, /*_ctrlch0master*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch1*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 0 - default alternate setting with 0 bandwidth */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum)+1), /*_altset*/ 0x00, /*_nEPs*/ 0x00, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 1 - alternate interface for data streaming */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum)+1), /*_altset*/ 0x01, /*_nEPs*/ 0x01, /*_stridx*/ 0x00),\\
+  /* Class-Specific AS Interface Descriptor(4.9.2) */\\
+  TUD_AUDIO_DESC_CS_AS_INT(/*_termid*/ 0x03, /*_ctrl*/ AUDIO_CTRL_NONE, /*_formattype*/ AUDIO_FORMAT_TYPE_I, /*_formats*/ AUDIO_DATA_FORMAT_TYPE_I_PCM, /*_nchannelsphysical*/ 0x01, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_stridx*/ 0x00),\\
+  /* Type I Format Type Descriptor(2.3.1.6 - Audio Formats) */\\
+  TUD_AUDIO_DESC_TYPE_I_FORMAT(_nBytesPerSample, _nBitsUsedPerSample),\\
+  /* Standard AS Isochronous Audio Data Endpoint Descriptor(4.10.1.1) */\\
+  TUD_AUDIO_DESC_STD_AS_ISO_EP(/*_ep*/ _epin, /*_attr*/ (uint8_t) ((uint8_t)TUSB_XFER_ISOCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_ASYNCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_DATA), /*_maxEPsize*/ _epsize, /*_interval*/ 0x01),\\
+  /* Class-Specific AS Isochronous Audio Data Endpoint Descriptor(4.10.1.2) */\\
+  TUD_AUDIO_DESC_CS_AS_ISO_EP(/*_attr*/ AUDIO_CS_AS_ISO_DATA_EP_ATT_NON_MAX_PACKETS_OK, /*_ctrl*/ AUDIO_CTRL_NONE, /*_lockdelayunit*/ AUDIO_CS_AS_ISO_DATA_EP_LOCK_DELAY_UNIT_UNDEFINED, /*_lockdelay*/ 0x0000)
+
+// AUDIO simple descriptor (UAC2) for 4 microphone input
+// - 1 Input Terminal, 1 Feature Unit (Mute and Volume Control), 1 Output Terminal, 1 Clock Source
+
+#define TUD_AUDIO_MIC_FOUR_CH_DESC_LEN (TUD_AUDIO_DESC_IAD_LEN\\
+  + TUD_AUDIO_DESC_STD_AC_LEN\\
+  + TUD_AUDIO_DESC_CS_AC_LEN\\
+  + TUD_AUDIO_DESC_CLK_SRC_LEN\\
+  + TUD_AUDIO_DESC_INPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_OUTPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_TYPE_I_FORMAT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_ISO_EP_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_ISO_EP_LEN)
+
+#define TUD_AUDIO_MIC_FOUR_CH_DESC_N_AS_INT 1   // Number of AS interfaces
+
+#define TUD_AUDIO_MIC_FOUR_CH_DESCRIPTOR(_itfnum, _stridx, _nBytesPerSample, _nBitsUsedPerSample, _epin, _epsize) \\
+  /* Standard Interface Association Descriptor (IAD) */\\
+  TUD_AUDIO_DESC_IAD(/*_firstitf*/ _itfnum, /*_nitfs*/ 0x02, /*_stridx*/ 0x00),\\
+  /* Standard AC Interface Descriptor(4.7.1) */\\
+  TUD_AUDIO_DESC_STD_AC(/*_itfnum*/ _itfnum, /*_nEPs*/ 0x00, /*_stridx*/ _stridx),\\
+  /* Class-Specific AC Interface Header Descriptor(4.7.2) */\\
+  TUD_AUDIO_DESC_CS_AC(/*_bcdADC*/ 0x0200, /*_category*/ AUDIO_FUNC_MICROPHONE, /*_totallen*/ TUD_AUDIO_DESC_CLK_SRC_LEN+TUD_AUDIO_DESC_INPUT_TERM_LEN+TUD_AUDIO_DESC_OUTPUT_TERM_LEN+TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL_LEN, /*_ctrl*/ AUDIO_CS_AS_INTERFACE_CTRL_LATENCY_POS),\\
+  /* Clock Source Descriptor(4.7.2.1) */\\
+  TUD_AUDIO_DESC_CLK_SRC(/*_clkid*/ 0x04, /*_attr*/ AUDIO_CLOCK_SOURCE_ATT_INT_FIX_CLK, /*_ctrl*/ (AUDIO_CTRL_R << AUDIO_CLOCK_SOURCE_CTRL_CLK_FRQ_POS), /*_assocTerm*/ 0x01,  /*_stridx*/ 0x00),\\
+  /* Input Terminal Descriptor(4.7.2.4) */\\
+  TUD_AUDIO_DESC_INPUT_TERM(/*_termid*/ 0x01, /*_termtype*/ AUDIO_TERM_TYPE_IN_GENERIC_MIC, /*_assocTerm*/ 0x03, /*_clkid*/ 0x04, /*_nchannelslogical*/ 0x04, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_idxchannelnames*/ 0x00, /*_ctrl*/ AUDIO_CTRL_R << AUDIO_IN_TERM_CTRL_CONNECTOR_POS, /*_stridx*/ 0x00),\\
+  /* Output Terminal Descriptor(4.7.2.5) */\\
+  TUD_AUDIO_DESC_OUTPUT_TERM(/*_termid*/ 0x03, /*_termtype*/ AUDIO_TERM_TYPE_USB_STREAMING, /*_assocTerm*/ 0x01, /*_srcid*/ 0x02, /*_clkid*/ 0x04, /*_ctrl*/ 0x0000, /*_stridx*/ 0x00),\\
+  /* Feature Unit Descriptor(4.7.2.8) */\\
+  TUD_AUDIO_DESC_FEATURE_UNIT_FOUR_CHANNEL(/*_unitid*/ 0x02, /*_srcid*/ 0x01, /*_ctrlch0master*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch1*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch2*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch3*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch4*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 0 - default alternate setting with 0 bandwidth */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum)+1), /*_altset*/ 0x00, /*_nEPs*/ 0x00, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 1 - alternate interface for data streaming */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum)+1), /*_altset*/ 0x01, /*_nEPs*/ 0x01, /*_stridx*/ 0x00),\\
+  /* Class-Specific AS Interface Descriptor(4.9.2) */\\
+  TUD_AUDIO_DESC_CS_AS_INT(/*_termid*/ 0x03, /*_ctrl*/ AUDIO_CTRL_NONE, /*_formattype*/ AUDIO_FORMAT_TYPE_I, /*_formats*/ AUDIO_DATA_FORMAT_TYPE_I_PCM, /*_nchannelsphysical*/ 0x04, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_stridx*/ 0x00),\\
+  /* Type I Format Type Descriptor(2.3.1.6 - Audio Formats) */\\
+  TUD_AUDIO_DESC_TYPE_I_FORMAT(_nBytesPerSample, _nBitsUsedPerSample),\\
+  /* Standard AS Isochronous Audio Data Endpoint Descriptor(4.10.1.1) */\\
+  TUD_AUDIO_DESC_STD_AS_ISO_EP(/*_ep*/ _epin, /*_attr*/ (uint8_t) ((uint8_t)TUSB_XFER_ISOCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_ASYNCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_DATA), /*_maxEPsize*/ _epsize, /*_interval*/ 0x01),\\
+  /* Class-Specific AS Isochronous Audio Data Endpoint Descriptor(4.10.1.2) */\\
+  TUD_AUDIO_DESC_CS_AS_ISO_EP(/*_attr*/ AUDIO_CS_AS_ISO_DATA_EP_ATT_NON_MAX_PACKETS_OK, /*_ctrl*/ AUDIO_CTRL_NONE, /*_lockdelayunit*/ AUDIO_CS_AS_ISO_DATA_EP_LOCK_DELAY_UNIT_UNDEFINED, /*_lockdelay*/ 0x0000)
+
+// AUDIO simple descriptor (UAC2) for mono speaker
+// - 1 Input Terminal, 2 Feature Unit (Mute and Volume Control), 3 Output Terminal, 4 Clock Source
+
+#define TUD_AUDIO_SPEAKER_MONO_FB_DESC_LEN (TUD_AUDIO_DESC_IAD_LEN\\
+  + TUD_AUDIO_DESC_STD_AC_LEN\\
+  + TUD_AUDIO_DESC_CS_AC_LEN\\
+  + TUD_AUDIO_DESC_CLK_SRC_LEN\\
+  + TUD_AUDIO_DESC_INPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_OUTPUT_TERM_LEN\\
+  + TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_INT_LEN\\
+  + TUD_AUDIO_DESC_TYPE_I_FORMAT_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_ISO_EP_LEN\\
+  + TUD_AUDIO_DESC_CS_AS_ISO_EP_LEN\\
+  + TUD_AUDIO_DESC_STD_AS_ISO_FB_EP_LEN)
+
+#define TUD_AUDIO_SPEAKER_MONO_FB_DESCRIPTOR(_itfnum, _stridx, _nBytesPerSample, _nBitsUsedPerSample, _epout, _epoutsize, _epfb, _epfbsize) \\
+  /* Standard Interface Association Descriptor (IAD) */\\
+  TUD_AUDIO_DESC_IAD(/*_firstitf*/ _itfnum, /*_nitfs*/ 0x02, /*_stridx*/ 0x00),\\
+  /* Standard AC Interface Descriptor(4.7.1) */\\
+  TUD_AUDIO_DESC_STD_AC(/*_itfnum*/ _itfnum, /*_nEPs*/ 0x00, /*_stridx*/ _stridx),\\
+  /* Class-Specific AC Interface Header Descriptor(4.7.2) */\\
+  TUD_AUDIO_DESC_CS_AC(/*_bcdADC*/ 0x0200, /*_category*/ AUDIO_FUNC_DESKTOP_SPEAKER, /*_totallen*/ TUD_AUDIO_DESC_CLK_SRC_LEN+TUD_AUDIO_DESC_INPUT_TERM_LEN+TUD_AUDIO_DESC_OUTPUT_TERM_LEN+TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL_LEN, /*_ctrl*/ AUDIO_CS_AS_INTERFACE_CTRL_LATENCY_POS),\\
+  /* Clock Source Descriptor(4.7.2.1) */\\
+  TUD_AUDIO_DESC_CLK_SRC(/*_clkid*/ 0x04, /*_attr*/ AUDIO_CLOCK_SOURCE_ATT_INT_FIX_CLK, /*_ctrl*/ (AUDIO_CTRL_R << AUDIO_CLOCK_SOURCE_CTRL_CLK_FRQ_POS), /*_assocTerm*/ 0x01,  /*_stridx*/ 0x00),\\
+  /* Input Terminal Descriptor(4.7.2.4) */\\
+  TUD_AUDIO_DESC_INPUT_TERM(/*_termid*/ 0x01, /*_termtype*/ AUDIO_TERM_TYPE_USB_STREAMING, /*_assocTerm*/ 0x00, /*_clkid*/ 0x04, /*_nchannelslogical*/ 0x01, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_idxchannelnames*/ 0x00, /*_ctrl*/ 0 * (AUDIO_CTRL_R << AUDIO_IN_TERM_CTRL_CONNECTOR_POS), /*_stridx*/ 0x00),\\
+  /* Output Terminal Descriptor(4.7.2.5) */\\
+  TUD_AUDIO_DESC_OUTPUT_TERM(/*_termid*/ 0x03, /*_termtype*/ AUDIO_TERM_TYPE_OUT_DESKTOP_SPEAKER, /*_assocTerm*/ 0x01, /*_srcid*/ 0x02, /*_clkid*/ 0x04, /*_ctrl*/ 0x0000, /*_stridx*/ 0x00),\\
+  /* Feature Unit Descriptor(4.7.2.8) */\\
+  TUD_AUDIO_DESC_FEATURE_UNIT_ONE_CHANNEL(/*_unitid*/ 0x02, /*_srcid*/ 0x01, /*_ctrlch0master*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_ctrlch1*/ AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS | AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 0 - default alternate setting with 0 bandwidth */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum) + 1), /*_altset*/ 0x00, /*_nEPs*/ 0x00, /*_stridx*/ 0x00),\\
+  /* Standard AS Interface Descriptor(4.9.1) */\\
+  /* Interface 1, Alternate 1 - alternate interface for data streaming */\\
+  TUD_AUDIO_DESC_STD_AS_INT(/*_itfnum*/ (uint8_t)((_itfnum) + 1), /*_altset*/ 0x01, /*_nEPs*/ 0x02, /*_stridx*/ 0x00),\\
+  /* Class-Specific AS Interface Descriptor(4.9.2) */\\
+  TUD_AUDIO_DESC_CS_AS_INT(/*_termid*/ 0x01, /*_ctrl*/ AUDIO_CTRL_NONE, /*_formattype*/ AUDIO_FORMAT_TYPE_I, /*_formats*/ AUDIO_DATA_FORMAT_TYPE_I_PCM, /*_nchannelsphysical*/ 0x01, /*_channelcfg*/ AUDIO_CHANNEL_CONFIG_NON_PREDEFINED, /*_stridx*/ 0x00),\\
+  /* Type I Format Type Descriptor(2.3.1.6 - Audio Formats) */\\
+  TUD_AUDIO_DESC_TYPE_I_FORMAT(_nBytesPerSample, _nBitsUsedPerSample),\\
+  /* Standard AS Isochronous Audio Data Endpoint Descriptor(4.10.1.1) */\\
+  TUD_AUDIO_DESC_STD_AS_ISO_EP(/*_ep*/ _epout, /*_attr*/ (uint8_t) ((uint8_t)TUSB_XFER_ISOCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_ASYNCHRONOUS | (uint8_t)TUSB_ISO_EP_ATT_DATA), /*_maxEPsize*/ _epoutsize, /*_interval*/ 0x01),\\
+  /* Class-Specific AS Isochronous Audio Data Endpoint Descriptor(4.10.1.2) */\\
+  TUD_AUDIO_DESC_CS_AS_ISO_EP(/*_attr*/ AUDIO_CS_AS_ISO_DATA_EP_ATT_NON_MAX_PACKETS_OK, /*_ctrl*/ AUDIO_CTRL_NONE, /*_lockdelayunit*/ AUDIO_CS_AS_ISO_DATA_EP_LOCK_DELAY_UNIT_UNDEFINED, /*_lockdelay*/ 0x0000),\\
+  /* Standard AS Isochronous Feedback Endpoint Descriptor(4.10.2.1) */\\
+  TUD_AUDIO_DESC_STD_AS_ISO_FB_EP(/*_ep*/ _epfb, /*_epsize*/ _epfbsize, /*_interval*/ 1)
+
+//   Calculate wMaxPacketSize of Endpoints
+#define TUD_AUDIO_EP_SIZE(_maxFrequency, _nBytesPerSample, _nChannels) \\
+    ((((_maxFrequency + (TUD_OPT_HIGH_SPEED ? 7999 : 999)) / (TUD_OPT_HIGH_SPEED ? 8000 : 1000)) + 1) * _nBytesPerSample * _nChannels)
+
+
+//--------------------------------------------------------------------+
+// USBTMC/USB488 Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_USBTMC_APP_CLASS    (TUSB_CLASS_APPLICATION_SPECIFIC)
+#define TUD_USBTMC_APP_SUBCLASS 0x03u
+
+#define TUD_USBTMC_PROTOCOL_STD    0x00u
+#define TUD_USBTMC_PROTOCOL_USB488 0x01u
+
+//   Interface number, number of endpoints, EP string index, USB_TMC_PROTOCOL*, bulk-out endpoint ID,
+//   bulk-in endpoint ID
+#define TUD_USBTMC_IF_DESCRIPTOR(_itfnum, _bNumEndpoints, _stridx, _itfProtocol) \\
+  /* Interface */ \\
+  0x09, TUSB_DESC_INTERFACE, _itfnum, 0x00, _bNumEndpoints, TUD_USBTMC_APP_CLASS, TUD_USBTMC_APP_SUBCLASS, _itfProtocol, _stridx
+
+#define TUD_USBTMC_IF_DESCRIPTOR_LEN 9u
+
+#define TUD_USBTMC_BULK_DESCRIPTORS(_epout, _epin, _bulk_epsize) \\
+  /* Endpoint Out */ \\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_bulk_epsize), 0u, \\
+  /* Endpoint In */ \\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_bulk_epsize), 0u
+
+#define TUD_USBTMC_BULK_DESCRIPTORS_LEN (7u+7u)
+
+/* optional interrupt endpoint */ \\
+// _int_pollingInterval : for LS/FS, expressed in frames (1ms each). 16 may be a good number?
+#define TUD_USBTMC_INT_DESCRIPTOR(_ep_interrupt, _ep_interrupt_size, _int_pollingInterval ) \\
+  7, TUSB_DESC_ENDPOINT, _ep_interrupt, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_interrupt_size), _int_pollingInterval
+
+#define TUD_USBTMC_INT_DESCRIPTOR_LEN (7u)
+
+//--------------------------------------------------------------------+
+// Vendor Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_VENDOR_DESC_LEN  (9+7+7)
+
+// Interface number, string index, EP Out & IN address, EP size
+#define TUD_VENDOR_DESCRIPTOR(_itfnum, _stridx, _epout, _epin, _epsize) \\
+  /* Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 2, TUSB_CLASS_VENDOR_SPECIFIC, 0x00, 0x00, _stridx,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+//--------------------------------------------------------------------+
+// DFU Runtime Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_DFU_APP_CLASS    (TUSB_CLASS_APPLICATION_SPECIFIC)
+#define TUD_DFU_APP_SUBCLASS (APP_SUBCLASS_DFU_RUNTIME)
+
+// Length of template descriptr: 18 bytes
+#define TUD_DFU_RT_DESC_LEN (9 + 9)
+
+// DFU runtime descriptor
+// Interface number, string index, attributes, detach timeout, transfer size
+#define TUD_DFU_RT_DESCRIPTOR(_itfnum, _stridx, _attr, _timeout, _xfer_size) \\
+  /* Interface */ \\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 0, TUD_DFU_APP_CLASS, TUD_DFU_APP_SUBCLASS, DFU_PROTOCOL_RT, _stridx, \\
+  /* Function */ \\
+  9, DFU_DESC_FUNCTIONAL, _attr, U16_TO_U8S_LE(_timeout), U16_TO_U8S_LE(_xfer_size), U16_TO_U8S_LE(0x0101)
+
+//--------------------------------------------------------------------+
+// DFU Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor: 9 bytes + number of alternatives * 9
+#define TUD_DFU_DESC_LEN(_alt_count)    (9 + (_alt_count) * 9)
+
+// Interface number, Alternate count, starting string index, attributes, detach timeout, transfer size
+// Note: Alternate count must be numeric or macro, string index is increased by one for each Alt interface
+#define TUD_DFU_DESCRIPTOR(_itfnum, _alt_count, _stridx, _attr, _timeout, _xfer_size) \\
+  TU_XSTRCAT(_TUD_DFU_ALT_,_alt_count)(_itfnum, 0, _stridx), \\
+  /* Function */ \\
+  9, DFU_DESC_FUNCTIONAL, _attr, U16_TO_U8S_LE(_timeout), U16_TO_U8S_LE(_xfer_size), U16_TO_U8S_LE(0x0101)
+
+#define _TUD_DFU_ALT(_itfnum, _alt, _stridx) \\
+  /* Interface */ \\
+  9, TUSB_DESC_INTERFACE, _itfnum, _alt, 0, TUD_DFU_APP_CLASS, TUD_DFU_APP_SUBCLASS, DFU_PROTOCOL_DFU, _stridx
+
+#define _TUD_DFU_ALT_1(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx)
+
+#define _TUD_DFU_ALT_2(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_1(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_3(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_2(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_4(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_3(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_5(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_4(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_6(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_5(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_7(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_6(_itfnum, _alt_count+1, _stridx+1)
+
+#define _TUD_DFU_ALT_8(_itfnum, _alt_count, _stridx) \\
+  _TUD_DFU_ALT(_itfnum, _alt_count, _stridx),      \\
+  _TUD_DFU_ALT_7(_itfnum, _alt_count+1, _stridx+1)
+
+//--------------------------------------------------------------------+
+// CDC-ECM Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor: 71 bytes
+#define TUD_CDC_ECM_DESC_LEN  (8+9+5+5+13+7+9+9+7+7)
+
+// CDC-ECM Descriptor Template
+// Interface number, description string index, MAC address string index, EP notification address and size, EP data address (out, in), and size, max segment size.
+#define TUD_CDC_ECM_DESCRIPTOR(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize) \\
+  /* Interface Association */\\
+  8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_ETHERNET_CONTROL_MODEL, 0, 0,\\
+  /* CDC Control Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 1, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_ETHERNET_CONTROL_MODEL, 0, _desc_stridx,\\
+  /* CDC-ECM Header */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_HEADER, U16_TO_U8S_LE(0x0120),\\
+  /* CDC-ECM Union */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_UNION, _itfnum, (uint8_t)((_itfnum) + 1),\\
+  /* CDC-ECM Functional Descriptor */\\
+  13, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_ETHERNET_NETWORKING, _mac_stridx, 0, 0, 0, 0, U16_TO_U8S_LE(_maxsegmentsize), U16_TO_U8S_LE(0), 0,\\
+  /* Endpoint Notification */\\
+  7, TUSB_DESC_ENDPOINT, _ep_notif, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_notif_size), 1,\\
+  /* CDC Data Interface (default inactive) */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 0, 0, TUSB_CLASS_CDC_DATA, 0, 0, 0,\\
+  /* CDC Data Interface (alternative active) */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 1, 2, TUSB_CLASS_CDC_DATA, 0, 0, 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+//--------------------------------------------------------------------+
+// RNDIS Descriptor Templates
+//--------------------------------------------------------------------+
+
+#if 0
+/* Windows XP */
+#define TUD_RNDIS_ITF_CLASS    TUSB_CLASS_CDC
+#define TUD_RNDIS_ITF_SUBCLASS CDC_COMM_SUBCLASS_ABSTRACT_CONTROL_MODEL
+#define TUD_RNDIS_ITF_PROTOCOL 0xFF /* CDC_COMM_PROTOCOL_MICROSOFT_RNDIS */
+#else
+/* Windows 7+ */
+#define TUD_RNDIS_ITF_CLASS    TUSB_CLASS_WIRELESS_CONTROLLER
+#define TUD_RNDIS_ITF_SUBCLASS 0x01
+#define TUD_RNDIS_ITF_PROTOCOL 0x03
+#endif
+
+// Length of template descriptor: 66 bytes
+#define TUD_RNDIS_DESC_LEN  (8+9+5+5+4+5+7+9+7+7)
+
+// RNDIS Descriptor Template
+// Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+#define TUD_RNDIS_DESCRIPTOR(_itfnum, _stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize) \\
+  /* Interface Association */\\
+  8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUD_RNDIS_ITF_CLASS, TUD_RNDIS_ITF_SUBCLASS, TUD_RNDIS_ITF_PROTOCOL, 0,\\
+  /* CDC Control Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 1, TUD_RNDIS_ITF_CLASS, TUD_RNDIS_ITF_SUBCLASS, TUD_RNDIS_ITF_PROTOCOL, _stridx,\\
+  /* CDC-ACM Header */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_HEADER, U16_TO_U8S_LE(0x0110),\\
+  /* CDC Call Management */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_CALL_MANAGEMENT, 0, (uint8_t)((_itfnum) + 1),\\
+  /* ACM */\\
+  4, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_ABSTRACT_CONTROL_MANAGEMENT, 0,\\
+  /* CDC Union */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_UNION, _itfnum, (uint8_t)((_itfnum) + 1),\\
+  /* Endpoint Notification */\\
+  7, TUSB_DESC_ENDPOINT, _ep_notif, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_notif_size), 1,\\
+  /* CDC Data Interface */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 0, 2, TUSB_CLASS_CDC_DATA, 0, 0, 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+//--------------------------------------------------------------------+
+// Bluetooth Radio Descriptor Templates
+//--------------------------------------------------------------------+
+
+#define TUD_BT_APP_CLASS                    (TUSB_CLASS_WIRELESS_CONTROLLER)
+#define TUD_BT_APP_SUBCLASS                 0x01
+#define TUD_BT_PROTOCOL_PRIMARY_CONTROLLER  0x01
+#define TUD_BT_PROTOCOL_AMP_CONTROLLER      0x02
+
+// Length of template descriptor: 38 bytes + number of ISO alternatives * 23
+#define TUD_BTH_DESC_LEN (8 + 9 + 7 + 7 + 7 + (CFG_TUD_BTH_ISO_ALT_COUNT) * (9 + 7 + 7))
+
+/* Primary Interface */
+#define TUD_BTH_PRI_ITF(_itfnum, _stridx, _ep_evt, _ep_evt_size, _ep_evt_interval, _ep_in, _ep_out, _ep_size) \\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 3, TUD_BT_APP_CLASS, TUD_BT_APP_SUBCLASS, TUD_BT_PROTOCOL_PRIMARY_CONTROLLER, _stridx, \\
+  /* Endpoint In for events */ \\
+  7, TUSB_DESC_ENDPOINT, _ep_evt, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_evt_size), _ep_evt_interval, \\
+  /* Endpoint In for ACL data */ \\
+  7, TUSB_DESC_ENDPOINT, _ep_in, TUSB_XFER_BULK, U16_TO_U8S_LE(_ep_size), 1, \\
+  /* Endpoint Out for ACL data */ \\
+  7, TUSB_DESC_ENDPOINT, _ep_out, TUSB_XFER_BULK, U16_TO_U8S_LE(_ep_size), 1
+
+#define TUD_BTH_ISO_ITF(_itfnum, _alt, _ep_in, _ep_out, _n) ,\\
+  /* Interface with 2 endpoints */ \\
+  9, TUSB_DESC_INTERFACE, _itfnum, _alt, 2, TUD_BT_APP_CLASS, TUD_BT_APP_SUBCLASS, TUD_BT_PROTOCOL_PRIMARY_CONTROLLER, 0, \\
+  /* Isochronous endpoints */ \\
+  7, TUSB_DESC_ENDPOINT, _ep_in, TUSB_XFER_ISOCHRONOUS, U16_TO_U8S_LE(_n), 1, \\
+  7, TUSB_DESC_ENDPOINT, _ep_out, TUSB_XFER_ISOCHRONOUS, U16_TO_U8S_LE(_n), 1
+
+#define _FIRST(a, ...) a
+#define _REST(a, ...) __VA_ARGS__
+
+#define TUD_BTH_ISO_ITF_0(_itfnum, ...)
+#define TUD_BTH_ISO_ITF_1(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 1, _ep_in, _ep_out, _FIRST(__VA_ARGS__))
+#define TUD_BTH_ISO_ITF_2(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 2, _ep_in, _ep_out, _FIRST(__VA_ARGS__)) \\
+  TUD_BTH_ISO_ITF_1(_itfnum, _ep_in, _ep_out, _REST(__VA_ARGS__))
+#define TUD_BTH_ISO_ITF_3(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 3, _ep_in, _ep_out, _FIRST(__VA_ARGS__)) \\
+  TUD_BTH_ISO_ITF_2(_itfnum, _ep_in, _ep_out, _REST(__VA_ARGS__))
+#define TUD_BTH_ISO_ITF_4(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 4, _ep_in, _ep_out, _FIRST(__VA_ARGS__)) \\
+  TUD_BTH_ISO_ITF_3(_itfnum, _ep_in, _ep_out, _REST(__VA_ARGS__))
+#define TUD_BTH_ISO_ITF_5(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 5, _ep_in, _ep_out, _FIRST(__VA_ARGS__)) \\
+  TUD_BTH_ISO_ITF_4(_itfnum, _ep_in, _ep_out, _REST(__VA_ARGS__))
+#define TUD_BTH_ISO_ITF_6(_itfnum, _ep_in, _ep_out, ...) TUD_BTH_ISO_ITF(_itfnum, (CFG_TUD_BTH_ISO_ALT_COUNT) - 6, _ep_in, _ep_out, _FIRST(__VA_ARGS__)) \\
+  TUD_BTH_ISO_ITF_5(_itfnum, _ep_in, _ep_out, _REST(__VA_ARGS__))
+
+#define TUD_BTH_ISO_ITFS(_itfnum, _ep_in, _ep_out, ...) \\
+  TU_XSTRCAT(TUD_BTH_ISO_ITF_, CFG_TUD_BTH_ISO_ALT_COUNT)(_itfnum, _ep_in, _ep_out, __VA_ARGS__)
+
+// BT Primary controller descriptor
+// Interface number, string index, attributes, event endpoint, event endpoint size, interval, data in, data out, data endpoint size, iso endpoint sizes
+// TODO BTH should also use IAD like CDC for composite device
+#define TUD_BTH_DESCRIPTOR(_itfnum, _stridx, _ep_evt, _ep_evt_size, _ep_evt_interval, _ep_in, _ep_out, _ep_size,...) \\
+  /* Interface Associate */\\
+  8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUD_BT_APP_CLASS, TUD_BT_APP_SUBCLASS, TUD_BT_PROTOCOL_PRIMARY_CONTROLLER, 0,\\
+  TUD_BTH_PRI_ITF(_itfnum, _stridx, _ep_evt, _ep_evt_size, _ep_evt_interval, _ep_in, _ep_out, _ep_size) \\
+  TUD_BTH_ISO_ITFS(_itfnum + 1, _ep_in + 1, _ep_out + 1, __VA_ARGS__)
+
+//--------------------------------------------------------------------+
+// CDC-NCM Descriptor Templates
+//--------------------------------------------------------------------+
+
+// Length of template descriptor
+#define TUD_CDC_NCM_DESC_LEN  (8+9+5+5+13+6+7+9+9+7+7)
+
+// CDC-ECM Descriptor Template
+// Interface number, description string index, MAC address string index, EP notification address and size, EP data address (out, in), and size, max segment size.
+#define TUD_CDC_NCM_DESCRIPTOR(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize) \\
+  /* Interface Association */\\
+  8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_NETWORK_CONTROL_MODEL, 0, 0,\\
+  /* CDC Control Interface */\\
+  9, TUSB_DESC_INTERFACE, _itfnum, 0, 1, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_NETWORK_CONTROL_MODEL, 0, _desc_stridx,\\
+  /* CDC-NCM Header */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_HEADER, U16_TO_U8S_LE(0x0110),\\
+  /* CDC-NCM Union */\\
+  5, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_UNION, _itfnum, (uint8_t)((_itfnum) + 1),\\
+  /* CDC-NCM Functional Descriptor */\\
+  13, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_ETHERNET_NETWORKING, _mac_stridx, 0, 0, 0, 0, U16_TO_U8S_LE(_maxsegmentsize), U16_TO_U8S_LE(0), 0, \\
+  /* CDC-NCM Functional Descriptor */\\
+  6, TUSB_DESC_CS_INTERFACE, CDC_FUNC_DESC_NCM, U16_TO_U8S_LE(0x0100), 0, \\
+  /* Endpoint Notification */\\
+  7, TUSB_DESC_ENDPOINT, _ep_notif, TUSB_XFER_INTERRUPT, U16_TO_U8S_LE(_ep_notif_size), 50,\\
+  /* CDC Data Interface (default inactive) */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 0, 0, TUSB_CLASS_CDC_DATA, 0, NCM_DATA_PROTOCOL_NETWORK_TRANSFER_BLOCK, 0,\\
+  /* CDC Data Interface (alternative active) */\\
+  9, TUSB_DESC_INTERFACE, (uint8_t)((_itfnum)+1), 1, 2, TUSB_CLASS_CDC_DATA, 0, NCM_DATA_PROTOCOL_NETWORK_TRANSFER_BLOCK, 0,\\
+  /* Endpoint In */\\
+  7, TUSB_DESC_ENDPOINT, _epin, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0,\\
+  /* Endpoint Out */\\
+  7, TUSB_DESC_ENDPOINT, _epout, TUSB_XFER_BULK, U16_TO_U8S_LE(_epsize), 0
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _TUSB_USBD_H_ */
+
+/** @} */
+`,"osal/osal_none.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef TUSB_OSAL_NONE_H_
+#define TUSB_OSAL_NONE_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// TASK API
+//--------------------------------------------------------------------+
+
+#if CFG_TUH_ENABLED
+// currently only needed/available in host mode
+TU_ATTR_WEAK void osal_task_delay(uint32_t msec);
+#endif
+
+//--------------------------------------------------------------------+
+// Binary Semaphore API
+//--------------------------------------------------------------------+
+typedef struct {
+  volatile uint16_t count;
+} osal_semaphore_def_t;
+
+typedef osal_semaphore_def_t* osal_semaphore_t;
+
+TU_ATTR_ALWAYS_INLINE static inline osal_semaphore_t osal_semaphore_create(osal_semaphore_def_t* semdef) {
+  semdef->count = 0;
+  return semdef;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_semaphore_delete(osal_semaphore_t semd_hdl) {
+  (void) semd_hdl;
+  return true; // nothing to do
+}
+
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_semaphore_post(osal_semaphore_t sem_hdl, bool in_isr) {
+  (void) in_isr;
+  sem_hdl->count++;
+  return true;
+}
+
+// TODO blocking for now
+TU_ATTR_ALWAYS_INLINE static inline bool osal_semaphore_wait(osal_semaphore_t sem_hdl, uint32_t msec) {
+  (void) msec;
+
+  while (sem_hdl->count == 0) {}
+  sem_hdl->count--;
+
+  return true;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline void osal_semaphore_reset(osal_semaphore_t sem_hdl) {
+  sem_hdl->count = 0;
+}
+
+//--------------------------------------------------------------------+
+// MUTEX API
+// Within tinyusb, mutex is never used in ISR context
+//--------------------------------------------------------------------+
+typedef osal_semaphore_def_t osal_mutex_def_t;
+typedef osal_semaphore_t osal_mutex_t;
+
+#if OSAL_MUTEX_REQUIRED
+// Note: multiple cores MCUs usually do provide IPC API for mutex
+// or we can use std atomic function
+
+TU_ATTR_ALWAYS_INLINE static inline osal_mutex_t osal_mutex_create(osal_mutex_def_t* mdef) {
+  mdef->count = 1;
+  return mdef;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_mutex_delete(osal_mutex_t mutex_hdl) {
+  (void) mutex_hdl;
+  return true; // nothing to do
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_mutex_lock (osal_mutex_t mutex_hdl, uint32_t msec) {
+  return osal_semaphore_wait(mutex_hdl, msec);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_mutex_unlock(osal_mutex_t mutex_hdl) {
+  return osal_semaphore_post(mutex_hdl, false);
+}
+
+#else
+
+#define osal_mutex_create(_mdef)          (NULL)
+#define osal_mutex_lock(_mutex_hdl, _ms)  (true)
+#define osal_mutex_unlock(_mutex_hdl)     (true)
+
+#endif
+
+//--------------------------------------------------------------------+
+// QUEUE API
+//--------------------------------------------------------------------+
+#include "common/tusb_fifo.h"
+
+typedef struct {
+  void (* interrupt_set)(bool);
+  tu_fifo_t ff;
+} osal_queue_def_t;
+
+typedef osal_queue_def_t* osal_queue_t;
+
+// _int_set is used as mutex in OS NONE (disable/enable USB ISR)
+#define OSAL_QUEUE_DEF(_int_set, _name, _depth, _type)    \\
+  uint8_t _name##_buf[_depth*sizeof(_type)];              \\
+  osal_queue_def_t _name = {                              \\
+    .interrupt_set = _int_set,                            \\
+    .ff = TU_FIFO_INIT(_name##_buf, _depth, _type, false) \\
+  }
+
+// lock queue by disable USB interrupt
+TU_ATTR_ALWAYS_INLINE static inline void _osal_q_lock(osal_queue_t qhdl) {
+  // disable dcd/hcd interrupt
+  qhdl->interrupt_set(false);
+}
+
+// unlock queue
+TU_ATTR_ALWAYS_INLINE static inline void _osal_q_unlock(osal_queue_t qhdl) {
+  // enable dcd/hcd interrupt
+  qhdl->interrupt_set(true);
+}
+
+TU_ATTR_ALWAYS_INLINE static inline osal_queue_t osal_queue_create(osal_queue_def_t* qdef) {
+  tu_fifo_clear(&qdef->ff);
+  return (osal_queue_t) qdef;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_queue_delete(osal_queue_t qhdl) {
+  (void) qhdl;
+  return true; // nothing to do
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_queue_receive(osal_queue_t qhdl, void* data, uint32_t msec) {
+  (void) msec; // not used, always behave as msec = 0
+
+  _osal_q_lock(qhdl);
+  bool success = tu_fifo_read(&qhdl->ff, data);
+  _osal_q_unlock(qhdl);
+
+  return success;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_queue_send(osal_queue_t qhdl, void const* data, bool in_isr) {
+  if (!in_isr) {
+    _osal_q_lock(qhdl);
+  }
+
+  bool success = tu_fifo_write(&qhdl->ff, data);
+
+  if (!in_isr) {
+    _osal_q_unlock(qhdl);
+  }
+
+  return success;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool osal_queue_empty(osal_queue_t qhdl) {
+  // Skip queue lock/unlock since this function is primarily called
+  // with interrupt disabled before going into low power mode
+  return tu_fifo_empty(&qhdl->ff);
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+`,"osal/osal.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_OSAL_H_
+#define _TUSB_OSAL_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+#include "common/tusb_common.h"
+
+typedef void (*osal_task_func_t)( void * );
+
+// Timeout
+#define OSAL_TIMEOUT_NOTIMEOUT     (0)          // Return immediately
+#define OSAL_TIMEOUT_NORMAL        (10)         // Default timeout
+#define OSAL_TIMEOUT_WAIT_FOREVER  (UINT32_MAX) // Wait forever
+#define OSAL_TIMEOUT_CONTROL_XFER  OSAL_TIMEOUT_WAIT_FOREVER
+
+// Mutex is required when using a preempted RTOS or MCU has multiple cores
+#if (CFG_TUSB_OS == OPT_OS_NONE) && !TUP_MCU_MULTIPLE_CORE
+  #define OSAL_MUTEX_REQUIRED   0
+  #define OSAL_MUTEX_DEF(_name) uint8_t :0
+#else
+  #define OSAL_MUTEX_REQUIRED   1
+  #define OSAL_MUTEX_DEF(_name) osal_mutex_def_t _name
+#endif
+
+// OS thin implementation
+#if CFG_TUSB_OS == OPT_OS_NONE
+  #include "osal_none.h"
+#elif CFG_TUSB_OS == OPT_OS_FREERTOS
+  #include "osal_freertos.h"
+#elif CFG_TUSB_OS == OPT_OS_MYNEWT
+  #include "osal_mynewt.h"
+#elif CFG_TUSB_OS == OPT_OS_PICO
+  #include "osal_pico.h"
+#elif CFG_TUSB_OS == OPT_OS_RTTHREAD
+  #include "osal_rtthread.h"
+#elif CFG_TUSB_OS == OPT_OS_RTX4
+  #include "osal_rtx4.h"
+#elif CFG_TUSB_OS == OPT_OS_CUSTOM
+  #include "tusb_os_custom.h" // implemented by application
+#else
+  #error OS is not supported yet
+#endif
+
+//--------------------------------------------------------------------+
+// OSAL Porting API
+// Should be implemented as static inline function in osal_port.h header
+/*
+   osal_semaphore_t osal_semaphore_create(osal_semaphore_def_t* semdef);
+   bool osal_semaphore_delete(osal_semaphore_t semd_hdl);
+   bool osal_semaphore_post(osal_semaphore_t sem_hdl, bool in_isr);
+   bool osal_semaphore_wait(osal_semaphore_t sem_hdl, uint32_t msec);
+   void osal_semaphore_reset(osal_semaphore_t sem_hdl); // TODO removed
+
+   osal_mutex_t osal_mutex_create(osal_mutex_def_t* mdef);
+   bool osal_mutex_delete(osal_mutex_t mutex_hdl)
+   bool osal_mutex_lock (osal_mutex_t sem_hdl, uint32_t msec);
+   bool osal_mutex_unlock(osal_mutex_t mutex_hdl);
+
+   osal_queue_t osal_queue_create(osal_queue_def_t* qdef);
+   bool osal_queue_delete(osal_queue_t qhdl);
+   bool osal_queue_receive(osal_queue_t qhdl, void* data, uint32_t msec);
+   bool osal_queue_send(osal_queue_t qhdl, void const * data, bool in_isr);
+   bool osal_queue_empty(osal_queue_t qhdl);
+*/
+//--------------------------------------------------------------------+
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif /* _TUSB_OSAL_H_ */
+`,"tusb_option.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_OPTION_H_
+#define _TUSB_OPTION_H_
+
+#include "common/tusb_compiler.h"
+
+// Version is release as major.minor.revision eg 1.0.0
+#define TUSB_VERSION_MAJOR     0
+#define TUSB_VERSION_MINOR     18
+#define TUSB_VERSION_REVISION  0
+
+#define TUSB_VERSION_NUMBER    (TUSB_VERSION_MAJOR * 10000 + TUSB_VERSION_MINOR * 100 + TUSB_VERSION_REVISION)
+#define TUSB_VERSION_STRING    TU_STRING(TUSB_VERSION_MAJOR) "." TU_STRING(TUSB_VERSION_MINOR) "." TU_STRING(TUSB_VERSION_REVISION)
+
+//--------------------------------------------------------------------+
+// Supported MCUs
+// CFG_TUSB_MCU must be defined to one of following value
+//--------------------------------------------------------------------+
+
+#define OPT_MCU_NONE                0
+
+// LPC
+#define OPT_MCU_LPC11UXX            1 ///< NXP LPC11Uxx
+#define OPT_MCU_LPC13XX             2 ///< NXP LPC13xx
+#define OPT_MCU_LPC15XX             3 ///< NXP LPC15xx
+#define OPT_MCU_LPC175X_6X          4 ///< NXP LPC175x, LPC176x
+#define OPT_MCU_LPC177X_8X          5 ///< NXP LPC177x, LPC178x
+#define OPT_MCU_LPC18XX             6 ///< NXP LPC18xx
+#define OPT_MCU_LPC40XX             7 ///< NXP LPC40xx
+#define OPT_MCU_LPC43XX             8 ///< NXP LPC43xx
+#define OPT_MCU_LPC51               9 ///< NXP LPC51
+#define OPT_MCU_LPC51UXX            OPT_MCU_LPC51 ///< NXP LPC51
+#define OPT_MCU_LPC54              10 ///< NXP LPC54
+#define OPT_MCU_LPC55              11 ///< NXP LPC55
+// legacy naming
+#define OPT_MCU_LPC54XXX           OPT_MCU_LPC54
+#define OPT_MCU_LPC55XX            OPT_MCU_LPC55
+
+// NRF
+#define OPT_MCU_NRF5X             100 ///< Nordic nRF5x series
+
+// SAM
+#define OPT_MCU_SAMD21            200 ///< MicroChip SAMD21
+#define OPT_MCU_SAMD51            201 ///< MicroChip SAMD51
+#define OPT_MCU_SAMG              202 ///< MicroChip SAMDG series
+#define OPT_MCU_SAME5X            203 ///< MicroChip SAM E5x
+#define OPT_MCU_SAMD11            204 ///< MicroChip SAMD11
+#define OPT_MCU_SAML22            205 ///< MicroChip SAML22
+#define OPT_MCU_SAML21            206 ///< MicroChip SAML21
+#define OPT_MCU_SAMX7X            207 ///< MicroChip SAME70, S70, V70, V71 family
+
+// STM32
+#define OPT_MCU_STM32F0           300 ///< ST F0
+#define OPT_MCU_STM32F1           301 ///< ST F1
+#define OPT_MCU_STM32F2           302 ///< ST F2
+#define OPT_MCU_STM32F3           303 ///< ST F3
+#define OPT_MCU_STM32F4           304 ///< ST F4
+#define OPT_MCU_STM32F7           305 ///< ST F7
+#define OPT_MCU_STM32H7           306 ///< ST H7
+#define OPT_MCU_STM32L1           308 ///< ST L1
+#define OPT_MCU_STM32L0           307 ///< ST L0
+#define OPT_MCU_STM32L4           309 ///< ST L4
+#define OPT_MCU_STM32G0           310 ///< ST G0
+#define OPT_MCU_STM32G4           311 ///< ST G4
+#define OPT_MCU_STM32WB           312 ///< ST WB
+#define OPT_MCU_STM32U5           313 ///< ST U5
+#define OPT_MCU_STM32L5           314 ///< ST L5
+#define OPT_MCU_STM32H5           315 ///< ST H5
+#define OPT_MCU_STM32U0           316 ///< ST U0
+#define OPT_MCU_STM32H7RS         317 ///< ST F7RS
+#define OPT_MCU_STM32C0           318 ///< ST C0
+
+// Sony
+#define OPT_MCU_CXD56             400 ///< SONY CXD56
+
+// TI
+#define OPT_MCU_MSP430x5xx        500 ///< TI MSP430x5xx
+#define OPT_MCU_MSP432E4          510 ///< TI MSP432E4xx
+#define OPT_MCU_TM4C123           511 ///< TI Tiva-C 123x
+#define OPT_MCU_TM4C129           512 ///< TI Tiva-C 129x
+
+// ValentyUSB eptri
+#define OPT_MCU_VALENTYUSB_EPTRI  600 ///< Fomu eptri config
+
+// NXP iMX RT
+#define OPT_MCU_MIMXRT1XXX        700                 ///< NXP iMX RT1xxx Series
+#define OPT_MCU_MIMXRT10XX        OPT_MCU_MIMXRT1XXX  ///< RT10xx
+#define OPT_MCU_MIMXRT11XX        OPT_MCU_MIMXRT1XXX  ///< RT11xx
+
+// Nuvoton
+#define OPT_MCU_NUC121            800
+#define OPT_MCU_NUC126            801
+#define OPT_MCU_NUC120            802
+#define OPT_MCU_NUC505            803
+
+// Espressif
+#define OPT_MCU_ESP32S2           900 ///< Espressif ESP32-S2
+#define OPT_MCU_ESP32S3           901 ///< Espressif ESP32-S3
+#define OPT_MCU_ESP32             902 ///< Espressif ESP32 (for host max3421e)
+#define OPT_MCU_ESP32C3           903 ///< Espressif ESP32-C3
+#define OPT_MCU_ESP32C6           904 ///< Espressif ESP32-C6
+#define OPT_MCU_ESP32C2           905 ///< Espressif ESP32-C2
+#define OPT_MCU_ESP32H2           906 ///< Espressif ESP32-H2
+#define OPT_MCU_ESP32P4           907 ///< Espressif ESP32-P4
+#define TUSB_MCU_VENDOR_ESPRESSIF (CFG_TUSB_MCU >= 900 && CFG_TUSB_MCU < 1000) // check if Espressif MCU
+#define TUP_MCU_ESPRESSIF        TUSB_MCU_VENDOR_ESPRESSIF //  for backward compatibility
+
+// Dialog
+#define OPT_MCU_DA1469X          1000 ///< Dialog Semiconductor DA1469x
+
+// Raspberry Pi
+#define OPT_MCU_RP2040           1100 ///< Raspberry Pi RP2040
+
+// NXP Kinetis
+#define OPT_MCU_KINETIS_KL       1200 ///< NXP KL series
+#define OPT_MCU_KINETIS_K32L     1201 ///< NXP K32L series
+#define OPT_MCU_KINETIS_K32      1201 ///< Alias to K32L
+#define OPT_MCU_KINETIS_K        1202 ///< NXP K series
+
+#define OPT_MCU_MKL25ZXX         1200 ///< Alias to KL (obsolete)
+#define OPT_MCU_K32L2BXX         1201 ///< Alias to K32 (obsolete)
+
+// Silabs
+#define OPT_MCU_EFM32GG          1300 ///< Silabs EFM32GG
+
+// Renesas RX
+#define OPT_MCU_RX63X            1400 ///< Renesas RX63N/631
+#define OPT_MCU_RX65X            1401 ///< Renesas RX65N/RX651
+#define OPT_MCU_RX72N            1402 ///< Renesas RX72N
+#define OPT_MCU_RAXXX            1403 ///< Renesas RA generic
+
+// Mind Motion
+#define OPT_MCU_MM32F327X        1500 ///< Mind Motion MM32F327
+
+// GigaDevice
+#define OPT_MCU_GD32VF103        1600 ///< GigaDevice GD32VF103
+
+// Broadcom
+#define OPT_MCU_BCM2711          1700 ///< Broadcom BCM2711
+#define OPT_MCU_BCM2835          1701 ///< Broadcom BCM2835
+#define OPT_MCU_BCM2837          1702 ///< Broadcom BCM2837
+
+// Infineon
+#define OPT_MCU_XMC4000          1800 ///< Infineon XMC4000
+
+// PIC
+#define OPT_MCU_PIC32MZ          1900 ///< MicroChip PIC32MZ family
+#define OPT_MCU_PIC32MM          1901 ///< MicroChip PIC32MM family
+#define OPT_MCU_PIC32MX          1902 ///< MicroChip PIC32MX family
+#define OPT_MCU_PIC32MK          1903 ///< MicroChip PIC32MK family
+#define OPT_MCU_PIC24            1910 ///< MicroChip PIC24 family
+#define OPT_MCU_DSPIC33          1911 ///< MicroChip DSPIC33 family
+
+// BridgeTek
+#define OPT_MCU_FT90X            2000 ///< BridgeTek FT90x
+#define OPT_MCU_FT93X            2001 ///< BridgeTek FT93x
+
+// Allwinner
+#define OPT_MCU_F1C100S          2100 ///< Allwinner F1C100s family
+
+// WCH
+#define OPT_MCU_CH32V307         2200 ///< WCH CH32V307
+#define OPT_MCU_CH32F20X         2210 ///< WCH CH32F20x
+#define OPT_MCU_CH32V20X         2220 ///< WCH CH32V20X
+#define OPT_MCU_CH32V103         2230 ///< WCH CH32V103
+
+// NXP LPC MCX
+#define OPT_MCU_MCXN9            2300  ///< NXP MCX N9 Series
+#define OPT_MCU_MCXA15           2301  ///< NXP MCX A15 Series
+
+// Analog Devices
+#define OPT_MCU_MAX32690         2400  ///< ADI MAX32690
+#define OPT_MCU_MAX32666         2401  ///< ADI MAX32666/5
+#define OPT_MCU_MAX32650         2402  ///< ADI MAX32650/1/2
+#define OPT_MCU_MAX78002         2403  ///< ADI MAX78002
+
+// Check if configured MCU is one of listed
+// Apply _TU_CHECK_MCU with || as separator to list of input
+#define _TU_CHECK_MCU(_m)    (CFG_TUSB_MCU == _m)
+#define TU_CHECK_MCU(...)    (TU_ARGS_APPLY(_TU_CHECK_MCU, ||, __VA_ARGS__))
+
+//--------------------------------------------------------------------+
+// Supported OS
+//--------------------------------------------------------------------+
+
+#define OPT_OS_NONE       1  ///< No RTOS
+#define OPT_OS_FREERTOS   2  ///< FreeRTOS
+#define OPT_OS_MYNEWT     3  ///< Mynewt OS
+#define OPT_OS_CUSTOM     4  ///< Custom OS is implemented by application
+#define OPT_OS_PICO       5  ///< Raspberry Pi Pico SDK
+#define OPT_OS_RTTHREAD   6  ///< RT-Thread
+#define OPT_OS_RTX4       7  ///< Keil RTX 4
+
+//--------------------------------------------------------------------+
+// Mode and Speed
+//--------------------------------------------------------------------+
+
+// Low byte is operational mode
+#define OPT_MODE_NONE           0x0000 ///< Disabled
+#define OPT_MODE_DEVICE         0x0001 ///< Device Mode
+#define OPT_MODE_HOST           0x0002 ///< Host Mode
+
+// High byte is max operational speed (corresponding to tusb_speed_t)
+#define OPT_MODE_DEFAULT_SPEED  0x0000 ///< Default (max) speed supported by MCU
+#define OPT_MODE_LOW_SPEED      0x0100 ///< Low Speed
+#define OPT_MODE_FULL_SPEED     0x0200 ///< Full Speed
+#define OPT_MODE_HIGH_SPEED     0x0400 ///< High Speed
+#define OPT_MODE_SPEED_MASK     0xff00
+
+//--------------------------------------------------------------------+
+// Include tusb_config.h
+//--------------------------------------------------------------------+
+
+// Allow to use command line to change the config name/location
+#ifdef CFG_TUSB_CONFIG_FILE
+  #include CFG_TUSB_CONFIG_FILE
+#else
+  #include "tusb_config.h"
+#endif
+
+#include "common/tusb_mcu.h"
+
+//--------------------------------------------------------------------+
+// USBIP
+//--------------------------------------------------------------------+
+
+#ifndef CFG_TUD_DWC2_SLAVE_ENABLE
+  #ifndef CFG_TUD_DWC2_SLAVE_ENABLE_DEFAULT
+  #define CFG_TUD_DWC2_SLAVE_ENABLE_DEFAULT 1
+  #endif
+
+  #define CFG_TUD_DWC2_SLAVE_ENABLE CFG_TUD_DWC2_SLAVE_ENABLE_DEFAULT
+#endif
+
+// Enable DWC2 DMA for device
+#ifndef CFG_TUD_DWC2_DMA_ENABLE
+  #ifndef CFG_TUD_DWC2_DMA_ENABLE_DEFAULT
+  #define CFG_TUD_DWC2_DMA_ENABLE_DEFAULT 0
+  #endif
+
+  #define CFG_TUD_DWC2_DMA_ENABLE CFG_TUD_DWC2_DMA_ENABLE_DEFAULT
+#endif
+
+// Enable DWC2 Slave mode for host
+#ifndef CFG_TUH_DWC2_SLAVE_ENABLE
+  #ifndef CFG_TUH_DWC2_SLAVE_ENABLE_DEFAULT
+  #define CFG_TUH_DWC2_SLAVE_ENABLE_DEFAULT 1
+  #endif
+
+  #define CFG_TUH_DWC2_SLAVE_ENABLE CFG_TUH_DWC2_SLAVE_ENABLE_DEFAULT
+#endif
+
+// Enable DWC2 DMA for host
+#ifndef CFG_TUH_DWC2_DMA_ENABLE
+  #ifndef CFG_TUH_DWC2_DMA_ENABLE_DEFAULT
+  #define CFG_TUH_DWC2_DMA_ENABLE_DEFAULT 0
+  #endif
+
+  #define CFG_TUH_DWC2_DMA_ENABLE   CFG_TUH_DWC2_DMA_ENABLE_DEFAULT
+#endif
+
+// Enable PIO-USB software host controller
+#ifndef CFG_TUH_RPI_PIO_USB
+  #define CFG_TUH_RPI_PIO_USB 0
+#endif
+
+#ifndef CFG_TUD_RPI_PIO_USB
+  #define CFG_TUD_RPI_PIO_USB 0
+#endif
+
+// MAX3421 Host controller option
+#ifndef CFG_TUH_MAX3421
+  #define CFG_TUH_MAX3421  0
+#endif
+
+
+//--------------------------------------------------------------------
+// RootHub Mode detection
+//--------------------------------------------------------------------
+
+//------------- Root hub as Device -------------//
+
+#if defined(CFG_TUSB_RHPORT0_MODE) && ((CFG_TUSB_RHPORT0_MODE) & OPT_MODE_DEVICE)
+  #define TUD_RHPORT_MODE     (CFG_TUSB_RHPORT0_MODE)
+  #define TUD_OPT_RHPORT      0
+#elif defined(CFG_TUSB_RHPORT1_MODE) && ((CFG_TUSB_RHPORT1_MODE) & OPT_MODE_DEVICE)
+  #define TUD_RHPORT_MODE     (CFG_TUSB_RHPORT1_MODE)
+  #define TUD_OPT_RHPORT      1
+#else
+  #define TUD_RHPORT_MODE     OPT_MODE_NONE
+#endif
+
+#ifndef CFG_TUD_ENABLED
+  // fallback to use CFG_TUSB_RHPORTx_MODE
+  #define CFG_TUD_ENABLED     (TUD_RHPORT_MODE & OPT_MODE_DEVICE)
+#endif
+
+#ifndef CFG_TUD_MAX_SPEED
+  // fallback to use CFG_TUSB_RHPORTx_MODE
+  #define CFG_TUD_MAX_SPEED   (TUD_RHPORT_MODE & OPT_MODE_SPEED_MASK)
+#endif
+
+// For backward compatible
+#define TUSB_OPT_DEVICE_ENABLED CFG_TUD_ENABLED
+
+// highspeed support indicator
+#define TUD_OPT_HIGH_SPEED    (CFG_TUD_MAX_SPEED ? (CFG_TUD_MAX_SPEED & OPT_MODE_HIGH_SPEED) : TUP_RHPORT_HIGHSPEED)
+
+//------------- Root hub as Host -------------//
+
+#if defined(CFG_TUSB_RHPORT0_MODE) && ((CFG_TUSB_RHPORT0_MODE) & OPT_MODE_HOST)
+  #define TUH_RHPORT_MODE  (CFG_TUSB_RHPORT0_MODE)
+  #define TUH_OPT_RHPORT   0
+#elif defined(CFG_TUSB_RHPORT1_MODE) && ((CFG_TUSB_RHPORT1_MODE) & OPT_MODE_HOST)
+  #define TUH_RHPORT_MODE  (CFG_TUSB_RHPORT1_MODE)
+  #define TUH_OPT_RHPORT   1
+#else
+  #define TUH_RHPORT_MODE   OPT_MODE_NONE
+#endif
+
+#ifndef CFG_TUH_ENABLED
+  // fallback to use CFG_TUSB_RHPORTx_MODE
+  #define CFG_TUH_ENABLED     (TUH_RHPORT_MODE & OPT_MODE_HOST)
+#endif
+
+#ifndef CFG_TUH_MAX_SPEED
+  // fallback to use CFG_TUSB_RHPORTx_MODE
+  #define CFG_TUH_MAX_SPEED   (TUH_RHPORT_MODE & OPT_MODE_SPEED_MASK)
+#endif
+
+// For backward compatible
+#define TUSB_OPT_HOST_ENABLED   CFG_TUH_ENABLED
+
+// highspeed support indicator
+#define TUH_OPT_HIGH_SPEED    (CFG_TUH_MAX_SPEED ? (CFG_TUH_MAX_SPEED & OPT_MODE_HIGH_SPEED) : TUP_RHPORT_HIGHSPEED)
+
+
+//--------------------------------------------------------------------+
+// TODO move later
+//--------------------------------------------------------------------+
+
+// TUP_MCU_STRICT_ALIGN will overwrite TUP_ARCH_STRICT_ALIGN.
+// In case TUP_MCU_STRICT_ALIGN = 1 and TUP_ARCH_STRICT_ALIGN =0, we will not reply on compiler
+// to generate unaligned access code.
+// LPC_IP3511 Highspeed cannot access unaligned memory on USB_RAM
+#if TUD_OPT_HIGH_SPEED && TU_CHECK_MCU(OPT_MCU_LPC54XXX, OPT_MCU_LPC55XX)
+  #define TUP_MCU_STRICT_ALIGN   1
+#else
+  #define TUP_MCU_STRICT_ALIGN   0
+#endif
+
+
+//--------------------------------------------------------------------+
+// Common Options (Default)
+//--------------------------------------------------------------------+
+
+// Debug enable to print out error message
+#ifndef CFG_TUSB_DEBUG
+  #define CFG_TUSB_DEBUG 0
+#endif
+
+// Level where CFG_TUSB_DEBUG must be at least for USBH is logged
+#ifndef CFG_TUH_LOG_LEVEL
+  #define CFG_TUH_LOG_LEVEL   2
+#endif
+
+// Level where CFG_TUSB_DEBUG must be at least for USBD is logged
+#ifndef CFG_TUD_LOG_LEVEL
+  #define CFG_TUD_LOG_LEVEL   2
+#endif
+
+// Memory section for placing buffer used for usb transferring. If MEM_SECTION is different for
+// host and device use: CFG_TUD_MEM_SECTION, CFG_TUH_MEM_SECTION instead
+#ifndef CFG_TUSB_MEM_SECTION
+  #define CFG_TUSB_MEM_SECTION
+#endif
+
+// Alignment requirement of buffer used for usb transferring. if MEM_ALIGN is different for
+// host and device controller use: CFG_TUD_MEM_ALIGN, CFG_TUH_MEM_ALIGN instead
+#ifndef CFG_TUSB_MEM_ALIGN
+  #define CFG_TUSB_MEM_ALIGN      TU_ATTR_ALIGNED(4)
+#endif
+
+#ifndef CFG_TUSB_MEM_DCACHE_LINE_SIZE
+  #ifndef CFG_TUSB_MEM_DCACHE_LINE_SIZE_DEFAULT
+  #define CFG_TUSB_MEM_DCACHE_LINE_SIZE_DEFAULT 32
+  #endif
+
+  #define CFG_TUSB_MEM_DCACHE_LINE_SIZE CFG_TUSB_MEM_DCACHE_LINE_SIZE_DEFAULT
+#endif
+
+// OS selection
+#ifndef CFG_TUSB_OS
+  #define CFG_TUSB_OS             OPT_OS_NONE
+#endif
+
+#ifndef CFG_TUSB_OS_INC_PATH
+  #ifndef CFG_TUSB_OS_INC_PATH_DEFAULT
+  #define CFG_TUSB_OS_INC_PATH_DEFAULT
+  #endif
+
+  #define CFG_TUSB_OS_INC_PATH  CFG_TUSB_OS_INC_PATH_DEFAULT
+#endif
+
+//--------------------------------------------------------------------
+// Device Options (Default)
+//--------------------------------------------------------------------
+
+// Attribute to place data in accessible RAM for device controller (default: CFG_TUSB_MEM_SECTION)
+#ifndef CFG_TUD_MEM_SECTION
+  #define CFG_TUD_MEM_SECTION     CFG_TUSB_MEM_SECTION
+#endif
+
+// Attribute to align memory for device controller (default: CFG_TUSB_MEM_ALIGN)
+#ifndef CFG_TUD_MEM_ALIGN
+  #define CFG_TUD_MEM_ALIGN       CFG_TUSB_MEM_ALIGN
+#endif
+
+#ifndef CFG_TUD_MEM_DCACHE_ENABLE
+  #ifndef CFG_TUD_MEM_DCACHE_ENABLE_DEFAULT
+  #define CFG_TUD_MEM_DCACHE_ENABLE_DEFAULT  0
+  #endif
+
+  #define CFG_TUD_MEM_DCACHE_ENABLE   CFG_TUD_MEM_DCACHE_ENABLE_DEFAULT
+#endif
+
+#ifndef CFG_TUD_MEM_DCACHE_LINE_SIZE
+  #define CFG_TUD_MEM_DCACHE_LINE_SIZE CFG_TUSB_MEM_DCACHE_LINE_SIZE
+#endif
+
+#ifndef CFG_TUD_ENDPOINT0_SIZE
+  #define CFG_TUD_ENDPOINT0_SIZE  64
+#endif
+
+#ifndef CFG_TUD_INTERFACE_MAX
+  #define CFG_TUD_INTERFACE_MAX   16
+#endif
+
+// default to max hardware endpoint, but can be smaller to save RAM
+#ifndef CFG_TUD_ENDPPOINT_MAX
+  #define CFG_TUD_ENDPPOINT_MAX   TUP_DCD_ENDPOINT_MAX
+#endif
+
+#if CFG_TUD_ENDPPOINT_MAX > TUP_DCD_ENDPOINT_MAX
+  #error "CFG_TUD_ENDPPOINT_MAX must be less than or equal to TUP_DCD_ENDPOINT_MAX"
+#endif
+
+// USB 2.0 7.1.20: compliance test mode support
+#ifndef CFG_TUD_TEST_MODE
+  #define CFG_TUD_TEST_MODE       0
+#endif
+
+//------------- Device Class Driver -------------//
+#ifndef CFG_TUD_BTH
+  #define CFG_TUD_BTH             0
+#endif
+
+#if CFG_TUD_BTH && !defined(CFG_TUD_BTH_ISO_ALT_COUNT)
+#error CFG_TUD_BTH_ISO_ALT_COUNT must be defined to tell Bluetooth driver the number of ISO endpoints to use
+#endif
+
+#ifndef CFG_TUD_CDC
+  #define CFG_TUD_CDC             0
+#endif
+
+#ifndef CFG_TUD_MSC
+  #define CFG_TUD_MSC             0
+#endif
+
+#ifndef CFG_TUD_HID
+  #define CFG_TUD_HID             0
+#endif
+
+#ifndef CFG_TUD_AUDIO
+  #define CFG_TUD_AUDIO           0
+#endif
+
+#ifndef CFG_TUD_VIDEO
+  #define CFG_TUD_VIDEO           0
+#endif
+
+#ifndef CFG_TUD_MIDI
+  #define CFG_TUD_MIDI            0
+#endif
+
+#ifndef CFG_TUD_VENDOR
+  #define CFG_TUD_VENDOR          0
+#endif
+
+#ifndef CFG_TUD_USBTMC
+  #define CFG_TUD_USBTMC          0
+#endif
+
+#ifndef CFG_TUD_DFU_RUNTIME
+  #define CFG_TUD_DFU_RUNTIME     0
+#endif
+
+#ifndef CFG_TUD_DFU
+  #define CFG_TUD_DFU             0
+#endif
+
+#ifndef CFG_TUD_ECM_RNDIS
+  #ifdef CFG_TUD_NET
+    #warning "CFG_TUD_NET is renamed to CFG_TUD_ECM_RNDIS"
+    #define CFG_TUD_ECM_RNDIS   CFG_TUD_NET
+  #else
+    #define CFG_TUD_ECM_RNDIS   0
+  #endif
+#endif
+
+#ifndef CFG_TUD_NCM
+  #define CFG_TUD_NCM         0
+#endif
+
+//--------------------------------------------------------------------
+// Host Options (Default)
+//--------------------------------------------------------------------
+#if CFG_TUH_ENABLED
+  #ifndef CFG_TUH_DEVICE_MAX
+    #define CFG_TUH_DEVICE_MAX 1
+  #endif
+
+  #ifndef CFG_TUH_ENUMERATION_BUFSIZE
+    #define CFG_TUH_ENUMERATION_BUFSIZE 256
+  #endif
+#endif // CFG_TUH_ENABLED
+
+// Attribute to place data in accessible RAM for host controller (default: CFG_TUSB_MEM_SECTION)
+#ifndef CFG_TUH_MEM_SECTION
+  #define CFG_TUH_MEM_SECTION   CFG_TUSB_MEM_SECTION
+#endif
+
+// Attribute to align memory for host controller
+#ifndef CFG_TUH_MEM_ALIGN
+  #define CFG_TUH_MEM_ALIGN     CFG_TUSB_MEM_ALIGN
+#endif
+
+#ifndef CFG_TUH_MEM_DCACHE_ENABLE
+  #ifndef CFG_TUH_MEM_DCACHE_ENABLE_DEFAULT
+  #define CFG_TUH_MEM_DCACHE_ENABLE_DEFAULT  0
+  #endif
+
+  #define CFG_TUH_MEM_DCACHE_ENABLE   CFG_TUH_MEM_DCACHE_ENABLE_DEFAULT
+#endif
+
+#ifndef CFG_TUH_MEM_DCACHE_LINE_SIZE
+  #define CFG_TUH_MEM_DCACHE_LINE_SIZE CFG_TUSB_MEM_DCACHE_LINE_SIZE
+#endif
+
+//------------- CLASS -------------//
+
+#ifndef CFG_TUH_HUB
+  #define CFG_TUH_HUB    0
+#endif
+
+#ifndef CFG_TUH_CDC
+  #define CFG_TUH_CDC    0
+#endif
+
+// FTDI is not part of CDC class, only to re-use CDC driver API
+#ifndef CFG_TUH_CDC_FTDI
+  #define CFG_TUH_CDC_FTDI 0
+#endif
+
+// List of product IDs that can use the FTDI CDC driver. 0x0403 is FTDI's VID
+#ifndef CFG_TUH_CDC_FTDI_VID_PID_LIST
+  #define CFG_TUH_CDC_FTDI_VID_PID_LIST \\
+    {0x0403, 0x6001}, {0x0403, 0x6006}, {0x0403, 0x6010}, {0x0403, 0x6011}, \\
+    {0x0403, 0x6014}, {0x0403, 0x6015}, {0x0403, 0x8372}, {0x0403, 0xFBFA}, \\
+    {0x0403, 0xCD18}
+#endif
+
+// CP210X is not part of CDC class, only to re-use CDC driver API
+#ifndef CFG_TUH_CDC_CP210X
+  #define CFG_TUH_CDC_CP210X 0
+#endif
+
+// List of product IDs that can use the CP210X CDC driver. 0x10C4 is Silicon Labs' VID
+#ifndef CFG_TUH_CDC_CP210X_VID_PID_LIST
+  #define CFG_TUH_CDC_CP210X_VID_PID_LIST \\
+    {0x10C4, 0xEA60}, {0x10C4, 0xEA70}
+#endif
+
+#ifndef CFG_TUH_CDC_CH34X
+  // CH34X is not part of CDC class, only to re-use CDC driver API
+  #define CFG_TUH_CDC_CH34X 0
+#endif
+
+// List of product IDs that can use the CH34X CDC driver
+#ifndef CFG_TUH_CDC_CH34X_VID_PID_LIST
+  #define CFG_TUH_CDC_CH34X_VID_PID_LIST \\
+    { 0x1a86, 0x5523 }, /* ch341 chip */ \\
+    { 0x1a86, 0x7522 }, /* ch340k chip */ \\
+    { 0x1a86, 0x7523 }, /* ch340 chip */ \\
+    { 0x1a86, 0xe523 }, /* ch330 chip */ \\
+    { 0x4348, 0x5523 }, /* ch340 custom chip */ \\
+    { 0x2184, 0x0057 }, /* overtaken from Linux Kernel driver /drivers/usb/serial/ch341.c */ \\
+    { 0x9986, 0x7523 }  /* overtaken from Linux Kernel driver /drivers/usb/serial/ch341.c */
+#endif
+
+#ifndef CFG_TUH_HID
+  #define CFG_TUH_HID    0
+#endif
+
+#ifndef CFG_TUH_MIDI
+  #define CFG_TUH_MIDI   0
+#endif
+
+#ifndef CFG_TUH_MSC
+  #define CFG_TUH_MSC    0
+#endif
+
+#ifndef CFG_TUH_VENDOR
+  #define CFG_TUH_VENDOR 0
+#endif
+
+#ifndef CFG_TUH_API_EDPT_XFER
+  #define CFG_TUH_API_EDPT_XFER 0
+#endif
+
+//--------------------------------------------------------------------+
+// TypeC Options (Default)
+//--------------------------------------------------------------------+
+
+#ifndef CFG_TUC_ENABLED
+#define CFG_TUC_ENABLED 0
+
+#define tuc_int_handler(_p)
+#endif
+
+//------------------------------------------------------------------
+// Configuration Validation
+//------------------------------------------------------------------
+#if CFG_TUD_ENDPOINT0_SIZE > 64
+  #error Control Endpoint Max Packet Size cannot be larger than 64
+#endif
+
+// To avoid GCC compiler warnings when -pedantic option is used (strict ISO C)
+typedef int make_iso_compilers_happy;
+
+#endif /* _TUSB_OPTION_H_ */
+
+/** @} */
+`,"tusb.c":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#include "tusb_option.h"
+
+#if CFG_TUH_ENABLED || CFG_TUD_ENABLED
+
+#include "tusb.h"
+#include "common/tusb_private.h"
+
+#if CFG_TUD_ENABLED
+#include "device/usbd_pvt.h"
+#endif
+
+#if CFG_TUH_ENABLED
+#include "host/usbh_pvt.h"
+#endif
+
+tusb_role_t _tusb_rhport_role[TUP_USBIP_CONTROLLER_NUM] = { TUSB_ROLE_INVALID };
+
+//--------------------------------------------------------------------
+// Weak/Default API, can be overwritten by Application
+//--------------------------------------------------------------------
+
+TU_ATTR_WEAK void tusb_time_delay_ms_api(uint32_t ms) {
+#if CFG_TUSB_OS != OPT_OS_NONE
+  osal_task_delay(ms);
+#else
+  // delay using millis() (if implemented) and/or frame number if possible
+  const uint32_t time_ms = tusb_time_millis_api();
+  while ((tusb_time_millis_api() - time_ms) < ms) {}
+#endif
+}
+
+//--------------------------------------------------------------------+
+// Public API
+//--------------------------------------------------------------------+
+bool tusb_rhport_init(uint8_t rhport, const tusb_rhport_init_t* rh_init) {
+  //  backward compatible called with tusb_init(void)
+  #if defined(TUD_OPT_RHPORT) || defined(TUH_OPT_RHPORT)
+  if (rh_init == NULL) {
+    #if CFG_TUD_ENABLED && defined(TUD_OPT_RHPORT)
+    // init device stack CFG_TUSB_RHPORTx_MODE must be defined
+    const tusb_rhport_init_t dev_init = {
+      .role = TUSB_ROLE_DEVICE,
+      .speed = TUD_OPT_HIGH_SPEED ? TUSB_SPEED_HIGH : TUSB_SPEED_FULL
+    };
+    TU_ASSERT ( tud_rhport_init(TUD_OPT_RHPORT, &dev_init) );
+    _tusb_rhport_role[TUD_OPT_RHPORT] = TUSB_ROLE_DEVICE;
+    #endif
+
+    #if CFG_TUH_ENABLED && defined(TUH_OPT_RHPORT)
+    // init host stack CFG_TUSB_RHPORTx_MODE must be defined
+    const tusb_rhport_init_t host_init = {
+      .role = TUSB_ROLE_HOST,
+      .speed = TUH_OPT_HIGH_SPEED ? TUSB_SPEED_HIGH : TUSB_SPEED_FULL
+    };
+    TU_ASSERT( tuh_rhport_init(TUH_OPT_RHPORT, &host_init) );
+    _tusb_rhport_role[TUH_OPT_RHPORT] = TUSB_ROLE_HOST;
+    #endif
+
+    return true;
+  }
+  #endif
+
+  // new API with explicit rhport and role
+  TU_ASSERT(rhport < TUP_USBIP_CONTROLLER_NUM && rh_init->role != TUSB_ROLE_INVALID);
+  _tusb_rhport_role[rhport] = rh_init->role;
+
+  #if CFG_TUD_ENABLED
+  if (rh_init->role == TUSB_ROLE_DEVICE) {
+    TU_ASSERT(tud_rhport_init(rhport, rh_init));
+  }
+  #endif
+
+  #if CFG_TUH_ENABLED
+  if (rh_init->role == TUSB_ROLE_HOST) {
+    TU_ASSERT(tuh_rhport_init(rhport, rh_init));
+  }
+  #endif
+
+  return true;
+}
+
+bool tusb_inited(void) {
+  bool ret = false;
+
+  #if CFG_TUD_ENABLED
+  ret = ret || tud_inited();
+  #endif
+
+  #if CFG_TUH_ENABLED
+  ret = ret || tuh_inited();
+  #endif
+
+  return ret;
+}
+
+void tusb_int_handler(uint8_t rhport, bool in_isr) {
+  TU_VERIFY(rhport < TUP_USBIP_CONTROLLER_NUM,);
+
+  #if CFG_TUD_ENABLED
+  if (_tusb_rhport_role[rhport] == TUSB_ROLE_DEVICE) {
+    (void) in_isr;
+    dcd_int_handler(rhport);
+  }
+  #endif
+
+  #if CFG_TUH_ENABLED
+  if (_tusb_rhport_role[rhport] == TUSB_ROLE_HOST) {
+    hcd_int_handler(rhport, in_isr);
+  }
+  #endif
+}
+
+//--------------------------------------------------------------------+
+// Descriptor helper
+//--------------------------------------------------------------------+
+
+uint8_t const* tu_desc_find(uint8_t const* desc, uint8_t const* end, uint8_t byte1) {
+  while (desc + 1 < end) {
+    if (desc[1] == byte1) return desc;
+    desc += desc[DESC_OFFSET_LEN];
+  }
+  return NULL;
+}
+
+uint8_t const* tu_desc_find2(uint8_t const* desc, uint8_t const* end, uint8_t byte1, uint8_t byte2) {
+  while (desc + 2 < end) {
+    if (desc[1] == byte1 && desc[2] == byte2) return desc;
+    desc += desc[DESC_OFFSET_LEN];
+  }
+  return NULL;
+}
+
+uint8_t const* tu_desc_find3(uint8_t const* desc, uint8_t const* end, uint8_t byte1, uint8_t byte2, uint8_t byte3) {
+  while (desc + 3 < end) {
+    if (desc[1] == byte1 && desc[2] == byte2 && desc[3] == byte3) return desc;
+    desc += desc[DESC_OFFSET_LEN];
+  }
+  return NULL;
+}
+
+//--------------------------------------------------------------------+
+// Endpoint Helper for both Host and Device stack
+//--------------------------------------------------------------------+
+
+bool tu_edpt_claim(tu_edpt_state_t* ep_state, osal_mutex_t mutex) {
+  (void) mutex;
+
+  // pre-check to help reducing mutex lock
+  TU_VERIFY((ep_state->busy == 0) && (ep_state->claimed == 0));
+  (void) osal_mutex_lock(mutex, OSAL_TIMEOUT_WAIT_FOREVER);
+
+  // can only claim the endpoint if it is not busy and not claimed yet.
+  bool const available = (ep_state->busy == 0) && (ep_state->claimed == 0);
+  if (available) {
+    ep_state->claimed = 1;
+  }
+
+  (void) osal_mutex_unlock(mutex);
+  return available;
+}
+
+bool tu_edpt_release(tu_edpt_state_t* ep_state, osal_mutex_t mutex) {
+  (void) mutex;
+  (void) osal_mutex_lock(mutex, OSAL_TIMEOUT_WAIT_FOREVER);
+
+  // can only release the endpoint if it is claimed and not busy
+  bool const ret = (ep_state->claimed == 1) && (ep_state->busy == 0);
+  if (ret) {
+    ep_state->claimed = 0;
+  }
+
+  (void) osal_mutex_unlock(mutex);
+  return ret;
+}
+
+bool tu_edpt_validate(tusb_desc_endpoint_t const* desc_ep, tusb_speed_t speed) {
+  uint16_t const max_packet_size = tu_edpt_packet_size(desc_ep);
+  TU_LOG2("  Open EP %02X with Size = %u\\r\\n", desc_ep->bEndpointAddress, max_packet_size);
+
+  switch (desc_ep->bmAttributes.xfer) {
+    case TUSB_XFER_ISOCHRONOUS: {
+      uint16_t const spec_size = (speed == TUSB_SPEED_HIGH ? 1024 : 1023);
+      TU_ASSERT(max_packet_size <= spec_size);
+      break;
+    }
+
+    case TUSB_XFER_BULK:
+      if (speed == TUSB_SPEED_HIGH) {
+        // Bulk highspeed must be EXACTLY 512
+        TU_ASSERT(max_packet_size == 512);
+      } else {
+        // TODO Bulk fullspeed can only be 8, 16, 32, 64
+        TU_ASSERT(max_packet_size <= 64);
+      }
+      break;
+
+    case TUSB_XFER_INTERRUPT: {
+      uint16_t const spec_size = (speed == TUSB_SPEED_HIGH ? 1024 : 64);
+      TU_ASSERT(max_packet_size <= spec_size);
+      break;
+    }
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+void tu_edpt_bind_driver(uint8_t ep2drv[][2], tusb_desc_interface_t const* desc_itf, uint16_t desc_len,
+                         uint8_t driver_id) {
+  uint8_t const* p_desc = (uint8_t const*) desc_itf;
+  uint8_t const* desc_end = p_desc + desc_len;
+
+  while (p_desc < desc_end) {
+    if (TUSB_DESC_ENDPOINT == tu_desc_type(p_desc)) {
+      uint8_t const ep_addr = ((tusb_desc_endpoint_t const*) p_desc)->bEndpointAddress;
+      TU_LOG(2, "  Bind EP %02x to driver id %u\\r\\n", ep_addr, driver_id);
+      ep2drv[tu_edpt_number(ep_addr)][tu_edpt_dir(ep_addr)] = driver_id;
+    }
+    p_desc = tu_desc_next(p_desc);
+  }
+}
+
+uint16_t tu_desc_get_interface_total_len(tusb_desc_interface_t const* desc_itf, uint8_t itf_count, uint16_t max_len) {
+  uint8_t const* p_desc = (uint8_t const*) desc_itf;
+  uint16_t len = 0;
+
+  while (itf_count--) {
+    // Next on interface desc
+    len += tu_desc_len(desc_itf);
+    p_desc = tu_desc_next(p_desc);
+
+    while (len < max_len) {
+      if (tu_desc_len(p_desc) == 0) {
+        // Escape infinite loop
+        break;
+      }
+      // return on IAD regardless of itf count
+      if (tu_desc_type(p_desc) == TUSB_DESC_INTERFACE_ASSOCIATION) {
+        return len;
+      }
+      if ((tu_desc_type(p_desc) == TUSB_DESC_INTERFACE) &&
+          ((tusb_desc_interface_t const*) p_desc)->bAlternateSetting == 0) {
+        break;
+      }
+
+      len += tu_desc_len(p_desc);
+      p_desc = tu_desc_next(p_desc);
+    }
+  }
+
+  return len;
+}
+
+//--------------------------------------------------------------------+
+// Endpoint Stream Helper for both Host and Device stack
+//--------------------------------------------------------------------+
+
+bool tu_edpt_stream_init(tu_edpt_stream_t* s, bool is_host, bool is_tx, bool overwritable,
+                         void* ff_buf, uint16_t ff_bufsize, uint8_t* ep_buf, uint16_t ep_bufsize) {
+  (void) is_tx;
+
+  s->is_host = is_host;
+  tu_fifo_config(&s->ff, ff_buf, ff_bufsize, 1, overwritable);
+
+  #if OSAL_MUTEX_REQUIRED
+  if (ff_buf && ff_bufsize) {
+    osal_mutex_t new_mutex = osal_mutex_create(&s->ff_mutexdef);
+    tu_fifo_config_mutex(&s->ff, is_tx ? new_mutex : NULL, is_tx ? NULL : new_mutex);
+  }
+  #endif
+
+  s->ep_buf = ep_buf;
+  s->ep_bufsize = ep_bufsize;
+
+  return true;
+}
+
+bool tu_edpt_stream_deinit(tu_edpt_stream_t* s) {
+  (void) s;
+  #if OSAL_MUTEX_REQUIRED
+  if (s->ff.mutex_wr) osal_mutex_delete(s->ff.mutex_wr);
+  if (s->ff.mutex_rd) osal_mutex_delete(s->ff.mutex_rd);
+  #endif
+  return true;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool stream_claim(uint8_t hwid, tu_edpt_stream_t* s) {
+  if (s->is_host) {
+    #if CFG_TUH_ENABLED
+    return usbh_edpt_claim(hwid, s->ep_addr);
+    #endif
+  } else {
+    #if CFG_TUD_ENABLED
+    return usbd_edpt_claim(hwid, s->ep_addr);
+    #endif
+  }
+  return false;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool stream_xfer(uint8_t hwid, tu_edpt_stream_t* s, uint16_t count) {
+  if (s->is_host) {
+    #if CFG_TUH_ENABLED
+    return usbh_edpt_xfer(hwid, s->ep_addr, count ? s->ep_buf : NULL, count);
+    #endif
+  } else {
+    #if CFG_TUD_ENABLED
+    return usbd_edpt_xfer(hwid, s->ep_addr, count ? s->ep_buf : NULL, count);
+    #endif
+  }
+  return false;
+}
+
+TU_ATTR_ALWAYS_INLINE static inline bool stream_release(uint8_t hwid, tu_edpt_stream_t* s) {
+  if (s->is_host) {
+    #if CFG_TUH_ENABLED
+    return usbh_edpt_release(hwid, s->ep_addr);
+    #endif
+  } else {
+    #if CFG_TUD_ENABLED
+    return usbd_edpt_release(hwid, s->ep_addr);
+    #endif
+  }
+  return false;
+}
+
+//--------------------------------------------------------------------+
+// Stream Write
+//--------------------------------------------------------------------+
+bool tu_edpt_stream_write_zlp_if_needed(uint8_t hwid, tu_edpt_stream_t* s, uint32_t last_xferred_bytes) {
+  // ZLP condition: no pending data, last transferred bytes is multiple of packet size
+  const uint16_t mps = s->is_mps512 ? TUSB_EPSIZE_BULK_HS : TUSB_EPSIZE_BULK_FS;
+  TU_VERIFY(!tu_fifo_count(&s->ff) && last_xferred_bytes && (0 == (last_xferred_bytes & (mps - 1))));
+  TU_VERIFY(stream_claim(hwid, s));
+  TU_ASSERT(stream_xfer(hwid, s, 0));
+  return true;
+}
+
+uint32_t tu_edpt_stream_write_xfer(uint8_t hwid, tu_edpt_stream_t* s) {
+  // skip if no data
+  TU_VERIFY(tu_fifo_count(&s->ff), 0);
+
+  TU_VERIFY(stream_claim(hwid, s), 0);
+
+  // Pull data from FIFO -> EP buf
+  uint16_t const count = tu_fifo_read_n(&s->ff, s->ep_buf, s->ep_bufsize);
+
+  if (count) {
+    TU_ASSERT(stream_xfer(hwid, s, count), 0);
+    return count;
+  } else {
+    // Release endpoint since we don't make any transfer
+    // Note: data is dropped if terminal is not connected
+    stream_release(hwid, s);
+    return 0;
+  }
+}
+
+uint32_t tu_edpt_stream_write(uint8_t hwid, tu_edpt_stream_t* s, void const* buffer, uint32_t bufsize) {
+  TU_VERIFY(bufsize); // TODO support ZLP
+
+  if (0 == tu_fifo_depth(&s->ff)) {
+    // no fifo for buffered
+    TU_VERIFY(stream_claim(hwid, s), 0);
+    const uint32_t xact_len = tu_min32(bufsize, s->ep_bufsize);
+    memcpy(s->ep_buf, buffer, xact_len);
+    TU_ASSERT(stream_xfer(hwid, s, (uint16_t) xact_len), 0);
+    return xact_len;
+  } else {
+    const uint16_t ret = tu_fifo_write_n(&s->ff, buffer, (uint16_t) bufsize);
+
+    // flush if fifo has more than packet size or
+    // in rare case: fifo depth is configured too small (which never reach packet size)
+    const uint16_t mps = s->is_mps512 ? TUSB_EPSIZE_BULK_HS : TUSB_EPSIZE_BULK_FS;
+    if ((tu_fifo_count(&s->ff) >= mps) || (tu_fifo_depth(&s->ff) < mps)) {
+      tu_edpt_stream_write_xfer(hwid, s);
+    }
+    return ret;
+  }
+}
+
+uint32_t tu_edpt_stream_write_available(uint8_t hwid, tu_edpt_stream_t* s) {
+  if (tu_fifo_depth(&s->ff)) {
+    return (uint32_t) tu_fifo_remaining(&s->ff);
+  } else {
+    bool is_busy = true;
+    if (s->is_host) {
+      #if CFG_TUH_ENABLED
+      is_busy = usbh_edpt_busy(hwid, s->ep_addr);
+      #endif
+    } else {
+      #if CFG_TUD_ENABLED
+      is_busy = usbd_edpt_busy(hwid, s->ep_addr);
+      #endif
+    }
+    return is_busy ? 0 : s->ep_bufsize;
+  }
+}
+
+//--------------------------------------------------------------------+
+// Stream Read
+//--------------------------------------------------------------------+
+uint32_t tu_edpt_stream_read_xfer(uint8_t hwid, tu_edpt_stream_t* s) {
+  if (0 == tu_fifo_depth(&s->ff)) {
+    // no fifo for buffered
+    TU_VERIFY(stream_claim(hwid, s), 0);
+    TU_ASSERT(stream_xfer(hwid, s, s->ep_bufsize), 0);
+    return s->ep_bufsize;
+  } else {
+    const uint16_t mps = s->is_mps512 ? TUSB_EPSIZE_BULK_HS : TUSB_EPSIZE_BULK_FS;
+    uint16_t available = tu_fifo_remaining(&s->ff);
+
+    // Prepare for incoming data but only allow what we can store in the ring buffer.
+    // TODO Actually we can still carry out the transfer, keeping count of received bytes
+    // and slowly move it to the FIFO when read().
+    // This pre-check reduces endpoint claiming
+    TU_VERIFY(available >= mps);
+
+    TU_VERIFY(stream_claim(hwid, s), 0);
+
+    // get available again since fifo can be changed before endpoint is claimed
+    available = tu_fifo_remaining(&s->ff);
+
+    if (available >= mps) {
+      // multiple of packet size limit by ep bufsize
+      uint16_t count = (uint16_t) (available & ~(mps - 1));
+      count = tu_min16(count, s->ep_bufsize);
+      TU_ASSERT(stream_xfer(hwid, s, count), 0);
+      return count;
+    } else {
+      // Release endpoint since we don't make any transfer
+      stream_release(hwid, s);
+      return 0;
+    }
+  }
+}
+
+uint32_t tu_edpt_stream_read(uint8_t hwid, tu_edpt_stream_t* s, void* buffer, uint32_t bufsize) {
+  uint32_t num_read = tu_fifo_read_n(&s->ff, buffer, (uint16_t) bufsize);
+  tu_edpt_stream_read_xfer(hwid, s);
+  return num_read;
+}
+
+//--------------------------------------------------------------------+
+// Debug
+//--------------------------------------------------------------------+
+
+#if CFG_TUSB_DEBUG
+#include <ctype.h>
+
+#if CFG_TUSB_DEBUG >= CFG_TUH_LOG_LEVEL || CFG_TUSB_DEBUG >= CFG_TUD_LOG_LEVEL
+char const* const tu_str_speed[] = {"Full", "Low", "High"};
+char const* const tu_str_std_request[] = {
+    "Get Status",
+    "Clear Feature",
+    "Reserved",
+    "Set Feature",
+    "Reserved",
+    "Set Address",
+    "Get Descriptor",
+    "Set Descriptor",
+    "Get Configuration",
+    "Set Configuration",
+    "Get Interface",
+    "Set Interface",
+    "Synch Frame"
+};
+
+char const* const tu_str_xfer_result[] = {
+    "OK", "FAILED", "STALLED", "TIMEOUT"
+};
+#endif
+
+static void dump_str_line(uint8_t const* buf, uint16_t count) {
+  tu_printf("  |");
+  // each line is 16 bytes
+  for (uint16_t i = 0; i < count; i++) {
+    int ch = buf[i];
+    tu_printf("%c", isprint(ch) ? ch : '.');
+  }
+  tu_printf("|\\r\\n");
+}
+
+/* Print out memory contents
+ *  - buf   : buffer
+ *  - count : number of item
+ *  - indent: prefix spaces on every line
+ */
+void tu_print_mem(void const* buf, uint32_t count, uint8_t indent) {
+  uint8_t const size = 1; // fixed 1 byte for now
+  if (!buf || !count) {
+    tu_printf("NULL\\r\\n");
+    return;
+  }
+
+  uint8_t const* buf8 = (uint8_t const*) buf;
+  char format[] = "%00X";
+  format[2] += (uint8_t) (2 * size); // 1 byte = 2 hex digits
+  const uint8_t item_per_line = 16 / size;
+
+  for (unsigned int i = 0; i < count; i++) {
+    unsigned int value = 0;
+
+    if (i % item_per_line == 0) {
+      // Print Ascii
+      if (i != 0) dump_str_line(buf8 - 16, 16);
+      for (uint8_t s = 0; s < indent; s++) tu_printf(" ");
+      // print offset or absolute address
+      tu_printf("%04X: ", 16 * i / item_per_line);
+    }
+
+    tu_memcpy_s(&value, sizeof(value), buf8, size);
+    buf8 += size;
+
+    tu_printf(" ");
+    tu_printf(format, value);
+  }
+
+  // fill up last row to 16 for printing ascii
+  const uint32_t remain = count % 16;
+  uint8_t nback = (uint8_t) (remain ? remain : 16);
+  if (remain) {
+    for (uint32_t i = 0; i < 16 - remain; i++) {
+      tu_printf(" ");
+      for (int j = 0; j < 2 * size; j++) tu_printf(" ");
+    }
+  }
+
+  dump_str_line(buf8 - nback, nback);
+}
+
+#endif
+
+#endif // host or device enabled
+`,"tusb.h":`/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ha Thach (tinyusb.org)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * This file is part of the TinyUSB stack.
+ */
+
+#ifndef _TUSB_H_
+#define _TUSB_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+//--------------------------------------------------------------------+
+// INCLUDE
+//--------------------------------------------------------------------+
+#include "common/tusb_common.h"
+#include "osal/osal.h"
+#include "common/tusb_fifo.h"
+
+//------------- TypeC -------------//
+#if CFG_TUC_ENABLED
+  #include "typec/usbc.h"
+#endif
+
+//------------- HOST -------------//
+#if CFG_TUH_ENABLED
+  #include "host/usbh.h"
+
+  #if CFG_TUH_HID
+    #include "class/hid/hid_host.h"
+  #endif
+
+  #if CFG_TUH_MSC
+    #include "class/msc/msc_host.h"
+  #endif
+
+  #if CFG_TUH_CDC
+    #include "class/cdc/cdc_host.h"
+  #endif
+
+  #if CFG_TUH_VENDOR
+    #include "class/vendor/vendor_host.h"
+  #endif
+#else
+  #ifndef tuh_int_handler
+  #define tuh_int_handler(...)
+  #endif
+#endif
+
+//------------- DEVICE -------------//
+#if CFG_TUD_ENABLED
+  #include "device/usbd.h"
+
+  #if CFG_TUD_HID
+    #include "class/hid/hid_device.h"
+  #endif
+
+  #if CFG_TUD_CDC
+    #include "class/cdc/cdc_device.h"
+  #endif
+
+  #if CFG_TUD_MSC
+    #include "class/msc/msc_device.h"
+  #endif
+
+  #if CFG_TUD_AUDIO
+    #include "class/audio/audio_device.h"
+  #endif
+
+  #if CFG_TUD_VIDEO
+    #include "class/video/video_device.h"
+  #endif
+
+  #if CFG_TUD_MIDI
+    #include "class/midi/midi_device.h"
+  #endif
+
+  #if CFG_TUD_VENDOR
+    #include "class/vendor/vendor_device.h"
+  #endif
+
+  #if CFG_TUD_USBTMC
+    #include "class/usbtmc/usbtmc_device.h"
+  #endif
+
+  #if CFG_TUD_DFU_RUNTIME
+    #include "class/dfu/dfu_rt_device.h"
+  #endif
+
+  #if CFG_TUD_DFU
+    #include "class/dfu/dfu_device.h"
+  #endif
+
+  #if CFG_TUD_ECM_RNDIS || CFG_TUD_NCM
+    #include "class/net/net_device.h"
+  #endif
+
+  #if CFG_TUD_BTH
+    #include "class/bth/bth_device.h"
+  #endif
+#else
+  #ifndef tud_int_handler
+  #define tud_int_handler(...)
+  #endif
+#endif
+
+
+//--------------------------------------------------------------------+
+// User API
+//--------------------------------------------------------------------+
+#if CFG_TUH_ENABLED || CFG_TUD_ENABLED
+
+// Internal helper for backward compatible with tusb_init(void)
+bool tusb_rhport_init(uint8_t rhport, const tusb_rhport_init_t* rh_init);
+
+// Initialize roothub port with device/host role
+// Note: when using with RTOS, this should be called after scheduler/kernel is started.
+// Otherwise, it could cause kernel issue since USB IRQ handler does use RTOS queue API.
+// Note2: defined as macro for backward compatible with tusb_init(void), can be changed to function in the future.
+#if defined(TUD_OPT_RHPORT) || defined(TUH_OPT_RHPORT)
+  #define _tusb_init_arg0()        tusb_rhport_init(0, NULL)
+#else
+  #define _tusb_init_arg0()        TU_VERIFY_STATIC(false, "CFG_TUSB_RHPORT0_MODE/CFG_TUSB_RHPORT1_MODE must be defined")
+#endif
+
+#define _tusb_init_arg1(_rhport)             _tusb_init_arg0()
+#define _tusb_init_arg2(_rhport, _rh_init)   tusb_rhport_init(_rhport, _rh_init)
+#define tusb_init(...)                       TU_FUNC_OPTIONAL_ARG(_tusb_init, __VA_ARGS__)
+
+// Check if stack is initialized
+bool tusb_inited(void);
+
+// Called to handle usb interrupt/event. tusb_init(rhport, role) must be called before
+void tusb_int_handler(uint8_t rhport, bool in_isr);
+
+// TODO
+// bool tusb_teardown(void);
+
+#else
+
+#define tusb_init(...)  (false)
+#define tusb_int_handler(...)  do {}while(0)
+#define tusb_inited()  (false)
+
+#endif
+
+//--------------------------------------------------------------------+
+// API Implemented by user
+//--------------------------------------------------------------------+
+
+// Get current milliseconds, required by some port/configuration without RTOS
+uint32_t tusb_time_millis_api(void);
+
+// Delay in milliseconds, use tusb_time_millis_api() by default. required by some port/configuration with no RTOS
+void tusb_time_delay_ms_api(uint32_t ms);
+
+#ifdef __cplusplus
+ }
+#endif
+
+#endif /* _TUSB_H_ */
+`};var sn=`#pragma once
+#define CFG_TUSB_MCU OPT_MCU_NONE
+#define CFG_TUSB_OS OPT_OS_NONE
+#define CFG_TUSB_RHPORT0_MODE (OPT_MODE_DEVICE | OPT_MODE_FULL_SPEED)
+#define CFG_TUD_ENABLED 1
+#define CFG_TUD_ENDPOINT0_SIZE 64
+#define CFG_TUD_HID 1
+#define CFG_TUD_HID_EP_BUFSIZE 64
+#define TUP_DCD_ENDPOINT_MAX 2
+#define CFG_TUSB_DEBUG 0
+`,on=`#pragma once
+/* Poll the Wirevo virtual controller BEFORE tud_task(). The actual TinyUSB
+ * core, control endpoint and HID class run as C on the simulated ARM CPU. */
+void wirevo_usb_poll(void);
+`,Tn=`#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+#include "device/dcd.h"
+static volatile uint32_t * const bridge=(volatile uint32_t*)0x5fffc000;
+static int cmd(unsigned op){while(bridge[5]&0x80000000u){}bridge[11]=op;while(bridge[5]&0x80000000u){}return (int)bridge[9];}
+bool dcd_init(uint8_t p,const tusb_rhport_init_t *init){(void)p;(void)init;return cmd(1)==0;}
+bool dcd_deinit(uint8_t p){(void)p;cmd(8);return true;}
+void dcd_int_enable(uint8_t p){(void)p;}
+void dcd_int_disable(uint8_t p){(void)p;}
+void dcd_int_handler(uint8_t p){(void)p;}
+void dcd_connect(uint8_t p){(void)p;}
+void dcd_disconnect(uint8_t p){(void)p;cmd(8);}
+void dcd_remote_wakeup(uint8_t p){(void)p;cmd(9);}
+void dcd_sof_enable(uint8_t p,bool en){(void)p;(void)en;}
+void dcd_set_address(uint8_t p,uint8_t a){(void)a;dcd_edpt_xfer(p,0x80,0,0);}
+bool dcd_edpt_open(uint8_t p,const tusb_desc_endpoint_t *e){(void)p;if(e->bEndpointAddress!=0x81||e->bmAttributes.xfer!=TUSB_XFER_INTERRUPT||tu_edpt_packet_size(e)>64)return false;bridge[8]=e->bEndpointAddress;bridge[7]=tu_edpt_packet_size(e);return cmd(4)==0;}
+void dcd_edpt_close_all(uint8_t p){(void)p;cmd(6);}
+void dcd_edpt_close(uint8_t p,uint8_t ep){(void)p;(void)ep;cmd(6);}
+bool dcd_edpt_xfer(uint8_t p,uint8_t ep,uint8_t *buf,uint16_t len){(void)p;bridge[6]=(uint32_t)buf;bridge[7]=len;bridge[8]=ep;return cmd(3)==0;}
+void dcd_edpt_stall(uint8_t p,uint8_t ep){(void)p;(void)ep;cmd(5);}
+void dcd_edpt_clear_stall(uint8_t p,uint8_t ep){(void)p;(void)ep;}
+void dcd_edpt0_status_complete(uint8_t p,const tusb_control_request_t *r){(void)p;(void)r;cmd(7);}
+uint32_t tusb_time_millis_api(void){return bridge[10];}
+void wirevo_usb_poll(void){unsigned budget=16;while(budget--&&bridge[1]){unsigned type=bridge[1],a=bridge[2],b=bridge[3],c=bridge[4];cmd(2);switch(type){case 1:dcd_event_bus_reset(0,TUSB_SPEED_FULL,false);break;case 2:{uint32_t setup[2]={a,b};dcd_event_setup_received(0,(uint8_t*)setup,false);break;}case 3:dcd_event_xfer_complete(0,a,b,c,false);break;case 4:dcd_event_bus_signal(0,DCD_EVENT_UNPLUGGED,false);break;case 5:dcd_event_bus_signal(0,DCD_EVENT_SUSPEND,false);break;case 6:dcd_event_bus_signal(0,DCD_EVENT_RESUME,false);break;}}}
+void *memcpy(void *dst,const void *src,size_t n){unsigned char*d=dst;const unsigned char*s=src;while(n--)*d++=*s++;return dst;}
+void *memset(void *dst,int c,size_t n){unsigned char*d=dst;while(n--)*d++=(unsigned char)c;return dst;}
+void *memmove(void *dst,const void *src,size_t n){unsigned char*d=dst;const unsigned char*s=src;if(d<s){for(size_t i=0;i<n;i++)d[i]=s[i];}else{while(n){--n;d[n]=s[n];}}return dst;}
+int memcmp(const void*a,const void*b,size_t n){const unsigned char*x=a,*y=b;while(n--){if(*x!=*y)return *x-*y;x++;y++;}return 0;}
+size_t strlen(const char*s){size_t n=0;while(s[n])n++;return n;}
+`,En=["tusb.c","common/tusb_fifo.c","device/usbd.c","device/usbd_control.c","class/hid/hid_device.c"];var Re=class n{static read_bytes(e,_){let s=new n;return s.buf=e.getUint32(_,!0),s.buf_len=e.getUint32(_+4,!0),s}static read_bytes_array(e,_,s){let T=[];for(let t=0;t<s;t++)T.push(n.read_bytes(e,_+8*t));return T}},Ne=class n{static read_bytes(e,_){let s=new n;return s.buf=e.getUint32(_,!0),s.buf_len=e.getUint32(_+4,!0),s}static read_bytes_array(e,_,s){let T=[];for(let t=0;t<s;t++)T.push(n.read_bytes(e,_+8*t));return T}},we=0,Ve=1,he=2;var Ke=2,H=3,re=4;var Ee=class{head_length(){return 24}name_length(){return this.dir_name.byteLength}write_head_bytes(e,_){e.setBigUint64(_,this.d_next,!0),e.setBigUint64(_+8,this.d_ino,!0),e.setUint32(_+16,this.dir_name.length,!0),e.setUint8(_+20,this.d_type)}write_name_bytes(e,_,s){e.set(this.dir_name.slice(0,Math.min(this.dir_name.byteLength,s)),_)}constructor(e,_,s,T){let t=new TextEncoder().encode(s);this.d_next=e,this.d_ino=_,this.d_namlen=t.byteLength,this.d_type=T,this.dir_name=t}};var Xe=1;var ee=class{write_bytes(e,_){e.setUint8(_,this.fs_filetype),e.setUint16(_+2,this.fs_flags,!0),e.setBigUint64(_+8,this.fs_rights_base,!0),e.setBigUint64(_+16,this.fs_rights_inherited,!0)}constructor(e,_){this.fs_rights_base=0n,this.fs_rights_inherited=0n,this.fs_filetype=e,this.fs_flags=_}};var me=1,Ie=2,We=4,xe=8,ne=class{write_bytes(e,_){e.setBigUint64(_,this.dev,!0),e.setBigUint64(_+8,this.ino,!0),e.setUint8(_+16,this.filetype),e.setBigUint64(_+24,this.nlink,!0),e.setBigUint64(_+32,this.size,!0),e.setBigUint64(_+38,this.atim,!0),e.setBigUint64(_+46,this.mtim,!0),e.setBigUint64(_+52,this.ctim,!0)}constructor(e,_,s){this.dev=0n,this.nlink=0n,this.atim=0n,this.mtim=0n,this.ctim=0n,this.ino=e,this.filetype=_,this.size=s}},rn=0;var In=1,pe=class n{static read_bytes(e,_){return new n(e.getBigUint64(_,!0),e.getUint8(_+8),e.getUint32(_+16,!0),e.getBigUint64(_+24,!0),e.getUint16(_+36,!0))}constructor(e,_,s,T,t){this.userdata=e,this.eventtype=_,this.clockid=s,this.timeout=T,this.flags=t}},Me=class{write_bytes(e,_){e.setBigUint64(_,this.userdata,!0),e.setUint16(_+8,this.error,!0),e.setUint8(_+10,this.eventtype)}constructor(e,_,s){this.userdata=e,this.error=_,this.eventtype=s}};var Fn=0,ke=class{write_bytes(e,_){e.setUint32(_,this.pr_name.byteLength,!0)}constructor(e){this.pr_name=new TextEncoder().encode(e)}},be=class n{static dir(e){let _=new n;return _.tag=Fn,_.inner=new ke(e),_}write_bytes(e,_){e.setUint32(_,this.tag,!0),this.inner.write_bytes(e,_+4)}};var Bn=class{enable(e){this.log=gn(e===void 0?!0:e,this.prefix)}get enabled(){return this.isEnabled}constructor(e){this.isEnabled=e,this.prefix="wasi:",this.enable(e)}};function gn(n,e){return n?console.log.bind(console,"%c%s","color: #265BA0",e):()=>{}}var b=new Bn(!1);var le=class extends Error{constructor(e){super("exit with exit code "+e),this.code=e}},Qe=class{start(e){this.inst=e;try{return e.exports._start(),0}catch(_){if(_ instanceof le)return _.code;throw _}}initialize(e){this.inst=e,e.exports._initialize&&e.exports._initialize()}constructor(e,_,s,T={}){this.args=[],this.env=[],this.fds=[],b.enable(T.debug),this.args=e,this.env=_,this.fds=s;let t=this;this.wasiImport={args_sizes_get(i,d){let o=new DataView(t.inst.exports.memory.buffer);o.setUint32(i,t.args.length,!0);let E=0;for(let r of t.args)E+=r.length+1;return o.setUint32(d,E,!0),b.log(o.getUint32(i,!0),o.getUint32(d,!0)),0},args_get(i,d){let o=new DataView(t.inst.exports.memory.buffer),E=new Uint8Array(t.inst.exports.memory.buffer),r=d;for(let a=0;a<t.args.length;a++){o.setUint32(i,d,!0),i+=4;let S=new TextEncoder().encode(t.args[a]);E.set(S,d),o.setUint8(d+S.length,0),d+=S.length+1}return b.enabled&&b.log(new TextDecoder("utf-8").decode(E.slice(r,d))),0},environ_sizes_get(i,d){let o=new DataView(t.inst.exports.memory.buffer);o.setUint32(i,t.env.length,!0);let E=0;for(let r of t.env)E+=new TextEncoder().encode(r).length+1;return o.setUint32(d,E,!0),b.log(o.getUint32(i,!0),o.getUint32(d,!0)),0},environ_get(i,d){let o=new DataView(t.inst.exports.memory.buffer),E=new Uint8Array(t.inst.exports.memory.buffer),r=d;for(let a=0;a<t.env.length;a++){o.setUint32(i,d,!0),i+=4;let S=new TextEncoder().encode(t.env[a]);E.set(S,d),o.setUint8(d+S.length,0),d+=S.length+1}return b.enabled&&b.log(new TextDecoder("utf-8").decode(E.slice(r,d))),0},clock_res_get(i,d){let o;switch(i){case 1:{o=5000n;break}case 0:{o=1000000n;break}default:return 52}return new DataView(t.inst.exports.memory.buffer).setBigUint64(d,o,!0),0},clock_time_get(i,d,o){let E=new DataView(t.inst.exports.memory.buffer);if(i===0)E.setBigUint64(o,BigInt(new Date().getTime())*1000000n,!0);else if(i==1){let r;try{r=BigInt(Math.round(performance.now()*1e6))}catch{r=0n}E.setBigUint64(o,r,!0)}else E.setBigUint64(o,0n,!0);return 0},fd_advise(i,d,o,E){return t.fds[i]!=null?0:8},fd_allocate(i,d,o){return t.fds[i]!=null?t.fds[i].fd_allocate(d,o):8},fd_close(i){if(t.fds[i]!=null){let d=t.fds[i].fd_close();return t.fds[i]=void 0,d}else return 8},fd_datasync(i){return t.fds[i]!=null?t.fds[i].fd_sync():8},fd_fdstat_get(i,d){if(t.fds[i]!=null){let{ret:o,fdstat:E}=t.fds[i].fd_fdstat_get();return E?.write_bytes(new DataView(t.inst.exports.memory.buffer),d),o}else return 8},fd_fdstat_set_flags(i,d){return t.fds[i]!=null?t.fds[i].fd_fdstat_set_flags(d):8},fd_fdstat_set_rights(i,d,o){return t.fds[i]!=null?t.fds[i].fd_fdstat_set_rights(d,o):8},fd_filestat_get(i,d){if(t.fds[i]!=null){let{ret:o,filestat:E}=t.fds[i].fd_filestat_get();return E?.write_bytes(new DataView(t.inst.exports.memory.buffer),d),o}else return 8},fd_filestat_set_size(i,d){return t.fds[i]!=null?t.fds[i].fd_filestat_set_size(d):8},fd_filestat_set_times(i,d,o,E){return t.fds[i]!=null?t.fds[i].fd_filestat_set_times(d,o,E):8},fd_pread(i,d,o,E,r){let a=new DataView(t.inst.exports.memory.buffer),S=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let R=Re.read_bytes_array(a,d,o),P=0;for(let f of R){let{ret:I,data:A}=t.fds[i].fd_pread(f.buf_len,E);if(I!=0)return a.setUint32(r,P,!0),I;if(S.set(A,f.buf),P+=A.length,E+=BigInt(A.length),A.length!=f.buf_len)break}return a.setUint32(r,P,!0),0}else return 8},fd_prestat_get(i,d){let o=new DataView(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let{ret:E,prestat:r}=t.fds[i].fd_prestat_get();return r?.write_bytes(o,d),E}else return 8},fd_prestat_dir_name(i,d,o){if(t.fds[i]!=null){let{ret:E,prestat:r}=t.fds[i].fd_prestat_get();if(r==null)return E;let a=r.inner.pr_name;return new Uint8Array(t.inst.exports.memory.buffer).set(a.slice(0,o),d),a.byteLength>o?37:0}else return 8},fd_pwrite(i,d,o,E,r){let a=new DataView(t.inst.exports.memory.buffer),S=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let R=Ne.read_bytes_array(a,d,o),P=0;for(let f of R){let I=S.slice(f.buf,f.buf+f.buf_len),{ret:A,nwritten:x}=t.fds[i].fd_pwrite(I,E);if(A!=0)return a.setUint32(r,P,!0),A;if(P+=x,E+=BigInt(x),x!=I.byteLength)break}return a.setUint32(r,P,!0),0}else return 8},fd_read(i,d,o,E){let r=new DataView(t.inst.exports.memory.buffer),a=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let S=Re.read_bytes_array(r,d,o),R=0;for(let P of S){let{ret:f,data:I}=t.fds[i].fd_read(P.buf_len);if(f!=0)return r.setUint32(E,R,!0),f;if(a.set(I,P.buf),R+=I.length,I.length!=P.buf_len)break}return r.setUint32(E,R,!0),0}else return 8},fd_readdir(i,d,o,E,r){let a=new DataView(t.inst.exports.memory.buffer),S=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let R=0;for(;;){let{ret:P,dirent:f}=t.fds[i].fd_readdir_single(E);if(P!=0)return a.setUint32(r,R,!0),P;if(f==null)break;if(o-R<f.head_length()){R=o;break}let I=new ArrayBuffer(f.head_length());if(f.write_head_bytes(new DataView(I),0),S.set(new Uint8Array(I).slice(0,Math.min(I.byteLength,o-R)),d),d+=f.head_length(),R+=f.head_length(),o-R<f.name_length()){R=o;break}f.write_name_bytes(S,d,o-R),d+=f.name_length(),R+=f.name_length(),E=f.d_next}return a.setUint32(r,R,!0),0}else return 8},fd_renumber(i,d){if(t.fds[i]!=null&&t.fds[d]!=null){let o=t.fds[d].fd_close();return o!=0?o:(t.fds[d]=t.fds[i],t.fds[i]=void 0,0)}else return 8},fd_seek(i,d,o,E){let r=new DataView(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let{ret:a,offset:S}=t.fds[i].fd_seek(d,o);return r.setBigInt64(E,S,!0),a}else return 8},fd_sync(i){return t.fds[i]!=null?t.fds[i].fd_sync():8},fd_tell(i,d){let o=new DataView(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let{ret:E,offset:r}=t.fds[i].fd_tell();return o.setBigUint64(d,r,!0),E}else return 8},fd_write(i,d,o,E){let r=new DataView(t.inst.exports.memory.buffer),a=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let S=Ne.read_bytes_array(r,d,o),R=0;for(let P of S){let f=a.slice(P.buf,P.buf+P.buf_len),{ret:I,nwritten:A}=t.fds[i].fd_write(f);if(I!=0)return r.setUint32(E,R,!0),I;if(R+=A,A!=f.byteLength)break}return r.setUint32(E,R,!0),0}else return 8},path_create_directory(i,d,o){let E=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let r=new TextDecoder("utf-8").decode(E.slice(d,d+o));return t.fds[i].path_create_directory(r)}else return 8},path_filestat_get(i,d,o,E,r){let a=new DataView(t.inst.exports.memory.buffer),S=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let R=new TextDecoder("utf-8").decode(S.slice(o,o+E)),{ret:P,filestat:f}=t.fds[i].path_filestat_get(d,R);return f?.write_bytes(a,r),P}else return 8},path_filestat_set_times(i,d,o,E,r,a,S){let R=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let P=new TextDecoder("utf-8").decode(R.slice(o,o+E));return t.fds[i].path_filestat_set_times(d,P,r,a,S)}else return 8},path_link(i,d,o,E,r,a,S){let R=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null&&t.fds[r]!=null){let P=new TextDecoder("utf-8").decode(R.slice(o,o+E)),f=new TextDecoder("utf-8").decode(R.slice(a,a+S)),{ret:I,inode_obj:A}=t.fds[i].path_lookup(P,d);return A==null?I:t.fds[r].path_link(f,A,!1)}else return 8},path_open(i,d,o,E,r,a,S,R,P){let f=new DataView(t.inst.exports.memory.buffer),I=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let A=new TextDecoder("utf-8").decode(I.slice(o,o+E));b.log(A);let{ret:x,fd_obj:p}=t.fds[i].path_open(d,A,r,a,S,R);if(x!=0)return x;t.fds.push(p);let u=t.fds.length-1;return f.setUint32(P,u,!0),0}else return 8},path_readlink(i,d,o,E,r,a){let S=new DataView(t.inst.exports.memory.buffer),R=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let P=new TextDecoder("utf-8").decode(R.slice(d,d+o));b.log(P);let{ret:f,data:I}=t.fds[i].path_readlink(P);if(I!=null){let A=new TextEncoder().encode(I);if(A.length>r)return S.setUint32(a,0,!0),8;R.set(A,E),S.setUint32(a,A.length,!0)}return f}else return 8},path_remove_directory(i,d,o){let E=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let r=new TextDecoder("utf-8").decode(E.slice(d,d+o));return t.fds[i].path_remove_directory(r)}else return 8},path_rename(i,d,o,E,r,a){let S=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null&&t.fds[E]!=null){let R=new TextDecoder("utf-8").decode(S.slice(d,d+o)),P=new TextDecoder("utf-8").decode(S.slice(r,r+a)),{ret:f,inode_obj:I}=t.fds[i].path_unlink(R);if(I==null)return f;if(f=t.fds[E].path_link(P,I,!0),f!=0&&t.fds[i].path_link(R,I,!0)!=0)throw"path_link should always return success when relinking an inode back to the original place";return f}else return 8},path_symlink(i,d,o,E,r){let a=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[o]!=null){let S=new TextDecoder("utf-8").decode(a.slice(i,i+d)),R=new TextDecoder("utf-8").decode(a.slice(E,E+r));return 58}else return 8},path_unlink_file(i,d,o){let E=new Uint8Array(t.inst.exports.memory.buffer);if(t.fds[i]!=null){let r=new TextDecoder("utf-8").decode(E.slice(d,d+o));return t.fds[i].path_unlink_file(r)}else return 8},poll_oneoff(i,d,o){if(o===0)return 28;if(o>1)return b.log("poll_oneoff: only a single subscription is supported"),58;let E=new DataView(t.inst.exports.memory.buffer),r=pe.read_bytes(E,i),a=r.eventtype,S=r.clockid,R=r.timeout;if(a!==rn)return b.log("poll_oneoff: only clock subscriptions are supported"),58;let P;if(S===1)P=()=>BigInt(Math.round(performance.now()*1e6));else if(S===0)P=()=>BigInt(new Date().getTime())*1000000n;else return 28;let f=(r.flags&In)!==0?R:P()+R;for(;f>P(););return new Me(r.userdata,0,a).write_bytes(E,d),0},proc_exit(i){throw new le(i)},proc_raise(i){throw"raised signal "+i},sched_yield(){},random_get(i,d){let o=new Uint8Array(t.inst.exports.memory.buffer).subarray(i,i+d);if("crypto"in globalThis&&(typeof SharedArrayBuffer>"u"||!(t.inst.exports.memory.buffer instanceof SharedArrayBuffer)))for(let E=0;E<d;E+=65536)crypto.getRandomValues(o.subarray(E,E+65536));else for(let E=0;E<d;E++)o[E]=Math.random()*256|0},sock_recv(i,d,o){throw"sockets not supported"},sock_send(i,d,o){throw"sockets not supported"},sock_shutdown(i,d){throw"sockets not supported"},sock_accept(i,d){throw"sockets not supported"}}}};var j=class{fd_allocate(e,_){return 58}fd_close(){return 0}fd_fdstat_get(){return{ret:58,fdstat:null}}fd_fdstat_set_flags(e){return 58}fd_fdstat_set_rights(e,_){return 58}fd_filestat_get(){return{ret:58,filestat:null}}fd_filestat_set_size(e){return 58}fd_filestat_set_times(e,_,s){return 58}fd_pread(e,_){return{ret:58,data:new Uint8Array}}fd_prestat_get(){return{ret:58,prestat:null}}fd_pwrite(e,_){return{ret:58,nwritten:0}}fd_read(e){return{ret:58,data:new Uint8Array}}fd_readdir_single(e){return{ret:58,dirent:null}}fd_seek(e,_){return{ret:58,offset:0n}}fd_sync(){return 0}fd_tell(){return{ret:58,offset:0n}}fd_write(e){return{ret:58,nwritten:0}}path_create_directory(e){return 58}path_filestat_get(e,_){return{ret:58,filestat:null}}path_filestat_set_times(e,_,s,T,t){return 58}path_link(e,_,s){return 58}path_unlink(e){return{ret:58,inode_obj:null}}path_lookup(e,_){return{ret:58,inode_obj:null}}path_open(e,_,s,T,t,i){return{ret:54,fd_obj:null}}path_readlink(e){return{ret:58,data:null}}path_remove_directory(e){return 58}path_rename(e,_,s){return 58}path_unlink_file(e){return 58}},k=class n{static issue_ino(){return n.next_ino++}static root_ino(){return 0n}constructor(){this.ino=n.issue_ino()}};k.next_ino=1n;var ae=class extends j{fd_allocate(e,_){if(!(this.file.size>e+_)){let s=new Uint8Array(Number(e+_));s.set(this.file.data,0),this.file.data=s}return 0}fd_fdstat_get(){return{ret:0,fdstat:new ee(re,0)}}fd_filestat_set_size(e){if(this.file.size>e)this.file.data=new Uint8Array(this.file.data.buffer.slice(0,Number(e)));else{let _=new Uint8Array(Number(e));_.set(this.file.data,0),this.file.data=_}return 0}fd_read(e){let _=this.file.data.slice(Number(this.file_pos),Number(this.file_pos+BigInt(e)));return this.file_pos+=BigInt(_.length),{ret:0,data:_}}fd_pread(e,_){return{ret:0,data:this.file.data.slice(Number(_),Number(_+BigInt(e)))}}fd_seek(e,_){let s;switch(_){case we:s=e;break;case Ve:s=this.file_pos+e;break;case he:s=BigInt(this.file.data.byteLength)+e;break;default:return{ret:28,offset:0n}}return s<0?{ret:28,offset:0n}:(this.file_pos=s,{ret:0,offset:this.file_pos})}fd_tell(){return{ret:0,offset:this.file_pos}}fd_write(e){if(this.file.readonly)return{ret:8,nwritten:0};if(this.file_pos+BigInt(e.byteLength)>this.file.size){let _=this.file.data;this.file.data=new Uint8Array(Number(this.file_pos+BigInt(e.byteLength))),this.file.data.set(_)}return this.file.data.set(e,Number(this.file_pos)),this.file_pos+=BigInt(e.byteLength),{ret:0,nwritten:e.byteLength}}fd_pwrite(e,_){if(this.file.readonly)return{ret:8,nwritten:0};if(_+BigInt(e.byteLength)>this.file.size){let s=this.file.data;this.file.data=new Uint8Array(Number(_+BigInt(e.byteLength))),this.file.data.set(s)}return this.file.data.set(e,Number(_)),{ret:0,nwritten:e.byteLength}}fd_filestat_get(){return{ret:0,filestat:this.file.stat()}}constructor(e){super(),this.file_pos=0n,this.file=e}},De=class extends j{fd_seek(e,_){return{ret:8,offset:0n}}fd_tell(){return{ret:8,offset:0n}}fd_allocate(e,_){return 8}fd_fdstat_get(){return{ret:0,fdstat:new ee(H,0)}}fd_readdir_single(e){if(b.enabled&&(b.log("readdir_single",e),b.log(e,this.dir.contents.keys())),e==0n)return{ret:0,dirent:new Ee(1n,this.dir.ino,".",H)};if(e==1n)return{ret:0,dirent:new Ee(2n,this.dir.parent_ino(),"..",H)};if(e>=BigInt(this.dir.contents.size)+2n)return{ret:0,dirent:null};let[_,s]=Array.from(this.dir.contents.entries())[Number(e-2n)];return{ret:0,dirent:new Ee(e+1n,s.ino,_,s.stat().filetype)}}path_filestat_get(e,_){let{ret:s,path:T}=Z.from(_);if(T==null)return{ret:s,filestat:null};let{ret:t,entry:i}=this.dir.get_entry_for_path(T);return i==null?{ret:t,filestat:null}:{ret:0,filestat:i.stat()}}path_lookup(e,_){let{ret:s,path:T}=Z.from(e);if(T==null)return{ret:s,inode_obj:null};let{ret:t,entry:i}=this.dir.get_entry_for_path(T);return i==null?{ret:t,inode_obj:null}:{ret:0,inode_obj:i}}path_open(e,_,s,T,t,i){let{ret:d,path:o}=Z.from(_);if(o==null)return{ret:d,fd_obj:null};let{ret:E,entry:r}=this.dir.get_entry_for_path(o);if(r==null){if(E!=44)return{ret:E,fd_obj:null};if((s&me)==me){let{ret:a,entry:S}=this.dir.create_entry_for_path(_,(s&Ie)==Ie);if(S==null)return{ret:a,fd_obj:null};r=S}else return{ret:44,fd_obj:null}}else if((s&We)==We)return{ret:20,fd_obj:null};return(s&Ie)==Ie&&r.stat().filetype!==H?{ret:54,fd_obj:null}:r.path_open(s,T,i)}path_create_directory(e){return this.path_open(0,e,me|Ie,0n,0n,0).ret}path_link(e,_,s){let{ret:T,path:t}=Z.from(e);if(t==null)return T;if(t.is_dir)return 44;let{ret:i,parent_entry:d,filename:o,entry:E}=this.dir.get_parent_dir_and_entry_for_path(t,!0);if(d==null||o==null)return i;if(E!=null){let r=_.stat().filetype==H,a=E.stat().filetype==H;if(r&&a)if(s&&E instanceof X){if(E.contents.size!=0)return 55}else return 20;else{if(r&&!a)return 54;if(!r&&a)return 31;if(!(_.stat().filetype==re&&E.stat().filetype==re))return 20}}return!s&&_.stat().filetype==H?63:(d.contents.set(o,_),0)}path_unlink(e){let{ret:_,path:s}=Z.from(e);if(s==null)return{ret:_,inode_obj:null};let{ret:T,parent_entry:t,filename:i,entry:d}=this.dir.get_parent_dir_and_entry_for_path(s,!0);return t==null||i==null?{ret:T,inode_obj:null}:d==null?{ret:44,inode_obj:null}:(t.contents.delete(i),{ret:0,inode_obj:d})}path_unlink_file(e){let{ret:_,path:s}=Z.from(e);if(s==null)return _;let{ret:T,parent_entry:t,filename:i,entry:d}=this.dir.get_parent_dir_and_entry_for_path(s,!1);return t==null||i==null||d==null?T:d.stat().filetype===H?31:(t.contents.delete(i),0)}path_remove_directory(e){let{ret:_,path:s}=Z.from(e);if(s==null)return _;let{ret:T,parent_entry:t,filename:i,entry:d}=this.dir.get_parent_dir_and_entry_for_path(s,!1);return t==null||i==null||d==null?T:!(d instanceof X)||d.stat().filetype!==H?54:d.contents.size!==0?55:t.contents.delete(i)?0:44}fd_filestat_get(){return{ret:0,filestat:this.dir.stat()}}fd_filestat_set_size(e){return 8}fd_read(e){return{ret:8,data:new Uint8Array}}fd_pread(e,_){return{ret:8,data:new Uint8Array}}fd_write(e){return{ret:8,nwritten:0}}fd_pwrite(e,_){return{ret:8,nwritten:0}}constructor(e){super(),this.dir=e}},Oe=class extends De{fd_prestat_get(){return{ret:0,prestat:be.dir(this.prestat_name)}}constructor(e,_){super(new X(_)),this.prestat_name=e}},J=class extends k{path_open(e,_,s){if(this.readonly&&(_&BigInt(64))==BigInt(64))return{ret:63,fd_obj:null};if((e&xe)==xe){if(this.readonly)return{ret:63,fd_obj:null};this.data=new Uint8Array([])}let T=new ae(this);return s&Xe&&T.fd_seek(0n,he),{ret:0,fd_obj:T}}get size(){return BigInt(this.data.byteLength)}stat(){return new ne(this.ino,re,this.size)}constructor(e,_){super(),this.data=new Uint8Array(e),this.readonly=!!_?.readonly}},Z=class Pn{static from(e){let _=new Pn;if(_.is_dir=e.endsWith("/"),e.startsWith("/"))return{ret:76,path:null};if(e.includes("\0"))return{ret:28,path:null};for(let s of e.split("/"))if(!(s===""||s===".")){if(s===".."){if(_.parts.pop()==null)return{ret:76,path:null};continue}_.parts.push(s)}return{ret:0,path:_}}to_path_string(){let e=this.parts.join("/");return this.is_dir&&(e+="/"),e}constructor(){this.parts=[],this.is_dir=!1}},X=class n extends k{parent_ino(){return this.parent==null?k.root_ino():this.parent.ino}path_open(e,_,s){return{ret:0,fd_obj:new De(this)}}stat(){return new ne(this.ino,H,0n)}get_entry_for_path(e){let _=this;for(let s of e.parts){if(!(_ instanceof n))return{ret:54,entry:null};let T=_.contents.get(s);if(T!==void 0)_=T;else return b.log(s),{ret:44,entry:null}}return e.is_dir&&_.stat().filetype!=H?{ret:54,entry:null}:{ret:0,entry:_}}get_parent_dir_and_entry_for_path(e,_){let s=e.parts.pop();if(s===void 0)return{ret:28,parent_entry:null,filename:null,entry:null};let{ret:T,entry:t}=this.get_entry_for_path(e);if(t==null)return{ret:T,parent_entry:null,filename:null,entry:null};if(!(t instanceof n))return{ret:54,parent_entry:null,filename:null,entry:null};let i=t.contents.get(s);return i===void 0?_?{ret:0,parent_entry:t,filename:s,entry:null}:{ret:44,parent_entry:null,filename:null,entry:null}:e.is_dir&&i.stat().filetype!=H?{ret:54,parent_entry:null,filename:null,entry:null}:{ret:0,parent_entry:t,filename:s,entry:i}}create_entry_for_path(e,_){let{ret:s,path:T}=Z.from(e);if(T==null)return{ret:s,entry:null};let{ret:t,parent_entry:i,filename:d,entry:o}=this.get_parent_dir_and_entry_for_path(T,!0);if(i==null||d==null)return{ret:t,entry:null};if(o!=null)return{ret:20,entry:null};b.log("create",T);let E;return _?E=new n(new Map):E=new J(new ArrayBuffer(0)),i.contents.set(d,E),o=E,{ret:0,entry:o}}constructor(e){super(),this.parent=null,e instanceof Array?this.contents=new Map(e):this.contents=e;for(let _ of this.contents.values())_ instanceof n&&(_.parent=this)}},Ue=class n extends j{fd_filestat_get(){return{ret:0,filestat:new ne(this.ino,Ke,BigInt(0))}}fd_fdstat_get(){let e=new ee(Ke,0);return e.fs_rights_base=BigInt(64),{ret:0,fdstat:e}}fd_write(e){return this.write(e),{ret:0,nwritten:e.byteLength}}static lineBuffered(e){let _=new TextDecoder("utf-8",{fatal:!1}),s="";return new n(T=>{s+=_.decode(T,{stream:!0});let t=s.split(`
+`);for(let[i,d]of t.entries())i<t.length-1?e(d):s=d})}constructor(e){super(),this.ino=k.issue_ino(),this.write=e}};var fe=(n,e)=>`https://docs.espressif.com/projects/esp-dev-kits/en/latest/${n}/${e}/user_guide.html`,qe=[];function W(n,e,_,s,T="rows"){let t=T==="xiao"?84:T==="nano"?210:T==="p4"?460:220,i=T==="xiao"?108:T==="nano"?86:T==="p4"?350:460,d=new Map,o=[];for(let[r,a]of[["left",_],["right",s]])for(let[S,R]of a.entries()){let P=String(R),f=P.match(/^(?:GPIO|TX|RX)?(\d+)$/),I=f?"GPIO"+f[1]:P==="G"?"GND":["VBUS"].includes(P)?"5V":P,A=f?I:P==="G"?"GND":P.startsWith("NC")?"NC":P,x=d.get(A)||0;d.set(A,x+1);let p={id:A+(x?"."+x:""),name:e.aliasLabels?.[I]||P,net:I};f?Object.assign(p,{port:"ESP",bit:Number(f[1])}):I==="GND"?p.voltage=0:I==="3V3"||n==="esp32h2"&&I==="VBAT"?p.voltage=3.3:I==="5V"&&(p.voltage=5),(["RST","RESET","LDO_EN","VUSB"].includes(P)||P.startsWith("NC"))&&(p.connectable=!1),T==="nano"?(p.x=12+S*12.6,p.y=r==="left"?7:79):T==="p4"?(p.x=20+S*21,p.y=r==="left"?296:320):T==="xiao"?(p.x=r==="left"?6:78,p.y=17+S*12):(p.x=r==="left"?17:203,p.y=86+S*311/Math.max(_.length-1,s.length-1)),o.push(p)}let E=[...new Set(o.filter(r=>r.port).map(r=>r.bit))].sort((r,a)=>r-a);qe.push({id:n,...e,width:t,height:i,layout:T,pins:o,gpio:E,pads:o.length,asset:n+".svg"})}W("esp32h2",{name:"ESP32-H2",board:"DevKitM-1 \xB7 v1.3 N4",arch:"RISC-V \xB7 RV32IMAC",target:"esp32h2",hz:96e6,flash:4*1024*1024,chipId:16,ram:240*1024,mux:1611202560,muxOffset:4,source:fe("esp32h2","esp32-h2-devkitm-1"),examplePins:{6:11,7:10},reserved:"GPIO13/14: 32 kHz kristal; GPIO6/7: mod\xFCl flash"},["3V3","RST",0,1,2,3,"NC13","NC14",4,5,"NC","VBAT","G","5V","G"],["G","TX24","RX23",10,11,25,12,8,22,"G",9,"G",27,26,"G"]);W("esp32c5",{name:"ESP32-C5",board:"DevKitC-1 \xB7 v1.2 N8R8",arch:"RISC-V \xB7 RV32IMAC",target:"esp32c5",hz:24e7,flash:8*1024*1024,chipId:23,ram:304*1024,mux:1611202560,muxOffset:0,imageOffset:8192,source:fe("esp32c5","esp32-c5-devkitc-1"),reserved:"GPIO15: N8R8 PSRAM; dahili PSRAM modeli yok"},["3V3","RST",2,3,0,1,6,7,8,9,10,26,25,"5V","G","NC"],["G","TX11","RX12",24,23,"NC15",27,4,5,"NC",28,"G",14,13,"G","NC"]);W("esp32p4",{name:"ESP32-P4",board:"Function-EV \xB7 v1.5.2 J1",arch:"RISC-V \xB7 RV32IMAF",target:"esp32p4",hz:4e8,flash:16*1024*1024,chipId:18,ram:560*1024,mux:1343098880,muxOffset:4,imageOffset:8192,source:fe("esp32p4","esp32-p4-function-ev-board"),reserved:"J1: GPIO0/1 kristal, GPIO45 SD_PWRn; kamera/LCD/PSRAM/Ethernet model d\u0131\u015F\u0131"},["5V","5V","G","TX37","RX38",22,"G",5,4,"G","NC1",36,32,"NC","G",54,"G",46,27,"NC45"],["3V3",7,8,23,"G",21,20,6,"3V3",3,2,"NC0","G","NC",33,26,48,53,47,"G"],"p4");for(let[n,e,_]of[["esp32c3",[2,3,4,5,6,7,21,20,8,9,10],"https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/"],["esp32c6",[0,1,2,21,22,23,16,17,19,20,18],"https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/"],["esp32s3",[1,2,3,4,5,6,43,44,7,8,9],"https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/"]]){let s=Object.fromEntries(e.map((t,i)=>["D"+i,t])),T=Object.fromEntries(e.map((t,i)=>["GPIO"+t,"D"+i+" / "+t]));W("xiao-"+n,{name:n==="esp32s3"?"ESP32-S3":n==="esp32c6"?"ESP32-C6":"ESP32-C3",board:"Seeed XIAO",title:"Seeed XIAO "+n.replace("esp32","ESP32-").toUpperCase(),target:n,aliases:s,aliasLabels:T,source:_,flash:n==="esp32s3"?8*1024*1024:4*1024*1024,...n==="esp32c6"?{examplePins:{2:0,3:1,4:22,5:23,6:20,7:2}}:{}},e.slice(0,7),["5V","G","3V3",...e.slice(7).reverse()],"xiao")}var Rn={D0:44,D1:43,D2:5,D3:6,D4:7,D5:8,D6:9,D7:10,D8:17,D9:18,D10:21,D11:38,D12:47,D13:48,A0:1,A1:2,A2:3,A3:4,A4:11,A5:12,A6:13,A7:14,B0:46,B1:0,LED_BUILTIN:48,LEDR:46,LEDG:0,LEDB:45};W("nano-esp32",{name:"ESP32-S3",board:"Arduino Nano ESP32",title:"Arduino Nano ESP32 \xB7 NORA-W106",target:"esp32s3",aliases:Rn,aliasLabels:Object.fromEntries(Object.entries(Rn).filter(([n])=>!n.startsWith("LED")).map(([n,e])=>["GPIO"+e,n+" / "+e])),source:"https://docs.arduino.cc/resources/pinouts/ABX00083-full-pinout.pdf",flash:16*1024*1024,reserved:"VUSB: a\xE7\u0131k lehim k\xF6pr\xFCs\xFC; GPIO45 RGB LED, haric\xEE ba\u015Fl\u0131k yok; native GPIO numaralar\u0131"},[47,38,21,18,17,10,9,8,7,6,5,"G","RESET",44,43],[48,"3V3",46,1,2,3,4,11,12,13,14,"VUSB",0,"G","VIN"],"nano");W("esp32c3-devkitc02",{name:"ESP32-C3",board:"DevKitC-02",target:"esp32c3",source:fe("esp32c3","esp32-c3-devkitc-02")},["G","3V3","3V3","RST","G",4,5,6,7,"G",8,9,"5V","5V","G"],["G",0,1,2,3,"G",10,"G","RX20","TX21","G",18,19,"G","G"]);W("esp32c6-devkitm1",{name:"ESP32-C6",board:"DevKitM-1",target:"esp32c6",flash:4*1024*1024,source:fe("esp32c6","esp32-c6-devkitm-1")},["3V3","RST",2,3,4,5,0,1,8,6,7,14,"G","5V","G"],["G","TX16","RX17",23,22,21,20,19,18,15,9,"G",13,12,"G"]);W("esp32s3-devkitm1",{name:"ESP32-S3",board:"DevKitM-1",target:"esp32s3",source:fe("esp32s3","esp32-s3-devkitm-1")},["3V3",0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,"5V","G"],["G","RST",46,45,"RX44","TX43",42,41,40,39,38,37,36,35,34,33,26,21,20,19,48,47]);W("esp32c3-rust",{name:"ESP32-C3",board:"DevKit-RUST-1",target:"esp32c3",source:"https://github.com/esp-rs/esp-rust-board/blob/master/hardware/esp-rust-board/schematic/esp-rust-board.pdf",reserved:"SHTC3/ICM42670P/WS2812/batarya devresi model d\u0131\u015F\u0131"},["RESET","3V3","NC","G",0,1,2,3,4,5,6,7,8,21,20,9],["VBAT","LDO_EN","VBUS","NC","NC","NC","NC","NC",18,19,8,10]);var Nn=Object.fromEntries(qe.map(n=>[n.id,n.pins]));function un(n){let e={...n};for(let _ of qe){let s=e[_.target]||{};e[_.id]={...s,..._,hz:_.hz||s.hz,chipId:_.chipId??s.chipId,flash:_.flash||s.flash}}return e}var je=un({esp32c3:{target:"esp32c3",ram:240*1024,mux:1610649600,muxOffset:4,name:"ESP32-C3",board:"DevKitM-1",arch:"RISC-V \xB7 RV32IMC",hz:16e7,flash:4*1024*1024,chipId:5,asset:"esp32-c3.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,18,19,20,21],pads:30,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c3/esp32-c3-devkitm-1/user_guide.html"},esp32c6:{target:"esp32c6",ram:432*1024,mux:1611202560,muxOffset:4,name:"ESP32-C6",board:"DevKitC-1 \xB7 v1.2",arch:"RISC-V \xB7 RV32IMAC",hz:16e7,flash:8*1024*1024,chipId:13,asset:"esp32-c6.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23],pads:32,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/user_guide.html"},esp32s3:{target:"esp32s3",ram:400*1024,mux:1610649600,muxOffset:4,name:"ESP32-S3",board:"DevKitC-1 \xB7 v1.0",arch:"Xtensa LX7 \xB7 iki \xE7ekirdek",hz:24e7,flash:8*1024*1024,chipId:9,asset:"esp32-s3.svg",gpio:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,35,36,37,38,39,40,41,42,43,44,45,46,47,48],pads:44,source:"https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.0.html"}});var Ze={"cf_hal.h":`#pragma once
 #define CF_INPUT 0
 #define CF_OUTPUT 1
 #define CF_INPUT_PULLUP 2
@@ -23,7 +11670,7 @@ static inline int putchar(int c){cf_uart_write((unsigned char)c);return c;}
 static inline int puts(const char *s){while(*s)putchar(*s++);putchar('\r');putchar('\n');return 0;}
 static inline void cf_number(unsigned n,unsigned base){char b[32];int i=0;do{unsigned d=n%base;b[i++]=d<10?'0'+d:'A'+d-10;n/=base;}while(n);while(i)putchar(b[--i]);}
 static inline int printf(const char *fmt,...){cf_va_list ap;__builtin_va_start(ap,fmt);while(*fmt){if(*fmt!='%'){putchar(*fmt++);continue;}fmt++;switch(*fmt++){case '%':putchar('%');break;case 's':{const char*s=__builtin_va_arg(ap,const char*);if(s)while(*s)putchar(*s++);break;}case 'c':putchar(__builtin_va_arg(ap,int));break;case 'd':{int n=__builtin_va_arg(ap,int);if(n<0){putchar('-');cf_number(0u-(unsigned)n,10);}else cf_number(n,10);break;}case 'u':cf_number(__builtin_va_arg(ap,unsigned),10);break;case 'x':case 'X':cf_number(__builtin_va_arg(ap,unsigned),16);break;default:__builtin_va_end(ap);return -1;}}__builtin_va_end(ap);return 0;}
-`};var ie={"nrf52840-supermini":{id:"nrf52840-supermini",architecture:"nrf52",family:"nrf52840",name:"Pro Micro nRF52840 \xB7 SuperMini",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:92,height:146,asset:"nrf52840-supermini.svg",pins:[{id:"GND",net:"GND",name:"GND",x:17.256,y:18,side:"left",voltage:0},{id:"P0.06",net:"P0.06",name:"P0.06",x:17.256,y:27.6,side:"left",port:"0",bit:6,digital:6},{id:"P0.08",net:"P0.08",name:"P0.08",x:17.256,y:37.2,side:"left",port:"0",bit:8,digital:8},{id:"GND.1",net:"GND",name:"GND.1",x:17.256,y:46.8,side:"left",voltage:0},{id:"GND.2",net:"GND",name:"GND.2",x:17.256,y:56.4,side:"left",voltage:0},{id:"P0.17",net:"P0.17",name:"P0.17",x:17.256,y:66,side:"left",port:"0",bit:17,digital:17},{id:"P0.20",net:"P0.20",name:"P0.20",x:17.256,y:75.6,side:"left",port:"0",bit:20,digital:20},{id:"P0.22",net:"P0.22",name:"P0.22",x:17.256,y:85.2,side:"left",port:"0",bit:22,digital:22},{id:"P0.24",net:"P0.24",name:"P0.24",x:17.256,y:94.8,side:"left",port:"0",bit:24,digital:24},{id:"P1.00",net:"P1.00",name:"P1.00",x:17.256,y:104.39999999999999,side:"left",port:"1",bit:0,digital:32},{id:"P0.11",net:"P0.11",name:"P0.11",x:17.256,y:114,side:"left",port:"0",bit:11,digital:11},{id:"P1.04",net:"P1.04",name:"P1.04",x:17.256,y:123.6,side:"left",port:"1",bit:4,digital:36},{id:"P1.06",net:"P1.06",name:"P1.06",x:17.256,y:133.2,side:"left",port:"1",bit:6,digital:38},{id:"BAT+",net:"BAT+",name:"BAT+",x:74.744,y:18,side:"right"},{id:"RAW",net:"RAW",name:"RAW",x:74.744,y:27.6,side:"right"},{id:"GND.3",net:"GND",name:"GND.3",x:74.744,y:37.2,side:"right",voltage:0},{id:"RESET",net:"RESET",name:"RESET",x:74.744,y:46.8,side:"right"},{id:"3V3",net:"3V3",name:"3V3",x:74.744,y:56.4,side:"right",voltage:3.3},{id:"P0.31",net:"P0.31",name:"P0.31",x:74.744,y:66,side:"right",port:"0",bit:31,digital:31,analog:7},{id:"P0.29",net:"P0.29",name:"P0.29",x:74.744,y:75.6,side:"right",port:"0",bit:29,digital:29,analog:5},{id:"P0.02",net:"P0.02",name:"P0.02",x:74.744,y:85.2,side:"right",port:"0",bit:2,digital:2,analog:0},{id:"P1.15",net:"P1.15",name:"P1.15",x:74.744,y:94.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.13",net:"P1.13",name:"P1.13",x:74.744,y:104.39999999999999,side:"right",port:"1",bit:13,digital:45},{id:"P1.11",net:"P1.11",name:"P1.11",x:74.744,y:114,side:"right",port:"1",bit:11,digital:43},{id:"P0.10",net:"P0.10",name:"P0.10",x:74.744,y:123.6,side:"right",port:"0",bit:10,digital:10},{id:"P0.09",net:"P0.09",name:"P0.09",x:74.744,y:133.2,side:"right",port:"0",bit:9,digital:9},{id:"P0.15",net:"P0.15",name:"P0.15 \xB7 dahili LED",x:33,y:51,port:"0",bit:15,connectable:!1},{id:"P1.07",net:"P1.07",name:"P1.07",x:28.53,y:121.591,side:"bottom",port:"1",bit:7,digital:39},{id:"P1.02",net:"P1.02",name:"P1.02",x:38.13,y:121.591,side:"bottom",port:"1",bit:2,digital:34},{id:"P1.01",net:"P1.01",name:"P1.01",x:47.842,y:121.591,side:"bottom",port:"1",bit:1,digital:33}],gpio:["P0.06","P0.08","P0.17","P0.20","P0.22","P0.24","P1.00","P0.11","P1.04","P1.06","P0.31","P0.29","P0.02","P1.15","P1.13","P1.11","P0.10","P0.09","P0.15","P1.07","P1.02","P1.01"],ledPin:"P0.15",leds:{"P0.15":{x:45.498,y:132.865,color:"#529bff"}},ledChannels:[{pin:"P0.15",color:"blue",activeLow:!1}],txPin:6,rxPin:8,sdaPin:17,sclPin:20,sckPin:45,mosiPin:47,misoPin:43,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"sasodoma tersine \xE7\u0131kar\u0131lm\u0131\u015F k\u0131rm\u0131z\u0131 SuperMini profili",boardSource:"https://github.com/sasodoma/nrf52840-promicro",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"nice-nano-v2":{id:"nice-nano-v2",architecture:"nrf52",family:"nrf52840",name:"nice!nano v2",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:92,height:146,asset:"nice-nano-v2.svg",pins:[{id:"GND",net:"GND",name:"GND",x:6,y:18,side:"left",voltage:0},{id:"P0.06",net:"P0.06",name:"P0.06",x:6,y:27.6,side:"left",port:"0",bit:6,digital:6},{id:"P0.08",net:"P0.08",name:"P0.08",x:6,y:37.2,side:"left",port:"0",bit:8,digital:8},{id:"GND.1",net:"GND",name:"GND.1",x:6,y:46.8,side:"left",voltage:0},{id:"GND.2",net:"GND",name:"GND.2",x:6,y:56.4,side:"left",voltage:0},{id:"P0.17",net:"P0.17",name:"P0.17",x:6,y:66,side:"left",port:"0",bit:17,digital:17},{id:"P0.20",net:"P0.20",name:"P0.20",x:6,y:75.6,side:"left",port:"0",bit:20,digital:20},{id:"P0.22",net:"P0.22",name:"P0.22",x:6,y:85.2,side:"left",port:"0",bit:22,digital:22},{id:"P0.24",net:"P0.24",name:"P0.24",x:6,y:94.8,side:"left",port:"0",bit:24,digital:24},{id:"P1.00",net:"P1.00",name:"P1.00",x:6,y:104.39999999999999,side:"left",port:"1",bit:0,digital:32},{id:"P0.11",net:"P0.11",name:"P0.11",x:6,y:114,side:"left",port:"0",bit:11,digital:11},{id:"P1.04",net:"P1.04",name:"P1.04",x:6,y:123.6,side:"left",port:"1",bit:4,digital:36},{id:"P1.06",net:"P1.06",name:"P1.06",x:6,y:133.2,side:"left",port:"1",bit:6,digital:38},{id:"BAT+",net:"BAT+",name:"BAT+",x:86,y:18,side:"right"},{id:"RAW",net:"RAW",name:"BAT+ / RAW",x:86,y:27.6,side:"right"},{id:"GND.3",net:"GND",name:"GND.3",x:86,y:37.2,side:"right",voltage:0},{id:"RESET",net:"RESET",name:"RESET",x:86,y:46.8,side:"right"},{id:"3V3",net:"3V3",name:"3V3",x:86,y:56.4,side:"right",voltage:3.3},{id:"P0.31",net:"P0.31",name:"P0.31",x:86,y:66,side:"right",port:"0",bit:31,digital:31,analog:7},{id:"P0.29",net:"P0.29",name:"P0.29",x:86,y:75.6,side:"right",port:"0",bit:29,digital:29,analog:5},{id:"P0.02",net:"P0.02",name:"P0.02",x:86,y:85.2,side:"right",port:"0",bit:2,digital:2,analog:0},{id:"P1.15",net:"P1.15",name:"P1.15",x:86,y:94.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.13",net:"P1.13",name:"P1.13",x:86,y:104.39999999999999,side:"right",port:"1",bit:13,digital:45},{id:"P1.11",net:"P1.11",name:"P1.11",x:86,y:114,side:"right",port:"1",bit:11,digital:43},{id:"P0.10",net:"P0.10",name:"P0.10",x:86,y:123.6,side:"right",port:"0",bit:10,digital:10},{id:"P0.09",net:"P0.09",name:"P0.09",x:86,y:133.2,side:"right",port:"0",bit:9,digital:9},{id:"P0.15",net:"P0.15",name:"P0.15 \xB7 dahili LED",x:33,y:51,port:"0",bit:15,connectable:!1},{id:"P1.07",net:"P1.07",name:"P1.07",x:30,y:124,side:"bottom",port:"1",bit:7,digital:39},{id:"P1.02",net:"P1.02",name:"P1.02",x:46,y:124,side:"bottom",port:"1",bit:2,digital:34},{id:"P1.01",net:"P1.01",name:"P1.01",x:62,y:124,side:"bottom",port:"1",bit:1,digital:33}],gpio:["P0.06","P0.08","P0.17","P0.20","P0.22","P0.24","P1.00","P0.11","P1.04","P1.06","P0.31","P0.29","P0.02","P1.15","P1.13","P1.11","P0.10","P0.09","P0.15","P1.07","P1.02","P1.01"],ledPin:"P0.15",leds:{"P0.15":{x:46,y:137,color:"#529bff"}},ledChannels:[{pin:"P0.15",color:"blue",activeLow:!1}],txPin:6,rxPin:8,sdaPin:17,sclPin:20,sckPin:45,mosiPin:47,misoPin:43,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"nice!nano v2 \u015Fema profili",boardSource:"https://nicekeyboards.com/docs/nice-nano/pinout-schematic/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"xiao-nrf52840":{id:"xiao-nrf52840",architecture:"nrf52",family:"nrf52840",name:"Seeed XIAO nRF52840",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:68,height:86,asset:"xiao-nrf52840.svg",pins:[{id:"P0.02",net:"P0.02",name:"D0 / P0.02",x:6,y:18,side:"left",port:"0",bit:2,digital:2,analog:0},{id:"P0.03",net:"P0.03",name:"D1 / P0.03",x:6,y:27.6,side:"left",port:"0",bit:3,digital:3,analog:1},{id:"P0.28",net:"P0.28",name:"D2 / P0.28",x:6,y:37.2,side:"left",port:"0",bit:28,digital:28,analog:4},{id:"P0.29",net:"P0.29",name:"D3 / P0.29",x:6,y:46.8,side:"left",port:"0",bit:29,digital:29,analog:5},{id:"P0.04",net:"P0.04",name:"D4 / P0.04",x:6,y:56.4,side:"left",port:"0",bit:4,digital:4,analog:2},{id:"P0.05",net:"P0.05",name:"D5 / P0.05",x:6,y:66,side:"left",port:"0",bit:5,digital:5,analog:3},{id:"P1.11",net:"P1.11",name:"D6 / P1.11",x:6,y:75.6,side:"left",port:"1",bit:11,digital:43},{id:"5V",net:"5V",name:"5V",x:62,y:18,side:"right",voltage:5},{id:"GND",net:"GND",name:"GND",x:62,y:27.6,side:"right",voltage:0},{id:"3V3",net:"3V3",name:"3V3",x:62,y:37.2,side:"right",voltage:3.3},{id:"P1.15",net:"P1.15",name:"D10 / P1.15",x:62,y:46.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.14",net:"P1.14",name:"D9 / P1.14",x:62,y:56.4,side:"right",port:"1",bit:14,digital:46},{id:"P1.13",net:"P1.13",name:"D8 / P1.13",x:62,y:66,side:"right",port:"1",bit:13,digital:45},{id:"P1.12",net:"P1.12",name:"D7 / P1.12",x:62,y:75.6,side:"right",port:"1",bit:12,digital:44},{id:"P0.26",net:"P0.26",name:"P0.26 \xB7 dahili LED",x:33,y:51,port:"0",bit:26,connectable:!1},{id:"P0.30",net:"P0.30",name:"P0.30 \xB7 dahili LED",x:33,y:51,port:"0",bit:30,connectable:!1},{id:"P0.06",net:"P0.06",name:"P0.06 \xB7 dahili LED",x:33,y:51,port:"0",bit:6,connectable:!1}],gpio:["P0.02","P0.03","P0.28","P0.29","P0.04","P0.05","P1.11","P1.15","P1.14","P1.13","P1.12","P0.26","P0.30","P0.06"],ledPin:"P0.26",leds:{"P0.26":{x:54,y:11,color:"#ff3939"},"P0.30":{x:55,y:11,color:"#3be37a"},"P0.06":{x:56,y:11,color:"#529bff"}},ledChannels:[{pin:"P0.26",color:"red",activeLow:!0},{pin:"P0.30",color:"green",activeLow:!0},{pin:"P0.06",color:"blue",activeLow:!0}],txPin:43,rxPin:44,sdaPin:4,sclPin:5,sckPin:45,mosiPin:47,misoPin:46,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"XIAO v1.1 \u015Fema profili",boardSource:"https://wiki.seeedstudio.com/XIAO_BLE/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"xiao-nrf52840-sense":{id:"xiao-nrf52840-sense",architecture:"nrf52",family:"nrf52840",name:"Seeed XIAO nRF52840 Sense",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:68,height:86,asset:"xiao-nrf52840-sense.svg",pins:[{id:"P0.02",net:"P0.02",name:"D0 / P0.02",x:6,y:18,side:"left",port:"0",bit:2,digital:2,analog:0},{id:"P0.03",net:"P0.03",name:"D1 / P0.03",x:6,y:27.6,side:"left",port:"0",bit:3,digital:3,analog:1},{id:"P0.28",net:"P0.28",name:"D2 / P0.28",x:6,y:37.2,side:"left",port:"0",bit:28,digital:28,analog:4},{id:"P0.29",net:"P0.29",name:"D3 / P0.29",x:6,y:46.8,side:"left",port:"0",bit:29,digital:29,analog:5},{id:"P0.04",net:"P0.04",name:"D4 / P0.04",x:6,y:56.4,side:"left",port:"0",bit:4,digital:4,analog:2},{id:"P0.05",net:"P0.05",name:"D5 / P0.05",x:6,y:66,side:"left",port:"0",bit:5,digital:5,analog:3},{id:"P1.11",net:"P1.11",name:"D6 / P1.11",x:6,y:75.6,side:"left",port:"1",bit:11,digital:43},{id:"5V",net:"5V",name:"5V",x:62,y:18,side:"right",voltage:5},{id:"GND",net:"GND",name:"GND",x:62,y:27.6,side:"right",voltage:0},{id:"3V3",net:"3V3",name:"3V3",x:62,y:37.2,side:"right",voltage:3.3},{id:"P1.15",net:"P1.15",name:"D10 / P1.15",x:62,y:46.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.14",net:"P1.14",name:"D9 / P1.14",x:62,y:56.4,side:"right",port:"1",bit:14,digital:46},{id:"P1.13",net:"P1.13",name:"D8 / P1.13",x:62,y:66,side:"right",port:"1",bit:13,digital:45},{id:"P1.12",net:"P1.12",name:"D7 / P1.12",x:62,y:75.6,side:"right",port:"1",bit:12,digital:44},{id:"P0.26",net:"P0.26",name:"P0.26 \xB7 dahili LED",x:33,y:51,port:"0",bit:26,connectable:!1},{id:"P0.30",net:"P0.30",name:"P0.30 \xB7 dahili LED",x:33,y:51,port:"0",bit:30,connectable:!1},{id:"P0.06",net:"P0.06",name:"P0.06 \xB7 dahili LED",x:33,y:51,port:"0",bit:6,connectable:!1}],gpio:["P0.02","P0.03","P0.28","P0.29","P0.04","P0.05","P1.11","P1.15","P1.14","P1.13","P1.12","P0.26","P0.30","P0.06"],ledPin:"P0.26",leds:{"P0.26":{x:54,y:11,color:"#ff3939"},"P0.30":{x:55,y:11,color:"#3be37a"},"P0.06":{x:56,y:11,color:"#529bff"}},ledChannels:[{pin:"P0.26",color:"red",activeLow:!0},{pin:"P0.30",color:"green",activeLow:!0},{pin:"P0.06",color:"blue",activeLow:!0}],txPin:43,rxPin:44,sdaPin:4,sclPin:5,sckPin:45,mosiPin:47,misoPin:46,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"XIAO v1.1 \u015Fema profili",boardSource:"https://wiki.seeedstudio.com/XIAO_BLE/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."}};var kn=[["J1",9.6,["3V3","PB5","PB0","PB1","PE4","PE5","PB4","PA5","PA6","PA7"]],["J3",19.2,["5V","GND","PD0","PD1","PD2","PD3","PE1","PE2","PE3","PF1"]],["J4",172.8,["PF2","PF3","PB3","PC4","PC5","PC6","PC7","PD6","PD7","PF4"]],["J2",182.4,["GND.1","PB2","PE0","PF0","NRST","PB7","PB6","PA4","PA3","PA2"]]],Sn=kn.flatMap(([n,e,_])=>_.map((E,d)=>({id:E,name:n+"."+(d+1)+" \xB7 "+E,header:n,number:d+1,net:E.startsWith("GND")?"GND":E,x:e,y:91.2+d*9.6,side:e<96?"left":"right",.../^P[A-F][0-7]$/.test(E)?{port:E[1],bit:+E[2],digital:(E.charCodeAt(1)-65)*8+ +E[2]}:{voltage:E==="3V3"?3.3:E==="5V"?5:E.startsWith("GND")?0:void 0}}))),Je={id:"ek-tm4c123gxl",architecture:"tiva",family:"tm4c123",name:"Tiva C \xB7 TM4C123G LaunchPad",mcu:"TM4C123GH6PM",revision:"EK-TM4C123GXL \xB7 Rev B",cpu:"cortex-m4f",hz:16e6,maxHz:8e7,hse:16e6,flashSize:262144,flashLimit:262144,ram:32768,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:192,height:216,asset:"tiva-tm4c123gxl.svg",pins:Sn,gpio:Sn.filter(n=>n.port).map(n=>n.net),ledPin:"PF1",leds:{power:{x:79,y:37},PF1:{x:94,y:188,color:"#ff3232"},PF2:{x:97,y:188,color:"#329bff"},PF3:{x:100,y:188,color:"#42ff6c"}},uart:"UART0 \xB7 ICDI VCP \xB7 PA0/PA1",internalLinks:[["PB6","PD0"],["PB7","PD1"]],source:"https://www.ti.com/lit/ds/symlink/tm4c123gh6pm.pdf",boardSource:"https://www.ti.com/lit/ug/spmu296/spmu296.pdf",visualReference:"https://robiz.net/ektm4c123gxl",reserved:"Yaln\u0131z C17. PF4=SW1, PF0=SW2 (kilit a\xE7ma gerekir); PF1/PF2/PF3 RGB. PA0/PA1 ICDI UART. R9/R10 varsay\u0131lan PB6\u2013PD0 ve PB7\u2013PD1 ba\u011Flant\u0131lar\u0131 korunur. USB/ICDI donan\u0131m em\xFClasyonu yok."};var yn=["GPIO0","GPIO1","GND","GPIO2","GPIO3","GPIO4","GPIO5","GND.1","GPIO6","GPIO7","GPIO8","GPIO9","GND.2","GPIO10","GPIO11","GPIO12","GPIO13","GND.3","GPIO14","GPIO15"],Bn=["VBUS","VSYS","GND.4","3V3_EN","3V3","ADC_VREF","GPIO28","AGND","GPIO27","GPIO26","RUN","GPIO22","GND.5","GPIO21","GPIO20","GPIO19","GPIO18","GND.6","GPIO17","GPIO16"],Nn=[...yn.map((n,e)=>({id:n,x:6,y:16+e*9.6,side:"left",physical:e+1})),...Bn.map((n,e)=>({id:n,x:79,y:16+e*9.6,side:"right",physical:40-e}))].map(n=>({...n,name:n.id.replace("GPIO","GP").replace(/GND\.\d/,"GND"),net:n.id.startsWith("GND")||n.id==="AGND"?"GND":n.id,...n.id.startsWith("GPIO")?{port:"GPIO",bit:+n.id.slice(4),digital:+n.id.slice(4),...+n.id.slice(4)>=26?{analog:+n.id.slice(4)-26}:{}}:n.id==="3V3"||n.id==="ADC_VREF"?{voltage:3.3}:n.id==="VBUS"||n.id==="VSYS"?{voltage:5}:n.id.startsWith("GND")||n.id==="AGND"?{voltage:0}:{}})),Fn=[["pico","Raspberry Pi Pico",!1,!1,!1],["pico-h","Raspberry Pi Pico H",!1,!0,!1],["pico-w","Raspberry Pi Pico W",!1,!1,!0],["pico-wh","Raspberry Pi Pico WH",!1,!0,!0],["pico-2","Raspberry Pi Pico 2",!0,!1,!1],["pico-2-headers","Raspberry Pi Pico 2 with headers",!0,!0,!1],["pico-2-w","Raspberry Pi Pico 2 W",!0,!1,!0],["pico-2-w-headers","Raspberry Pi Pico 2 W with headers",!0,!0,!0]],Rn=Object.fromEntries(Fn.map(([n,e,_,E,d])=>[n,{id:n,name:e,architecture:"pico",mcu:_?"RP2350":"RP2040",cpu:_?"Cortex-M33":"Cortex-M0+",hz:_?15e7:125e6,ram:(_?520:264)*1024,flashSize:(_?4:2)*1024*1024,flashLimit:(_?4:2)*1024*1024,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:85,height:216,pins:Nn,gpio:Nn.filter(i=>i.port).map(i=>i.digital),leds:{},asset:n+".svg",headers:E,wireless:d,uart:"UART0 \xB7 GP0 TX / GP1 RX",source:"https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html"}]));var te=(n,e,_,E,d=n)=>({id:n,name:n,net:d,x:e,y:_,side:E,.../^P[A-D]\d+$/.test(d)?{port:d[1],bit:+d.slice(2),digital:(d.charCodeAt(1)-65)*16+ +d.slice(2)}:{net:d.startsWith("GND")||d==="AGND"?"GND":d,voltage:["3V3","VDD","AVDD","IOREF","VBAT"].includes(d)?3.3:d==="5V"||d==="U5V"?5:d.startsWith("GND")||d==="AGND"?0:void 0}}),rn=(n,e,_)=>n.map((E,d)=>te(E,e,12+d*9.6,_)),Hn=["VBAT","PC13","PC14","PC15","PA0","PA1","PA2","PA3","PA4","PA5","PA6","PA7","PB0","PB1","PB10","PB11","NRST","3V3","GND","GND.1"],Vn=["PB12","PB13","PB14","PB15","PA8","PA9","PA10","PA11","PA12","PA15","PB3","PB4","PB5","PB6","PB7","PB8","PB9","5V","GND.2","3V3.1"],Xn=["PC10","PC11","PC12","PD2","VDD","E5V","BOOT0","GND","NC","NC","NC","IOREF","PA13","NRST","PA14","3V3","PA15","5V","GND","GND","PB7","GND","PC13","VIN","PC14","NC","PC15","PA0","PD0","PA1","PD1","PA4","VBAT","PB0","PC2","PC1","PC3","PC0"],Wn=["PC9","PC8","PB8","PC6","PB9","PC5","AVDD","U5V","GND","NC","PA5","PA12","PA6","PA11","PA7","PB12","PB6","PB11","PC7","GND","PA9","PB2","PA8","PB1","PB10","PB15","PB4","PB14","PB5","PB13","PB3","AGND","PA10","PC4","PA2","NC","PA3","NC"],wn=["PA3","PA2","PA10","PB3","PB5","PB4","PB10","PA8","PA9","PC7","PB6","PA7","PA6","PA5","PB9","PB8"],Kn=["PA0","PA1","PA4","PB0","PC1","PC0"],Ln=(n,e,_)=>n.map((E,d)=>({...te(e+"-"+(d+1),_+d%2*9.6,125+Math.floor(d/2)*9.6,_<100?"left":"right",E),name:e+"-"+(d+1)+" \xB7 "+E,...["NC","PA2","PA3","PA13","PA14","PB3","PC14","PC15","PD0","PD1"].includes(E)?{connectable:!1,port:void 0}:{}})),vn=[...Ln(Xn,"CN7",14),...Ln(Wn,"CN10",224),...wn.map((n,e)=>({...te("D"+e,186,125+(15-e)*9.6,"right",n),name:"D"+e+" \xB7 "+n,...e<2||e===3?{connectable:!1,port:void 0}:{}})),...Kn.map((n,e)=>({...te("A"+e,63,245+e*9.6,"left",n),name:"A"+e+" \xB7 "+n})),...["IOREF","NRST","3V3","5V","GND","GND.1","VIN"].map((n,e)=>te(n,63,125+e*9.6,"left"))],ye={architecture:"stm32",family:"f103",terminalNumber:1,hse:8e6,hz:72e6,cpu:"cortex-m3",ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",flashLimit:null,revision:"Blue Pill \xB7 yayg\u0131n iki s\u0131ra 20 pin; \xFC\xE7\xFCnc\xFC taraf PCB",ledPin:"PC13",ledActiveLow:!0,uart:"USART1 \xB7 PA9/PA10",asset:"stm32-blue-pill.svg",width:86.4,height:211.2,pins:[...rn(Hn,4.8,"left"),...rn(Vn,81.6,"right")].map(n=>["PC14","PC15","PA15","PB3","PB4"].includes(n.net)?{...n,connectable:!1,port:void 0,name:n.name+" \xB7 kristal/debug"}:{...n,net:n.id==="3V3.1"?"3V3":n.net}),source:"https://www.st.com/resource/en/datasheet/stm32f103c8.pdf",reserved:"PC14/PC15 kristal; PA15/PB3/PB4 debug i\xE7in ayr\u0131lm\u0131\u015Ft\u0131r. PC13 LED aktif LOW; USB FS device/sanal host ve CAN loopback C17/C++17 modunda. SWD sim\xFClasyonu yok."},Se={stm32f103c6:{...ye,id:"stm32f103c6",name:"Blue Pill \xB7 STM32F103C6T6",mcu:"STM32F103C6T6",flashSize:32768,ram:10240,source:"https://www.st.com/resource/en/datasheet/stm32f103c6.pdf"},stm32f103c8:{...ye,id:"stm32f103c8",name:"Blue Pill \xB7 STM32F103C8T6",mcu:"STM32F103C8T6",flashSize:65536,ram:20480},stm32f103cb:{...ye,id:"stm32f103cb",name:"Blue Pill \xB7 STM32F103CBT6",mcu:"STM32F103CBT6",flashSize:131072,ram:20480},"nucleo-f103rb":{...ye,id:"nucleo-f103rb",name:"NUCLEO-F103RB \xB7 MB1136 C04",mcu:"STM32F103RBT6",flashSize:131072,ram:20480,revision:"ST MB1136 C04 \xB7 varsay\u0131lan solder bridge",asset:"stm32-nucleo-f103rb.svg",width:249.6,height:364.8,pins:vn,ledPin:"PA5",ledActiveLow:!1,userButton:"PC13",userButtonPullup:1e4,userButtonOhms:10,userButtonName:"B1",terminalNumber:2,uart:"USART2 \xB7 ST-LINK VCP",reserved:"SB62/63 OFF: D0/D1 ve PA2/PA3 header kopuk. SWD/SWO ve kristal pinleri ayr\u0131lm\u0131\u015F. B1 aktif LOW. ST-LINK USB sim\xFCle edilmez.",source:"https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf"}};for(let[n,e,_,E]of[["nucleo-f401re","STM32F401RET6",84e6,98304],["nucleo-f411re","STM32F411RET6",96e6,131072]]){let d=Se["nucleo-f103rb"];Se[n]={...d,id:n,name:"NUCLEO-"+e.slice(5,11)+" \xB7 MB1136 C04",mcu:e,hz:_,ram:E,cpu:"cortex-m4f",family:n.includes("f411")?"f411":"f401",flashSize:524288,asset:"stm32-"+n+".svg",pins:d.pins.map(i=>i.id==="CN10-18"?{...i,name:"CN10-18 \xB7 NC",net:"NC",port:void 0,connectable:!1}:i.id==="CN7-29"||i.id==="CN7-31"?{...i,name:i.id+" \xB7 "+(i.id==="CN7-29"?"PH0":"PH1"),net:i.id==="CN7-29"?"PH0":"PH1",port:void 0,connectable:!1}:i),source:"https://www.st.com/resource/en/datasheet/"+n.replace("nucleo-","stm32")+".pdf"}}var Yn=["PB12","PB13","PB14","PB15","PA8","PA9","PA10","PA11","PA12","PA15","PB3","PB4","PB5","PB6","PB7","PB8","PB9","5V","GND","3V3"],Qn=["5V.1","GND.1","3V3.1","PB10","PB2","PB1","PB0","PA7","PA6","PA5","PA4","PA3","PA2","PA1","PA0","NRST","PC15","PC14","PC13","VBAT"],zn=[...Yn.map((n,e)=>te(n,10.47,7.8+e*9.6,"left")),...Qn.map((n,e)=>te(n,68.07,7.8+e*9.6,"right",n.replace(/\.1$/,"")))].map(n=>["PA11","PA12","PC14","PC15"].includes(n.net)?{...n,connectable:!1,port:void 0,name:n.name+" \xB7 USB/LSE"}:n);for(let[n,e,_,E,d,i]of[["weact-f401cc","STM32F401CCU6","f401",84e6,262144,65536],["weact-f401ce","STM32F401CEU6","f401",84e6,524288,98304],["weact-f411ce","STM32F411CEU6","f411",96e6,524288,131072]])Se[n]={architecture:"stm32",id:n,name:"WeAct Black Pill \xB7 "+e,family:_,cpu:"cortex-m4f",mcu:e,hz:E,hse:25e6,flashSize:d,ram:i,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",revision:_==="f401"&&d===262144?"WeAct F401CC SKU \xB7 V3 header uyumlu topoloji":"WeAct MiniSTM32F4x1 \xB7 V3.0",width:78.54,height:198,pins:zn.map(t=>({...t})),ledPin:"PC13",ledActiveLow:!0,ledColor:"blue",userButton:"PA0",userButtonName:"KEY / PA0",userButtonPullup:!1,userButtonOhms:330,fixedPulls:[{pin:"PB2",voltage:0,ohms:1e4}],terminalNumber:1,uart:"USART1 \xB7 PA9/PA10",asset:"stm32-"+n+".svg",source:"https://www.st.com/resource/en/datasheet/"+e.slice(0,11).toLowerCase()+".pdf",boardSource:"https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1/blob/master/Hardware/legacy%20version/MiniF4x1Cx_V30%20SchDoc.pdf",reserved:"25 MHz HSE; PC14/15 LSE, PA11/12 USB i\xE7in ayr\u0131lm\u0131\u015F. SWD PA13/14 ayr\u0131 konekt\xF6r; PA15/PB3/PB4 GPIO ile SWD-only profilde kullan\u0131labilir. KEY PA0 aktif LOW, haric\xEE pull-up yok. PC13 LED aktif LOW; USB sanal host ile OTG FS device; fiziksel PHY/BOOT-ROM/SWD em\xFClasyonu yok."};for(let n of Object.values(Se))n.flashLimit=n.flashSize,n.gpio=[...new Set(n.pins.filter(e=>e.port&&e.connectable!==!1).map(e=>e.net))],n.leds={power:{x:n.id.startsWith("nucleo")?156:48,y:n.id.startsWith("nucleo")?278:178},[n.ledPin]:{x:n.id.startsWith("nucleo")?164:40,y:n.id.startsWith("nucleo")?278:178}};var On={...an,esp32c3:[{id:"GND",name:"GND",x:17,y:86,net:"GND",voltage:0},{id:"3V3",name:"3V3",x:17,y:108.21,net:"3V3",voltage:3.3},{id:"3V3.1",name:"3V3",x:17,y:130.43,net:"3V3",voltage:3.3},{id:"GPIO2",name:"IO2",x:17,y:152.64,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO3",name:"IO3",x:17,y:174.86,net:"GPIO3",port:"ESP",bit:3},{id:"GND.1",name:"GND",x:17,y:197.07,net:"GND",voltage:0},{id:"RST",name:"RST",x:17,y:219.29,net:"RST",connectable:!1},{id:"GND.2",name:"GND",x:17,y:241.5,net:"GND",voltage:0},{id:"GPIO0",name:"IO0",x:17,y:263.71,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO1",name:"IO1",x:17,y:285.93,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO10",name:"IO10",x:17,y:308.14,net:"GPIO10",port:"ESP",bit:10},{id:"GND.3",name:"GND",x:17,y:330.36,net:"GND",voltage:0},{id:"5V",name:"5V",x:17,y:352.57,net:"5V",voltage:5},{id:"5V.1",name:"5V",x:17,y:374.79,net:"5V",voltage:5},{id:"GND.4",name:"GND",x:17,y:397,net:"GND",voltage:0},{id:"GND.5",name:"GND",x:203,y:86,net:"GND",voltage:0},{id:"GPIO21",name:"TX",x:203,y:108.21,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"RX",x:203,y:130.43,net:"GPIO20",port:"ESP",bit:20},{id:"GND.6",name:"GND",x:203,y:152.64,net:"GND",voltage:0},{id:"GPIO9",name:"IO9",x:203,y:174.86,net:"GPIO9",port:"ESP",bit:9},{id:"GPIO8",name:"IO8",x:203,y:197.07,net:"GPIO8",port:"ESP",bit:8},{id:"GND.7",name:"GND",x:203,y:219.29,net:"GND",voltage:0},{id:"GPIO7",name:"IO7",x:203,y:241.5,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO6",name:"IO6",x:203,y:263.71,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO5",name:"IO5",x:203,y:285.93,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO4",name:"IO4",x:203,y:308.14,net:"GPIO4",port:"ESP",bit:4},{id:"GND.8",name:"GND",x:203,y:330.36,net:"GND",voltage:0},{id:"GPIO18",name:"IO18",x:203,y:352.57,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO19",name:"IO19",x:203,y:374.79,net:"GPIO19",port:"ESP",bit:19},{id:"GND.9",name:"GND",x:203,y:397,net:"GND",voltage:0}],esp32c6:[{id:"3V3",name:"3V3",x:17,y:86,net:"3V3",voltage:3.3},{id:"RST",name:"RST",x:17,y:106.73,net:"RST",connectable:!1},{id:"GPIO4",name:"4",x:17,y:127.47,net:"GPIO4",port:"ESP",bit:4},{id:"GPIO5",name:"5",x:17,y:148.2,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO6",name:"6",x:17,y:168.93,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO7",name:"7",x:17,y:189.67,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO0",name:"0",x:17,y:210.4,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO1",name:"1",x:17,y:231.13,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO8",name:"8",x:17,y:251.87,net:"GPIO8",port:"ESP",bit:8},{id:"GPIO10",name:"10",x:17,y:272.6,net:"GPIO10",port:"ESP",bit:10},{id:"GPIO11",name:"11",x:17,y:293.33,net:"GPIO11",port:"ESP",bit:11},{id:"GPIO2",name:"2",x:17,y:314.07,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO3",name:"3",x:17,y:334.8,net:"GPIO3",port:"ESP",bit:3},{id:"5V",name:"5V",x:17,y:355.53,net:"5V",voltage:5},{id:"GND",name:"G",x:17,y:376.27,net:"GND",voltage:0},{id:"NC",name:"NC",x:17,y:397,net:"NC",connectable:!1},{id:"GND.1",name:"G",x:203,y:86,net:"GND",voltage:0},{id:"GPIO16",name:"TX",x:203,y:106.73,net:"GPIO16",port:"ESP",bit:16},{id:"GPIO17",name:"RX",x:203,y:127.47,net:"GPIO17",port:"ESP",bit:17},{id:"GPIO15",name:"15",x:203,y:148.2,net:"GPIO15",port:"ESP",bit:15},{id:"GPIO23",name:"23",x:203,y:168.93,net:"GPIO23",port:"ESP",bit:23},{id:"GPIO22",name:"22",x:203,y:189.67,net:"GPIO22",port:"ESP",bit:22},{id:"GPIO21",name:"21",x:203,y:210.4,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"20",x:203,y:231.13,net:"GPIO20",port:"ESP",bit:20},{id:"GPIO19",name:"19",x:203,y:251.87,net:"GPIO19",port:"ESP",bit:19},{id:"GPIO18",name:"18",x:203,y:272.6,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO9",name:"9",x:203,y:293.33,net:"GPIO9",port:"ESP",bit:9},{id:"GND.2",name:"G",x:203,y:314.07,net:"GND",voltage:0},{id:"GPIO13",name:"13",x:203,y:334.8,net:"GPIO13",port:"ESP",bit:13},{id:"GPIO12",name:"12",x:203,y:355.53,net:"GPIO12",port:"ESP",bit:12},{id:"GND.3",name:"G",x:203,y:376.27,net:"GND",voltage:0},{id:"NC.1",name:"NC",x:203,y:397,net:"NC",connectable:!1}],esp32s3:[{id:"3V3",name:"3V3",x:17,y:86,net:"3V3",voltage:3.3},{id:"3V3.1",name:"3V3",x:17,y:100.81,net:"3V3",voltage:3.3},{id:"RST",name:"RST",x:17,y:115.62,net:"RST",connectable:!1},{id:"GPIO4",name:"4",x:17,y:130.43,net:"GPIO4",port:"ESP",bit:4},{id:"GPIO5",name:"5",x:17,y:145.24,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO6",name:"6",x:17,y:160.05,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO7",name:"7",x:17,y:174.86,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO15",name:"15",x:17,y:189.67,net:"GPIO15",port:"ESP",bit:15},{id:"GPIO16",name:"16",x:17,y:204.48,net:"GPIO16",port:"ESP",bit:16},{id:"GPIO17",name:"17",x:17,y:219.29,net:"GPIO17",port:"ESP",bit:17},{id:"GPIO18",name:"18",x:17,y:234.1,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO8",name:"8",x:17,y:248.9,net:"GPIO8",port:"ESP",bit:8},{id:"GPIO3",name:"3",x:17,y:263.71,net:"GPIO3",port:"ESP",bit:3},{id:"GPIO46",name:"46",x:17,y:278.52,net:"GPIO46",port:"ESP",bit:46},{id:"GPIO9",name:"9",x:17,y:293.33,net:"GPIO9",port:"ESP",bit:9},{id:"GPIO10",name:"10",x:17,y:308.14,net:"GPIO10",port:"ESP",bit:10},{id:"GPIO11",name:"11",x:17,y:322.95,net:"GPIO11",port:"ESP",bit:11},{id:"GPIO12",name:"12",x:17,y:337.76,net:"GPIO12",port:"ESP",bit:12},{id:"GPIO13",name:"13",x:17,y:352.57,net:"GPIO13",port:"ESP",bit:13},{id:"GPIO14",name:"14",x:17,y:367.38,net:"GPIO14",port:"ESP",bit:14},{id:"5V",name:"5V",x:17,y:382.19,net:"5V",voltage:5},{id:"GND",name:"G",x:17,y:397,net:"GND",voltage:0},{id:"GND.1",name:"G",x:203,y:86,net:"GND",voltage:0},{id:"GPIO43",name:"TX",x:203,y:100.81,net:"GPIO43",port:"ESP",bit:43},{id:"GPIO44",name:"RX",x:203,y:115.62,net:"GPIO44",port:"ESP",bit:44},{id:"GPIO1",name:"1",x:203,y:130.43,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO2",name:"2",x:203,y:145.24,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO42",name:"42",x:203,y:160.05,net:"GPIO42",port:"ESP",bit:42},{id:"GPIO41",name:"41",x:203,y:174.86,net:"GPIO41",port:"ESP",bit:41},{id:"GPIO40",name:"40",x:203,y:189.67,net:"GPIO40",port:"ESP",bit:40},{id:"GPIO39",name:"39",x:203,y:204.48,net:"GPIO39",port:"ESP",bit:39},{id:"GPIO38",name:"38",x:203,y:219.29,net:"GPIO38",port:"ESP",bit:38},{id:"GPIO37",name:"37",x:203,y:234.1,net:"GPIO37",port:"ESP",bit:37},{id:"GPIO36",name:"36",x:203,y:248.9,net:"GPIO36",port:"ESP",bit:36},{id:"GPIO35",name:"35",x:203,y:263.71,net:"GPIO35",port:"ESP",bit:35},{id:"GPIO0",name:"0",x:203,y:278.52,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO45",name:"45",x:203,y:293.33,net:"GPIO45",port:"ESP",bit:45},{id:"GPIO48",name:"48",x:203,y:308.14,net:"GPIO48",port:"ESP",bit:48},{id:"GPIO47",name:"47",x:203,y:322.95,net:"GPIO47",port:"ESP",bit:47},{id:"GPIO21",name:"21",x:203,y:337.76,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"20",x:203,y:352.57,net:"GPIO20",port:"ESP",bit:20},{id:"GPIO19",name:"19",x:203,y:367.38,net:"GPIO19",port:"ESP",bit:19},{id:"GND.2",name:"G",x:203,y:382.19,net:"GND",voltage:0},{id:"GND.3",name:"G",x:203,y:397,net:"GND",voltage:0}]};var ln=[{id:"GND",name:"GND",net:"GND",x:4.8,y:81.6,side:"left"},{id:"GND.1",name:"GND.1",net:"GND",x:62.4,y:100.8,side:"right"},{id:"GND.2",name:"GND.2",net:"GND",x:19.2,y:120,side:"bottom"},{id:"GND.3",name:"GND.3",net:"GND",x:9.6,y:120,side:"bottom"},{id:"RESET",name:"RESET",net:"RESET",x:4.8,y:91.2,side:"left"},{id:"RESET.1",name:"RESET.1",net:"RESET",x:62.4,y:91.2,side:"right"},{id:"D13",name:"D13",net:"D13",x:62.4,y:33.6,side:"right"},{id:"D12",name:"D12",net:"D12",x:62.4,y:24,side:"right"},{id:"D11",name:"D11",net:"D11",x:62.4,y:14.4,side:"right"},{id:"D1",name:"D1",net:"D1",x:4.8,y:110.4,side:"left"},{id:"D1.1",name:"D1.1",net:"D1",x:48,y:120,side:"bottom"},{id:"VCC",name:"VCC",net:"VCC",x:62.4,y:81.6,side:"right"},{id:"VCC.1",name:"VCC.1",net:"VCC",x:28.8,y:120,side:"bottom"},{id:"RAW",name:"RAW",net:"RAW",x:62.4,y:110.4,side:"right"},{id:"D9",name:"D9",net:"D9",x:4.8,y:4.8,side:"left"},{id:"D8",name:"D8",net:"D8",x:4.8,y:14.4,side:"left"},{id:"A5",name:"A5",net:"A5",x:51.36,y:77.28,side:"inner"},{id:"A4",name:"A4",net:"A4",x:51.36,y:67.68,side:"inner"},{id:"A3",name:"A3",net:"A3",x:62.4,y:72,side:"right"},{id:"A2",name:"A2",net:"A2",x:62.4,y:62.4,side:"right"},{id:"A1",name:"A1",net:"A1",x:62.4,y:52.8,side:"right"},{id:"A0",name:"A0",net:"A0",x:62.4,y:43.2,side:"right"},{id:"D2",name:"D2",net:"D2",x:4.8,y:72,side:"left"},{id:"D3",name:"D3",net:"D3",x:4.8,y:62.4,side:"left"},{id:"D4",name:"D4",net:"D4",x:4.8,y:52.8,side:"left"},{id:"D5",name:"D5",net:"D5",x:4.8,y:43.2,side:"left"},{id:"D6",name:"D6",net:"D6",x:4.8,y:33.6,side:"left"},{id:"D7",name:"D7",net:"D7",x:4.8,y:24,side:"left"},{id:"D10",name:"D10",net:"D10",x:62.4,y:4.8,side:"right"},{id:"DTR",name:"DTR",net:"DTR",x:57.6,y:120,side:"bottom"},{id:"D0",name:"D0",net:"D0",x:38.4,y:120,side:"bottom"},{id:"D0.1",name:"D0.1",net:"D0",x:4.8,y:100.8,side:"left"},{id:"A6",name:"A6",net:"A6",x:51.36,y:28.32,side:"inner"},{id:"A7",name:"A7",net:"A7",x:51.36,y:37.92,side:"inner"}];var Ue={id:"uno",name:"Arduino Uno R3",width:274.31811,height:201.6,asset:"arduino-uno-r3.svg",pins:[{id:"SCL",name:"SCL",x:86.766614,y:9.626457,side:"top",net:"A5",analog:5,digital:19,port:"C",bit:5},{id:"SDA",name:"SDA",x:96.366614,y:9.626457,side:"top",net:"A4",analog:4,digital:18,port:"C",bit:4},{id:"AREF",name:"AREF",x:105.966614,y:9.626457,side:"top",net:"AREF"},{id:"GND",name:"GND",x:115.566614,y:9.626457,side:"top",net:"GND",voltage:0},{id:"D13",name:"D13",x:125.166614,y:9.626457,side:"top",net:"D13",digital:13,pwm:!1,port:"B",bit:5},{id:"D12",name:"D12",x:134.766614,y:9.626457,side:"top",net:"D12",digital:12,pwm:!1,port:"B",bit:4},{id:"D11",name:"D11",x:144.366614,y:9.626457,side:"top",net:"D11",digital:11,pwm:!0,port:"B",bit:3},{id:"D10",name:"D10",x:153.966614,y:9.626457,side:"top",net:"D10",digital:10,pwm:!0,port:"B",bit:2},{id:"D9",name:"D9",x:163.566614,y:9.626457,side:"top",net:"D9",digital:9,pwm:!0,port:"B",bit:1},{id:"D8",name:"D8",x:173.166614,y:9.626457,side:"top",net:"D8",digital:8,pwm:!1,port:"B",bit:0},{id:"D7",name:"D7",x:188.526614,y:9.626457,side:"top",net:"D7",digital:7,pwm:!1,port:"D",bit:7},{id:"D6",name:"D6",x:198.126614,y:9.626457,side:"top",net:"D6",digital:6,pwm:!0,port:"D",bit:6},{id:"D5",name:"D5",x:207.726614,y:9.626457,side:"top",net:"D5",digital:5,pwm:!0,port:"D",bit:5},{id:"D4",name:"D4",x:217.326614,y:9.626457,side:"top",net:"D4",digital:4,pwm:!1,port:"D",bit:4},{id:"D3",name:"D3",x:226.926614,y:9.626457,side:"top",net:"D3",digital:3,pwm:!0,port:"D",bit:3},{id:"D2",name:"D2",x:236.526614,y:9.626457,side:"top",net:"D2",digital:2,pwm:!1,port:"D",bit:2},{id:"D1",name:"D1",x:246.126614,y:9.626457,side:"top",net:"D1",digital:1,pwm:!1,port:"D",bit:1},{id:"D0",name:"D0",x:255.726614,y:9.626457,side:"top",net:"D0",digital:0,pwm:!1,port:"D",bit:0},{id:"NC",name:"NC",x:121.326614,y:192.026457,side:"bottom",net:"NC",connectable:!1},{id:"IOREF",name:"IOREF",x:130.926614,y:192.026457,side:"bottom",net:"IOREF"},{id:"RESET",name:"RESET",x:140.526614,y:192.026457,side:"bottom",net:"RESET"},{id:"3.3V",name:"3.3V",x:150.126614,y:192.026457,side:"bottom",net:"3.3V",voltage:3.3},{id:"5V",name:"5V",x:159.726614,y:192.026457,side:"bottom",net:"5V",voltage:5},{id:"GND.1",name:"GND.1",x:169.326614,y:192.026457,side:"bottom",net:"GND",voltage:0},{id:"GND.2",name:"GND.2",x:178.926614,y:192.026457,side:"bottom",net:"GND",voltage:0},{id:"VIN",name:"VIN",x:188.526614,y:192.026457,side:"bottom",net:"VIN"},{id:"A0",name:"A0",x:207.726614,y:192.026457,side:"bottom",net:"A0",analog:0,digital:14,port:"C",bit:0},{id:"A1",name:"A1",x:217.326614,y:192.026457,side:"bottom",net:"A1",analog:1,digital:15,port:"C",bit:1},{id:"A2",name:"A2",x:226.926614,y:192.026457,side:"bottom",net:"A2",analog:2,digital:16,port:"C",bit:2},{id:"A3",name:"A3",x:236.526614,y:192.026457,side:"bottom",net:"A3",analog:3,digital:17,port:"C",bit:3},{id:"A4",name:"A4",x:246.126614,y:192.026457,side:"bottom",net:"A4",analog:4,digital:18,port:"C",bit:4},{id:"A5",name:"A5",x:255.726614,y:192.026457,side:"bottom",net:"A5",analog:5,digital:19,port:"C",bit:5}],leds:{power:{x:236.5984251968504,y:63.34488188976379},D13:{x:121.58740157480317,y:46.26141732283465},TX:{x:120.4724409448819,y:63.30708661417324},RX:{x:120.4724409448819,y:72.00000000000001}},source:"https://github.com/wokwi/wokwi-elements/blob/main/src/arduino-uno-element.ts",license:"MIT",copyright:"2020 Uri Shaked",verification:"https://content.arduino.cc/assets/Pinout-UNOrev3_latest.pdf"};var Ze=n=>{if(/^D\d+$/.test(n)){let e=+n.slice(1);return{net:n,digital:e,port:e<8?"D":"B",bit:e<8?e:e-8,pwm:[3,5,6,9,10,11].includes(e)}}if(/^A[0-7]$/.test(n)){let e=+n.slice(1);return{net:n,analog:e,...e<6?{digital:14+e,port:"C",bit:e}:{analogOnly:!0}}}return n.startsWith("GND")?{net:"GND",voltage:0}:n.startsWith("RESET")?{net:"RESET"}:{net:n,...n==="5V"||n==="VCC"?{voltage:5}:n==="3.3V"?{voltage:3.3}:{}}},Cn=(n,e,_,E)=>n.map((d,i)=>({id:d,name:d,x:e,y:_+i*9.6,side:E,...Ze(d)})),jn={id:"nano",name:"Arduino Nano (classic)",width:68.03,height:170.08,asset:"arduino-nano.svg",pins:[...Cn(["D1","D0","RESET","GND","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12"],5.7,18,"left"),...Cn(["VIN","GND.1","RESET.1","5V","A0","A1","A2","A3","A4","A5","A6","A7","AREF","3.3V","D13"],62.33,18,"right")],leds:{power:{x:34,y:97},D13:{x:34,y:105}},source:"https://docs.arduino.cc/resources/pinouts/A000005-full-pinout.pdf"},$n={id:"pro-mini",name:"Arduino Pro Mini (5 V / 16 MHz)",width:68.03,height:124.72,asset:"arduino-pro-mini.svg",pins:ln.map(n=>({...n,...Ze(n.net)})),leds:{power:{x:24,y:91},D13:{x:46,y:91}},source:"https://github.com/sparkfun/Arduino_Pro_Mini_328/blob/master/Hardware/Arduino-Pro-Mini.brd"},qn=[["E",0],["E",1],["E",4],["E",5],["G",5],["E",3],["H",3],["H",4],["H",5],["H",6],["B",4],["B",5],["B",6],["B",7],["J",1],["J",0],["H",1],["H",0],["D",3],["D",2],["D",1],["D",0],...Array.from({length:8},(n,e)=>["A",e]),...Array.from({length:8},(n,e)=>["C",7-e]),["D",7],["G",2],["G",1],["G",0],...Array.from({length:8},(n,e)=>["L",7-e]),["B",3],["B",2],["B",1],["B",0]],Ne=(n,e,_,E)=>{let d={SDA:"D20",SCL:"D21",IOREF:"5V"}[n],i=d||n,t={id:n,name:n,x:e,y:_,side:E,...Ze(n),net:i,...n==="IOREF"?{voltage:5}:{}};if(/^D\d+$/.test(i)){let s=+i.slice(1),[T,o]=qn[s];t={...t,digital:s,port:T,bit:o,pwm:s>=2&&s<=13||s>=44&&s<=46}}else if(/^A\d+$/.test(i)){let s=+i.slice(1);t={...t,analogOnly:!1,analog:s,digital:54+s,port:s<8?"F":"K",bit:s%8}}return t},Jn={id:"mega",name:"Arduino Mega 2560 R3",width:392,height:201.6,asset:"arduino-mega2560.svg",pins:[...Ue.pins.filter(n=>n.side==="top").map(n=>Ne(n.id,n.x,n.y,n.side)),...Array.from({length:8},(n,e)=>Ne("D"+(14+e),275+e*9.6,9.626457,"top")),...Ue.pins.filter(n=>n.side==="bottom"&&!/^A/.test(n.id)).map(n=>({...Ne(n.id,n.x,n.y,n.side),...n.connectable===!1?{connectable:!1}:{}})),...Array.from({length:16},(n,e)=>Ne("A"+e,207.726614+(e<8?e*9.6:86.4+(e-8)*9.6),192.026457,"bottom")),...Array.from({length:32},(n,e)=>Ne("D"+(22+e),e%2?381.5:371.9,33.626457+Math.floor(e/2)*9.6,"right")),...[["5V.1",371.9,24.026457],["5V.2",381.5,24.026457],["GND.3",371.9,187.226457],["GND.4",381.5,187.226457]].map(([n,e,_])=>({...Ne(n,e,_,"right"),net:n.startsWith("5V")?"5V":"GND",voltage:n.startsWith("5V")?5:0}))],leds:{power:{x:251,y:54},D13:{x:125,y:45},TX:{x:110,y:58},RX:{x:110,y:67}},source:"https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf"},An=Ue.pins.filter(n=>!["SCL","SDA","NC","IOREF"].includes(n.id)).map(n=>({...n})),Zn={id:"duemilanove",name:"Arduino Duemilanove (ATmega328P)",width:274.31811,height:201.6,asset:"arduino-duemilanove.svg",pins:An,leds:{power:{x:234,y:64},D13:{x:125,y:46},TX:{x:100,y:67},RX:{x:100,y:76}},source:"https://docs.arduino.cc/retired/boards/arduino-duemilanove/"},e_={id:"pro",name:"Arduino Pro (5 V / 16 MHz)",width:274.31811,height:201.6,asset:"arduino-pro.svg",pins:An,leds:{power:{x:225,y:100},D13:{x:130,y:49}},source:"https://docs.arduino.cc/retired/boards/arduino-pro/"},De=n=>({...n,hz:16e6,mcu:"ATmega328P",flashSize:32768,analogChannels:6,flashLimit:30720,ram:2048}),j_={...ie,...Rn,...Se,[Je.id]:Je,uno:{...De(Ue),flashLimit:32256},nano:{...De(jn),analogChannels:8},"pro-mini":{...De($n),analogChannels:8},mega:{...Jn,hz:16e6,mcu:"ATmega2560",flashSize:262144,analogChannels:16,flashLimit:253952,ram:8192},duemilanove:De(Zn),pro:De(e_),...Object.fromEntries(Object.entries($e).map(([n,e])=>[n,{...e,id:n,name:e.title||e.name+" "+e.board,mcu:e.name,architecture:"esp32",ioVoltage:3.3,logicHigh:2.475,supplyPin:"3V3",width:e.width||220,height:e.height||460,pins:On[n],flashSize:e.flash,flashLimit:e.flash,ram:e.ram??(n==="esp32c3"?240*1024:n==="esp32c6"?432*1024:400*1024),leds:{}}]))};var n_=[{id:"software-serial",name:"SoftwareSerial",version:"1.0",dependencies:[],roots:[],includes:["/software-serial"],objects:[],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"LGPL-2.1-or-later",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["SoftwareSerial.h"]},{id:"wire",name:"Wire",version:"1.0",dependencies:[],roots:["/arduino/libraries/Wire/src"],includes:["/arduino/libraries/Wire/src","/arduino/libraries/Wire/src/utility"],objects:["lib_Wire.o","lib_twi.o"],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"LGPL-2.1-or-later",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["Wire.h"]},{id:"spi",name:"SPI",version:"1.0",dependencies:[],roots:["/arduino/libraries/SPI/src"],includes:["/arduino/libraries/SPI/src"],objects:["lib_SPI.o"],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"GPL-2.0 / LGPL-2.1",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["SPI.h"]},{id:"busio",name:"Adafruit BusIO",version:"1.17.4",dependencies:["wire","spi"],roots:["/libraries/Adafruit_BusIO"],includes:["/libraries/Adafruit_BusIO"],objects:["lib_BusIO_Register.o","lib_I2CDevice.o","lib_SPIDevice.o"],source:"./notices/Adafruit-BusIO-1.17.4-source.zip",license:"MIT",licenseUrl:"./notices/ADAFRUIT-BUSIO-LICENSE.txt",headers:["Adafruit_I2CDevice.h","Adafruit_SPIDevice.h","Adafruit_BusIO_Register.h"]},{id:"gfx",name:"Adafruit GFX",version:"1.12.6",dependencies:["busio"],roots:["/libraries/Adafruit_GFX_Library"],includes:["/libraries/Adafruit_GFX_Library"],objects:["lib_GFX.o"],source:"./notices/Adafruit-GFX-1.12.6-source.zip",license:"BSD",licenseUrl:"./notices/ADAFRUIT-GFX-LICENSE.txt",headers:["Adafruit_GFX.h","gfxfont.h"]},{id:"ssd1306",name:"Adafruit SSD1306",version:"2.5.16",dependencies:["gfx","wire","spi"],roots:["/libraries/Adafruit_SSD1306"],includes:["/libraries/Adafruit_SSD1306"],objects:["lib_SSD1306.o"],source:"./notices/Adafruit-SSD1306-2.5.16-source.zip",license:"BSD",licenseUrl:"./notices/ADAFRUIT-SSD1306-LICENSE.txt",headers:["Adafruit_SSD1306.h"]}],q_=new Map(n_.map(n=>[n.id,n]));function en(n,{language:e="arduino",build:_=!1}={}){let E=e==="c"?"main.c":e==="cpp"?"main.cpp":e==="micropython"?"main.py":"sketch.ino";if(!Array.isArray(n)||!n.length||n.length>16)throw Error("1\u201316 kaynak dosyas\u0131 desteklenir.");let d=0,i=new Set,t=n.map(s=>{if(!s||typeof s.name!="string"||s.name.length>100||!(/^([A-Za-z_][\w-]*\/)*[A-Za-z_][\w.-]*\.(ino|cpp|c|h|hpp|py)$/.test(s.name)||_&&e==="c"&&/^([A-Za-z_][\w-]*\/)*(CMakeLists\.txt|[A-Za-z_][\w.-]*\.cmake|[A-Za-z_][\w.-]*\.h\.in)$/.test(s.name))||s.name.split("/").some(T=>T==="."||T==="..")||i.has(s.name.toLowerCase()))throw Error("Dosya ad\u0131 ge\xE7ersiz veya yineleniyor.");if(["c","cpp"].includes(e)&&["cf_hal.h","stdint.h","stdio.h","stddef.h","stdbool.h",...e==="cpp"?["stdlib.h","string.h"]:[]].includes(s.name))throw Error("Bu ba\u015Fl\u0131k derleyici taraf\u0131ndan sa\u011Flan\u0131r: "+s.name);if(e==="micropython"&&s.name==="machine.py")throw Error("machine.py devre modeli taraf\u0131ndan sa\u011Flan\u0131r.");if(i.add(s.name.toLowerCase()),typeof s.content!="string")throw Error("Kaynak kod ge\xE7ersiz.");return d+=new TextEncoder().encode(s.content).length,{name:s.name,content:s.content}});if(d>1e5)throw Error("Kaynak dosyalar\u0131 toplam 100 KB s\u0131n\u0131r\u0131n\u0131 a\u015F\u0131yor.");if(!t.some(s=>s.name===E)||t.filter(s=>s.name.endsWith(".ino")).length!==(e==="arduino"?1:0)||t.some(s=>e==="micropython"?!s.name.endsWith(".py"):e==="c"?/\.(ino|cpp|py)$/.test(s.name):e==="cpp"?/\.(ino|py)$/.test(s.name):/\.(c|py)$/.test(s.name)))throw Error("Ana kaynak "+E+" olmal\u0131; ek dosyalar se\xE7ilen dile uygun olmal\u0131.");return t}var Ri=new TextEncoder;var __={esp32c3:{chip:"esp32c3",id:5,text:1077411840,data:1070137344,stack:1070458640,gpio:1610629120,inputOffset:60,matrix:1364,signal:128,mux:1610649600,uart:1610612736,hz:16e7,maxPin:21,ram:240*1024},esp32c6:{chip:"esp32c6",id:13,text:1082130432,data:1082195968,stack:1082650624,gpio:1611206656,inputOffset:60,matrix:1364,signal:128,mux:1611202560,uart:1610612736,hz:16e7,maxPin:30,ram:432*1024},esp32h2:{chip:"esp32h2",id:16,text:1082130432,data:1082195968,stack:1082454016,gpio:1611206656,inputOffset:60,matrix:1364,signal:128,mux:1611202560,uart:1610612736,hz:96e6,maxPin:27,ram:240*1024},esp32c5:{chip:"esp32c5",id:23,text:1082130432,data:1082195968,stack:1082519552,gpio:1611206656,inputOffset:100,enable:52,enableHigh:64,matrix:2772,signal:256,oeBit:10,mux:1611202560,muxOffset:0,uart:1610612736,hz:24e7,maxPin:28,ram:304*1024,imageOffset:8192},esp32p4:{chip:"esp32p4",id:18,text:1341128704,data:1341194240,stack:1341779968,gpio:1343094784,inputOffset:60,matrix:1368,signal:256,oeBit:10,mux:1343098880,uart:1343004672,hz:4e8,maxPin:54,ram:560*1024,imageOffset:8192},esp32s3:{chip:"esp32s3",id:9,text:1077411840,data:1070170112,stack:1070592e3,gpio:1610629120,inputOffset:60,matrix:1364,signal:256,mux:1610649600,uart:1610612736,hz:24e7,maxPin:48,ram:400*1024,xtensa:!0}},ri=__.esp32c3;async function nn(n,e,_){let E="",d=new Ae(T=>{E+=new TextDecoder().decode(T)}),i=new ze(_,[],[new ae(new J([])),d,d,new Ce(".",e)],{debug:!1}),t=await WebAssembly.instantiate(n,{wasi_snapshot_preview1:i.wasiImport}),s=i.start(t);if(s)throw Error(E||`Clang \xE7\u0131k\u0131\u015F kodu ${s}`);return E}var Un=`#pragma once
+`};var te={"nrf52840-supermini":{id:"nrf52840-supermini",architecture:"nrf52",family:"nrf52840",name:"Pro Micro nRF52840 \xB7 SuperMini",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:92,height:146,asset:"nrf52840-supermini.svg",pins:[{id:"GND",net:"GND",name:"GND",x:17.256,y:18,side:"left",voltage:0},{id:"P0.06",net:"P0.06",name:"P0.06",x:17.256,y:27.6,side:"left",port:"0",bit:6,digital:6},{id:"P0.08",net:"P0.08",name:"P0.08",x:17.256,y:37.2,side:"left",port:"0",bit:8,digital:8},{id:"GND.1",net:"GND",name:"GND.1",x:17.256,y:46.8,side:"left",voltage:0},{id:"GND.2",net:"GND",name:"GND.2",x:17.256,y:56.4,side:"left",voltage:0},{id:"P0.17",net:"P0.17",name:"P0.17",x:17.256,y:66,side:"left",port:"0",bit:17,digital:17},{id:"P0.20",net:"P0.20",name:"P0.20",x:17.256,y:75.6,side:"left",port:"0",bit:20,digital:20},{id:"P0.22",net:"P0.22",name:"P0.22",x:17.256,y:85.2,side:"left",port:"0",bit:22,digital:22},{id:"P0.24",net:"P0.24",name:"P0.24",x:17.256,y:94.8,side:"left",port:"0",bit:24,digital:24},{id:"P1.00",net:"P1.00",name:"P1.00",x:17.256,y:104.39999999999999,side:"left",port:"1",bit:0,digital:32},{id:"P0.11",net:"P0.11",name:"P0.11",x:17.256,y:114,side:"left",port:"0",bit:11,digital:11},{id:"P1.04",net:"P1.04",name:"P1.04",x:17.256,y:123.6,side:"left",port:"1",bit:4,digital:36},{id:"P1.06",net:"P1.06",name:"P1.06",x:17.256,y:133.2,side:"left",port:"1",bit:6,digital:38},{id:"BAT+",net:"BAT+",name:"BAT+",x:74.744,y:18,side:"right"},{id:"RAW",net:"RAW",name:"RAW",x:74.744,y:27.6,side:"right"},{id:"GND.3",net:"GND",name:"GND.3",x:74.744,y:37.2,side:"right",voltage:0},{id:"RESET",net:"RESET",name:"RESET",x:74.744,y:46.8,side:"right"},{id:"3V3",net:"3V3",name:"3V3",x:74.744,y:56.4,side:"right",voltage:3.3},{id:"P0.31",net:"P0.31",name:"P0.31",x:74.744,y:66,side:"right",port:"0",bit:31,digital:31,analog:7},{id:"P0.29",net:"P0.29",name:"P0.29",x:74.744,y:75.6,side:"right",port:"0",bit:29,digital:29,analog:5},{id:"P0.02",net:"P0.02",name:"P0.02",x:74.744,y:85.2,side:"right",port:"0",bit:2,digital:2,analog:0},{id:"P1.15",net:"P1.15",name:"P1.15",x:74.744,y:94.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.13",net:"P1.13",name:"P1.13",x:74.744,y:104.39999999999999,side:"right",port:"1",bit:13,digital:45},{id:"P1.11",net:"P1.11",name:"P1.11",x:74.744,y:114,side:"right",port:"1",bit:11,digital:43},{id:"P0.10",net:"P0.10",name:"P0.10",x:74.744,y:123.6,side:"right",port:"0",bit:10,digital:10},{id:"P0.09",net:"P0.09",name:"P0.09",x:74.744,y:133.2,side:"right",port:"0",bit:9,digital:9},{id:"P0.15",net:"P0.15",name:"P0.15 \xB7 dahili LED",x:33,y:51,port:"0",bit:15,connectable:!1},{id:"P1.07",net:"P1.07",name:"P1.07",x:28.53,y:121.591,side:"bottom",port:"1",bit:7,digital:39},{id:"P1.02",net:"P1.02",name:"P1.02",x:38.13,y:121.591,side:"bottom",port:"1",bit:2,digital:34},{id:"P1.01",net:"P1.01",name:"P1.01",x:47.842,y:121.591,side:"bottom",port:"1",bit:1,digital:33}],gpio:["P0.06","P0.08","P0.17","P0.20","P0.22","P0.24","P1.00","P0.11","P1.04","P1.06","P0.31","P0.29","P0.02","P1.15","P1.13","P1.11","P0.10","P0.09","P0.15","P1.07","P1.02","P1.01"],ledPin:"P0.15",leds:{"P0.15":{x:45.498,y:132.865,color:"#529bff"}},ledChannels:[{pin:"P0.15",color:"blue",activeLow:!1}],txPin:6,rxPin:8,sdaPin:17,sclPin:20,sckPin:45,mosiPin:47,misoPin:43,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"sasodoma tersine \xE7\u0131kar\u0131lm\u0131\u015F k\u0131rm\u0131z\u0131 SuperMini profili",boardSource:"https://github.com/sasodoma/nrf52840-promicro",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"nice-nano-v2":{id:"nice-nano-v2",architecture:"nrf52",family:"nrf52840",name:"nice!nano v2",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:92,height:146,asset:"nice-nano-v2.svg",pins:[{id:"GND",net:"GND",name:"GND",x:6,y:18,side:"left",voltage:0},{id:"P0.06",net:"P0.06",name:"P0.06",x:6,y:27.6,side:"left",port:"0",bit:6,digital:6},{id:"P0.08",net:"P0.08",name:"P0.08",x:6,y:37.2,side:"left",port:"0",bit:8,digital:8},{id:"GND.1",net:"GND",name:"GND.1",x:6,y:46.8,side:"left",voltage:0},{id:"GND.2",net:"GND",name:"GND.2",x:6,y:56.4,side:"left",voltage:0},{id:"P0.17",net:"P0.17",name:"P0.17",x:6,y:66,side:"left",port:"0",bit:17,digital:17},{id:"P0.20",net:"P0.20",name:"P0.20",x:6,y:75.6,side:"left",port:"0",bit:20,digital:20},{id:"P0.22",net:"P0.22",name:"P0.22",x:6,y:85.2,side:"left",port:"0",bit:22,digital:22},{id:"P0.24",net:"P0.24",name:"P0.24",x:6,y:94.8,side:"left",port:"0",bit:24,digital:24},{id:"P1.00",net:"P1.00",name:"P1.00",x:6,y:104.39999999999999,side:"left",port:"1",bit:0,digital:32},{id:"P0.11",net:"P0.11",name:"P0.11",x:6,y:114,side:"left",port:"0",bit:11,digital:11},{id:"P1.04",net:"P1.04",name:"P1.04",x:6,y:123.6,side:"left",port:"1",bit:4,digital:36},{id:"P1.06",net:"P1.06",name:"P1.06",x:6,y:133.2,side:"left",port:"1",bit:6,digital:38},{id:"BAT+",net:"BAT+",name:"BAT+",x:86,y:18,side:"right"},{id:"RAW",net:"RAW",name:"BAT+ / RAW",x:86,y:27.6,side:"right"},{id:"GND.3",net:"GND",name:"GND.3",x:86,y:37.2,side:"right",voltage:0},{id:"RESET",net:"RESET",name:"RESET",x:86,y:46.8,side:"right"},{id:"3V3",net:"3V3",name:"3V3",x:86,y:56.4,side:"right",voltage:3.3},{id:"P0.31",net:"P0.31",name:"P0.31",x:86,y:66,side:"right",port:"0",bit:31,digital:31,analog:7},{id:"P0.29",net:"P0.29",name:"P0.29",x:86,y:75.6,side:"right",port:"0",bit:29,digital:29,analog:5},{id:"P0.02",net:"P0.02",name:"P0.02",x:86,y:85.2,side:"right",port:"0",bit:2,digital:2,analog:0},{id:"P1.15",net:"P1.15",name:"P1.15",x:86,y:94.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.13",net:"P1.13",name:"P1.13",x:86,y:104.39999999999999,side:"right",port:"1",bit:13,digital:45},{id:"P1.11",net:"P1.11",name:"P1.11",x:86,y:114,side:"right",port:"1",bit:11,digital:43},{id:"P0.10",net:"P0.10",name:"P0.10",x:86,y:123.6,side:"right",port:"0",bit:10,digital:10},{id:"P0.09",net:"P0.09",name:"P0.09",x:86,y:133.2,side:"right",port:"0",bit:9,digital:9},{id:"P0.15",net:"P0.15",name:"P0.15 \xB7 dahili LED",x:33,y:51,port:"0",bit:15,connectable:!1},{id:"P1.07",net:"P1.07",name:"P1.07",x:30,y:124,side:"bottom",port:"1",bit:7,digital:39},{id:"P1.02",net:"P1.02",name:"P1.02",x:46,y:124,side:"bottom",port:"1",bit:2,digital:34},{id:"P1.01",net:"P1.01",name:"P1.01",x:62,y:124,side:"bottom",port:"1",bit:1,digital:33}],gpio:["P0.06","P0.08","P0.17","P0.20","P0.22","P0.24","P1.00","P0.11","P1.04","P1.06","P0.31","P0.29","P0.02","P1.15","P1.13","P1.11","P0.10","P0.09","P0.15","P1.07","P1.02","P1.01"],ledPin:"P0.15",leds:{"P0.15":{x:46,y:137,color:"#529bff"}},ledChannels:[{pin:"P0.15",color:"blue",activeLow:!1}],txPin:6,rxPin:8,sdaPin:17,sclPin:20,sckPin:45,mosiPin:47,misoPin:43,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"nice!nano v2 \u015Fema profili",boardSource:"https://nicekeyboards.com/docs/nice-nano/pinout-schematic/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"xiao-nrf52840":{id:"xiao-nrf52840",architecture:"nrf52",family:"nrf52840",name:"Seeed XIAO nRF52840",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:68,height:86,asset:"xiao-nrf52840.svg",pins:[{id:"P0.02",net:"P0.02",name:"D0 / P0.02",x:6,y:18,side:"left",port:"0",bit:2,digital:2,analog:0},{id:"P0.03",net:"P0.03",name:"D1 / P0.03",x:6,y:27.6,side:"left",port:"0",bit:3,digital:3,analog:1},{id:"P0.28",net:"P0.28",name:"D2 / P0.28",x:6,y:37.2,side:"left",port:"0",bit:28,digital:28,analog:4},{id:"P0.29",net:"P0.29",name:"D3 / P0.29",x:6,y:46.8,side:"left",port:"0",bit:29,digital:29,analog:5},{id:"P0.04",net:"P0.04",name:"D4 / P0.04",x:6,y:56.4,side:"left",port:"0",bit:4,digital:4,analog:2},{id:"P0.05",net:"P0.05",name:"D5 / P0.05",x:6,y:66,side:"left",port:"0",bit:5,digital:5,analog:3},{id:"P1.11",net:"P1.11",name:"D6 / P1.11",x:6,y:75.6,side:"left",port:"1",bit:11,digital:43},{id:"5V",net:"5V",name:"5V",x:62,y:18,side:"right",voltage:5},{id:"GND",net:"GND",name:"GND",x:62,y:27.6,side:"right",voltage:0},{id:"3V3",net:"3V3",name:"3V3",x:62,y:37.2,side:"right",voltage:3.3},{id:"P1.15",net:"P1.15",name:"D10 / P1.15",x:62,y:46.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.14",net:"P1.14",name:"D9 / P1.14",x:62,y:56.4,side:"right",port:"1",bit:14,digital:46},{id:"P1.13",net:"P1.13",name:"D8 / P1.13",x:62,y:66,side:"right",port:"1",bit:13,digital:45},{id:"P1.12",net:"P1.12",name:"D7 / P1.12",x:62,y:75.6,side:"right",port:"1",bit:12,digital:44},{id:"P0.26",net:"P0.26",name:"P0.26 \xB7 dahili LED",x:33,y:51,port:"0",bit:26,connectable:!1},{id:"P0.30",net:"P0.30",name:"P0.30 \xB7 dahili LED",x:33,y:51,port:"0",bit:30,connectable:!1},{id:"P0.06",net:"P0.06",name:"P0.06 \xB7 dahili LED",x:33,y:51,port:"0",bit:6,connectable:!1}],gpio:["P0.02","P0.03","P0.28","P0.29","P0.04","P0.05","P1.11","P1.15","P1.14","P1.13","P1.12","P0.26","P0.30","P0.06"],ledPin:"P0.26",leds:{"P0.26":{x:54,y:11,color:"#ff3939"},"P0.30":{x:55,y:11,color:"#3be37a"},"P0.06":{x:56,y:11,color:"#529bff"}},ledChannels:[{pin:"P0.26",color:"red",activeLow:!0},{pin:"P0.30",color:"green",activeLow:!0},{pin:"P0.06",color:"blue",activeLow:!0}],txPin:43,rxPin:44,sdaPin:4,sclPin:5,sckPin:45,mosiPin:47,misoPin:46,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"XIAO v1.1 \u015Fema profili",boardSource:"https://wiki.seeedstudio.com/XIAO_BLE/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."},"xiao-nrf52840-sense":{id:"xiao-nrf52840-sense",architecture:"nrf52",family:"nrf52840",name:"Seeed XIAO nRF52840 Sense",mcu:"nRF52840",cpu:"cortex-m4f",hz:64e6,flashSize:1048576,flashLimit:1048576,ram:262144,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:68,height:86,asset:"xiao-nrf52840-sense.svg",pins:[{id:"P0.02",net:"P0.02",name:"D0 / P0.02",x:6,y:18,side:"left",port:"0",bit:2,digital:2,analog:0},{id:"P0.03",net:"P0.03",name:"D1 / P0.03",x:6,y:27.6,side:"left",port:"0",bit:3,digital:3,analog:1},{id:"P0.28",net:"P0.28",name:"D2 / P0.28",x:6,y:37.2,side:"left",port:"0",bit:28,digital:28,analog:4},{id:"P0.29",net:"P0.29",name:"D3 / P0.29",x:6,y:46.8,side:"left",port:"0",bit:29,digital:29,analog:5},{id:"P0.04",net:"P0.04",name:"D4 / P0.04",x:6,y:56.4,side:"left",port:"0",bit:4,digital:4,analog:2},{id:"P0.05",net:"P0.05",name:"D5 / P0.05",x:6,y:66,side:"left",port:"0",bit:5,digital:5,analog:3},{id:"P1.11",net:"P1.11",name:"D6 / P1.11",x:6,y:75.6,side:"left",port:"1",bit:11,digital:43},{id:"5V",net:"5V",name:"5V",x:62,y:18,side:"right",voltage:5},{id:"GND",net:"GND",name:"GND",x:62,y:27.6,side:"right",voltage:0},{id:"3V3",net:"3V3",name:"3V3",x:62,y:37.2,side:"right",voltage:3.3},{id:"P1.15",net:"P1.15",name:"D10 / P1.15",x:62,y:46.8,side:"right",port:"1",bit:15,digital:47},{id:"P1.14",net:"P1.14",name:"D9 / P1.14",x:62,y:56.4,side:"right",port:"1",bit:14,digital:46},{id:"P1.13",net:"P1.13",name:"D8 / P1.13",x:62,y:66,side:"right",port:"1",bit:13,digital:45},{id:"P1.12",net:"P1.12",name:"D7 / P1.12",x:62,y:75.6,side:"right",port:"1",bit:12,digital:44},{id:"P0.26",net:"P0.26",name:"P0.26 \xB7 dahili LED",x:33,y:51,port:"0",bit:26,connectable:!1},{id:"P0.30",net:"P0.30",name:"P0.30 \xB7 dahili LED",x:33,y:51,port:"0",bit:30,connectable:!1},{id:"P0.06",net:"P0.06",name:"P0.06 \xB7 dahili LED",x:33,y:51,port:"0",bit:6,connectable:!1}],gpio:["P0.02","P0.03","P0.28","P0.29","P0.04","P0.05","P1.11","P1.15","P1.14","P1.13","P1.12","P0.26","P0.30","P0.06"],ledPin:"P0.26",leds:{"P0.26":{x:54,y:11,color:"#ff3939"},"P0.30":{x:55,y:11,color:"#3be37a"},"P0.06":{x:56,y:11,color:"#529bff"}},ledChannels:[{pin:"P0.26",color:"red",activeLow:!0},{pin:"P0.30",color:"green",activeLow:!0},{pin:"P0.06",color:"blue",activeLow:!0}],txPin:43,rxPin:44,sdaPin:4,sclPin:5,sckPin:45,mosiPin:47,misoPin:46,uart:"UARTE0 / UART0 \xB7 3.3 V",revision:"XIAO v1.1 \u015Fema profili",boardSource:"https://wiki.seeedstudio.com/XIAO_BLE/",source:"https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html",reserved:"C17 e\u011Fitim modeli: GPIO, timer, ADC, PWM ve s\u0131n\u0131rl\u0131 EasyDMA protokolleri. Sanal USB/BLE klavye C API desteklenir; SoftDevice/ZMK, ger\xE7ek RF/USB, batarya/\u015Farj ve Sense dahili IMU/PDM desteklenmez. T\xFCm klonlarla e\u015Fde\u011Fer de\u011Fildir."}};var kn=[["J1",9.6,["3V3","PB5","PB0","PB1","PE4","PE5","PB4","PA5","PA6","PA7"]],["J3",19.2,["5V","GND","PD0","PD1","PD2","PD3","PE1","PE2","PE3","PF1"]],["J4",172.8,["PF2","PF3","PB3","PC4","PC5","PC6","PC7","PD6","PD7","PF4"]],["J2",182.4,["GND.1","PB2","PE0","PF0","NRST","PB7","PB6","PA4","PA3","PA2"]]],ln=kn.flatMap(([n,e,_])=>_.map((s,T)=>({id:s,name:n+"."+(T+1)+" \xB7 "+s,header:n,number:T+1,net:s.startsWith("GND")?"GND":s,x:e,y:91.2+T*9.6,side:e<96?"left":"right",.../^P[A-F][0-7]$/.test(s)?{port:s[1],bit:+s[2],digital:(s.charCodeAt(1)-65)*8+ +s[2]}:{voltage:s==="3V3"?3.3:s==="5V"?5:s.startsWith("GND")?0:void 0}}))),Je={id:"ek-tm4c123gxl",architecture:"tiva",family:"tm4c123",name:"Tiva C \xB7 TM4C123G LaunchPad",mcu:"TM4C123GH6PM",revision:"EK-TM4C123GXL \xB7 Rev B",cpu:"cortex-m4f",hz:16e6,maxHz:8e7,hse:16e6,flashSize:262144,flashLimit:262144,ram:32768,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:192,height:216,asset:"tiva-tm4c123gxl.svg",pins:ln,gpio:ln.filter(n=>n.port).map(n=>n.net),ledPin:"PF1",leds:{power:{x:79,y:37},PF1:{x:94,y:188,color:"#ff3232"},PF2:{x:97,y:188,color:"#329bff"},PF3:{x:100,y:188,color:"#42ff6c"}},uart:"UART0 \xB7 ICDI VCP \xB7 PA0/PA1",internalLinks:[["PB6","PD0"],["PB7","PD1"]],source:"https://www.ti.com/lit/ds/symlink/tm4c123gh6pm.pdf",boardSource:"https://www.ti.com/lit/ug/spmu296/spmu296.pdf",visualReference:"https://robiz.net/ektm4c123gxl",reserved:"Yaln\u0131z C17. PF4=SW1, PF0=SW2 (kilit a\xE7ma gerekir); PF1/PF2/PF3 RGB. PA0/PA1 ICDI UART. R9/R10 varsay\u0131lan PB6\u2013PD0 ve PB7\u2013PD1 ba\u011Flant\u0131lar\u0131 korunur. USB/ICDI donan\u0131m em\xFClasyonu yok."};var wn=["GPIO0","GPIO1","GND","GPIO2","GPIO3","GPIO4","GPIO5","GND.1","GPIO6","GPIO7","GPIO8","GPIO9","GND.2","GPIO10","GPIO11","GPIO12","GPIO13","GND.3","GPIO14","GPIO15"],Vn=["VBUS","VSYS","GND.4","3V3_EN","3V3","ADC_VREF","GPIO28","AGND","GPIO27","GPIO26","RUN","GPIO22","GND.5","GPIO21","GPIO20","GPIO19","GPIO18","GND.6","GPIO17","GPIO16"],Dn=[...wn.map((n,e)=>({id:n,x:6,y:16+e*9.6,side:"left",physical:e+1})),...Vn.map((n,e)=>({id:n,x:79,y:16+e*9.6,side:"right",physical:40-e}))].map(n=>({...n,name:n.id.replace("GPIO","GP").replace(/GND\.\d/,"GND"),net:n.id.startsWith("GND")||n.id==="AGND"?"GND":n.id,...n.id.startsWith("GPIO")?{port:"GPIO",bit:+n.id.slice(4),digital:+n.id.slice(4),...+n.id.slice(4)>=26?{analog:+n.id.slice(4)-26}:{}}:n.id==="3V3"||n.id==="ADC_VREF"?{voltage:3.3}:n.id==="VBUS"||n.id==="VSYS"?{voltage:5}:n.id.startsWith("GND")||n.id==="AGND"?{voltage:0}:{}})),Kn=[["pico","Raspberry Pi Pico",!1,!1,!1],["pico-h","Raspberry Pi Pico H",!1,!0,!1],["pico-w","Raspberry Pi Pico W",!1,!1,!0],["pico-wh","Raspberry Pi Pico WH",!1,!0,!0],["pico-2","Raspberry Pi Pico 2",!0,!1,!1],["pico-2-headers","Raspberry Pi Pico 2 with headers",!0,!0,!1],["pico-2-w","Raspberry Pi Pico 2 W",!0,!1,!0],["pico-2-w-headers","Raspberry Pi Pico 2 W with headers",!0,!0,!0]],On=Object.fromEntries(Kn.map(([n,e,_,s,T])=>[n,{id:n,name:e,architecture:"pico",mcu:_?"RP2350":"RP2040",cpu:_?"Cortex-M33":"Cortex-M0+",hz:_?15e7:125e6,ram:(_?520:264)*1024,flashSize:(_?4:2)*1024*1024,flashLimit:(_?4:2)*1024*1024,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",width:85,height:216,pins:Dn,gpio:Dn.filter(t=>t.port).map(t=>t.digital),leds:{},asset:n+".svg",headers:s,wireless:T,uart:"UART0 \xB7 GP0 TX / GP1 RX",source:"https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html"}]));var ie=(n,e,_,s,T=n)=>({id:n,name:n,net:T,x:e,y:_,side:s,.../^P[A-D]\d+$/.test(T)?{port:T[1],bit:+T.slice(2),digital:(T.charCodeAt(1)-65)*16+ +T.slice(2)}:{net:T.startsWith("GND")||T==="AGND"?"GND":T,voltage:["3V3","VDD","AVDD","IOREF","VBAT"].includes(T)?3.3:T==="5V"||T==="U5V"?5:T.startsWith("GND")||T==="AGND"?0:void 0}}),Un=(n,e,_)=>n.map((s,T)=>ie(s,e,12+T*9.6,_)),Xn=["VBAT","PC13","PC14","PC15","PA0","PA1","PA2","PA3","PA4","PA5","PA6","PA7","PB0","PB1","PB10","PB11","NRST","3V3","GND","GND.1"],Wn=["PB12","PB13","PB14","PB15","PA8","PA9","PA10","PA11","PA12","PA15","PB3","PB4","PB5","PB6","PB7","PB8","PB9","5V","GND.2","3V3.1"],Yn=["PC10","PC11","PC12","PD2","VDD","E5V","BOOT0","GND","NC","NC","NC","IOREF","PA13","NRST","PA14","3V3","PA15","5V","GND","GND","PB7","GND","PC13","VIN","PC14","NC","PC15","PA0","PD0","PA1","PD1","PA4","VBAT","PB0","PC2","PC1","PC3","PC0"],zn=["PC9","PC8","PB8","PC6","PB9","PC5","AVDD","U5V","GND","NC","PA5","PA12","PA6","PA11","PA7","PB12","PB6","PB11","PC7","GND","PA9","PB2","PA8","PB1","PB10","PB15","PB4","PB14","PB5","PB13","PB3","AGND","PA10","PC4","PA2","NC","PA3","NC"],Qn=["PA3","PA2","PA10","PB3","PB5","PB4","PB10","PA8","PA9","PC7","PB6","PA7","PA6","PA5","PB9","PB8"],qn=["PA0","PA1","PA4","PB0","PC1","PC0"],An=(n,e,_)=>n.map((s,T)=>({...ie(e+"-"+(T+1),_+T%2*9.6,125+Math.floor(T/2)*9.6,_<100?"left":"right",s),name:e+"-"+(T+1)+" \xB7 "+s,...["NC","PA2","PA3","PA13","PA14","PB3","PC14","PC15","PD0","PD1"].includes(s)?{connectable:!1,port:void 0}:{}})),jn=[...An(Yn,"CN7",14),...An(zn,"CN10",224),...Qn.map((n,e)=>({...ie("D"+e,186,125+(15-e)*9.6,"right",n),name:"D"+e+" \xB7 "+n,...e<2||e===3?{connectable:!1,port:void 0}:{}})),...qn.map((n,e)=>({...ie("A"+e,63,245+e*9.6,"left",n),name:"A"+e+" \xB7 "+n})),...["IOREF","NRST","3V3","5V","GND","GND.1","VIN"].map((n,e)=>ie(n,63,125+e*9.6,"left"))],Be={architecture:"stm32",family:"f103",terminalNumber:1,hse:8e6,hz:72e6,cpu:"cortex-m3",ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",flashLimit:null,revision:"Blue Pill \xB7 yayg\u0131n iki s\u0131ra 20 pin; \xFC\xE7\xFCnc\xFC taraf PCB",ledPin:"PC13",ledActiveLow:!0,uart:"USART1 \xB7 PA9/PA10",asset:"stm32-blue-pill.svg",width:86.4,height:211.2,pins:[...Un(Xn,4.8,"left"),...Un(Wn,81.6,"right")].map(n=>["PC14","PC15","PA15","PB3","PB4"].includes(n.net)?{...n,connectable:!1,port:void 0,name:n.name+" \xB7 kristal/debug"}:{...n,net:n.id==="3V3.1"?"3V3":n.net}),source:"https://www.st.com/resource/en/datasheet/stm32f103c8.pdf",reserved:"PC14/PC15 kristal; PA15/PB3/PB4 debug i\xE7in ayr\u0131lm\u0131\u015Ft\u0131r. PC13 LED aktif LOW; USB FS device/sanal host ve CAN loopback C17/C++17 modunda. SWD sim\xFClasyonu yok."},Se={stm32f103c6:{...Be,id:"stm32f103c6",name:"Blue Pill \xB7 STM32F103C6T6",mcu:"STM32F103C6T6",flashSize:32768,ram:10240,source:"https://www.st.com/resource/en/datasheet/stm32f103c6.pdf"},stm32f103c8:{...Be,id:"stm32f103c8",name:"Blue Pill \xB7 STM32F103C8T6",mcu:"STM32F103C8T6",flashSize:65536,ram:20480},stm32f103cb:{...Be,id:"stm32f103cb",name:"Blue Pill \xB7 STM32F103CBT6",mcu:"STM32F103CBT6",flashSize:131072,ram:20480},"nucleo-f103rb":{...Be,id:"nucleo-f103rb",name:"NUCLEO-F103RB \xB7 MB1136 C04",mcu:"STM32F103RBT6",flashSize:131072,ram:20480,revision:"ST MB1136 C04 \xB7 varsay\u0131lan solder bridge",asset:"stm32-nucleo-f103rb.svg",width:249.6,height:364.8,pins:jn,ledPin:"PA5",ledActiveLow:!1,userButton:"PC13",userButtonPullup:1e4,userButtonOhms:10,userButtonName:"B1",terminalNumber:2,uart:"USART2 \xB7 ST-LINK VCP",reserved:"SB62/63 OFF: D0/D1 ve PA2/PA3 header kopuk. SWD/SWO ve kristal pinleri ayr\u0131lm\u0131\u015F. B1 aktif LOW. ST-LINK USB sim\xFCle edilmez.",source:"https://www.st.com/resource/en/user_manual/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf"}};for(let[n,e,_,s]of[["nucleo-f401re","STM32F401RET6",84e6,98304],["nucleo-f411re","STM32F411RET6",96e6,131072]]){let T=Se["nucleo-f103rb"];Se[n]={...T,id:n,name:"NUCLEO-"+e.slice(5,11)+" \xB7 MB1136 C04",mcu:e,hz:_,ram:s,cpu:"cortex-m4f",family:n.includes("f411")?"f411":"f401",flashSize:524288,asset:"stm32-"+n+".svg",pins:T.pins.map(t=>t.id==="CN10-18"?{...t,name:"CN10-18 \xB7 NC",net:"NC",port:void 0,connectable:!1}:t.id==="CN7-29"||t.id==="CN7-31"?{...t,name:t.id+" \xB7 "+(t.id==="CN7-29"?"PH0":"PH1"),net:t.id==="CN7-29"?"PH0":"PH1",port:void 0,connectable:!1}:t),source:"https://www.st.com/resource/en/datasheet/"+n.replace("nucleo-","stm32")+".pdf"}}var Zn=["PB12","PB13","PB14","PB15","PA8","PA9","PA10","PA11","PA12","PA15","PB3","PB4","PB5","PB6","PB7","PB8","PB9","5V","GND","3V3"],Jn=["5V.1","GND.1","3V3.1","PB10","PB2","PB1","PB0","PA7","PA6","PA5","PA4","PA3","PA2","PA1","PA0","NRST","PC15","PC14","PC13","VBAT"],$n=[...Zn.map((n,e)=>ie(n,10.47,7.8+e*9.6,"left")),...Jn.map((n,e)=>ie(n,68.07,7.8+e*9.6,"right",n.replace(/\.1$/,"")))].map(n=>["PA11","PA12","PC14","PC15"].includes(n.net)?{...n,connectable:!1,port:void 0,name:n.name+" \xB7 USB/LSE"}:n);for(let[n,e,_,s,T,t]of[["weact-f401cc","STM32F401CCU6","f401",84e6,262144,65536],["weact-f401ce","STM32F401CEU6","f401",84e6,524288,98304],["weact-f411ce","STM32F411CEU6","f411",96e6,524288,131072]])Se[n]={architecture:"stm32",id:n,name:"WeAct Black Pill \xB7 "+e,family:_,cpu:"cortex-m4f",mcu:e,hz:s,hse:25e6,flashSize:T,ram:t,ioVoltage:3.3,logicHigh:2.31,supplyPin:"3V3",revision:_==="f401"&&T===262144?"WeAct F401CC SKU \xB7 V3 header uyumlu topoloji":"WeAct MiniSTM32F4x1 \xB7 V3.0",width:78.54,height:198,pins:$n.map(i=>({...i})),ledPin:"PC13",ledActiveLow:!0,ledColor:"blue",userButton:"PA0",userButtonName:"KEY / PA0",userButtonPullup:!1,userButtonOhms:330,fixedPulls:[{pin:"PB2",voltage:0,ohms:1e4}],terminalNumber:1,uart:"USART1 \xB7 PA9/PA10",asset:"stm32-"+n+".svg",source:"https://www.st.com/resource/en/datasheet/"+e.slice(0,11).toLowerCase()+".pdf",boardSource:"https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1/blob/master/Hardware/legacy%20version/MiniF4x1Cx_V30%20SchDoc.pdf",reserved:"25 MHz HSE; PC14/15 LSE, PA11/12 USB i\xE7in ayr\u0131lm\u0131\u015F. SWD PA13/14 ayr\u0131 konekt\xF6r; PA15/PB3/PB4 GPIO ile SWD-only profilde kullan\u0131labilir. KEY PA0 aktif LOW, haric\xEE pull-up yok. PC13 LED aktif LOW; USB sanal host ile OTG FS device; fiziksel PHY/BOOT-ROM/SWD em\xFClasyonu yok."};for(let n of Object.values(Se))n.flashLimit=n.flashSize,n.gpio=[...new Set(n.pins.filter(e=>e.port&&e.connectable!==!1).map(e=>e.net))],n.leds={power:{x:n.id.startsWith("nucleo")?156:48,y:n.id.startsWith("nucleo")?278:178},[n.ledPin]:{x:n.id.startsWith("nucleo")?164:40,y:n.id.startsWith("nucleo")?278:178}};var Ln={...Nn,esp32c3:[{id:"GND",name:"GND",x:17,y:86,net:"GND",voltage:0},{id:"3V3",name:"3V3",x:17,y:108.21,net:"3V3",voltage:3.3},{id:"3V3.1",name:"3V3",x:17,y:130.43,net:"3V3",voltage:3.3},{id:"GPIO2",name:"IO2",x:17,y:152.64,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO3",name:"IO3",x:17,y:174.86,net:"GPIO3",port:"ESP",bit:3},{id:"GND.1",name:"GND",x:17,y:197.07,net:"GND",voltage:0},{id:"RST",name:"RST",x:17,y:219.29,net:"RST",connectable:!1},{id:"GND.2",name:"GND",x:17,y:241.5,net:"GND",voltage:0},{id:"GPIO0",name:"IO0",x:17,y:263.71,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO1",name:"IO1",x:17,y:285.93,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO10",name:"IO10",x:17,y:308.14,net:"GPIO10",port:"ESP",bit:10},{id:"GND.3",name:"GND",x:17,y:330.36,net:"GND",voltage:0},{id:"5V",name:"5V",x:17,y:352.57,net:"5V",voltage:5},{id:"5V.1",name:"5V",x:17,y:374.79,net:"5V",voltage:5},{id:"GND.4",name:"GND",x:17,y:397,net:"GND",voltage:0},{id:"GND.5",name:"GND",x:203,y:86,net:"GND",voltage:0},{id:"GPIO21",name:"TX",x:203,y:108.21,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"RX",x:203,y:130.43,net:"GPIO20",port:"ESP",bit:20},{id:"GND.6",name:"GND",x:203,y:152.64,net:"GND",voltage:0},{id:"GPIO9",name:"IO9",x:203,y:174.86,net:"GPIO9",port:"ESP",bit:9},{id:"GPIO8",name:"IO8",x:203,y:197.07,net:"GPIO8",port:"ESP",bit:8},{id:"GND.7",name:"GND",x:203,y:219.29,net:"GND",voltage:0},{id:"GPIO7",name:"IO7",x:203,y:241.5,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO6",name:"IO6",x:203,y:263.71,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO5",name:"IO5",x:203,y:285.93,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO4",name:"IO4",x:203,y:308.14,net:"GPIO4",port:"ESP",bit:4},{id:"GND.8",name:"GND",x:203,y:330.36,net:"GND",voltage:0},{id:"GPIO18",name:"IO18",x:203,y:352.57,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO19",name:"IO19",x:203,y:374.79,net:"GPIO19",port:"ESP",bit:19},{id:"GND.9",name:"GND",x:203,y:397,net:"GND",voltage:0}],esp32c6:[{id:"3V3",name:"3V3",x:17,y:86,net:"3V3",voltage:3.3},{id:"RST",name:"RST",x:17,y:106.73,net:"RST",connectable:!1},{id:"GPIO4",name:"4",x:17,y:127.47,net:"GPIO4",port:"ESP",bit:4},{id:"GPIO5",name:"5",x:17,y:148.2,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO6",name:"6",x:17,y:168.93,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO7",name:"7",x:17,y:189.67,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO0",name:"0",x:17,y:210.4,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO1",name:"1",x:17,y:231.13,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO8",name:"8",x:17,y:251.87,net:"GPIO8",port:"ESP",bit:8},{id:"GPIO10",name:"10",x:17,y:272.6,net:"GPIO10",port:"ESP",bit:10},{id:"GPIO11",name:"11",x:17,y:293.33,net:"GPIO11",port:"ESP",bit:11},{id:"GPIO2",name:"2",x:17,y:314.07,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO3",name:"3",x:17,y:334.8,net:"GPIO3",port:"ESP",bit:3},{id:"5V",name:"5V",x:17,y:355.53,net:"5V",voltage:5},{id:"GND",name:"G",x:17,y:376.27,net:"GND",voltage:0},{id:"NC",name:"NC",x:17,y:397,net:"NC",connectable:!1},{id:"GND.1",name:"G",x:203,y:86,net:"GND",voltage:0},{id:"GPIO16",name:"TX",x:203,y:106.73,net:"GPIO16",port:"ESP",bit:16},{id:"GPIO17",name:"RX",x:203,y:127.47,net:"GPIO17",port:"ESP",bit:17},{id:"GPIO15",name:"15",x:203,y:148.2,net:"GPIO15",port:"ESP",bit:15},{id:"GPIO23",name:"23",x:203,y:168.93,net:"GPIO23",port:"ESP",bit:23},{id:"GPIO22",name:"22",x:203,y:189.67,net:"GPIO22",port:"ESP",bit:22},{id:"GPIO21",name:"21",x:203,y:210.4,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"20",x:203,y:231.13,net:"GPIO20",port:"ESP",bit:20},{id:"GPIO19",name:"19",x:203,y:251.87,net:"GPIO19",port:"ESP",bit:19},{id:"GPIO18",name:"18",x:203,y:272.6,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO9",name:"9",x:203,y:293.33,net:"GPIO9",port:"ESP",bit:9},{id:"GND.2",name:"G",x:203,y:314.07,net:"GND",voltage:0},{id:"GPIO13",name:"13",x:203,y:334.8,net:"GPIO13",port:"ESP",bit:13},{id:"GPIO12",name:"12",x:203,y:355.53,net:"GPIO12",port:"ESP",bit:12},{id:"GND.3",name:"G",x:203,y:376.27,net:"GND",voltage:0},{id:"NC.1",name:"NC",x:203,y:397,net:"NC",connectable:!1}],esp32s3:[{id:"3V3",name:"3V3",x:17,y:86,net:"3V3",voltage:3.3},{id:"3V3.1",name:"3V3",x:17,y:100.81,net:"3V3",voltage:3.3},{id:"RST",name:"RST",x:17,y:115.62,net:"RST",connectable:!1},{id:"GPIO4",name:"4",x:17,y:130.43,net:"GPIO4",port:"ESP",bit:4},{id:"GPIO5",name:"5",x:17,y:145.24,net:"GPIO5",port:"ESP",bit:5},{id:"GPIO6",name:"6",x:17,y:160.05,net:"GPIO6",port:"ESP",bit:6},{id:"GPIO7",name:"7",x:17,y:174.86,net:"GPIO7",port:"ESP",bit:7},{id:"GPIO15",name:"15",x:17,y:189.67,net:"GPIO15",port:"ESP",bit:15},{id:"GPIO16",name:"16",x:17,y:204.48,net:"GPIO16",port:"ESP",bit:16},{id:"GPIO17",name:"17",x:17,y:219.29,net:"GPIO17",port:"ESP",bit:17},{id:"GPIO18",name:"18",x:17,y:234.1,net:"GPIO18",port:"ESP",bit:18},{id:"GPIO8",name:"8",x:17,y:248.9,net:"GPIO8",port:"ESP",bit:8},{id:"GPIO3",name:"3",x:17,y:263.71,net:"GPIO3",port:"ESP",bit:3},{id:"GPIO46",name:"46",x:17,y:278.52,net:"GPIO46",port:"ESP",bit:46},{id:"GPIO9",name:"9",x:17,y:293.33,net:"GPIO9",port:"ESP",bit:9},{id:"GPIO10",name:"10",x:17,y:308.14,net:"GPIO10",port:"ESP",bit:10},{id:"GPIO11",name:"11",x:17,y:322.95,net:"GPIO11",port:"ESP",bit:11},{id:"GPIO12",name:"12",x:17,y:337.76,net:"GPIO12",port:"ESP",bit:12},{id:"GPIO13",name:"13",x:17,y:352.57,net:"GPIO13",port:"ESP",bit:13},{id:"GPIO14",name:"14",x:17,y:367.38,net:"GPIO14",port:"ESP",bit:14},{id:"5V",name:"5V",x:17,y:382.19,net:"5V",voltage:5},{id:"GND",name:"G",x:17,y:397,net:"GND",voltage:0},{id:"GND.1",name:"G",x:203,y:86,net:"GND",voltage:0},{id:"GPIO43",name:"TX",x:203,y:100.81,net:"GPIO43",port:"ESP",bit:43},{id:"GPIO44",name:"RX",x:203,y:115.62,net:"GPIO44",port:"ESP",bit:44},{id:"GPIO1",name:"1",x:203,y:130.43,net:"GPIO1",port:"ESP",bit:1},{id:"GPIO2",name:"2",x:203,y:145.24,net:"GPIO2",port:"ESP",bit:2},{id:"GPIO42",name:"42",x:203,y:160.05,net:"GPIO42",port:"ESP",bit:42},{id:"GPIO41",name:"41",x:203,y:174.86,net:"GPIO41",port:"ESP",bit:41},{id:"GPIO40",name:"40",x:203,y:189.67,net:"GPIO40",port:"ESP",bit:40},{id:"GPIO39",name:"39",x:203,y:204.48,net:"GPIO39",port:"ESP",bit:39},{id:"GPIO38",name:"38",x:203,y:219.29,net:"GPIO38",port:"ESP",bit:38},{id:"GPIO37",name:"37",x:203,y:234.1,net:"GPIO37",port:"ESP",bit:37},{id:"GPIO36",name:"36",x:203,y:248.9,net:"GPIO36",port:"ESP",bit:36},{id:"GPIO35",name:"35",x:203,y:263.71,net:"GPIO35",port:"ESP",bit:35},{id:"GPIO0",name:"0",x:203,y:278.52,net:"GPIO0",port:"ESP",bit:0},{id:"GPIO45",name:"45",x:203,y:293.33,net:"GPIO45",port:"ESP",bit:45},{id:"GPIO48",name:"48",x:203,y:308.14,net:"GPIO48",port:"ESP",bit:48},{id:"GPIO47",name:"47",x:203,y:322.95,net:"GPIO47",port:"ESP",bit:47},{id:"GPIO21",name:"21",x:203,y:337.76,net:"GPIO21",port:"ESP",bit:21},{id:"GPIO20",name:"20",x:203,y:352.57,net:"GPIO20",port:"ESP",bit:20},{id:"GPIO19",name:"19",x:203,y:367.38,net:"GPIO19",port:"ESP",bit:19},{id:"GND.2",name:"G",x:203,y:382.19,net:"GND",voltage:0},{id:"GND.3",name:"G",x:203,y:397,net:"GND",voltage:0}]};var Cn=[{id:"GND",name:"GND",net:"GND",x:4.8,y:81.6,side:"left"},{id:"GND.1",name:"GND.1",net:"GND",x:62.4,y:100.8,side:"right"},{id:"GND.2",name:"GND.2",net:"GND",x:19.2,y:120,side:"bottom"},{id:"GND.3",name:"GND.3",net:"GND",x:9.6,y:120,side:"bottom"},{id:"RESET",name:"RESET",net:"RESET",x:4.8,y:91.2,side:"left"},{id:"RESET.1",name:"RESET.1",net:"RESET",x:62.4,y:91.2,side:"right"},{id:"D13",name:"D13",net:"D13",x:62.4,y:33.6,side:"right"},{id:"D12",name:"D12",net:"D12",x:62.4,y:24,side:"right"},{id:"D11",name:"D11",net:"D11",x:62.4,y:14.4,side:"right"},{id:"D1",name:"D1",net:"D1",x:4.8,y:110.4,side:"left"},{id:"D1.1",name:"D1.1",net:"D1",x:48,y:120,side:"bottom"},{id:"VCC",name:"VCC",net:"VCC",x:62.4,y:81.6,side:"right"},{id:"VCC.1",name:"VCC.1",net:"VCC",x:28.8,y:120,side:"bottom"},{id:"RAW",name:"RAW",net:"RAW",x:62.4,y:110.4,side:"right"},{id:"D9",name:"D9",net:"D9",x:4.8,y:4.8,side:"left"},{id:"D8",name:"D8",net:"D8",x:4.8,y:14.4,side:"left"},{id:"A5",name:"A5",net:"A5",x:51.36,y:77.28,side:"inner"},{id:"A4",name:"A4",net:"A4",x:51.36,y:67.68,side:"inner"},{id:"A3",name:"A3",net:"A3",x:62.4,y:72,side:"right"},{id:"A2",name:"A2",net:"A2",x:62.4,y:62.4,side:"right"},{id:"A1",name:"A1",net:"A1",x:62.4,y:52.8,side:"right"},{id:"A0",name:"A0",net:"A0",x:62.4,y:43.2,side:"right"},{id:"D2",name:"D2",net:"D2",x:4.8,y:72,side:"left"},{id:"D3",name:"D3",net:"D3",x:4.8,y:62.4,side:"left"},{id:"D4",name:"D4",net:"D4",x:4.8,y:52.8,side:"left"},{id:"D5",name:"D5",net:"D5",x:4.8,y:43.2,side:"left"},{id:"D6",name:"D6",net:"D6",x:4.8,y:33.6,side:"left"},{id:"D7",name:"D7",net:"D7",x:4.8,y:24,side:"left"},{id:"D10",name:"D10",net:"D10",x:62.4,y:4.8,side:"right"},{id:"DTR",name:"DTR",net:"DTR",x:57.6,y:120,side:"bottom"},{id:"D0",name:"D0",net:"D0",x:38.4,y:120,side:"bottom"},{id:"D0.1",name:"D0.1",net:"D0",x:4.8,y:100.8,side:"left"},{id:"A6",name:"A6",net:"A6",x:51.36,y:28.32,side:"inner"},{id:"A7",name:"A7",net:"A7",x:51.36,y:37.92,side:"inner"}];var Ae={id:"uno",name:"Arduino Uno R3",width:274.31811,height:201.6,asset:"arduino-uno-r3.svg",pins:[{id:"SCL",name:"SCL",x:86.766614,y:9.626457,side:"top",net:"A5",analog:5,digital:19,port:"C",bit:5},{id:"SDA",name:"SDA",x:96.366614,y:9.626457,side:"top",net:"A4",analog:4,digital:18,port:"C",bit:4},{id:"AREF",name:"AREF",x:105.966614,y:9.626457,side:"top",net:"AREF"},{id:"GND",name:"GND",x:115.566614,y:9.626457,side:"top",net:"GND",voltage:0},{id:"D13",name:"D13",x:125.166614,y:9.626457,side:"top",net:"D13",digital:13,pwm:!1,port:"B",bit:5},{id:"D12",name:"D12",x:134.766614,y:9.626457,side:"top",net:"D12",digital:12,pwm:!1,port:"B",bit:4},{id:"D11",name:"D11",x:144.366614,y:9.626457,side:"top",net:"D11",digital:11,pwm:!0,port:"B",bit:3},{id:"D10",name:"D10",x:153.966614,y:9.626457,side:"top",net:"D10",digital:10,pwm:!0,port:"B",bit:2},{id:"D9",name:"D9",x:163.566614,y:9.626457,side:"top",net:"D9",digital:9,pwm:!0,port:"B",bit:1},{id:"D8",name:"D8",x:173.166614,y:9.626457,side:"top",net:"D8",digital:8,pwm:!1,port:"B",bit:0},{id:"D7",name:"D7",x:188.526614,y:9.626457,side:"top",net:"D7",digital:7,pwm:!1,port:"D",bit:7},{id:"D6",name:"D6",x:198.126614,y:9.626457,side:"top",net:"D6",digital:6,pwm:!0,port:"D",bit:6},{id:"D5",name:"D5",x:207.726614,y:9.626457,side:"top",net:"D5",digital:5,pwm:!0,port:"D",bit:5},{id:"D4",name:"D4",x:217.326614,y:9.626457,side:"top",net:"D4",digital:4,pwm:!1,port:"D",bit:4},{id:"D3",name:"D3",x:226.926614,y:9.626457,side:"top",net:"D3",digital:3,pwm:!0,port:"D",bit:3},{id:"D2",name:"D2",x:236.526614,y:9.626457,side:"top",net:"D2",digital:2,pwm:!1,port:"D",bit:2},{id:"D1",name:"D1",x:246.126614,y:9.626457,side:"top",net:"D1",digital:1,pwm:!1,port:"D",bit:1},{id:"D0",name:"D0",x:255.726614,y:9.626457,side:"top",net:"D0",digital:0,pwm:!1,port:"D",bit:0},{id:"NC",name:"NC",x:121.326614,y:192.026457,side:"bottom",net:"NC",connectable:!1},{id:"IOREF",name:"IOREF",x:130.926614,y:192.026457,side:"bottom",net:"IOREF"},{id:"RESET",name:"RESET",x:140.526614,y:192.026457,side:"bottom",net:"RESET"},{id:"3.3V",name:"3.3V",x:150.126614,y:192.026457,side:"bottom",net:"3.3V",voltage:3.3},{id:"5V",name:"5V",x:159.726614,y:192.026457,side:"bottom",net:"5V",voltage:5},{id:"GND.1",name:"GND.1",x:169.326614,y:192.026457,side:"bottom",net:"GND",voltage:0},{id:"GND.2",name:"GND.2",x:178.926614,y:192.026457,side:"bottom",net:"GND",voltage:0},{id:"VIN",name:"VIN",x:188.526614,y:192.026457,side:"bottom",net:"VIN"},{id:"A0",name:"A0",x:207.726614,y:192.026457,side:"bottom",net:"A0",analog:0,digital:14,port:"C",bit:0},{id:"A1",name:"A1",x:217.326614,y:192.026457,side:"bottom",net:"A1",analog:1,digital:15,port:"C",bit:1},{id:"A2",name:"A2",x:226.926614,y:192.026457,side:"bottom",net:"A2",analog:2,digital:16,port:"C",bit:2},{id:"A3",name:"A3",x:236.526614,y:192.026457,side:"bottom",net:"A3",analog:3,digital:17,port:"C",bit:3},{id:"A4",name:"A4",x:246.126614,y:192.026457,side:"bottom",net:"A4",analog:4,digital:18,port:"C",bit:4},{id:"A5",name:"A5",x:255.726614,y:192.026457,side:"bottom",net:"A5",analog:5,digital:19,port:"C",bit:5}],leds:{power:{x:236.5984251968504,y:63.34488188976379},D13:{x:121.58740157480317,y:46.26141732283465},TX:{x:120.4724409448819,y:63.30708661417324},RX:{x:120.4724409448819,y:72.00000000000001}},source:"https://github.com/wokwi/wokwi-elements/blob/main/src/arduino-uno-element.ts",license:"MIT",copyright:"2020 Uri Shaked",verification:"https://content.arduino.cc/assets/Pinout-UNOrev3_latest.pdf"};var $e=n=>{if(/^D\d+$/.test(n)){let e=+n.slice(1);return{net:n,digital:e,port:e<8?"D":"B",bit:e<8?e:e-8,pwm:[3,5,6,9,10,11].includes(e)}}if(/^A[0-7]$/.test(n)){let e=+n.slice(1);return{net:n,analog:e,...e<6?{digital:14+e,port:"C",bit:e}:{analogOnly:!0}}}return n.startsWith("GND")?{net:"GND",voltage:0}:n.startsWith("RESET")?{net:"RESET"}:{net:n,...n==="5V"||n==="VCC"?{voltage:5}:n==="3.3V"?{voltage:3.3}:{}}},cn=(n,e,_,s)=>n.map((T,t)=>({id:T,name:T,x:e,y:_+t*9.6,side:s,...$e(T)})),e_={id:"nano",name:"Arduino Nano (classic)",width:68.03,height:170.08,asset:"arduino-nano.svg",pins:[...cn(["D1","D0","RESET","GND","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12"],5.7,18,"left"),...cn(["VIN","GND.1","RESET.1","5V","A0","A1","A2","A3","A4","A5","A6","A7","AREF","3.3V","D13"],62.33,18,"right")],leds:{power:{x:34,y:97},D13:{x:34,y:105}},source:"https://docs.arduino.cc/resources/pinouts/A000005-full-pinout.pdf"},n_={id:"pro-mini",name:"Arduino Pro Mini (5 V / 16 MHz)",width:68.03,height:124.72,asset:"arduino-pro-mini.svg",pins:Cn.map(n=>({...n,...$e(n.net)})),leds:{power:{x:24,y:91},D13:{x:46,y:91}},source:"https://github.com/sparkfun/Arduino_Pro_Mini_328/blob/master/Hardware/Arduino-Pro-Mini.brd"},__=[["E",0],["E",1],["E",4],["E",5],["G",5],["E",3],["H",3],["H",4],["H",5],["H",6],["B",4],["B",5],["B",6],["B",7],["J",1],["J",0],["H",1],["H",0],["D",3],["D",2],["D",1],["D",0],...Array.from({length:8},(n,e)=>["A",e]),...Array.from({length:8},(n,e)=>["C",7-e]),["D",7],["G",2],["G",1],["G",0],...Array.from({length:8},(n,e)=>["L",7-e]),["B",3],["B",2],["B",1],["B",0]],Pe=(n,e,_,s)=>{let T={SDA:"D20",SCL:"D21",IOREF:"5V"}[n],t=T||n,i={id:n,name:n,x:e,y:_,side:s,...$e(n),net:t,...n==="IOREF"?{voltage:5}:{}};if(/^D\d+$/.test(t)){let d=+t.slice(1),[o,E]=__[d];i={...i,digital:d,port:o,bit:E,pwm:d>=2&&d<=13||d>=44&&d<=46}}else if(/^A\d+$/.test(t)){let d=+t.slice(1);i={...i,analogOnly:!1,analog:d,digital:54+d,port:d<8?"F":"K",bit:d%8}}return i},t_={id:"mega",name:"Arduino Mega 2560 R3",width:392,height:201.6,asset:"arduino-mega2560.svg",pins:[...Ae.pins.filter(n=>n.side==="top").map(n=>Pe(n.id,n.x,n.y,n.side)),...Array.from({length:8},(n,e)=>Pe("D"+(14+e),275+e*9.6,9.626457,"top")),...Ae.pins.filter(n=>n.side==="bottom"&&!/^A/.test(n.id)).map(n=>({...Pe(n.id,n.x,n.y,n.side),...n.connectable===!1?{connectable:!1}:{}})),...Array.from({length:16},(n,e)=>Pe("A"+e,207.726614+(e<8?e*9.6:86.4+(e-8)*9.6),192.026457,"bottom")),...Array.from({length:32},(n,e)=>Pe("D"+(22+e),e%2?381.5:371.9,33.626457+Math.floor(e/2)*9.6,"right")),...[["5V.1",371.9,24.026457],["5V.2",381.5,24.026457],["GND.3",371.9,187.226457],["GND.4",381.5,187.226457]].map(([n,e,_])=>({...Pe(n,e,_,"right"),net:n.startsWith("5V")?"5V":"GND",voltage:n.startsWith("5V")?5:0}))],leds:{power:{x:251,y:54},D13:{x:125,y:45},TX:{x:110,y:58},RX:{x:110,y:67}},source:"https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf"},pn=Ae.pins.filter(n=>!["SCL","SDA","NC","IOREF"].includes(n.id)).map(n=>({...n})),i_={id:"duemilanove",name:"Arduino Duemilanove (ATmega328P)",width:274.31811,height:201.6,asset:"arduino-duemilanove.svg",pins:pn,leds:{power:{x:234,y:64},D13:{x:125,y:46},TX:{x:100,y:67},RX:{x:100,y:76}},source:"https://docs.arduino.cc/retired/boards/arduino-duemilanove/"},d_={id:"pro",name:"Arduino Pro (5 V / 16 MHz)",width:274.31811,height:201.6,asset:"arduino-pro.svg",pins:pn,leds:{power:{x:225,y:100},D13:{x:130,y:49}},source:"https://docs.arduino.cc/retired/boards/arduino-pro/"},Le=n=>({...n,hz:16e6,mcu:"ATmega328P",flashSize:32768,analogChannels:6,flashLimit:30720,ram:2048}),_t={...te,...On,...Se,[Je.id]:Je,uno:{...Le(Ae),flashLimit:32256},nano:{...Le(e_),analogChannels:8},"pro-mini":{...Le(n_),analogChannels:8},mega:{...t_,hz:16e6,mcu:"ATmega2560",flashSize:262144,analogChannels:16,flashLimit:253952,ram:8192},duemilanove:Le(i_),pro:Le(d_),...Object.fromEntries(Object.entries(je).map(([n,e])=>[n,{...e,id:n,name:e.title||e.name+" "+e.board,mcu:e.name,architecture:"esp32",ioVoltage:3.3,logicHigh:2.475,supplyPin:"3V3",width:e.width||220,height:e.height||460,pins:Ln[n],flashSize:e.flash,flashLimit:e.flash,ram:e.ram??(n==="esp32c3"?240*1024:n==="esp32c6"?432*1024:400*1024),leds:{}}]))};var s_=[{id:"software-serial",name:"SoftwareSerial",version:"1.0",dependencies:[],roots:[],includes:["/software-serial"],objects:[],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"LGPL-2.1-or-later",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["SoftwareSerial.h"]},{id:"wire",name:"Wire",version:"1.0",dependencies:[],roots:["/arduino/libraries/Wire/src"],includes:["/arduino/libraries/Wire/src","/arduino/libraries/Wire/src/utility"],objects:["lib_Wire.o","lib_twi.o"],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"LGPL-2.1-or-later",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["Wire.h"]},{id:"spi",name:"SPI",version:"1.0",dependencies:[],roots:["/arduino/libraries/SPI/src"],includes:["/arduino/libraries/SPI/src"],objects:["lib_SPI.o"],source:"./notices/arduino-avr-1.8.7-source.tar.bz2",license:"GPL-2.0 / LGPL-2.1",licenseUrl:"./notices/FIRMWARE-NOTICES.md",headers:["SPI.h"]},{id:"busio",name:"Adafruit BusIO",version:"1.17.4",dependencies:["wire","spi"],roots:["/libraries/Adafruit_BusIO"],includes:["/libraries/Adafruit_BusIO"],objects:["lib_BusIO_Register.o","lib_I2CDevice.o","lib_SPIDevice.o"],source:"./notices/Adafruit-BusIO-1.17.4-source.zip",license:"MIT",licenseUrl:"./notices/ADAFRUIT-BUSIO-LICENSE.txt",headers:["Adafruit_I2CDevice.h","Adafruit_SPIDevice.h","Adafruit_BusIO_Register.h"]},{id:"gfx",name:"Adafruit GFX",version:"1.12.6",dependencies:["busio"],roots:["/libraries/Adafruit_GFX_Library"],includes:["/libraries/Adafruit_GFX_Library"],objects:["lib_GFX.o"],source:"./notices/Adafruit-GFX-1.12.6-source.zip",license:"BSD",licenseUrl:"./notices/ADAFRUIT-GFX-LICENSE.txt",headers:["Adafruit_GFX.h","gfxfont.h"]},{id:"ssd1306",name:"Adafruit SSD1306",version:"2.5.16",dependencies:["gfx","wire","spi"],roots:["/libraries/Adafruit_SSD1306"],includes:["/libraries/Adafruit_SSD1306"],objects:["lib_SSD1306.o"],source:"./notices/Adafruit-SSD1306-2.5.16-source.zip",license:"BSD",licenseUrl:"./notices/ADAFRUIT-SSD1306-LICENSE.txt",headers:["Adafruit_SSD1306.h"]}],it=new Map(s_.map(n=>[n.id,n]));function en(n,{language:e="arduino",build:_=!1}={}){let s=e==="c"?"main.c":e==="cpp"?"main.cpp":e==="micropython"?"main.py":"sketch.ino";if(!Array.isArray(n)||!n.length||n.length>16)throw Error("1\u201316 kaynak dosyas\u0131 desteklenir.");let T=0,t=new Set,i=n.map(d=>{if(!d||typeof d.name!="string"||d.name.length>100||!(/^([A-Za-z_][\w-]*\/)*[A-Za-z_][\w.-]*\.(ino|cpp|c|h|hpp|py)$/.test(d.name)||_&&e==="c"&&/^([A-Za-z_][\w-]*\/)*(CMakeLists\.txt|[A-Za-z_][\w.-]*\.cmake|[A-Za-z_][\w.-]*\.h\.in)$/.test(d.name))||d.name.split("/").some(o=>o==="."||o==="..")||t.has(d.name.toLowerCase()))throw Error("Dosya ad\u0131 ge\xE7ersiz veya yineleniyor.");if(["c","cpp"].includes(e)&&["cf_hal.h","stdint.h","stdio.h","stddef.h","stdbool.h",...e==="cpp"?["stdlib.h","string.h"]:[]].includes(d.name))throw Error("Bu ba\u015Fl\u0131k derleyici taraf\u0131ndan sa\u011Flan\u0131r: "+d.name);if(e==="micropython"&&d.name==="machine.py")throw Error("machine.py devre modeli taraf\u0131ndan sa\u011Flan\u0131r.");if(t.add(d.name.toLowerCase()),typeof d.content!="string")throw Error("Kaynak kod ge\xE7ersiz.");return T+=new TextEncoder().encode(d.content).length,{name:d.name,content:d.content}});if(T>1e5)throw Error("Kaynak dosyalar\u0131 toplam 100 KB s\u0131n\u0131r\u0131n\u0131 a\u015F\u0131yor.");if(!i.some(d=>d.name===s)||i.filter(d=>d.name.endsWith(".ino")).length!==(e==="arduino"?1:0)||i.some(d=>e==="micropython"?!d.name.endsWith(".py"):e==="c"?/\.(ino|cpp|py)$/.test(d.name):e==="cpp"?/\.(ino|py)$/.test(d.name):/\.(c|py)$/.test(d.name)))throw Error("Ana kaynak "+s+" olmal\u0131; ek dosyalar se\xE7ilen dile uygun olmal\u0131.");return i}var At=new TextEncoder;var o_={esp32c3:{chip:"esp32c3",id:5,text:1077411840,data:1070137344,stack:1070458640,gpio:1610629120,inputOffset:60,matrix:1364,signal:128,mux:1610649600,uart:1610612736,hz:16e7,maxPin:21,ram:240*1024},esp32c6:{chip:"esp32c6",id:13,text:1082130432,data:1082195968,stack:1082650624,gpio:1611206656,inputOffset:60,matrix:1364,signal:128,mux:1611202560,uart:1610612736,hz:16e7,maxPin:30,ram:432*1024},esp32h2:{chip:"esp32h2",id:16,text:1082130432,data:1082195968,stack:1082454016,gpio:1611206656,inputOffset:60,matrix:1364,signal:128,mux:1611202560,uart:1610612736,hz:96e6,maxPin:27,ram:240*1024},esp32c5:{chip:"esp32c5",id:23,text:1082130432,data:1082195968,stack:1082519552,gpio:1611206656,inputOffset:100,enable:52,enableHigh:64,matrix:2772,signal:256,oeBit:10,mux:1611202560,muxOffset:0,uart:1610612736,hz:24e7,maxPin:28,ram:304*1024,imageOffset:8192},esp32p4:{chip:"esp32p4",id:18,text:1341128704,data:1341194240,stack:1341779968,gpio:1343094784,inputOffset:60,matrix:1368,signal:256,oeBit:10,mux:1343098880,uart:1343004672,hz:4e8,maxPin:54,ram:560*1024,imageOffset:8192},esp32s3:{chip:"esp32s3",id:9,text:1077411840,data:1070170112,stack:1070592e3,gpio:1610629120,inputOffset:60,matrix:1364,signal:256,mux:1610649600,uart:1610612736,hz:24e7,maxPin:48,ram:400*1024,xtensa:!0}},Lt=o_.esp32c3;async function nn(n,e,_){let s="",T=new Ue(o=>{s+=new TextDecoder().decode(o)}),t=new Qe(_,[],[new ae(new J([])),T,T,new Oe(".",e)],{debug:!1}),i=await WebAssembly.instantiate(n,{wasi_snapshot_preview1:t.wasiImport}),d=t.start(i);if(d)throw Error(s||`Clang \xE7\u0131k\u0131\u015F kodu ${d}`);return s}var Mn=`#pragma once
 #include <stdint.h>
 #define CF_HID_LEFT_CTRL 1u
 #define CF_HID_LEFT_SHIFT 2u
@@ -49,7 +11696,7 @@ static inline int cf_usb_keyboard_release(void){return cf_keyboard_report(0,0,0)
 static inline int cf_ble_keyboard_release(void){return cf_keyboard_report(1,0,0);}
 static inline void cf_usb_keyboard_end(void){cf_kbd_command(5,0,0);}
 static inline void cf_ble_keyboard_end(void){cf_kbd_command(6,0,0);}
-`;var Dn={"nrf52840.h":`/*
+`;var bn={"nrf52840.h":`/*
 Copyright (c) 2010 - 2023, Nordic Semiconductor ASA All rights reserved.\\n
 \\n
 SPDX-License-Identifier: BSD-3-Clause\\n
@@ -6498,7 +18145,7 @@ extern unsigned SystemCoreClock;void SystemInit(void);
 `,"nrf.h":`#pragma once
 #include "nrf52840.h"
 #include "nrf52840_bitfields.h"
-`};var i_=`#pragma once
+`};var T_=`#pragma once
 #include <nrf.h>
 typedef enum{NRF_GPIO_PIN_NOPULL=0,NRF_GPIO_PIN_PULLDOWN=1,NRF_GPIO_PIN_PULLUP=3}nrf_gpio_pin_pull_t;
 static inline NRF_GPIO_Type* cf_port(unsigned p){return p<32?NRF_P0:NRF_P1;}
@@ -6509,7 +18156,7 @@ static inline void nrf_gpio_pin_clear(unsigned p){cf_port(p)->OUTCLR=1u<<(p%32);
 static inline unsigned nrf_gpio_pin_read(unsigned p){return(cf_port(p)->IN>>(p%32))&1;}
 static inline void nrf_gpio_pin_write(unsigned p,unsigned v){if(v)nrf_gpio_pin_set(p);else nrf_gpio_pin_clear(p);}
 static inline void nrf_gpio_pin_toggle(unsigned p){nrf_gpio_pin_write(p,!((cf_port(p)->OUT>>(p%32))&1));}
-`;function un(n){let e=_=>+_[1]*32+ +_.slice(3);return{"wirevo_keyboard.h":Un,...Dn,...Object.fromEntries(["stdint.h","stddef.h","stdbool.h","stdio.h"].map(_=>[_,qe[_]])),"nrf_gpio.h":i_,"cf_lcd.h":t_,"nrf_delay.h":`#pragma once
+`;function hn(n){let e=_=>+_[1]*32+ +_.slice(3);return{"wirevo_keyboard.h":Mn,...bn,...Object.fromEntries(["stdint.h","stddef.h","stdbool.h","stdio.h"].map(_=>[_,Ze[_]])),"nrf_gpio.h":T_,"cf_lcd.h":E_,"nrf_delay.h":`#pragma once
 #include <cf_hal.h>
 #define nrf_delay_us cf_delay_us
 #define nrf_delay_ms cf_delay_ms
@@ -6530,7 +18177,7 @@ static inline void nrf_gpio_pin_toggle(unsigned p){nrf_gpio_pin_write(p,!((cf_po
 #define BOARD_SCK ${n.sckPin}u
 #define BOARD_MOSI ${n.mosiPin}u
 #define BOARD_MISO ${n.misoPin}u
-${Array.from({length:48},(_,E)=>"#define P"+(E>>>5)+"_"+String(E%32).padStart(2,"0")+" "+E+"u").join(`
+${Array.from({length:48},(_,s)=>"#define P"+(s>>>5)+"_"+String(s%32).padStart(2,"0")+" "+s+"u").join(`
 `)}
 static inline void cf_gpio_mode(unsigned p,int mode){if(mode==CF_OUTPUT)nrf_gpio_cfg_output(p);else nrf_gpio_cfg_input(p,mode==CF_INPUT_PULLUP?NRF_GPIO_PIN_PULLUP:mode==CF_INPUT_PULLDOWN?NRF_GPIO_PIN_PULLDOWN:NRF_GPIO_PIN_NOPULL);}
 static inline void cf_gpio_write(unsigned p,int v){nrf_gpio_pin_write(p,v);}
@@ -6541,7 +18188,7 @@ static inline int cf_uart_read(void){if(!NRF_UART0->EVENTS_RXDRDY)return -1;NRF_
 int cf_twim_transfer(unsigned addr,const uint8_t*tx,unsigned nt,uint8_t*rx,unsigned nr);
 void cf_spim_transfer(const uint8_t*tx,unsigned nt,uint8_t*rx,unsigned nr);
 unsigned cf_adc_read(unsigned analog);void cf_pwm_start(unsigned pin,unsigned period,unsigned duty);
-`}}var _n=["POWER_CLOCK","RADIO","UARTE0_UART0","SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0","SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1","NFCT","GPIOTE","SAADC","TIMER0","TIMER1","TIMER2","RTC0","TEMP","RNG","ECB","CCM_AAR","WDT","RTC1","QDEC","COMP_LPCOMP","SWI0_EGU0","SWI1_EGU1","SWI2_EGU2","SWI3_EGU3","SWI4_EGU4","SWI5_EGU5","TIMER3","TIMER4","PWM0","PDM","RESERVED30","RESERVED31","MWU","PWM1","PWM2","SPIM2_SPIS2_SPI2","RTC2","I2S","FPU","USBD","UARTE1","QSPI","CRYPTOCELL","RESERVED43","RESERVED44","PWM3","RESERVED46","SPIM3"],Mn=`#include <cf_hal.h>
+`}}var _n=["POWER_CLOCK","RADIO","UARTE0_UART0","SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0","SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1","NFCT","GPIOTE","SAADC","TIMER0","TIMER1","TIMER2","RTC0","TEMP","RNG","ECB","CCM_AAR","WDT","RTC1","QDEC","COMP_LPCOMP","SWI0_EGU0","SWI1_EGU1","SWI2_EGU2","SWI3_EGU3","SWI4_EGU4","SWI5_EGU5","TIMER3","TIMER4","PWM0","PDM","RESERVED30","RESERVED31","MWU","PWM1","PWM2","SPIM2_SPIS2_SPI2","RTC2","I2S","FPU","USBD","UARTE1","QSPI","CRYPTOCELL","RESERVED43","RESERVED44","PWM3","RESERVED46","SPIM3"],mn=`#include <cf_hal.h>
 unsigned SystemCoreClock=64000000;void SystemInit(void){*(volatile unsigned*)0xe000ed88|=0x00f00000;__DSB();__ISB();}
 extern unsigned _sidata,_sdata,_edata,_sbss,_ebss,_estack;int main(void);
 void Default_Handler(void){while(1){}}
@@ -6565,15 +18212,32 @@ if(NRF_TWIM0->EVENTS_ERROR){NRF_TWIM0->TASKS_STOP=1;return -1;}while(!NRF_TWIM0-
 void cf_spim_transfer(const uint8_t*tx,unsigned nt,uint8_t*rx,unsigned nr){NRF_SPIM1->ENABLE=0;NRF_SPIM1->PSEL.SCK=BOARD_SCK;NRF_SPIM1->PSEL.MOSI=BOARD_MOSI;NRF_SPIM1->PSEL.MISO=BOARD_MISO;NRF_SPIM1->FREQUENCY=0x02000000;NRF_SPIM1->CONFIG=0;NRF_SPIM1->ORC=255;NRF_SPIM1->TXD.PTR=(uint32_t)tx;NRF_SPIM1->TXD.MAXCNT=nt;NRF_SPIM1->RXD.PTR=(uint32_t)rx;NRF_SPIM1->RXD.MAXCNT=nr;NRF_SPIM1->EVENTS_END=0;NRF_SPIM1->ENABLE=7;NRF_SPIM1->TASKS_START=1;while(!NRF_SPIM1->EVENTS_END){}}
 unsigned cf_adc_read(unsigned analog){int16_t v=0;NRF_SAADC->ENABLE=1;NRF_SAADC->CH[0].PSELP=analog+1;NRF_SAADC->CH[0].CONFIG=0;NRF_SAADC->RESOLUTION=2;NRF_SAADC->RESULT.PTR=(uint32_t)&v;NRF_SAADC->RESULT.MAXCNT=1;NRF_SAADC->EVENTS_END=0;NRF_SAADC->TASKS_START=1;NRF_SAADC->TASKS_SAMPLE=1;while(!NRF_SAADC->EVENTS_END){}NRF_SAADC->TASKS_STOP=1;return (unsigned)v;}
 void cf_pwm_start(unsigned pin,unsigned period,unsigned duty){static uint16_t sample;sample=(uint16_t)(0x8000u|duty);NRF_PWM0->ENABLE=1;NRF_PWM0->MODE=0;NRF_PWM0->PRESCALER=4;NRF_PWM0->COUNTERTOP=period;NRF_PWM0->DECODER=0;NRF_PWM0->PSEL.OUT[0]=pin;for(unsigned i=1;i<4;i++)NRF_PWM0->PSEL.OUT[i]=0xffffffff;NRF_PWM0->SEQ[0].PTR=(uint32_t)&sample;NRF_PWM0->SEQ[0].CNT=1;NRF_PWM0->SEQ[0].REFRESH=0;NRF_PWM0->SEQ[0].ENDDELAY=0;NRF_PWM0->LOOP=0;NRF_PWM0->TASKS_SEQSTART[0]=1;}
-`,t_=`#pragma once
+`,E_=`#pragma once
 #include <cf_hal.h>
 static inline void cf_lcd_nibble(unsigned v,unsigned rs){uint8_t a=(uint8_t)(v|rs|8);uint8_t tx[]={a,(uint8_t)(a|4),a};cf_twim_transfer(0x27,tx,3,0,0);}
 static inline void cf_lcd_byte(unsigned value,unsigned rs){cf_lcd_nibble(value&0xf0,rs);cf_lcd_nibble((value<<4)&0xf0,rs);cf_delay_us(50);}
 static inline void cf_lcd_init(void){cf_delay_ms(40);cf_lcd_nibble(0x30,0);cf_delay_ms(5);cf_lcd_nibble(0x30,0);cf_delay_us(150);cf_lcd_nibble(0x30,0);cf_lcd_nibble(0x20,0);cf_lcd_byte(0x28,0);cf_lcd_byte(0x0c,0);cf_lcd_byte(0x06,0);cf_lcd_byte(1,0);cf_delay_ms(2);}
 static inline void cf_lcd_cursor(unsigned col,unsigned row){cf_lcd_byte(0x80|(row?0x40:0)|col,0);}
 static inline void cf_lcd_print(const char*s){while(*s)cf_lcd_byte((unsigned char)*s++,1);}
-`;var s_=new TextDecoder,Z=class{constructor(e,_=0){this.b=e,this.p=_,this.v=new DataView(e.buffer,e.byteOffset,e.byteLength)}u8(){return this.v.getUint8(this.p++)}u16(){let e=this.v.getUint16(this.p,!0);return this.p+=2,e}u32(){let e=this.v.getUint32(this.p,!0);return this.p+=4,e}str(){let e=this.p;for(;this.u8(););return s_.decode(this.b.subarray(e,this.p-1))}leb(e=!1){let _=0,E=0,d;do if(d=this.u8(),_+=(d&127)*2**E,E+=7,E>49)throw Error("DWARF LEB s\u0131n\u0131r\u0131.");while(d&128);return e&&d&64?_-2**E:_}block(e){let _=Array.from(this.b.subarray(this.p,this.p+e));return this.p+=e,_}};function cn(n,e){let _=new Z(n),E=_.v,d={},i=E.getUint32(32,!0),t=E.getUint16(46,!0),s=E.getUint16(48,!0),T=i+E.getUint16(50,!0)*t,o=n.subarray(E.getUint32(T+16,!0),E.getUint32(T+16,!0)+E.getUint32(T+20,!0));for(let O=0;O<s;O++){let l=i+O*t,D=new Z(o,E.getUint32(l,!0)).str();d[D]=n.subarray(E.getUint32(l+16,!0),E.getUint32(l+16,!0)+E.getUint32(l+20,!0))}let I=[],a=[],R=[],r=new Map,N=d[".debug_line"]||new Uint8Array,S=(O,l)=>{let D=(O?O+"/":"")+l;return e.find(x=>D===x||D.endsWith("/"+x))||null},P=new Z(N);for(;P.p<N.length;){let O=P.u32()+P.p,l=P.u16();if(l!==4)throw Error("DWARF sat\u0131r s\xFCr\xFCm\xFC desteklenmiyor: "+l);let D=P.u32()+P.p,x=P.u8(),Y=P.u8(),k=P.u8(),ue=P.u8()<<24>>24,se=P.u8(),Q=P.u8(),y=[0];for(let M=1;M<Q;M++)y.push(P.u8());let X=[""];for(let M;M=P.str();)X.push(M);let B=[null],z=()=>{let M=P.str();if(!M)return!1;let H=X[P.leb()];return P.leb(),P.leb(),B.push(S(H,M)),!0};for(;z(););P.p=D;let h=0,F=1,Ee=1,Te=0,Me=k,de=0,Be=M=>{a.push({address:h,file:B[Ee],line:F,column:Te,end:!!M,stmt:!!Me}),M&&(a[0].address>=256&&h>a[0].address&&a.every(H=>H.address<=h)&&I.push(...a),a.length=0)},Fe=M=>{h+=x*Math.floor((de+M)/Y),de=(de+M)%Y};for(;P.p<O;){let M=P.u8();if(M)if(M>=Q){let H=M-Q;Fe(Math.floor(H/se)),F+=ue+H%se,Be(!1)}else switch(M){case 1:Be(!1);break;case 2:Fe(P.leb());break;case 3:F+=P.leb(!0);break;case 4:Ee=P.leb();break;case 5:Te=P.leb();break;case 6:Me=!Me;break;case 8:Fe(Math.floor((255-Q)/se));break;case 9:h+=P.u16(),de=0;break;default:for(let H=0;H<y[M];H++)P.leb()}else{let H=P.leb(),bn=P.p+H,He=P.u8();He===1?(Be(!0),h=0,F=1,Ee=1,Te=0,Me=k,de=0):He===2?(h=P.u32(),de=0):He===3&&z(),P.p=bn}}P.p=O}let A=d[".debug_info"]||new Uint8Array,m=d[".debug_abbrev"],u=d[".debug_str"],f=new Z(A);for(;f.p<A.length;){let O=f.p,l=f.u32()+f.p,D=f.u16(),x=f.u32(),Y=f.u8();if(D!==4||Y!==4)throw Error("DWARF bilgi profili desteklenmiyor.");let k=new Z(m,x),ue=new Map;for(let y;y=k.leb();){let X=k.leb(),B=k.u8(),z=[];for(;;){let h=k.leb(),F=k.leb();if(!h&&!F)break;z.push([h,F])}ue.set(y,{tag:X,children:B,attrs:z})}let se=y=>{switch(y){case 1:return f.u32();case 3:return f.block(f.u16());case 4:return f.block(f.u32());case 5:return f.u16();case 6:return f.u32();case 7:{let X=f.u32(),B=f.u32();return X+B*4294967296}case 8:return f.str();case 9:return f.block(f.leb());case 10:return f.block(f.u8());case 11:case 12:return f.u8();case 13:return f.leb(!0);case 14:return new Z(u,f.u32()).str();case 15:return f.leb();case 16:return f.u32();case 17:return O+f.u8();case 18:return O+f.u16();case 19:return O+f.u32();case 21:return O+f.leb();case 22:return se(f.leb());case 23:return f.u32();case 24:return f.block(f.leb());case 25:return 1;default:throw Error("DWARF formu desteklenmiyor: "+y)}},Q=[];for(;f.p<l;){let y=f.p,X=f.leb();if(!X){Q.pop();continue}let B=ue.get(X);if(!B)throw Error("DWARF abbreviation bulunamad\u0131.");let z={},h={};for(let[Ee,Te]of B.attrs)z[Ee]=se(Te),h[Ee]=Te;let F={offset:y,tag:B.tag,attrs:z,forms:h,parent:Q.at(-1)?.offset};R.push(F),r.set(y,F),B.children&&Q.push(F)}f.p=l}let c=O=>{for(let l=O;l;l=r.get(l.parent)){let D=l.attrs;if(D[17]!==void 0&&D[18]!==void 0)return[D[17],l.forms[18]===1?D[18]:D[17]+D[18]]}return null},p=(O,l=0)=>{if(l>12)return{name:"?",size:0};let D=r.get(O);if(!D)return{name:"?",size:0};let x=D.attrs;return[22,38,53,55].includes(D.tag)?p(x[73],l+1):D.tag===15?{name:"pointer",size:x[11]||4,encoding:7}:D.tag===36||D.tag===4?{name:x[3]||"enum",size:x[11]||4,encoding:x[62]||5}:{name:x[3]||"aggregate",size:x[11]||0,encoding:0}},v=R.filter(O=>[52,5].includes(O.tag)&&O.attrs[3]).flatMap(O=>{let l=r.get(O.parent),D,x=!1,Y;for(;l;)l.tag===46&&(D=l.attrs[64],x=!0),l.tag===17&&(Y=l),l=r.get(l.parent);return e.some(k=>Y?.attrs[3]===k||Y?.attrs[3]?.endsWith("/"+k))?[{name:O.attrs[3],type:p(O.attrs[73]),location:O.attrs[2],frame:D,scope:x?c(O):null,parameter:O.tag===5}]:[]}),g=I.sort((O,l)=>O.address-l.address);return{version:1,lines:g.map((O,l)=>({...O,to:g[l+1]?.address??O.address+2})).filter(O=>O.file&&!O.end&&O.line>0&&O.to>O.address),variables:v}}var Mi=new TextEncoder;function tn(n){let e=4294967295;for(let _ of n){e^=_;for(let E=0;E<8;E++)e=e>>>1^(e&1?3988292384:0)}return(e^4294967295)>>>0}function pn(n,e){let _=new Uint8Array(80+n.length),E=new DataView(_.buffer);return _.set(new TextEncoder().encode("CFNRF52\0")),_.set(new TextEncoder().encode(e),8),E.setUint32(64,n.length,!0),E.setUint32(68,tn(n),!0),_.set(n,80),E_(_,e),_}function E_(n,e){if(!ie[e]||!(n instanceof Uint8Array)||n.length<88)throw Error("nRF52 firmware hedefi/ba\u015Fl\u0131\u011F\u0131 ge\xE7ersiz.");let _=new DataView(n.buffer,n.byteOffset,n.byteLength),E=new TextDecoder,d=n.subarray(80);if(E.decode(n.subarray(0,8))!=="CFNRF52\0"||E.decode(n.subarray(8,64)).replace(/\0.*$/s,"")!==e||n.subarray(72,80).some(i=>i)||_.getUint32(64,!0)!==d.length||d.length>1048576||_.getUint32(68,!0)!==tn(d))throw Error("nRF52 firmware hedefi/boyutu/CRC ge\xE7ersiz.");if(_.getUint32(80,!0)!==537133056||!(_.getUint32(84,!0)&1)||_.getUint32(84,!0)<8||_.getUint32(84,!0)>=d.length)throw Error("nRF52840 reset vekt\xF6r\xFC ge\xE7ersiz.");return d}async function Fi(n,e,_="nrf52840-supermini",E=[],d="c"){if(!ie[_]||d!=="c")throw Error("nRF52840 yaln\u0131z C17 / main.c destekler.");let i=un(ie[_]),t=Mn,s=en([{name:"main.c",content:e},...E],{language:"c"});for(let f of s)if(Object.hasOwn(i,f.name)||["cf_nrf_runtime.c","link.ld"].includes(f.name))throw Error("nRF52840 SDK dosya ad\u0131 ayr\u0131lm\u0131\u015Ft\u0131r: "+f.name);let T=new Map(s.map(f=>[f.name,f.content]));for(let[f,c]of Object.entries(i))T.set(f,c);T.set("cf_nrf_runtime.c",t),T.set("link.ld",`ENTRY(Reset_Handler)
+`;var r_=new TextDecoder,$=class{constructor(e,_=0){this.b=e,this.p=_,this.v=new DataView(e.buffer,e.byteOffset,e.byteLength)}u8(){return this.v.getUint8(this.p++)}u16(){let e=this.v.getUint16(this.p,!0);return this.p+=2,e}u32(){let e=this.v.getUint32(this.p,!0);return this.p+=4,e}str(){let e=this.p;for(;this.u8(););return r_.decode(this.b.subarray(e,this.p-1))}leb(e=!1){let _=0,s=0,T;do if(T=this.u8(),_+=(T&127)*2**s,s+=7,s>49)throw Error("DWARF LEB s\u0131n\u0131r\u0131.");while(T&128);return e&&T&64?_-2**s:_}block(e){let _=Array.from(this.b.subarray(this.p,this.p+e));return this.p+=e,_}};function xn(n,e){let _=new $(n),s=_.v,T={},t=s.getUint32(32,!0),i=s.getUint16(46,!0),d=s.getUint16(48,!0),o=t+s.getUint16(50,!0)*i,E=n.subarray(s.getUint32(o+16,!0),s.getUint32(o+16,!0)+s.getUint32(o+20,!0));for(let N=0;N<d;N++){let O=t+N*i,C=new $(E,s.getUint32(O,!0)).str();T[C]=n.subarray(s.getUint32(O+16,!0),s.getUint32(O+16,!0)+s.getUint32(O+20,!0))}let r=[],a=[],S=[],R=new Map,P=T[".debug_line"]||new Uint8Array,f=(N,O)=>{let C=(N?N+"/":"")+O;return e.find(m=>C===m||C.endsWith("/"+m))||null},I=new $(P);for(;I.p<P.length;){let N=I.u32()+I.p,O=I.u16();if(O!==4)throw Error("DWARF sat\u0131r s\xFCr\xFCm\xFC desteklenmiyor: "+O);let C=I.u32()+I.p,m=I.u8(),Y=I.u8(),F=I.u8(),Ce=I.u8()<<24>>24,de=I.u8(),z=I.u8(),B=[0];for(let M=1;M<z;M++)B.push(I.u8());let V=[""];for(let M;M=I.str();)V.push(M);let g=[null],Q=()=>{let M=I.str();if(!M)return!1;let v=V[I.leb()];return I.leb(),I.leb(),g.push(f(v,M)),!0};for(;Q(););I.p=C;let G=0,y=1,se=1,oe=0,ce=F,Te=0,ge=M=>{a.push({address:G,file:g[se],line:y,column:oe,end:!!M,stmt:!!ce}),M&&(a[0].address>=256&&G>a[0].address&&a.every(v=>v.address<=G)&&r.push(...a),a.length=0)},ye=M=>{G+=m*Math.floor((Te+M)/Y),Te=(Te+M)%Y};for(;I.p<N;){let M=I.u8();if(M)if(M>=z){let v=M-z;ye(Math.floor(v/de)),y+=Ce+v%de,ge(!1)}else switch(M){case 1:ge(!1);break;case 2:ye(I.leb());break;case 3:y+=I.leb(!0);break;case 4:se=I.leb();break;case 5:oe=I.leb();break;case 6:ce=!ce;break;case 8:ye(Math.floor((255-z)/de));break;case 9:G+=I.u16(),Te=0;break;default:for(let v=0;v<B[M];v++)I.leb()}else{let v=I.leb(),Hn=I.p+v,ve=I.u8();ve===1?(ge(!0),G=0,y=1,se=1,oe=0,ce=F,Te=0):ve===2?(G=I.u32(),Te=0):ve===3&&Q(),I.p=Hn}}I.p=N}let A=T[".debug_info"]||new Uint8Array,x=T[".debug_abbrev"],p=T[".debug_str"],u=new $(A);for(;u.p<A.length;){let N=u.p,O=u.u32()+u.p,C=u.u16(),m=u.u32(),Y=u.u8();if(C!==4||Y!==4)throw Error("DWARF bilgi profili desteklenmiyor.");let F=new $(x,m),Ce=new Map;for(let B;B=F.leb();){let V=F.leb(),g=F.u8(),Q=[];for(;;){let G=F.leb(),y=F.leb();if(!G&&!y)break;Q.push([G,y])}Ce.set(B,{tag:V,children:g,attrs:Q})}let de=B=>{switch(B){case 1:return u.u32();case 3:return u.block(u.u16());case 4:return u.block(u.u32());case 5:return u.u16();case 6:return u.u32();case 7:{let V=u.u32(),g=u.u32();return V+g*4294967296}case 8:return u.str();case 9:return u.block(u.leb());case 10:return u.block(u.u8());case 11:case 12:return u.u8();case 13:return u.leb(!0);case 14:return new $(p,u.u32()).str();case 15:return u.leb();case 16:return u.u32();case 17:return N+u.u8();case 18:return N+u.u16();case 19:return N+u.u32();case 21:return N+u.leb();case 22:return de(u.leb());case 23:return u.u32();case 24:return u.block(u.leb());case 25:return 1;default:throw Error("DWARF formu desteklenmiyor: "+B)}},z=[];for(;u.p<O;){let B=u.p,V=u.leb();if(!V){z.pop();continue}let g=Ce.get(V);if(!g)throw Error("DWARF abbreviation bulunamad\u0131.");let Q={},G={};for(let[se,oe]of g.attrs)Q[se]=de(oe),G[se]=oe;let y={offset:B,tag:g.tag,attrs:Q,forms:G,parent:z.at(-1)?.offset};S.push(y),R.set(B,y),g.children&&z.push(y)}u.p=O}let D=N=>{for(let O=N;O;O=R.get(O.parent)){let C=O.attrs;if(C[17]!==void 0&&C[18]!==void 0)return[C[17],O.forms[18]===1?C[18]:C[17]+C[18]]}return null},c=(N,O=0)=>{if(O>12)return{name:"?",size:0};let C=R.get(N);if(!C)return{name:"?",size:0};let m=C.attrs;return[22,38,53,55].includes(C.tag)?c(m[73],O+1):C.tag===15?{name:"pointer",size:m[11]||4,encoding:7}:C.tag===36||C.tag===4?{name:m[3]||"enum",size:m[11]||4,encoding:m[62]||5}:{name:m[3]||"aggregate",size:m[11]||0,encoding:0}},h=S.filter(N=>[52,5].includes(N.tag)&&N.attrs[3]).flatMap(N=>{let O=R.get(N.parent),C,m=!1,Y;for(;O;)O.tag===46&&(C=O.attrs[64],m=!0),O.tag===17&&(Y=O),O=R.get(O.parent);return e.some(F=>Y?.attrs[3]===F||Y?.attrs[3]?.endsWith("/"+F))?[{name:N.attrs[3],type:c(N.attrs[73]),location:N.attrs[2],frame:C,scope:m?D(N):null,parameter:N.tag===5}]:[]}),w=r.sort((N,O)=>N.address-O.address);return{version:1,lines:w.map((N,O)=>({...N,to:w[O+1]?.address??N.address+2})).filter(N=>N.file&&!N.end&&N.line>0&&N.to>N.address),variables:h}}var Gt=new TextEncoder;function tn(n){let e=4294967295;for(let _ of n){e^=_;for(let s=0;s<8;s++)e=e>>>1^(e&1?3988292384:0)}return(e^4294967295)>>>0}function Gn(n,e){let _=new Uint8Array(80+n.length),s=new DataView(_.buffer);return _.set(new TextEncoder().encode("CFNRF52\0")),_.set(new TextEncoder().encode(e),8),s.setUint32(64,n.length,!0),s.setUint32(68,tn(n),!0),_.set(n,80),I_(_,e),_}function I_(n,e){if(!te[e]||!(n instanceof Uint8Array)||n.length<88)throw Error("nRF52 firmware hedefi/ba\u015Fl\u0131\u011F\u0131 ge\xE7ersiz.");let _=new DataView(n.buffer,n.byteOffset,n.byteLength),s=new TextDecoder,T=n.subarray(80);if(s.decode(n.subarray(0,8))!=="CFNRF52\0"||s.decode(n.subarray(8,64)).replace(/\0.*$/s,"")!==e||n.subarray(72,80).some(t=>t)||_.getUint32(64,!0)!==T.length||T.length>1048576||_.getUint32(68,!0)!==tn(T))throw Error("nRF52 firmware hedefi/boyutu/CRC ge\xE7ersiz.");if(_.getUint32(80,!0)!==537133056||!(_.getUint32(84,!0)&1)||_.getUint32(84,!0)<8||_.getUint32(84,!0)>=T.length)throw Error("nRF52840 reset vekt\xF6r\xFC ge\xE7ersiz.");return T}async function zt(n,e,_="nrf52840-supermini",s=[],T="c"){if(!te[_]||T!=="c")throw Error("nRF52840 yaln\u0131z C17 / main.c destekler.");let t=hn(te[_]),i=mn,d=en([{name:"main.c",content:e},...s],{language:"c"});for(let D of d)if(Object.hasOwn(t,D.name)||["cf_nrf_runtime.c","link.ld"].includes(D.name))throw Error("nRF52840 SDK dosya ad\u0131 ayr\u0131lm\u0131\u015Ft\u0131r: "+D.name);let o=d.some(D=>/^\s*#\s*include\s*[<"](?:tusb\.h|wirevo_usb_dcd\.h)[>"]/m.test(D.content)),E=new Map(d.map(D=>[D.name,D.content]));for(let[D,c]of Object.entries(t))E.set(D,c);if(E.set("cf_nrf_runtime.c",i),o){for(let D of["tusb_config.h","wirevo_usb_dcd.h","wirevo_usb_dcd.c","string.h","assert.h","inttypes.h"])if(d.some(c=>c.name===D))throw Error("TinyUSB sabit taray\u0131c\u0131 portu dosyas\u0131 ayr\u0131lm\u0131\u015Ft\u0131r: "+D);E.set("stddef.h",E.get("stddef.h")+`
+#define offsetof(t,m) __builtin_offsetof(t,m)
+`),E.set("inttypes.h",`#pragma once
+#include <stdint.h>
+#define PRIu32 "u"
+#define PRIx32 "x"
+`),E.set("stdint.h",E.get("stdint.h")+`
+typedef unsigned int uintptr_t;typedef int intptr_t;
+#define UINT8_MAX 255
+#define UINT16_MAX 65535
+#define UINT32_MAX 4294967295u
+`);for(let[D,c]of Object.entries(dn)){if(E.has(D))throw Error("TinyUSB kaynak ad\u0131 ayr\u0131lm\u0131\u015Ft\u0131r: "+D);E.set(D,c)}E.set("tusb_config.h",sn),E.set("wirevo_usb_dcd.h",on),E.set("wirevo_usb_dcd.c",Tn),E.set("string.h",`#pragma once
+#include <stddef.h>
+void *memcpy(void*,const void*,size_t);void *memset(void*,int,size_t);void *memmove(void*,const void*,size_t);int memcmp(const void*,const void*,size_t);size_t strlen(const char*);
+`),E.set("assert.h",`#pragma once
+#define assert(x) ((void)0)
+`)}E.set("link.ld",`ENTRY(Reset_Handler)
 MEMORY { FLASH (rx) : ORIGIN = 0, LENGTH = 1024K RAM (rw) : ORIGIN = 0x20000000, LENGTH = 256K }
 _estack = ORIGIN(RAM)+LENGTH(RAM);
-SECTIONS { .vectors : { KEEP(*(.vectors)) } > FLASH .text : { *(.text*) *(.rodata*) } > FLASH .ARM.exidx : { *(.ARM.exidx*) } > FLASH .data : { _sdata = .; *(.data*) _edata = .; } > RAM AT> FLASH _sidata = LOADADDR(.data); .bss (NOLOAD) : { _sbss = .; *(.bss*) *(COMMON) _ebss = .; } > RAM ASSERT(_ebss <= _estack-2048,"nRF52840 SRAM: 2 KiB stack rezervi gerekli") /DISCARD/ : { *(.comment*) *(.eh_frame*) } }`);let o=new Map;for(let[f,c]of T){let p=o,v=f.split("/");for(let g of v.slice(0,-1)){if(p.has(g)||p.set(g,new Map),!(p.get(g)instanceof Map))throw Error("Kaynak yol \xE7ak\u0131\u015Fmas\u0131.");p=p.get(g)}if(p.get(v.at(-1))instanceof Map)throw Error("Kaynak yol \xE7ak\u0131\u015Fmas\u0131.");p.set(v.at(-1),new J(new TextEncoder().encode(c)))}let I=f=>new Map([...f].map(([c,p])=>[c,p instanceof Map?new w(I(p)):p])),a=I(o),R=[],r=`nRF52840 C17 / 64 MHz / 1 MiB flash / 256 KiB SRAM; Nordic register headers; bounded peripherals
-`;for(let f of[...s.filter(c=>c.name.endsWith(".c")),{name:"cf_nrf_runtime.c"}]){let c="unit"+R.length+".o";r+=await nn(n,a,["clang","--target=arm-none-eabi","-mcpu=cortex-m4","-mthumb","-mfpu=fpv4-sp-d16","-mfloat-abi=hard","-std=c17","-ffreestanding","-nostdinc","-I.","-O0","-g","-gdwarf-4","-fno-omit-frame-pointer","-fno-inline","-fno-builtin","-ffunction-sections","-fdata-sections","-Werror=implicit-function-declaration","-c",f.name,"-o",c]),R.push(c)}r+=await nn(n,a,["ld.lld","--threads=1","--gc-sections","-T","link.ld",...R,"-o","firmware.elf"]);let N=a.get("firmware.elf").data,S=new DataView(N.buffer,N.byteOffset,N.byteLength),P=[],A=0,m=0;for(let f=0;f<S.getUint16(44,!0);f++){let c=S.getUint32(28,!0)+f*S.getUint16(42,!0);if(S.getUint32(c,!0)!==1)continue;let p=S.getUint32(c+12,!0),v=S.getUint32(c+8,!0),g=S.getUint32(c+16,!0),O=S.getUint32(c+20,!0),l=S.getUint32(c+4,!0);if(v>=536870912&&(m=Math.max(m,v+O-536870912)),g){if(p+g>1048576)throw Error("nRF52840 Flash segmenti ge\xE7ersiz.");P.push({p,n:g,o:l}),A=Math.max(A,p+g)}}let u=new Uint8Array(A);for(let f of P)u.set(N.subarray(f.o,f.o+f.n),f.p);return{image:pn(u,_),elf:N,debugInfo:cn(N,s.map(f=>f.name)),flashBytes:u.length,staticRamBytes:m,log:r}}export{Fi as compileNRF52};
+SECTIONS { .vectors : { KEEP(*(.vectors)) } > FLASH .text : { *(.text*) *(.rodata*) } > FLASH .ARM.exidx : { *(.ARM.exidx*) } > FLASH .data : { _sdata = .; *(.data*) _edata = .; } > RAM AT> FLASH _sidata = LOADADDR(.data); .bss (NOLOAD) : { _sbss = .; *(.bss*) *(COMMON) _ebss = .; } > RAM ASSERT(_ebss <= _estack-2048,"nRF52840 SRAM: 2 KiB stack rezervi gerekli") /DISCARD/ : { *(.comment*) *(.eh_frame*) } }`);let r=new Map;for(let[D,c]of E){let h=r,w=D.split("/");for(let N of w.slice(0,-1)){if(h.has(N)||h.set(N,new Map),!(h.get(N)instanceof Map))throw Error("Kaynak yol \xE7ak\u0131\u015Fmas\u0131.");h=h.get(N)}if(h.get(w.at(-1))instanceof Map)throw Error("Kaynak yol \xE7ak\u0131\u015Fmas\u0131.");h.set(w.at(-1),new J(new TextEncoder().encode(c)))}let a=D=>new Map([...D].map(([c,h])=>[c,h instanceof Map?new X(a(h)):h])),S=a(r),R=[],P=(o?`Ger\xE7ek TinyUSB 0.18.0 / boot HID keyboard / Wirevo virtual DCD; no Nordic USBD/RADIO
+`:"")+`nRF52840 C17 / 64 MHz / 1 MiB flash / 256 KiB SRAM; Nordic register headers; bounded peripherals
+`;for(let D of[...d.filter(c=>c.name.endsWith(".c")),{name:"cf_nrf_runtime.c"},...o?[...En,"wirevo_usb_dcd.c"].map(c=>({name:c})):[]]){let c="unit"+R.length+".o";P+=await nn(n,S,["clang","--target=arm-none-eabi","-mcpu=cortex-m4","-mthumb","-mfpu=fpv4-sp-d16","-mfloat-abi=hard","-std=c17","-ffreestanding","-nostdinc","-I.","-O0","-g","-gdwarf-4","-fno-omit-frame-pointer","-fno-inline","-fno-builtin","-ffunction-sections","-fdata-sections","-Werror=implicit-function-declaration","-c",D.name,"-o",c]),R.push(c)}P+=await nn(n,S,["ld.lld","--threads=1","--gc-sections","-T","link.ld",...R,"-o","firmware.elf"]);let f=S.get("firmware.elf").data,I=new DataView(f.buffer,f.byteOffset,f.byteLength),A=[],x=0,p=0;for(let D=0;D<I.getUint16(44,!0);D++){let c=I.getUint32(28,!0)+D*I.getUint16(42,!0);if(I.getUint32(c,!0)!==1)continue;let h=I.getUint32(c+12,!0),w=I.getUint32(c+8,!0),N=I.getUint32(c+16,!0),O=I.getUint32(c+20,!0),C=I.getUint32(c+4,!0);if(w>=536870912&&(p=Math.max(p,w+O-536870912)),N){if(h+N>1048576)throw Error("nRF52840 Flash segmenti ge\xE7ersiz.");A.push({p:h,n:N,o:C}),x=Math.max(x,h+N)}}let u=new Uint8Array(x);for(let D of A)u.set(f.subarray(D.o,D.o+D.n),D.p);return{image:Gn(u,_),elf:f,debugInfo:xn(f,d.map(D=>D.name)),flashBytes:u.length,staticRamBytes:p,log:P}}export{zt as compileNRF52};

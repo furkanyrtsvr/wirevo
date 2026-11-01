@@ -1,7 +1,9 @@
+import {TINYUSB_KEYBOARD_MAIN,TINYUSB_KEYBOARD_DESCRIPTORS} from './nrf52-tinyusb-example.js';
 import {emptyProject} from './templates.js';
 import {NRF52_BOARDS} from './nrf52-boards.js';
-export const NRF52_EXAMPLES=[{id:'keyboard',name:'nRF52840 · USB / BLE klavye',detail:'C17 · 3 tact · sanal USB HID / BLE HIDS'},{id:'blink',name:'nRF52840 · Kart LED’i / UART',detail:'C17 · gerçek ARM / Nordic GPIO'},{id:'buttons',name:'nRF52840 · Harici tact buton',detail:'3.3 V · pull-up · LED'},{id:'timer',name:'nRF52840 · TIMER0 kesmesi',detail:'NVIC / gerçek IRQ8'},{id:'adc',name:'nRF52840 · SAADC / potansiyometre',detail:'EasyDMA · 12 bit · AIN0'},{id:'laboratory',name:'nRF52840 · Sensör laboratuvarı',detail:'TWIM / LCD + SHT31 + EEPROM · SPIM / MCP3008 · ADC / PWM · UART'}];
+export const NRF52_EXAMPLES=[{id:'tinyusb',name:'nRF52840 · TinyUSB C17 klavye',detail:'Gerçek TinyUSB 0.18.0 · sanal USB denetleyicisi'},{id:'keyboard',name:'nRF52840 · USB / BLE klavye',detail:'C17 · 3 tact · sanal USB HID / BLE HIDS'},{id:'blink',name:'nRF52840 · Kart LED’i / UART',detail:'C17 · gerçek ARM / Nordic GPIO'},{id:'buttons',name:'nRF52840 · Harici tact buton',detail:'3.3 V · pull-up · LED'},{id:'timer',name:'nRF52840 · TIMER0 kesmesi',detail:'NVIC / gerçek IRQ8'},{id:'adc',name:'nRF52840 · SAADC / potansiyometre',detail:'EasyDMA · 12 bit · AIN0'},{id:'laboratory',name:'nRF52840 · Sensör laboratuvarı',detail:'TWIM / LCD + SHT31 + EEPROM · SPIM / MCP3008 · ADC / PWM · UART'}];
 export const NRF52_SOURCES={
+ tinyusb:TINYUSB_KEYBOARD_MAIN,
  keyboard:`#include <cf_hal.h>
 #include <wirevo_keyboard.h>
 /* Wirevo virtual USB/BLE receiver; no physical USB or radio connection. */
@@ -121,7 +123,8 @@ export function createNRF52Project({board='nrf52840-supermini',language='c',name
  const wire=(a,b)=>p.wires.push({id:'nrf-w'+p.wires.length,from:a,to:b,color:a.includes('GND')?'#64748b':a.includes('3V3')?'#ef4444':'#14b8a6',points:[]});const part=(id,type,x,y,params={})=>p.components.push({id,type,x,y,rotation:0,params});
  const xiao=board.startsWith('xiao'),button=xiao?3:22,cs=xiao?28:24;
  p.files=[{name:'board_pins.h',content:`#pragma once\n#define BOARD_BUTTON ${button}\n#define BOARD_CS ${cs}\n`}];p.code='#include "board_pins.h"\n'+p.code;
- if(starter==='keyboard'){const keys=xiao?[3,28,29]:[22,24,11];p.files[0].content+=keys.map((n,i)=>'#define '+['KEY_A','KEY_B','KEY_SHIFT'][i]+' '+n+'u\n').join('');for(let i=0;i<3;i++){const key=['keyA','keyB','keyShift'][i];part(key,'tact6',420,100+i*120,{pressed:false});wire('mcu:'+id(keys[i]),key+':1');wire('mcu:GND',key+':2');}}
+ if(starter==='keyboard'||starter==='tinyusb'){const keys=xiao?[3,28,29]:[22,24,11];p.files[0].content+=keys.map((n,i)=>'#define '+['KEY_A','KEY_B','KEY_SHIFT'][i]+' '+n+'u\n').join('');for(let i=0;i<3;i++){const key=['keyA','keyB','keyShift'][i];part(key,'tact6',420,100+i*120,{pressed:false});wire('mcu:'+id(keys[i]),key+':1');wire('mcu:GND',key+':2');}}
+ if(starter==='tinyusb')p.files.push({name:'usb_descriptors.c',content:TINYUSB_KEYBOARD_DESCRIPTORS});
  if(starter==='buttons'){part('button','tact6',400,150,{pressed:false});wire('mcu:'+id(button),'button:1');wire('mcu:GND','button:2');}
  if(['adc','laboratory'].includes(starter)){part('pot','pot',420,370,{value:50,ohms:10000});for(const[a,b]of[['3V3','VCC'],['GND','GND'],['P0.02','OUT']])wire('mcu:'+a,'pot:'+b);}
  if(starter==='laboratory'){

@@ -1,3 +1,5 @@
+> 0.113.0 USB ek profili: özgün TinyUSB 0.18.0 core/control/HID kaynakları ARM firmware olarak çalışır; Nordic USBD yerine Wirevo sanal DCD portu. [Kapsam](NRF52-TINYUSB.md). Özgün Bluetooth/SoftDevice/Zephyr/ZMK ve fiziksel USB/RF hâlâ desteklenmez.
+
 > Güncel ek: 0.112.0 ile **wirevo_keyboard.h üzerinden sanal USB/BLE HID klavye** eklendi. Aşağıdaki ilk sürümdeki USB/BLE kapsam dışı notları, özgün USBD/RADIO/SoftDevice sürücü yürütümü içindir. [Güncel klavye API, kullanım ve sınırlar](NRF52-KEYBOARD.md).
 
 # nRF52840 — Wirevo 0.111.0

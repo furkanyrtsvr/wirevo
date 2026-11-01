@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 3,
+  "name": "nRF52840 TinyUSB C17 keyboard",
+  "model": "custom",
+  "code": "#include \"board_pins.h\"\n#include \"board_pins.h\"\n#include <cf_hal.h>\n#include <tusb.h>\n#include <wirevo_usb_dcd.h>\n/* Actual TinyUSB stack; the USB controller/host is virtual inside Wirevo. */\nvolatile unsigned reports,usb_leds,mounts,unmounts,suspends,resumes,protocol_changes;\nvoid tud_mount_cb(void){mounts++;}\nvoid tud_umount_cb(void){unmounts++;}\nvoid tud_suspend_cb(bool wake){(void)wake;suspends++;}\nvoid tud_resume_cb(void){resumes++;}\nvoid tud_hid_set_protocol_cb(uint8_t instance,uint8_t protocol){(void)instance;(void)protocol;protocol_changes++;}\nuint16_t tud_hid_get_report_cb(uint8_t instance,uint8_t id,hid_report_type_t type,uint8_t *buffer,uint16_t n){(void)instance;(void)id;if(type==HID_REPORT_TYPE_INPUT&&n>=8){for(unsigned i=0;i<8;i++)buffer[i]=0;return 8;}return 0;}\nvoid tud_hid_set_report_cb(uint8_t instance,uint8_t id,hid_report_type_t type,uint8_t const*buffer,uint16_t n){(void)instance;(void)id;if(type==HID_REPORT_TYPE_OUTPUT&&n==1)usb_leds=buffer[0];}\nint main(void){\n cf_gpio_mode(KEY_A,CF_INPUT_PULLUP);cf_gpio_mode(KEY_B,CF_INPUT_PULLUP);\n cf_gpio_mode(KEY_SHIFT,CF_INPUT_PULLUP);cf_gpio_mode(LED_BUILTIN,CF_OUTPUT);\n tusb_init();unsigned previous=255;\n while(1){\n  wirevo_usb_poll();tud_task();\n  unsigned ready=tud_hid_ready();\n  unsigned state=(!cf_gpio_read(KEY_A))|((!cf_gpio_read(KEY_B))<<1)|((!cf_gpio_read(KEY_SHIFT))<<2);\n  if(!tud_mounted()||tud_suspended())previous=255;\n  if(ready&&state!=previous){\n   uint8_t keys[6]={0};unsigned n=0;if(state&1)keys[n++]=HID_KEY_A;if(state&2)keys[n++]=HID_KEY_B;\n   if(tud_hid_keyboard_report(0,(state&4)?KEYBOARD_MODIFIER_LEFTSHIFT:0,keys)){previous=state;reports++;}\n  }\n  cf_gpio_write(LED_BUILTIN,((usb_leds&2)!=0)^BOARD_LED_ACTIVE_LOW);\n }\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 100,
+      "y": 95,
+      "rotation": 0,
+      "params": {
+        "model": "xiao-nrf52840"
+      }
+    },
+    {
+      "id": "keyA",
+      "type": "tact6",
+      "x": 420,
+      "y": 100,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    },
+    {
+      "id": "keyB",
+      "type": "tact6",
+      "x": 420,
+      "y": 220,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    },
+    {
+      "id": "keyShift",
+      "type": "tact6",
+      "x": 420,
+      "y": 340,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "nrf-w0",
+      "from": "mcu:P0.03",
+      "to": "keyA:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "nrf-w1",
+      "from": "mcu:GND",
+      "to": "keyA:2",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "nrf-w2",
+      "from": "mcu:P0.28",
+      "to": "keyB:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "nrf-w3",
+      "from": "mcu:GND",
+      "to": "keyB:2",
+      "color": "#64748b",
+      "points": []
+    },
+    {
+      "id": "nrf-w4",
+      "from": "mcu:P0.29",
+      "to": "keyShift:1",
+      "color": "#14b8a6",
+      "points": []
+    },
+    {
+      "id": "nrf-w5",
+      "from": "mcu:GND",
+      "to": "keyShift:2",
+      "color": "#64748b",
+      "points": []
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "P0.26",
+    "tracePins": [
+      "P0.04",
+      "P0.05",
+      "P1.11"
+    ]
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "board_pins.h",
+      "content": "#pragma once\n#define BOARD_BUTTON 3\n#define BOARD_CS 28\n#define KEY_A 3u\n#define KEY_B 28u\n#define KEY_SHIFT 29u\n"
+    },
+    {
+      "name": "usb_descriptors.c",
+      "content": "#include <tusb.h>\nstatic uint8_t const report[]={TUD_HID_REPORT_DESC_KEYBOARD()};\nstatic tusb_desc_device_t const device={.bLength=sizeof(tusb_desc_device_t),.bDescriptorType=TUSB_DESC_DEVICE,.bcdUSB=0x0200,.bMaxPacketSize0=64,.idVendor=0xcafe,.idProduct=0x4013,.bcdDevice=0x0100,.bNumConfigurations=1};\nstatic uint8_t const config[]={TUD_CONFIG_DESCRIPTOR(1,1,0,TUD_CONFIG_DESC_LEN+TUD_HID_DESC_LEN,0,100),TUD_HID_DESCRIPTOR(0,0,HID_ITF_PROTOCOL_KEYBOARD,sizeof(report),0x81,8,10)};\nuint8_t const *tud_descriptor_device_cb(void){return (uint8_t const*)&device;}\nuint8_t const *tud_descriptor_configuration_cb(uint8_t index){(void)index;return config;}\nuint8_t const *tud_hid_descriptor_report_cb(uint8_t instance){(void)instance;return report;}\nuint16_t const *tud_descriptor_string_cb(uint8_t index,uint16_t language){(void)index;(void)language;static const uint16_t s[]={0x0304,0x0409};return s;}\n"
+    }
+  ]
+}

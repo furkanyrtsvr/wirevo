@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.112.2**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.113.0**.
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
@@ -65,3 +65,7 @@ Yerel geliştirme: http://127.0.0.1:4173 . `src/` kaynakları, `dist/` web çal�
 ## Belge düzeni
 
 Başlangıç noktası bu README, kullanım kılavuzu ve güncel destek sayfasıdır. Eski sürüm notları tarihçedir; yeni kurulum talimatı veya yeniden bulunmuş eksik listesi değildir. [Eski Pico kayıtları](docs/history/PICO_SUPPORT_TO_0.109.md). 0.95–0.98 dönemindeki yerel SDK yardımcıları kaldırılmıştır.
+
+## nRF52840 TinyUSB C17 klavye (0.113.0)
+
+Özgün TinyUSB 0.18.0 core/control/HID kaynakları tarayıcıda ARM firmware olarak derlenir. Yeni TinyUSB C17 örneği dört kartta gerçek tact/GPIO ile çalışır; descriptor ve HID callback’leri C kaynaklarındadır. USB denetleyicisi Wirevo sanal DCD portudur, Nordic USBD/RADIO değildir. Özgün Bluetooth/SoftDevice/Zephyr/ZMK, eşleştirme ve güvenlik bu sürümde tamamlanmamıştır. [Kullanım ve sınırlar](dist/notices/NRF52-TINYUSB.md). Yalnız yeni kontrol: `node --test tests/nrf52-tinyusb113.test.mjs`.
