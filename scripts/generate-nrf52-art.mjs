@@ -1,18 +1,15 @@
-import {readFile,writeFile} from 'node:fs/promises';
+import {superminiVector} from './art/supermini-vector.mjs';
+import {writeFile} from 'node:fs/promises';
 import {NRF52_BOARDS} from '../dist/nrf52-boards.js';
 const defs=`<defs><linearGradient id="usb" x2="0" y2="1"><stop stop-color="#f3f4ef"/><stop offset=".3" stop-color="#a0a6a3"/><stop offset=".65" stop-color="#e6e8e2"/><stop offset="1" stop-color="#858e8a"/></linearGradient><linearGradient id="shield" x2=".8" y2="1"><stop stop-color="#e3e4df"/><stop offset=".45" stop-color="#b7bdb9"/><stop offset="1" stop-color="#d9dcd7"/></linearGradient><linearGradient id="chip" x2="1" y2="1"><stop stop-color="#343b3a"/><stop offset="1" stop-color="#181d1d"/></linearGradient></defs>`;
 const text=(x,y,s,size=2.5,color='#e2e1ce',extra='')=>`<text x="${x}" y="${y}" font-family="Arial,sans-serif" font-size="${size}" fill="${color}" ${extra}>${s}</text>`;
 function passive(x,y,w=3.7,h=1.7,body='#565b52',rotation=0){return `<g transform="translate(${x} ${y}) rotate(${rotation})"><rect width="${w}" height="${h}" rx=".35" fill="#aebbb7"/><rect x=".65" width="${w-1.3}" height="${h}" fill="${body}"/><path d="M.4 .3h.4m${w-1.5} 0h.5" stroke="#e5e8e0" stroke-width=".3"/></g>`;}
 function chip(x,y,w,h,label,rotation=0){let pins='';for(let i=2;i<w-1;i+=2)for(const yy of [-.9,h])pins+=`<rect x="${i}" y="${yy}" width=".7" height="1" fill="#b2b8ae"/>`;for(let i=2;i<h-1;i+=2)for(const xx of [-.9,w])pins+=`<rect x="${xx}" y="${i}" width="1" height=".7" fill="#b2b8ae"/>`;return`<g transform="translate(${x} ${y}) rotate(${rotation} ${w/2} ${h/2})">${pins}<rect width="${w}" height="${h}" rx=".7" fill="url(#chip)" stroke="#3e4745" stroke-width=".4"/><circle cx="2" cy="2" r=".6" fill="#84938b"/>${text(w/2,h/2-1,'NORDIC',2,'#929b93','text-anchor="middle"')}${text(w/2,h/2+3,label,2,'#929b93','text-anchor="middle"')}</g>`;}
-// The user's supplied photo is preserved byte-for-byte; SVG crops out the loose headers.
-const superminiPhoto=(await readFile(new URL('./art/supermini-reference.webp',import.meta.url))).toString('base64');
 for(const b of Object.values(NRF52_BOARDS)){
  if(b.id==='nrf52840-supermini'){
-  const sy=115.2/1032,sx=sy,origin=46-1052.5*sx;
-  await writeFile(new URL('../dist/assets/'+b.asset,import.meta.url),`<svg xmlns="http://www.w3.org/2000/svg" width="92" height="146" viewBox="0 0 92 146"><title>Pro Micro nRF52840 · SuperMini — kullanıcının sağladığı siyah kart fotoğrafı</title><defs><clipPath id="board"><rect width="92" height="141"/></clipPath></defs><g clip-path="url(#board)"><image href="data:image/webp;base64,${superminiPhoto}" x="${origin}" y="${18-503*sy}" width="${2048*sx}" height="${2048*sy}" preserveAspectRatio="none"/></g></svg>`);
+  await writeFile(new URL('../dist/assets/'+b.asset,import.meta.url),superminiVector());
   continue;
  }
-
  const xiao=b.id.startsWith('xiao'),red=b.id==='nrf52840-supermini',sense=b.id.endsWith('sense'),W=b.width,H=b.height,bg=red?'#b92530':'#202b2c',edge=red?'#e46f6d':'#5d6962';let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><title>${b.name} · referansa göre çizilmiş kart / ${b.revision}</title>${defs}<rect x="1" y="6" width="${W-2}" height="${H-7}" rx="${xiao?7:3}" fill="${bg}" stroke="${edge}" stroke-width="1"/><rect x="2.3" y="7.3" width="${W-4.6}" height="${H-9.6}" rx="${xiao?6:2}" fill="none" stroke="${red?'#d94946':'#394947'}" stroke-width=".4"/>`;
  // Subtle copper routing rather than decorative blocks behind labels.
  for(let i=0;i<(xiao?7:13);i++){const y=18+i*9.6;s+=`<path d="M10 ${y}h${7+i%3*2}l${xiao?3:9} ${xiao?2:6}v${xiao?4:9} M${W-10} ${y}h-${8+i%4}l-${xiao?3:10} ${xiao?2:6}" fill="none" stroke="${red?'#d94746':'#47544a'}" stroke-width=".45" opacity=".6"/>`;}

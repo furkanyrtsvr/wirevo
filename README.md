@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.112.0**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.112.1**.
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
