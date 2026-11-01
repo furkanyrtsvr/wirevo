@@ -4,6 +4,23 @@ Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ay�
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
+## nRF52840 kartları — 0.111.0
+
+Pro Micro nRF52840 / kırmızı SuperMini, nice!nano v2, Seeed XIAO nRF52840 ve XIAO nRF52840 Sense ayrı pinout ve fotoğraflarla karşılaştırılan SVG görsellerle eklendi. Klonların aynı bağlantıya sahip olduğu varsayılmaz. Pin adları dışarıda okunabilir; kart LED’i ve reset alanı işlevseldir.
+
+**Kullanım:** Dosya → Yeni proje → Nordic nRF52840 → kart → C17 → örnek → Derle → Çalıştır. Ek uygulama / servis / port / anahtar / zorunlu sunucu derlemesi yoktur. Projeler menüsündeki Sensör laboratuvarı, TWIM SHT31 + EEPROM + LCD16×2, SPIM MCP3008, SAADC, PWM ve UART’ı aynı gerçek C firmware’iyle kullanır. Çoklu `.c/.h`, JSON/ZIP kayıt, breakpoint, satır adımı ve skaler değişken izleme bağlandı.
+
+Bu bir **sınırlı eğitim modeli**: GPIO/GPIOTE, TIMER/NVIC ve SAADC/PWM/UART/UARTE/TWIM/SPIM alt kümeleri, nRF52840’a özel MMIO ve 1 MiB flash / 256 KiB SRAM ile yürütülür. Tam Nordic SDK, BLE/SoftDevice, Zephyr/ZMK, USB HID, güç yönetimi veya Sense dahili IMU/PDM desteği değildir. Kütüphanedeki tüm modüllerin tüm modları doğrulanmış sayılmaz.
+
+[Pinout kaynakları, adım adım kullanım ve somut destek sınırları](dist/notices/NRF52-MODEL.md) · [Kart görsel galerisi](https://wirevo-furka.equalwood4.chatgpt.site/notices/nrf52-boards.html)
+
+Yalnız yeni nRF52840 doğrulamaları: `node --test tests/nrf52-v111.test.mjs`. Eski testler bu sürüm kapsamında tekrar çalıştırılmadı.
+
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.110.0**.
+
+**[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
+
+
 ## Başlangıç
 
 1. Güncel, WebAssembly destekleyen bir masaüstü tarayıcıda Wirevo’yu açın.

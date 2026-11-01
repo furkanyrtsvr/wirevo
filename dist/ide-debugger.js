@@ -1,13 +1,13 @@
-import {isPico} from './unified-project.js';
+import {isPico,isNRF52} from './unified-project.js';
 export function installDebugger({editor,getProject,getSnapshot,getState,openSource,send,run,pause,save,onError,showDebug}){
- const toolbar=document.createElement('div');toolbar.className='ide-toolbar debugger-toolbar';toolbar.innerHTML='<strong>Pico C debug</strong><button data-break>● F9</button><button data-step>Adım F10</button><button data-pause title="Duraklat">Ⅱ</button><button data-continue title="Devam et">▶</button><form><input aria-label="İzlenecek C değişkeni" placeholder="Değişken adı" maxlength="80"><button>İzle</button></form><button data-clear>Temizle</button><span data-status role="status"></span>';
+ const toolbar=document.createElement('div');toolbar.className='ide-toolbar debugger-toolbar';toolbar.innerHTML='<strong>C kaynak debug</strong><button data-break>● F9</button><button data-step>Adım F10</button><button data-pause title="Duraklat">Ⅱ</button><button data-continue title="Devam et">▶</button><form><input aria-label="İzlenecek C değişkeni" placeholder="Değişken adı" maxlength="80"><button>İzle</button></form><button data-clear>Temizle</button><span data-status role="status"></span>';
  const panel=document.createElement('div');panel.className='ide-debug-values';panel.hidden=true;document.getElementById('editor').before(toolbar,panel);let fingerprint='',lastStop='';
  const config=()=>{const p=getProject();p.settings.debugger??={breakpoints:[],watches:[]};return p.settings.debugger;};
- const supported=()=>isPico(getProject())&&getProject().language==='c';
+ const supported=()=>(isPico(getProject())||isNRF52(getProject()))&&getProject().language==='c';
  const sync=()=>{save();send({type:'debug-config',...config()});fingerprint='';render();};
- function toggle(file,line){if(!supported())return onError('Gerçek kaynak debugger şu anda Pico C için kullanılabilir.');const c=config(),i=c.breakpoints.findIndex(b=>b.file===file&&b.line===line);if(i<0){if(c.breakpoints.length>=256)return onError('En fazla 256 breakpoint.');c.breakpoints.push({file,line});}else c.breakpoints.splice(i,1);sync();}
+ function toggle(file,line){if(!supported())return onError('Gerçek kaynak debugger şu anda Pico / nRF52840 C için kullanılabilir.');const c=config(),i=c.breakpoints.findIndex(b=>b.file===file&&b.line===line);if(i<0){if(c.breakpoints.length>=256)return onError('En fazla 256 breakpoint.');c.breakpoints.push({file,line});}else c.breakpoints.splice(i,1);sync();}
  editor.onBreakpoint(toggle);toolbar.querySelector('[data-break]').onclick=()=>{const c=editor.getCursor();toggle(c.file,c.line);};
- const step=()=>{if(!supported())return;if(!getSnapshot()?.debug?.available)return onError('Önce Pico C kodunu derleyip çalıştırın; ardından duraklatın.');pause();send({type:'debug-step'});showDebug();};
+ const step=()=>{if(!supported())return;if(!getSnapshot()?.debug?.available)return onError('Önce C kodunu derleyip çalıştırın; ardından duraklatın.');pause();send({type:'debug-step'});showDebug();};
  toolbar.querySelector('[data-step]').onclick=step;toolbar.querySelector('[data-pause]').onclick=pause;toolbar.querySelector('[data-continue]').onclick=()=>run();toolbar.querySelector('[data-clear]').onclick=()=>{config().breakpoints=[];sync();};
  toolbar.querySelector('form').onsubmit=e=>{e.preventDefault();const input=e.currentTarget.querySelector('input'),name=input.value.trim();if(!/^[A-Za-z_]\w*$/.test(name))return onError('Yalnız C değişken adı girin (örnek: sayac).');const c=config();if(!c.watches.includes(name)&&c.watches.length<64)c.watches.push(name);input.value='';sync();};
  document.addEventListener('keydown',e=>{if(e.key==='F10'&&supported()){e.preventDefault();step();}});
