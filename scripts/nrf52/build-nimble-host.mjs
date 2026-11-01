@@ -1,0 +1,13 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {compileNRF52} from '../../src/nrf52-compiler.js';
+const source=await readFile(new URL('../../src/nrf52/nimble-port/keyboard.c',import.meta.url),'utf8');
+await writeFile(new URL('../../dist/nrf52-nimble-example.js',import.meta.url),'// Apache NimBLE 1.8.0 HIDS example; Wirevo virtual HCI/NPL port.\nexport const NIMBLE_KEYBOARD_MAIN='+JSON.stringify(source)+';\n');
+const module=await WebAssembly.compile(gunzipSync(await readFile(new URL('../../dist/esp32/compiler/clang.wasm.gz',import.meta.url))));
+const main='#include "board_pins.h"\n'+source,extras=[{name:'board_pins.h',content:'#define KEY_A 22u\n#define KEY_B 24u\n#define KEY_SHIFT 11u\n'}];
+const f=await compileNRF52(module,main,'nrf52840-supermini',extras);
+await writeFile(new URL('../../dist/nrf52-nimble-host.bin',import.meta.url),f.image);
+const sha=createHash('sha256').update(f.image).digest('hex');
+await writeFile(new URL('../../dist/nrf52-nimble-host-integrity.js',import.meta.url),'export const NIMBLE_HOST_SHA256='+JSON.stringify(sha)+';\n');
+console.log('Actual NimBLE central firmware:',f.flashBytes,'flash bytes');

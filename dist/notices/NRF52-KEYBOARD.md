@@ -1,3 +1,5 @@
+> 0.114.0: Yeni **gerçek NimBLE C17 Secure Connections / şifreli HIDS** profili eklendi. [Kullanım ve kesin sınırlar](NRF52-NIMBLE.md). Aşağıdaki eski örneğin kapsamı ayrı değerlendirilir; SoftDevice/ZMK veya fiziksel radyo uyumluluğu iddiası yoktur.
+
 > 0.113.0: Özgün TinyUSB C17 klavye profili ayrıca eklendi. [Yeni USB yığını, kullanım ve sınırlar](NRF52-TINYUSB.md). Aşağıdaki Wirevo API örneği ayrı sanal servistir; BLE/SoftDevice desteği genişletilmiş değildir.
 
 # nRF52840 C17 — sanal USB HID / Bluetooth LE klavye

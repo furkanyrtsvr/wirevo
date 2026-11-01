@@ -1,3 +1,5 @@
+> 0.114.0: Yeni **gerçek NimBLE C17 Secure Connections / şifreli HIDS** profili eklendi. [Kullanım ve kesin sınırlar](NRF52-NIMBLE.md). Aşağıdaki eski örneğin kapsamı ayrı değerlendirilir; SoftDevice/ZMK veya fiziksel radyo uyumluluğu iddiası yoktur.
+
 # nRF52840 — TinyUSB C17 klavye profili (0.113.0)
 
 ## Gerçekten ne değişti?

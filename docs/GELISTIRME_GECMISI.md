@@ -1,3 +1,7 @@
+## 0.114.0 — NimBLE güvenli BLE klavye
+
+Dört nRF52840 kartına gerçek NimBLE C host, sayısal karşılaştırma, AES-CCM ve RAM bond yeniden bağlantısı eklendi. Sanal HCI sınırı ve kullanım: [NRF52-NIMBLE](../dist/notices/NRF52-NIMBLE.md). Yalnız yeni testler doğrulandı; ayrıntı: [sürüm notu](RELEASE_0.114.md).
+
 # Wirevo
 
 ## Wirevo 0.80 · Kalan katalogda fotoğraf eşleştirmesi

@@ -1,8 +1,14 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.113.0**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.114.0**.
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
+
+## 0.114.0 — NimBLE güvenli BLE klavye
+
+Dört nRF52840 profiline gerçek Apache NimBLE C host yığını, kullanıcı onaylı sayısal karşılaştırma ve AES-CCM şifreli HIDS eklendi. **Yeni proje → Nordic nRF52840 → C17 → NimBLE güvenli BLE klavye → Derle → Çalıştır → USB / BLE Klavye → BLE bağlan**. Ek uygulama veya servis gerekmez. Bond anahtarları yalnız çalışan oturum RAM’indedir; reset veya yenileme yeniden eşleştirme gerektirir.
+
+Alıcı da gerçek C firmware çalıştırır; denetleyici sanal HCI’dir. Fiziksel Bluetooth, Nordic RADIO, SoftDevice veya ZMK desteği değildir. [Kullanım, kaynaklar ve kesin sınırlar](dist/notices/NRF52-NIMBLE.md). Yalnız yeni `tests/nrf52-nimble114.test.mjs` doğrulanır; eski testler çalıştırılmaz.
 
 ## nRF52840 kartları — 0.111.0
 

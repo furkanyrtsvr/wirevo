@@ -13,7 +13,9 @@ await build({entryPoints:['src/esp-compiler.js'],outfile:'dist/esp-compiler.js',
 console.log('ESP Clang WASI adapter built.');
 await build({entryPoints:['src/stm32-compiler.js'],outfile:'dist/stm32-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
 await import('./nrf52/generate-tinyusb-package.mjs');
-await build({entryPoints:['src/nrf52-compiler.js'],outfile:'dist/nrf52-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
+await import('./nrf52/build-nimble-package.mjs');
+await import('./nrf52/build-nimble-host.mjs');
+await build({entryPoints:['src/nrf52-compiler.js'],outfile:'dist/nrf52-compiler.js',bundle:true,external:['../dist/nrf52-nimble-sdk.js'],format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
 await build({entryPoints:['src/tiva-compiler.js'],outfile:'dist/tiva-compiler.js',bundle:true,format:'esm',minify:true,target:['chrome100','firefox100','safari16']});
 await import('./generate-tiva-art.mjs');
 await import('./generate-contact-art.mjs');
