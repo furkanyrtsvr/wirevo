@@ -53,3 +53,7 @@ test('114 newly implemented wide REV family executes inside the ARM CPU',async()
  const f=await compileNRF52(module,source),r=await new NRF52Runtime(f.image,'nrf52840-supermini').load();r.setDebugInfo(f.debugInfo);const v=n=>r.debugger.readVariable(f.debugInfo.variables.find(v=>v.name===n)).value;try{r.step(10000);assert.equal(v('done'),1);assert.equal(v('word')>>>0,0x84332211);assert.equal(v('half')>>>0,0x22118433);assert.equal(v('signed_half')>>>0,0xffff8433);}finally{r.dispose();}
 });
 test('114 encrypted link cannot silently downgrade to plaintext ACL',async()=>{const x=await setup();try{await connect(x);await confirm(x);x.r.hci.acl([1,0,4,0,0,0,4,0],false);assert.equal(x.r.hci.connected,false);assert.ok(x.r.hci.trace.includes('PLAINTEXT REJECTED'));assert.equal(x.session.snapshot().authenticated,false);}finally{x.r.dispose();}});
+
+test('114 hosted compiler loads the SDK beside itself at the public root',async()=>{
+ const text=readFileSync(new URL('../dist/nrf52-compiler.js',import.meta.url),'utf8');const imports=[...text.matchAll(/import\(["']([^"']*nrf52-nimble-sdk\.js)["']\)/g)];assert.equal(imports.length,1);const url=new URL(imports[0][1],'https://wirevo.example/nrf52-compiler.js');assert.equal(url.pathname,'/nrf52-nimble-sdk.js','public static root must not gain a /dist directory');const file=new URL('../dist/'+url.pathname.slice(1),import.meta.url);assert.ok(readFileSync(file).length>1000);
+});
