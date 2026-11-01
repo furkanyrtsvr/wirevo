@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.110.0**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.111.1**.
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
@@ -16,11 +16,6 @@ Bu bir **sınırlı eğitim modeli**: GPIO/GPIOTE, TIMER/NVIC ve SAADC/PWM/UART/
 
 Yalnız yeni nRF52840 doğrulamaları: `node --test tests/nrf52-v111.test.mjs`. Eski testler bu sürüm kapsamında tekrar çalıştırılmadı.
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.110.0**.
-
-**[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
-
-
 ## Başlangıç
 
 1. Güncel, WebAssembly destekleyen bir masaüstü tarayıcıda Wirevo’yu açın.
@@ -32,7 +27,7 @@ Kullanıcı için ek masaüstü uygulaması, Python yardımcısı, yerel servis,
 
 ## Kartlar ve çalışma kapsamı
 
-38 kart profili: 6 Arduino/AVR, 14 ESP32, 9 STM32, 1 TM4C123 ve 8 Pico. Ortak devre alanı, çok dosyalı kaynaklar, seri terminal, ölçüm ve desteklenen profillerde hata ayıklama bulunur. Dil ve çevrebirim kapsamı karta göre değişir. Katalogdaki 126 bileşen tanımı, bütün kart/kütüphane birleşimlerinin doğrulandığı anlamına gelmez.
+42 kart profili: 6 Arduino/AVR, 14 ESP32, 9 STM32, 1 TM4C123, 8 Pico ve 4 nRF52840. Ortak devre alanı, çok dosyalı kaynaklar, seri terminal, ölçüm ve desteklenen profillerde hata ayıklama bulunur. Dil ve çevrebirim kapsamı karta göre değişir. Katalogdaki 126 bileşen tanımı, bütün kart/kütüphane birleşimlerinin doğrulandığı anlamına gelmez.
 
 - [Uygulama kılavuzu: bağlantılar, kod, debug, kaydetme ve sorun giderme](dist/guide.html)
 - [Güncel Pico kapsamı ve somut sınırlar](docs/PICO_SUPPORT.md)
