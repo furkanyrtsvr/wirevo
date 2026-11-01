@@ -1,3 +1,5 @@
+> Güncel ek: 0.112.0 ile **wirevo_keyboard.h üzerinden sanal USB/BLE HID klavye** eklendi. Aşağıdaki ilk sürümdeki USB/BLE kapsam dışı notları, özgün USBD/RADIO/SoftDevice sürücü yürütümü içindir. [Güncel klavye API, kullanım ve sınırlar](NRF52-KEYBOARD.md).
+
 # nRF52840 — Wirevo 0.111.0
 
 Bu sürüm eğitim ve C programı/devre etkileşimi içindir. %100 silikon, tam Nordic SDK veya gerçek Bluetooth radyo emülasyonu değildir.

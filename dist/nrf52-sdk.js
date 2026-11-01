@@ -1,4 +1,5 @@
 // Freestanding Wirevo helpers; Nordic MDK register layout is separately attributed.
+import {NRF52_KEYBOARD_HEADER} from './nrf52-keyboard-sdk.js';
 import {NRF_REGISTER_HEADERS} from './nrf52-register-headers.js';
 import {C_HEADERS} from './c-hal.js';
 const gpio=`#pragma once
@@ -13,7 +14,7 @@ static inline unsigned nrf_gpio_pin_read(unsigned p){return(cf_port(p)->IN>>(p%3
 static inline void nrf_gpio_pin_write(unsigned p,unsigned v){if(v)nrf_gpio_pin_set(p);else nrf_gpio_pin_clear(p);}
 static inline void nrf_gpio_pin_toggle(unsigned p){nrf_gpio_pin_write(p,!((cf_port(p)->OUT>>(p%32))&1));}
 `;
-export function nrfHeaders(b){const pin=n=>+n[1]*32+(+n.slice(3));return{...NRF_REGISTER_HEADERS,...Object.fromEntries(['stdint.h','stddef.h','stdbool.h','stdio.h'].map(k=>[k,C_HEADERS[k]])),'nrf_gpio.h':gpio,'cf_lcd.h':lcd,'nrf_delay.h':'#pragma once\n#include <cf_hal.h>\n#define nrf_delay_us cf_delay_us\n#define nrf_delay_ms cf_delay_ms\n','cf_hal.h':`#pragma once
+export function nrfHeaders(b){const pin=n=>+n[1]*32+(+n.slice(3));return{'wirevo_keyboard.h':NRF52_KEYBOARD_HEADER,...NRF_REGISTER_HEADERS,...Object.fromEntries(['stdint.h','stddef.h','stdbool.h','stdio.h'].map(k=>[k,C_HEADERS[k]])),'nrf_gpio.h':gpio,'cf_lcd.h':lcd,'nrf_delay.h':'#pragma once\n#include <cf_hal.h>\n#define nrf_delay_us cf_delay_us\n#define nrf_delay_ms cf_delay_ms\n','cf_hal.h':`#pragma once
 #include <stdint.h>
 #include <stdbool.h>
 #include <nrf_gpio.h>

@@ -1,6 +1,6 @@
 # Wirevo
 
-Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.111.2**.
+Tarayıcıda devre kurma, kod derleme, mikrodenetleyici simülasyonu ve hata ayıklama. **0.112.0**.
 
 **[Uygulamayı aç](https://wirevo-furka.equalwood4.chatgpt.site/)** · **[Kullanım kılavuzu](https://wirevo-furka.equalwood4.chatgpt.site/guide.html)** · **[PDF indir](dist/manual/Wirevo-Kullanim-Kilavuzu-v0.110.0.pdf)**
 
@@ -10,11 +10,13 @@ Pro Micro nRF52840 / kırmızı SuperMini, nice!nano v2, Seeed XIAO nRF52840 ve 
 
 **Kullanım:** Dosya → Yeni proje → Nordic nRF52840 → kart → C17 → örnek → Derle → Çalıştır. Ek uygulama / servis / port / anahtar / zorunlu sunucu derlemesi yoktur. Projeler menüsündeki Sensör laboratuvarı, TWIM SHT31 + EEPROM + LCD16×2, SPIM MCP3008, SAADC, PWM ve UART’ı aynı gerçek C firmware’iyle kullanır. Çoklu `.c/.h`, JSON/ZIP kayıt, breakpoint, satır adımı ve skaler değişken izleme bağlandı.
 
-Bu bir **sınırlı eğitim modeli**: GPIO/GPIOTE, TIMER/NVIC ve SAADC/PWM/UART/UARTE/TWIM/SPIM alt kümeleri, nRF52840’a özel MMIO ve 1 MiB flash / 256 KiB SRAM ile yürütülür. Tam Nordic SDK, BLE/SoftDevice, Zephyr/ZMK, USB HID, güç yönetimi veya Sense dahili IMU/PDM desteği değildir. Kütüphanedeki tüm modüllerin tüm modları doğrulanmış sayılmaz.
+Bu bir **sınırlı eğitim modeli**: GPIO/GPIOTE, TIMER/NVIC ve SAADC/PWM/UART/UARTE/TWIM/SPIM alt kümeleri, nRF52840’a özel MMIO ve 1 MiB flash / 256 KiB SRAM ile yürütülür. Tam Nordic SDK, özgün BLE/SoftDevice, Zephyr/ZMK, nRF USBD/RADIO, güç yönetimi veya Sense dahili IMU/PDM desteği değildir. Kütüphanedeki tüm modüllerin tüm modları doğrulanmış sayılmaz.
 
 [Pinout kaynakları, adım adım kullanım ve somut destek sınırları](dist/notices/NRF52-MODEL.md) · [Kart görsel galerisi](https://wirevo-furka.equalwood4.chatgpt.site/notices/nrf52-boards.html)
 
-Yalnız yeni nRF52840 doğrulamaları: `node --test tests/nrf52-v111.test.mjs`. Eski testler bu sürüm kapsamında tekrar çalıştırılmadı.
+0.112.0: **USB / BLE Klavye** paneli ve `wirevo_keyboard.h` ile sanal USB HID / BLE HIDS alıcıları eklendi. Gerçek C17 firmware, tact GPIO girişlerinden modifier / altı tuş / release raporu üretir; Caps Lock geri bildirimi kart LED’ini kodla değiştirir. BLE reklam / bağlantı ve bildirim aboneliği ayrı izlenir. Gerçek USB aygıtı veya RF bağlantısı oluşturulmaz; tam TinyUSB / SoftDevice / ZMK desteği değildir. [Kullanım, C API ve sınırlar](dist/notices/NRF52-KEYBOARD.md).
+
+Bu sürümde yalnız yeni klavye doğrulamaları: `node --test tests/nrf52-keyboard112.test.mjs`. Eski testler bu sürüm kapsamında tekrar çalıştırılmadı.
 
 ## Başlangıç
 

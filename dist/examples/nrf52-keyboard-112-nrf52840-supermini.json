@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 3,
+  "name": "nRF52840 USB / BLE klavye",
+  "model": "custom",
+  "code": "#include \"board_pins.h\"\n#include <cf_hal.h>\n#include <wirevo_keyboard.h>\n/* Wirevo virtual USB/BLE receiver; no physical USB or radio connection. */\nvolatile unsigned reports,errors;\nint main(void){\n cf_gpio_mode(KEY_A,CF_INPUT_PULLUP); cf_gpio_mode(KEY_B,CF_INPUT_PULLUP);\n cf_gpio_mode(KEY_SHIFT,CF_INPUT_PULLUP); cf_gpio_mode(LED_BUILTIN,CF_OUTPUT);\n cf_usb_keyboard_begin(); cf_ble_keyboard_begin(\"Wirevo nRF52840\");\n unsigned previous=255,last_ready=255;\n while(1){\n  unsigned state=(!cf_gpio_read(KEY_A))|((!cf_gpio_read(KEY_B))<<1)|((!cf_gpio_read(KEY_SHIFT))<<2);\n  unsigned ready=cf_usb_keyboard_ready()|(cf_ble_keyboard_ready()<<1);\n  if(state!=previous||ready!=last_ready){\n   uint8_t keys[6]={0};unsigned n=0;\n   if(state&1)keys[n++]=CF_HID_KEY_A;\n   if(state&2)keys[n++]=CF_HID_KEY_B;\n   unsigned modifier=(state&4)?CF_HID_LEFT_SHIFT:0;\n   if(ready&1){if(cf_usb_keyboard_report(modifier,keys))errors++;else reports++;}\n   if(ready&2){if(cf_ble_keyboard_report(modifier,keys))errors++;else reports++;}\n   previous=state;last_ready=ready;\n  }\n  unsigned caps=(cf_usb_keyboard_leds()|cf_ble_keyboard_leds())&2;\n  cf_gpio_write(LED_BUILTIN,(caps!=0)^BOARD_LED_ACTIVE_LOW);\n  cf_delay_us(100);\n }\n}\n",
+  "components": [
+    {
+      "id": "mcu",
+      "type": "board",
+      "x": 100,
+      "y": 95,
+      "rotation": 0,
+      "params": {
+        "model": "nrf52840-supermini"
+      }
+    },
+    {
+      "id": "keyA",
+      "type": "tact6",
+      "x": 420,
+      "y": 100,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    },
+    {
+      "id": "keyB",
+      "type": "tact6",
+      "x": 420,
+      "y": 220,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    },
+    {
+      "id": "keyShift",
+      "type": "tact6",
+      "x": 420,
+      "y": 340,
+      "rotation": 0,
+      "params": {
+        "pressed": false
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "nrf-w0",
+      "from": "mcu:P0.22",
+      "to": "keyA:1",
+      "color": "#3b82f6",
+      "points": [
+        {
+          "x": 76,
+          "y": 210.02
+        },
+        {
+          "x": 76,
+          "y": 71
+        },
+        {
+          "x": 396,
+          "y": 71
+        },
+        {
+          "x": 396,
+          "y": 116.74000000000001
+        }
+      ]
+    },
+    {
+      "id": "nrf-w1",
+      "from": "mcu:GND",
+      "to": "keyA:2",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 60,
+          "y": 119.3
+        },
+        {
+          "x": 60,
+          "y": 55
+        },
+        {
+          "x": 380,
+          "y": 55
+        },
+        {
+          "x": 380,
+          "y": 142.66
+        }
+      ]
+    },
+    {
+      "id": "nrf-w2",
+      "from": "mcu:P0.24",
+      "to": "keyB:1",
+      "color": "#22c55e",
+      "points": [
+        {
+          "x": 76,
+          "y": 222.98000000000002
+        },
+        {
+          "x": 76,
+          "y": 316.1
+        },
+        {
+          "x": 396,
+          "y": 316.1
+        },
+        {
+          "x": 396,
+          "y": 236.74
+        }
+      ]
+    },
+    {
+      "id": "nrf-w3",
+      "from": "mcu:GND",
+      "to": "keyB:2",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 60,
+          "y": 119.3
+        },
+        {
+          "x": 60,
+          "y": 332.1
+        },
+        {
+          "x": 380,
+          "y": 332.1
+        },
+        {
+          "x": 380,
+          "y": 262.66
+        }
+      ]
+    },
+    {
+      "id": "nrf-w4",
+      "from": "mcu:P0.11",
+      "to": "keyShift:1",
+      "color": "#8b5cf6",
+      "points": [
+        {
+          "x": 44,
+          "y": 248.9
+        },
+        {
+          "x": 44,
+          "y": 356.74
+        }
+      ]
+    },
+    {
+      "id": "nrf-w5",
+      "from": "mcu:GND",
+      "to": "keyShift:2",
+      "color": "#64748b",
+      "points": [
+        {
+          "x": 28,
+          "y": 119.3
+        },
+        {
+          "x": 28,
+          "y": 382.66
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "moisture": 45,
+    "threshold": 35,
+    "pot": 60,
+    "pressed": false,
+    "probe": "P0.15",
+    "tracePins": [
+      "P0.17",
+      "P0.20",
+      "P0.06"
+    ]
+  },
+  "language": "c",
+  "files": [
+    {
+      "name": "board_pins.h",
+      "content": "#pragma once\n#define BOARD_BUTTON 22\n#define BOARD_CS 24\n#define KEY_A 22u\n#define KEY_B 24u\n#define KEY_SHIFT 11u\n"
+    }
+  ]
+}
