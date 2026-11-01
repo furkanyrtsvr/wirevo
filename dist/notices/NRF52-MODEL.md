@@ -11,7 +11,7 @@ Bu sürüm eğitim ve C programı/devre etkileşimi içindir. %100 silikon, tam 
 | XIAO nRF52840 | Seeed XIAO v1.1 şeması | 14 kenar pini; D0..D10 farklı native pinlerdir; aktif LOW RGB |
 | XIAO nRF52840 Sense | Seeed Sense v1.1 şeması | Aynı dış pin dizilimi; fiziksel mikrofon ayrıntısı; dahili IMU/PDM bu sürümde çalışmaz |
 
-Görseller gerçek kart fotoğrafları ve pinout ile karşılaştırılmış özgün SVG çizimleridir. Fotoğraf değildir; bakır izleri ve küçük pasifler temsilidir. Pin etiketleri dışarıda okunabilir native adlarla gösterilir. [Kart görselleri](nrf52-boards.html).
+SuperMini için kullanıcının sağladığı gerçek fotoğraf kullanılır. Diğer kartlar fotoğraf ve pinout ile karşılaştırılmış özgün SVG çizimleridir; bunların bakır izleri ve küçük pasifleri temsilidir. Pin etiketleri dışarıda okunabilir native adlarla gösterilir. [Kart görselleri](nrf52-boards.html).
 
 nice!nano/SuperMini üzerinde fiziksel reset düğmesi uydurulmaz: RST padindeki tıklanabilir alan **sanal reset**tir (gerçekte RST-GND bağlantısı). XIAO üzerindeki gerçek reset tact konumuna tıklanabilir. Reset firmware’i baştan başlatır.
 
@@ -71,3 +71,5 @@ Klavye HID için ileride USBD endpoint/DMA, USB host tarafı descriptor/control/
 - [Seeed XIAO nRF52840 / Sense wiki, şema ve fotoğraflar](https://wiki.seeedstudio.com/XIAO_BLE/)
 
 ARM komut çekirdeği ve bağımlılık lisansları için depodaki STM32 vendor / üçüncü taraf bildirimlerine bakın. Yeni nRF köprüsü bu kaynağa Cargo path bağımlılığıyla derlenir. `cargo build --manifest-path src/nrf52/Cargo.toml --target wasm32-unknown-unknown --release` sonrası WASM ve SHA-256 manifesti birlikte güncellenmelidir. Bunlar geliştirici derleme adımlarıdır; kullanıcıya Rust veya yardımcı uygulama kurulumu gerekmez.
+
+0.111.2 görsel güncellemesi: SuperMini gövdesi kullanıcının sağladığı siyah kart fotoğrafıyla değiştirildi. Fotoğraf dosyası değiştirilmedi; SVG içinde yalnız kart bölgesi gösterilir. Gevşek header parçaları devre elemanı değildir. Pad konumları ve LED göstergesi fotoğrafa hizalandı; pin kimlikleri ve elektriksel model değiştirilmedi. Diğer üç kartın görselleri aynı kaldı.
