@@ -27,7 +27,7 @@ for(const b of Object.values(NRF52_BOARDS)){
  }else{
   s+=chip(53,32,15,17,'',0)+chip(29,69,34,34,'nRF52840',0);
   for(let i=0;i<6;i++){s+=passive(23+i*6,54,3.4,1.9,'#ae9e80',90);s+=passive(26+i*6,63,2.4,1.5);s+=passive(22+i*7,110,3,1.7);}
-  s+=`<rect x="21" y="35" width="9" height="6" rx="1" fill="url(#shield)" stroke="#c3c6ba" stroke-width=".5"/>${text(46,128,'nice!nano',8.8,'#e6e6d8','text-anchor="middle" font-weight="bold"')}${text(46,134,'v2.0',3.1,'#e6e6d8','text-anchor="middle"')}<path d="M30 139h6l4-3 6 3 6-3 4 3h6" fill="none" stroke="#d9d8bf" stroke-width="1.1"/>`;
+  s+=`<rect x="21" y="35" width="9" height="6" rx="1" fill="url(#shield)" stroke="#c3c6ba" stroke-width=".5"/>${text(46,136,'nice!nano',6.5,'#e6e6d8','text-anchor="middle" font-weight="bold"')}${text(46,140,'v2.0',2.8,'#e6e6d8','text-anchor="middle"')}<path d="M30 145h6l4-3 6 3 6-3 4 3h6" fill="none" stroke="#d9d8bf" stroke-width="1.1"/>`;
  }
  s+='</svg>';await writeFile(new URL('../dist/assets/'+b.asset,import.meta.url),s);
 }

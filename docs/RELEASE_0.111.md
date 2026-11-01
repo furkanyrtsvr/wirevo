@@ -9,3 +9,5 @@ Dokuz yeni doğrulama: dört profilde aynı SHT31 + EEPROM + LCD + MCP3008 + ADC
 BLE, SoftDevice, Zephyr/ZMK, nRF Connect SDK, USB HID/bootloader, tam güç yönetimi, Sense dahili IMU/PDM ve %100 çevrim doğruluğu dahil değildir. USB HID ayrı USBD/host modellemesi gerektirir; ilk sürümde çalışıyor olarak sunulmaz.
 
 [Model kapsamı ve referanslar](../dist/notices/NRF52-MODEL.md). Mevcut projeler korunur; uygulama önbelleği yeni dosyalar için 32 MiB üst sınırla sınırlıdır (Clang ayrı önbellek).
+
+0.111.1 görsel düzeltmesi: nice!nano alt logosu, v2 etiketi ve anten çizgisi ek padlerden ayrıldı. Motor ve pin eşlemeleri değişmedi; yalnız görsel kontrolü ve sözdizimi denetimi yapıldı.
